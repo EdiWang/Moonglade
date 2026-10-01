@@ -34,7 +34,7 @@ RUN dotnet build "Moonglade.Web.csproj" -c $BUILD_CONFIGURATION -o /app/build
 
 FROM build AS publish
 ARG BUILD_CONFIGURATION=Release
-RUN dotnet publish "Moonglade.Web.csproj" -c $BUILD_CONFIGURATION -o /app/publish
+RUN dotnet publish "Moonglade.Web.csproj" -c $BUILD_CONFIGURATION -r linux-x64 --self-contained false -o /app/publish
 
 FROM base AS final
 WORKDIR /app

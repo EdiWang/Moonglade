@@ -13,6 +13,7 @@ public class CommentReplyConfiguration : IEntityTypeConfiguration<CommentReplyEn
         builder.HasOne(d => d.Comment)
             .WithMany(p => p.Replies)
             .HasForeignKey(d => d.CommentId)
+            .OnDelete(DeleteBehavior.Cascade)
             .HasConstraintName("FK_CommentReply_Comment");
     }
 }

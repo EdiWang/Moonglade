@@ -1,3 +1,4 @@
+﻿using Microsoft.Extensions.Configuration;
 using LiteBus.Commands.Abstractions;
 using LiteBus.Events.Abstractions;
 using LiteBus.Queries.Abstractions;
@@ -283,8 +284,11 @@ public class CommentControllerTests
         Assert.Empty(_commandMediator.Commands.OfType<CreateActivityLogCommand>());
     }
 
-    [Fact]
-    public async Task List_ReturnsPagedCommentsWithHtmlContent()
+    [Theory]
+    [InlineData(null)]
+    [InlineData(false)]
+    [InlineData(true)]
+    public async Task List_ReturnsPagedCommentsWithHtmlContent(bool? enableLinks)
     {
         var filter = new CommentFilter { Username = "reader" };
         var commentId = Guid.NewGuid();
@@ -298,7 +302,7 @@ public class CommentControllerTests
                 Username = "reader",
                 Email = "reader@example.com",
                 CreateTimeUtc = createTimeUtc,
-                CommentContent = "**Hello**",
+                CommentContent = "**Hello** [example](https://example.com)",
                 IpAddress = "127.0.0.1",
                 PostTitle = "Hello Post",
                 IsApproved = true,
@@ -307,7 +311,7 @@ public class CommentControllerTests
                     new CommentReplyDigest
                     {
                         ReplyTimeUtc = replyTimeUtc,
-                        ReplyContent = "**Reply**"
+                        ReplyContent = "**Reply** [example](https://example.com)"
                     }
                 ]
             }
@@ -318,7 +322,9 @@ public class CommentControllerTests
         _queryMediator
             .Setup(x => x.QueryAsync(It.IsAny<CountCommentsQuery>(), It.IsAny<QueryMediationSettings>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(12);
-        var controller = CreateController();
+        var configuration = new ConfigurationBuilder().AddInMemoryCollection().Build();
+        configuration["CommentMarkdown:EnableLinks"] = enableLinks?.ToString();
+        var controller = CreateController(configuration: configuration);
 
         var result = await controller.List(2, 10, filter);
 
@@ -350,8 +356,22 @@ public class CommentControllerTests
         Assert.Contains("<strong>Hello</strong>", (string)item.GetType().GetProperty(nameof(CommentDetailedItem.CommentContent))!.GetValue(item)!);
         var replies = Assert.IsAssignableFrom<IEnumerable<object>>(item.GetType().GetProperty("Replies")!.GetValue(item));
         var reply = Assert.Single(replies);
-        Assert.Equal("**Reply**", reply.GetType().GetProperty(nameof(CommentReplyDigest.ReplyContent))!.GetValue(reply));
+        Assert.Equal("**Reply** [example](https://example.com)", reply.GetType().GetProperty(nameof(CommentReplyDigest.ReplyContent))!.GetValue(reply));
         Assert.Contains("<strong>Reply</strong>", (string)reply.GetType().GetProperty("ReplyContentHtml")!.GetValue(reply)!);
+        var commentHtml = (string)item.GetType().GetProperty(nameof(CommentDetailedItem.CommentContent))!.GetValue(item)!;
+        var replyHtml = (string)reply.GetType().GetProperty("ReplyContentHtml")!.GetValue(reply)!;
+        foreach (var html in new[] { commentHtml, replyHtml })
+        {
+            if (enableLinks == true)
+            {
+                Assert.Contains("<a href=\"https://example.com\"", html);
+            }
+            else
+            {
+                Assert.Contains("[example](https://example.com)", html);
+                Assert.DoesNotContain("<a", html);
+            }
+        }
     }
 
     [Fact]
@@ -504,7 +524,8 @@ public class CommentControllerTests
         string? username = null,
         IPAddress? remoteIpAddress = null,
         string? userAgent = null,
-        Action<DefaultHttpContext>? configureHttpContext = null)
+        Action<DefaultHttpContext>? configureHttpContext = null,
+        IConfiguration? configuration = null)
     {
         var controller = new CommentController(
             _commandMediator,
@@ -513,7 +534,7 @@ public class CommentControllerTests
             _blogConfig,
             _submissionGuard.Object,
             _eventMediator.Object,
-            Mock.Of<ILogger<CommentController>>());
+            Mock.Of<ILogger<CommentController>>(), configuration ?? new ConfigurationBuilder().Build());
         var httpContext = new DefaultHttpContext();
         httpContext.Request.Scheme = "https";
         httpContext.Request.Host = new HostString("blog.example.com");

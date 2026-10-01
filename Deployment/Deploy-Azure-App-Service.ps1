@@ -260,7 +260,8 @@ az webapp config connection-string set -g $rsgName -n $webAppName -t SQLAzure --
 
 Write-Host "Setting forwarded headers configuration"
 az webapp config appsettings set -g $rsgName -n $webAppName --settings `
-    ASPNETCORE_FORWARDEDHEADERS_ENABLED=true | Out-Null
+    ASPNETCORE_FORWARDEDHEADERS_ENABLED=true `
+    ConnectionStrings__DatabaseProvider=SqlServer | Out-Null
 
 # Restart Web App
 Write-Host "Restarting Web App..." -ForegroundColor Green

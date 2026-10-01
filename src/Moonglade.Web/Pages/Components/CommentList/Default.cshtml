@@ -1,8 +1,10 @@
 ﻿@using Moonglade.Data.DTO
 @using Moonglade.Utils
 @model List<Comment>
+@inject Microsoft.Extensions.Configuration.IConfiguration Configuration
 
 @{
+    var enableLinks = Configuration.GetValue<bool>("CommentMarkdown:EnableLinks");
     static string GetUserAvatarChar(string username)
     {
         if (string.IsNullOrWhiteSpace(username))
@@ -54,7 +56,7 @@
                     </div>
 
                     <div>
-                        @Html.Raw(ContentProcessor.MarkdownToCommentHtml(item.CommentContent))
+                        @Html.Raw(ContentProcessor.MarkdownToCommentHtml(item.CommentContent, enableLinks))
                     </div>
 
                     <div>
@@ -72,7 +74,7 @@
                                     </span>
                                 </div>
                                 <p>
-                                    @Html.Raw(ContentProcessor.MarkdownToCommentHtml(reply.ReplyContent))
+                                    @Html.Raw(ContentProcessor.MarkdownToCommentHtml(reply.ReplyContent, enableLinks))
                                 </p>
                             </div>
                         }

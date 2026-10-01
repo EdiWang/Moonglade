@@ -1,3 +1,4 @@
+﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Data.Sqlite;
 using Microsoft.Extensions.Logging;
 using Moonglade.Data;
@@ -18,8 +19,10 @@ public class CommentManagementCommandTests
         return new BlogDbContext(options);
     }
 
-    [Fact]
-    public async Task ReplyCommentCommand_CreatesReplyAndReturnsCommentReply()
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public async Task ReplyCommentCommand_CreatesReplyAndReturnsCommentReply(bool enableLinks)
     {
         using var db = CreateDbContext();
         var postId = Guid.NewGuid();
@@ -28,14 +31,26 @@ public class CommentManagementCommandTests
         db.Comment.Add(CreateCommentEntity(commentId, postId, isApproved: true));
         await db.SaveChangesAsync(TestContext.Current.CancellationToken);
 
-        var handler = new ReplyCommentCommandHandler(Mock.Of<ILogger<ReplyCommentCommandHandler>>(), db);
+        var configuration = new ConfigurationBuilder().AddInMemoryCollection().Build();
+        configuration["CommentMarkdown:EnableLinks"] = enableLinks.ToString();
+        var handler = new ReplyCommentCommandHandler(Mock.Of<ILogger<ReplyCommentCommandHandler>>(), db, configuration);
 
-        var result = await handler.HandleAsync(new ReplyCommentCommand(commentId, "**Thanks**"), TestContext.Current.CancellationToken);
+        const string markdown = "**Thanks** [example](https://example.com)";
+        var result = await handler.HandleAsync(new ReplyCommentCommand(commentId, markdown), TestContext.Current.CancellationToken);
 
         Assert.Equal(commentId, result.CommentId);
         Assert.Equal(postId, result.PostId);
-        Assert.Equal("**Thanks**", result.ReplyContent);
+        Assert.Equal(markdown, result.ReplyContent);
         Assert.Contains("<strong>Thanks</strong>", result.ReplyContentHtml);
+        if (enableLinks)
+        {
+            Assert.Contains("<a href=\"https://example.com\"", result.ReplyContentHtml);
+        }
+        else
+        {
+            Assert.Contains("[example](https://example.com)", result.ReplyContentHtml);
+            Assert.DoesNotContain("<a", result.ReplyContentHtml);
+        }
         Assert.Equal("Test Post", result.Title);
         Assert.Equal("2024/1/1/test-post", result.RouteLink);
         Assert.Equal("reader@example.com", result.Email);
@@ -43,7 +58,7 @@ public class CommentManagementCommandTests
 
         var reply = await db.CommentReply.SingleAsync(TestContext.Current.CancellationToken);
         Assert.Equal(commentId, reply.CommentId);
-        Assert.Equal("**Thanks**", reply.ReplyContent);
+        Assert.Equal(markdown, reply.ReplyContent);
     }
 
     [Fact]
@@ -51,7 +66,7 @@ public class CommentManagementCommandTests
     {
         using var db = CreateDbContext();
         var commentId = Guid.NewGuid();
-        var handler = new ReplyCommentCommandHandler(Mock.Of<ILogger<ReplyCommentCommandHandler>>(), db);
+        var handler = new ReplyCommentCommandHandler(Mock.Of<ILogger<ReplyCommentCommandHandler>>(), db, new ConfigurationBuilder().Build());
 
         var exception = await Assert.ThrowsAsync<InvalidOperationException>(() =>
             handler.HandleAsync(new ReplyCommentCommand(commentId, "Reply"), TestContext.Current.CancellationToken));
@@ -101,7 +116,7 @@ public class CommentManagementCommandTests
     }
 
     [Fact]
-    public async Task DeleteCommentsCommand_RemovesMatchingCommentsAndDetachesReplies()
+    public async Task DeleteCommentsCommand_RemovesMatchingCommentsAndReplies()
     {
         await using var connection = new SqliteConnection("Data Source=:memory:");
         await connection.OpenAsync(TestContext.Current.CancellationToken);
@@ -114,6 +129,7 @@ public class CommentManagementCommandTests
         var deleteId = Guid.NewGuid();
         var keepId = Guid.NewGuid();
         var deleteComment = CreateCommentEntity(deleteId, postId, isApproved: true);
+        var keepComment = CreateCommentEntity(keepId, postId, isApproved: true);
         deleteComment.Replies.Add(new CommentReplyEntity
         {
             Id = Guid.NewGuid(),
@@ -121,8 +137,15 @@ public class CommentManagementCommandTests
             ReplyContent = "Reply",
             CreateTimeUtc = DateTime.UtcNow
         });
+        keepComment.Replies.Add(new CommentReplyEntity
+        {
+            Id = Guid.NewGuid(),
+            CommentId = keepId,
+            ReplyContent = "Keep reply",
+            CreateTimeUtc = DateTime.UtcNow
+        });
         db.Post.Add(CreatePostEntity(postId));
-        db.Comment.AddRange(deleteComment, CreateCommentEntity(keepId, postId, isApproved: true));
+        db.Comment.AddRange(deleteComment, keepComment);
         await db.SaveChangesAsync(TestContext.Current.CancellationToken);
 
         var handler = new DeleteCommentsCommandHandler(db, Mock.Of<ILogger<DeleteCommentsCommandHandler>>());
@@ -131,8 +154,10 @@ public class CommentManagementCommandTests
 
         Assert.Null(await db.Comment.FindAsync([deleteId], TestContext.Current.CancellationToken));
         Assert.NotNull(await db.Comment.FindAsync([keepId], TestContext.Current.CancellationToken));
-        var detachedReply = await db.CommentReply.SingleAsync(TestContext.Current.CancellationToken);
-        Assert.Null(detachedReply.CommentId);
+        Assert.Equal(keepId, (await db.CommentReply.SingleAsync(TestContext.Current.CancellationToken)).CommentId);
+
+        await db.Comment.Where(c => c.Id == keepId).ExecuteDeleteAsync(TestContext.Current.CancellationToken);
+        Assert.Empty(await db.CommentReply.ToListAsync(TestContext.Current.CancellationToken));
     }
 
     private static PostEntity CreatePostEntity(Guid id)

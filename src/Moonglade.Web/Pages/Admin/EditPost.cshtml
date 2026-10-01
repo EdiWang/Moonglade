@@ -61,7 +61,7 @@
 <div x-show="!isLoading" x-cloak class="post-editor-container d-flex flex-column px-3 pt-2">
     <form id="post-edit-form" x-on:submit.prevent="handleSubmit" class="d-flex flex-column flex-grow-1">
         <div class="row g-2 post-editor-row">
-            <div class="col-md-9 col-xl-10 post-editor-main">
+            <div class="col post-editor-main">
                 <input type="text"
                        x-model="formData.title"
                        class="form-control form-control-lg mb-1"
@@ -96,7 +96,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-md-3 col-xl-2 post-editor-sidebar">
+            <div class="post-editor-sidebar">
                 <div class="card mb-3">
                     <div class="card-body">
                         <div class="input-group input-group-sm mb-2">
@@ -204,23 +204,9 @@
                             </a>
                         </h6>
 
-                        <div class="post-editor-catlist" x-show="categories.length > 0">
-                            <ul>
-                                <template x-for="cat in categories" :key="cat.id">
-                                    <li>
-                                        <div class="form-check">
-                                            <input type="checkbox"
-                                                   :id="'category-' + cat.id"
-                                                   :value="cat.id"
-                                                   :checked="formData.selectedCatIds.includes(cat.id)"
-                                                   x-on:change="toggleCategory(cat.id, $event.target.checked)"
-                                                   class="form-check-input">
-                                            <label :for="'category-' + cat.id" class="form-check-label" x-text="cat.displayName"></label>
-                                        </div>
-                                    </li>
-                                </template>
-                            </ul>
-                        </div>
+                        <input type="text" id="post-categories-input"
+                               placeholder="@SharedLocalizer["Categories"]"
+                               aria-label="@SharedLocalizer["Categories"]" />
                     </div>
                 </div>
             </div>
