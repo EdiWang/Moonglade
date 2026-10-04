@@ -77,6 +77,32 @@ public class ServiceCollectionExtensionsTests
     }
 
     [Fact]
+    public async Task AddMoongladeEmail_SeparateSmtpSenderStartsHostAndPreservesAuthenticationSettings()
+    {
+        var configuration = CreateConfiguration(
+            new KeyValuePair<string, string>("Email:SmtpUserName", "resend"),
+            new KeyValuePair<string, string>("Email:SmtpSenderAddress", "notifications@example.com"));
+        var logs = new CapturingLoggerProvider();
+        using var host = CreateHost(configuration, logs, useIdleProcessor: true);
+
+        await host.StartAsync(TestContext.Current.CancellationToken);
+        try
+        {
+            var options = host.Services.GetRequiredService<IOptions<EmailServiceOptions>>().Value;
+            var settings = host.Services.GetRequiredService<EmailSettings>();
+
+            Assert.Equal(EmailCapabilityState.Available, host.Services.GetRequiredService<EmailCapabilityStatus>().State);
+            Assert.Equal("notifications@example.com", options.EffectiveSmtpSenderAddress);
+            Assert.Equal("resend", settings.SmtpSettings.SmtpUserName);
+            Assert.NotNull(host.Services.GetRequiredService<IEmailDispatcher>());
+        }
+        finally
+        {
+            await host.StopAsync(TestContext.Current.CancellationToken);
+        }
+    }
+
+    [Fact]
     public async Task AddMoongladeEmail_MissingProviderSettingsStartHostAndLogWarning()
     {
         var configuration = CreateConfiguration(

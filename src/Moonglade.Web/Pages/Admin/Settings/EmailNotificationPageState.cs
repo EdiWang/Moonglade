@@ -57,7 +57,7 @@ public sealed class EmailNotificationPageState
         var senderAddress = serviceOptions.NormalizedProvider switch
         {
             EmailServiceOptions.AzureCommunicationProvider => serviceOptions.AcsSenderAddress,
-            EmailServiceOptions.SmtpProvider => serviceOptions.SmtpUserName,
+            EmailServiceOptions.SmtpProvider => serviceOptions.EffectiveSmtpSenderAddress,
             _ => string.Empty
         };
 

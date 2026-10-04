@@ -7,6 +7,7 @@ public class EmailServiceOptions
 
     public string SmtpServer { get; set; } = string.Empty;
     public string SmtpUserName { get; set; } = string.Empty;
+    public string SmtpSenderAddress { get; set; } = string.Empty;
     public string SmtpPassword { get; set; } = string.Empty;
     public int SmtpPort { get; set; } = 25;
     public bool EnableSsl { get; set; }
@@ -16,6 +17,9 @@ public class EmailServiceOptions
     public string AcsSenderAddress { get; set; } = string.Empty;
 
     public string NormalizedProvider => NormalizeProvider(Provider);
+
+    public string EffectiveSmtpSenderAddress =>
+        string.IsNullOrWhiteSpace(SmtpSenderAddress) ? SmtpUserName : SmtpSenderAddress;
 
     public static string NormalizeProvider(string provider) =>
         string.IsNullOrWhiteSpace(provider) ? SmtpProvider : provider.Trim().ToLowerInvariant();

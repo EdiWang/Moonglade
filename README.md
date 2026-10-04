@@ -230,6 +230,7 @@ Email notifications for new comments, replies, and Webmentions are optional. Whe
   "Provider": "smtp",
   "SmtpServer": "",
   "SmtpUserName": "",
+  "SmtpSenderAddress": "",
   "SmtpPassword": "",
   "SmtpPort": 25,
   "EnableSsl": false,
@@ -241,6 +242,8 @@ Email notifications for new comments, replies, and Webmentions are optional. Whe
 
 The default provider is `smtp`; `AzureCommunication` is also supported. Adjust the SMTP port and TLS setting for your provider, and use environment variable overrides such as `Email__SmtpPassword` or `Email__AcsConnectionString` for real secrets.
 
+For SMTP, `SmtpUserName` is the authentication username. Set `SmtpSenderAddress` to a bare email address when the sender differs from the authentication username. It controls the `From` and `Sender` headers and the SMTP envelope sender; `SenderDisplayName` controls the display name unless overridden by the blog's Notification settings. When `SmtpSenderAddress` is omitted, empty, or whitespace, Moonglade continues to use `SmtpUserName` as the sender for compatibility. Override it with `Email__SmtpSenderAddress` in deployment configuration. The SMTP service must permit the selected sender address.
+
 Email configuration never controls application liveness or database readiness:
 
 - Missing required provider values leave email inactive, produce one startup warning, and show setup guidance in `/admin/settings/notification`. The application continues to start normally.
@@ -250,6 +253,23 @@ Email configuration never controls application liveness or database readiness:
 While email is unavailable, the worker does not poll or send and notification handlers do not enqueue new messages. Existing pending outbox messages are retained and can be processed after valid configuration is supplied and the application is restarted. The test-email action is disabled while delivery is unavailable.
 
 Email delivery uses at-least-once processing. If the application stops while a message is being sent, a later retry can occasionally send a duplicate notification. Keep secrets outside source control and use the platform's secret or environment-variable configuration mechanism.
+
+#### Resend via SMTP
+
+Resend uses the existing SMTP provider and requires no additional SDK. Use a sender address on a domain verified in your Resend account, and configure:
+
+```json
+"Email": {
+  "Provider": "smtp",
+  "SmtpServer": "smtp.resend.com",
+  "SmtpUserName": "resend",
+  "SmtpSenderAddress": "notifications@example.com",
+  "SmtpPort": 587,
+  "EnableSsl": true
+}
+```
+
+Replace `notifications@example.com` with your verified sender address. Supply the Resend API key through `Email__SmtpPassword` or your deployment's secret configuration; do not commit it to `appsettings.json`. Port `587` with `EnableSsl=true` requires STARTTLS. Restart Moonglade, enable email sending in `/admin/settings/notification`, and use **Send Test Email** to check delivery. See [Resend's SMTP documentation](https://resend.com/docs/send-with-smtp) for service requirements and supported ports.
 
 ### More Settings
 

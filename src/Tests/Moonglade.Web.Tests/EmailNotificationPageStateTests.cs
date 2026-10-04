@@ -66,6 +66,38 @@ public class EmailNotificationPageStateTests
     }
 
     [Theory]
+    [InlineData("notifications@example.com", "notifications@example.com")]
+    [InlineData("", "sender@example.com")]
+    [InlineData(null, "sender@example.com")]
+    [InlineData("   ", "sender@example.com")]
+    public void Create_SmtpSenderAddress_DisplaysEffectiveSender(string? configuredAddress, string expectedAddress)
+    {
+        var (serviceOptions, workerOptions) = CreateOptions(EmailCapabilityState.Available);
+        serviceOptions.SmtpSenderAddress = configuredAddress;
+
+        var pageState = EmailNotificationPageState.Create(
+            CreateStatus(serviceOptions, workerOptions), serviceOptions, workerOptions, emailSendingEnabled: true);
+
+        Assert.Equal("SMTP", pageState.ProviderLabel);
+        Assert.Equal(expectedAddress, pageState.SenderAddress);
+        Assert.True(pageState.CanSendTestEmail);
+    }
+
+    [Fact]
+    public void Create_InvalidSmtpSenderAddress_DisablesTestEmail()
+    {
+        var (serviceOptions, workerOptions) = CreateOptions(EmailCapabilityState.Available);
+        serviceOptions.SmtpSenderAddress = "not-an-email";
+
+        var pageState = EmailNotificationPageState.Create(
+            CreateStatus(serviceOptions, workerOptions), serviceOptions, workerOptions, emailSendingEnabled: true);
+
+        Assert.True(pageState.ShowInvalidConfiguration);
+        Assert.False(pageState.CanSendTestEmail);
+        Assert.Contains(pageState.ValidationErrors, error => error.Contains("Email:SmtpSenderAddress", StringComparison.Ordinal));
+    }
+
+    [Theory]
     [InlineData("Program.zh-Hans.resx")]
     [InlineData("Program.zh-Hant.resx")]
     [InlineData("Program.de-DE.resx")]

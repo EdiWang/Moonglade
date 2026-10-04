@@ -123,6 +123,21 @@ public class EmailCapabilityStatusEvaluatorTests
         Assert.Empty(status.ValidationErrors);
     }
 
+    [Theory]
+    [InlineData("notifications@example.com", EmailCapabilityState.Available)]
+    [InlineData("not-an-email", EmailCapabilityState.Invalid)]
+    public void Evaluate_SmtpWithSeparateSenderAddress_UsesSenderValidation(
+        string senderAddress, EmailCapabilityState expectedState)
+    {
+        var serviceOptions = CreateValidSmtpOptions();
+        serviceOptions.SmtpUserName = "resend";
+        serviceOptions.SmtpSenderAddress = senderAddress;
+
+        var status = _sut.Evaluate(serviceOptions, new EmailOutboxWorkerOptions());
+
+        Assert.Equal(expectedState, status.State);
+    }
+
     [Fact]
     public void Evaluate_ValidAzureCommunicationSettings_AreAvailable()
     {

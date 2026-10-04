@@ -36,6 +36,48 @@ public class EmailServiceOptionsValidatorTests
     }
 
     [Theory]
+    [InlineData("notifications@example.com", true)]
+    [InlineData("", true)]
+    [InlineData(null, true)]
+    [InlineData("   ", true)]
+    [InlineData("not-an-email", false)]
+    [InlineData("Blog <notifications@example.com>", false)]
+    [InlineData("notifications@example.com\r\nBcc: other@example.com", false)]
+    public void Validate_SmtpSenderAddress_IsOptionalAndValidatedWhenProvided(string senderAddress, bool valid)
+    {
+        var options = new EmailServiceOptions
+        {
+            SmtpServer = "smtp.example.com",
+            SmtpUserName = "smtp-login",
+            SmtpPassword = "do-not-log-this-password",
+            SmtpSenderAddress = senderAddress
+        };
+
+        var result = _sut.Validate(Options.DefaultName, options);
+
+        Assert.Equal(valid, result.Succeeded);
+        if (!valid)
+        {
+            Assert.Contains("Email:SmtpSenderAddress", result.FailureMessage);
+            Assert.DoesNotContain(options.SmtpPassword, result.FailureMessage);
+        }
+    }
+
+    [Fact]
+    public void Validate_AzureCommunication_IgnoresSmtpSenderAddress()
+    {
+        var options = new EmailServiceOptions
+        {
+            Provider = "AzureCommunication",
+            AcsConnectionString = "endpoint=https://example.communication.azure.com/;accesskey=fake",
+            AcsSenderAddress = "no-reply@example.com",
+            SmtpSenderAddress = "not-an-email"
+        };
+
+        Assert.True(_sut.Validate(Options.DefaultName, options).Succeeded);
+    }
+
+    [Theory]
     [InlineData(0)]
     [InlineData(65536)]
     public void Validate_InvalidSmtpPort_Fails(int port)

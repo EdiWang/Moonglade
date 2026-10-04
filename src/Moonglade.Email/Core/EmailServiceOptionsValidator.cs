@@ -1,4 +1,5 @@
 using Microsoft.Extensions.Options;
+using MimeKit;
 using System.ComponentModel.DataAnnotations;
 
 namespace Moonglade.Email.Core;
@@ -67,6 +68,15 @@ public class EmailServiceOptionsValidator : IValidateOptions<EmailServiceOptions
         {
             issues.Add(EmailServiceConfigurationIssue.Missing(
                 "Email:SmtpPassword is required when Email:Provider is smtp."));
+        }
+
+        if (!string.IsNullOrWhiteSpace(options.SmtpSenderAddress) &&
+            (!EmailAddressAttribute.IsValid(options.SmtpSenderAddress) ||
+             !MailboxAddress.TryParse(options.SmtpSenderAddress, out var sender) ||
+             sender.Address != options.SmtpSenderAddress))
+        {
+            issues.Add(EmailServiceConfigurationIssue.Invalid(
+                "Email:SmtpSenderAddress must be a valid email address."));
         }
     }
 
