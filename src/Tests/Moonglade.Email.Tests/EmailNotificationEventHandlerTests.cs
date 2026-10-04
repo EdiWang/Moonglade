@@ -227,7 +227,6 @@ public class EmailNotificationEventHandlerTests
     private static EmailCapabilityStatus CreateAvailableStatus() => CreateStatus(
         new EmailServiceOptions
         {
-            Provider = "smtp",
             SmtpServer = "smtp.example.com",
             SmtpUserName = "sender@example.com",
             SmtpPassword = "password",
@@ -236,10 +235,7 @@ public class EmailNotificationEventHandlerTests
         new EmailOutboxWorkerOptions());
 
     private static EmailCapabilityStatus CreateUnavailableStatus() => CreateStatus(
-        new EmailServiceOptions
-        {
-            Provider = "AzureCommunication"
-        },
+        new EmailServiceOptions(),
         new EmailOutboxWorkerOptions());
 
     private static EmailCapabilityStatus CreateStatus(

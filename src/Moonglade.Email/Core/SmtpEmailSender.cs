@@ -12,10 +12,8 @@ namespace Moonglade.Email.Core;
 public class SmtpEmailSender(
     EmailSettings smtpSettings,
     IOptions<EmailServiceOptions> options,
-    ILogger<SmtpEmailSender> logger) : IEmailProviderSender
+    ILogger<SmtpEmailSender> logger) : IEmailDispatcher
 {
-    public string Provider => EmailServiceOptions.SmtpProvider;
-
     public async Task SendAsync(CommonMailMessage message)
     {
         var senderAddress = options.Value.EffectiveSmtpSenderAddress;

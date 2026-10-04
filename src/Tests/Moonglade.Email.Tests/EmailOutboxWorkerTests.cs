@@ -56,7 +56,6 @@ public class EmailOutboxWorkerTests
     {
         var serviceOptions = new EmailServiceOptions
         {
-            Provider = "smtp",
             SmtpServer = "smtp.example.com",
             SmtpUserName = "sender@example.com",
             SmtpPassword = "password",
@@ -67,9 +66,7 @@ public class EmailOutboxWorkerTests
         switch (state)
         {
             case EmailCapabilityState.NotConfigured:
-                serviceOptions.Provider = "AzureCommunication";
-                serviceOptions.AcsConnectionString = "";
-                serviceOptions.AcsSenderAddress = "";
+                serviceOptions.SmtpPassword = "";
                 break;
 
             case EmailCapabilityState.Invalid:

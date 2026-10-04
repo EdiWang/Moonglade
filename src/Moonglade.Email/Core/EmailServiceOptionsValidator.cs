@@ -20,54 +20,28 @@ public class EmailServiceOptionsValidator : IValidateOptions<EmailServiceOptions
     internal IReadOnlyList<EmailServiceConfigurationIssue> GetIssues(EmailServiceOptions options)
     {
         var issues = new List<EmailServiceConfigurationIssue>();
-        var provider = options.NormalizedProvider;
-
-        if (provider is not EmailServiceOptions.SmtpProvider and not EmailServiceOptions.AzureCommunicationProvider)
-        {
-            issues.Add(EmailServiceConfigurationIssue.Invalid(
-                $"Email provider '{options.Provider}' is not supported. Supported values: smtp, AzureCommunication."));
-        }
-
         if (options.SmtpPort is < 1 or > 65535)
         {
             issues.Add(EmailServiceConfigurationIssue.Invalid(
                 "Email:SmtpPort must be between 1 and 65535."));
         }
 
-        switch (provider)
-        {
-            case EmailServiceOptions.SmtpProvider:
-                ValidateSmtp(options, issues);
-                break;
-
-            case EmailServiceOptions.AzureCommunicationProvider:
-                ValidateAzureCommunication(options, issues);
-                break;
-        }
-
-        return issues;
-    }
-
-    private static void ValidateSmtp(
-        EmailServiceOptions options,
-        List<EmailServiceConfigurationIssue> issues)
-    {
         if (string.IsNullOrWhiteSpace(options.SmtpServer))
         {
             issues.Add(EmailServiceConfigurationIssue.Missing(
-                "Email:SmtpServer is required when Email:Provider is smtp."));
+                "Email:SmtpServer is required."));
         }
 
         if (string.IsNullOrWhiteSpace(options.SmtpUserName))
         {
             issues.Add(EmailServiceConfigurationIssue.Missing(
-                "Email:SmtpUserName is required when Email:Provider is smtp."));
+                "Email:SmtpUserName is required."));
         }
 
         if (string.IsNullOrWhiteSpace(options.SmtpPassword))
         {
             issues.Add(EmailServiceConfigurationIssue.Missing(
-                "Email:SmtpPassword is required when Email:Provider is smtp."));
+                "Email:SmtpPassword is required."));
         }
 
         if (!string.IsNullOrWhiteSpace(options.SmtpSenderAddress) &&
@@ -78,30 +52,8 @@ public class EmailServiceOptionsValidator : IValidateOptions<EmailServiceOptions
             issues.Add(EmailServiceConfigurationIssue.Invalid(
                 "Email:SmtpSenderAddress must be a valid email address."));
         }
-    }
 
-    private static void ValidateAzureCommunication(
-        EmailServiceOptions options,
-        List<EmailServiceConfigurationIssue> issues)
-    {
-        if (string.IsNullOrWhiteSpace(options.AcsConnectionString))
-        {
-            issues.Add(EmailServiceConfigurationIssue.Missing(
-                "Email:AcsConnectionString is required when Email:Provider is AzureCommunication."));
-        }
-
-        if (string.IsNullOrWhiteSpace(options.AcsSenderAddress))
-        {
-            issues.Add(EmailServiceConfigurationIssue.Missing(
-                "Email:AcsSenderAddress is required when Email:Provider is AzureCommunication."));
-            return;
-        }
-
-        if (!EmailAddressAttribute.IsValid(options.AcsSenderAddress))
-        {
-            issues.Add(EmailServiceConfigurationIssue.Invalid(
-                "Email:AcsSenderAddress must be a valid email address."));
-        }
+        return issues;
     }
 }
 

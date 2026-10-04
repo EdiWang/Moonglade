@@ -33,32 +33,6 @@ public class EmailCapabilityStatusEvaluatorTests
     }
 
     [Fact]
-    public void Evaluate_UnsupportedProvider_IsInvalid()
-    {
-        var serviceOptions = new EmailServiceOptions
-        {
-            Provider = "sendgrid"
-        };
-
-        var status = _sut.Evaluate(serviceOptions, new EmailOutboxWorkerOptions());
-
-        Assert.Equal(EmailCapabilityState.Invalid, status.State);
-        Assert.Contains(status.ValidationErrors, error => error.Contains("Email provider", StringComparison.Ordinal));
-    }
-
-    [Fact]
-    public void Evaluate_MalformedAzureSenderAddress_IsInvalid()
-    {
-        var serviceOptions = CreateValidAzureCommunicationOptions();
-        serviceOptions.AcsSenderAddress = "not-an-email";
-
-        var status = _sut.Evaluate(serviceOptions, new EmailOutboxWorkerOptions());
-
-        Assert.Equal(EmailCapabilityState.Invalid, status.State);
-        Assert.Contains(status.ValidationErrors, error => error.Contains("Email:AcsSenderAddress", StringComparison.Ordinal));
-    }
-
-    [Fact]
     public void Evaluate_InvalidSmtpPort_IsInvalid()
     {
         var serviceOptions = CreateValidSmtpOptions();
@@ -99,7 +73,7 @@ public class EmailCapabilityStatusEvaluatorTests
     }
 
     [Fact]
-    public void Evaluate_ValidProviderWithDisabledWorker_IsDisabled()
+    public void Evaluate_ValidSmtpWithDisabledWorker_IsDisabled()
     {
         var workerOptions = new EmailOutboxWorkerOptions
         {
@@ -138,29 +112,11 @@ public class EmailCapabilityStatusEvaluatorTests
         Assert.Equal(expectedState, status.State);
     }
 
-    [Fact]
-    public void Evaluate_ValidAzureCommunicationSettings_AreAvailable()
-    {
-        var status = _sut.Evaluate(CreateValidAzureCommunicationOptions(), new EmailOutboxWorkerOptions());
-
-        Assert.Equal(EmailCapabilityState.Available, status.State);
-        Assert.True(status.IsAvailable);
-        Assert.Empty(status.ValidationErrors);
-    }
-
     private static EmailServiceOptions CreateValidSmtpOptions() => new()
     {
-        Provider = "smtp",
         SmtpServer = "smtp.example.com",
         SmtpUserName = "sender@example.com",
         SmtpPassword = "password",
         SmtpPort = 587
-    };
-
-    private static EmailServiceOptions CreateValidAzureCommunicationOptions() => new()
-    {
-        Provider = "AzureCommunication",
-        AcsConnectionString = "endpoint=https://example.communication.azure.com/;accesskey=fake",
-        AcsSenderAddress = "sender@example.com"
     };
 }

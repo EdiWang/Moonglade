@@ -6,14 +6,12 @@ public sealed class EmailNotificationPageState
 {
     private EmailNotificationPageState(
         EmailCapabilityStatus capabilityStatus,
-        string providerLabel,
         string senderAddress,
         bool workerEnabled,
         bool emailSendingEnabled)
     {
         CapabilityState = capabilityStatus.State;
         ValidationErrors = capabilityStatus.ValidationErrors;
-        ProviderLabel = providerLabel;
         SenderAddress = senderAddress;
         WorkerEnabled = workerEnabled;
         CanSendTestEmail = capabilityStatus.IsAvailable && emailSendingEnabled;
@@ -23,7 +21,7 @@ public sealed class EmailNotificationPageState
 
     public IReadOnlyList<string> ValidationErrors { get; }
 
-    public string ProviderLabel { get; }
+    public string ProviderLabel => "SMTP";
 
     public string SenderAddress { get; }
 
@@ -47,24 +45,9 @@ public sealed class EmailNotificationPageState
         ArgumentNullException.ThrowIfNull(serviceOptions);
         ArgumentNullException.ThrowIfNull(workerOptions);
 
-        var providerLabel = serviceOptions.NormalizedProvider switch
-        {
-            EmailServiceOptions.AzureCommunicationProvider => "Azure Communication Services",
-            EmailServiceOptions.SmtpProvider => "SMTP",
-            _ => serviceOptions.Provider.Trim()
-        };
-
-        var senderAddress = serviceOptions.NormalizedProvider switch
-        {
-            EmailServiceOptions.AzureCommunicationProvider => serviceOptions.AcsSenderAddress,
-            EmailServiceOptions.SmtpProvider => serviceOptions.EffectiveSmtpSenderAddress,
-            _ => string.Empty
-        };
-
         return new(
             capabilityStatus,
-            providerLabel,
-            senderAddress,
+            serviceOptions.EffectiveSmtpSenderAddress,
             workerOptions.Enabled,
             emailSendingEnabled);
     }

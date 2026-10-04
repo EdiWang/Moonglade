@@ -103,10 +103,10 @@ public class ServiceCollectionExtensionsTests
     }
 
     [Fact]
-    public async Task AddMoongladeEmail_MissingProviderSettingsStartHostAndLogWarning()
+    public async Task AddMoongladeEmail_MissingSmtpSettingsStartHostAndLogWarning()
     {
         var configuration = CreateConfiguration(
-            new KeyValuePair<string, string>("Email:Provider", "AzureCommunication"),
+            new KeyValuePair<string, string>("Email:SmtpPassword", ""),
             new KeyValuePair<string, string>("Email:OutboxWorker:Enabled", "false"));
         var logs = new CapturingLoggerProvider();
         using var host = CreateHost(configuration, logs);
@@ -118,7 +118,7 @@ public class ServiceCollectionExtensionsTests
             var options = host.Services.GetRequiredService<IOptions<EmailServiceOptions>>().Value;
 
             Assert.Equal(EmailCapabilityState.NotConfigured, status.State);
-            Assert.Equal("AzureCommunication", options.Provider);
+            Assert.Empty(options.SmtpPassword);
             Assert.Single(logs.Entries, entry =>
                 entry.Level == LogLevel.Warning &&
                 entry.Message.Contains("Email notifications are not configured", StringComparison.Ordinal));
@@ -131,7 +131,7 @@ public class ServiceCollectionExtensionsTests
     }
 
     [Fact]
-    public async Task AddMoongladeEmail_InvalidProviderSettingsStartHostAndLogSafeError()
+    public async Task AddMoongladeEmail_InvalidSmtpSettingsStartHostAndLogSafeError()
     {
         const string secret = "do-not-log-this-password";
         var configuration = CreateConfiguration(
@@ -227,7 +227,7 @@ public class ServiceCollectionExtensionsTests
             Assert.NotNull(host.Services.GetRequiredService<EmailSettings>());
             Assert.NotNull(host.Services.GetRequiredService<IEmailHelper>());
             Assert.NotNull(host.Services.GetRequiredService<IEmailDispatcher>());
-            Assert.Equal(2, host.Services.GetServices<IEmailProviderSender>().Count());
+            Assert.IsType<SmtpEmailSender>(host.Services.GetRequiredService<IEmailDispatcher>());
         }
         finally
         {

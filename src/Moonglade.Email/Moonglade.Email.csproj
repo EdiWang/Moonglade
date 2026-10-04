@@ -12,7 +12,6 @@
 		<FrameworkReference Include="Microsoft.AspNetCore.App" />
 	</ItemGroup>
 	<ItemGroup>
-		<PackageReference Include="Azure.Communication.Email" Version="1.1.0" />
 		<PackageReference Include="Edi.TemplateEmail" Version="2026.4.2" />
 		<PackageReference Include="Edi.TemplateEmail.Smtp" Version="2026.4.2" />
 	</ItemGroup>

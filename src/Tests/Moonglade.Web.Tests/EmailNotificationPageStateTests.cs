@@ -132,7 +132,6 @@ public class EmailNotificationPageStateTests
     {
         var serviceOptions = new EmailServiceOptions
         {
-            Provider = EmailServiceOptions.SmtpProvider,
             SmtpServer = "smtp.example.com",
             SmtpUserName = "sender@example.com",
             SmtpPassword = "test-password",

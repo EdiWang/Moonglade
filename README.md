@@ -50,7 +50,7 @@ The supplied Compose file maps separate writable named volumes to `/app/images` 
 
 Compose starts PostgreSQL and supplies the database connection string to the web container. For a direct `dotnet run`, the default connection string in `appsettings.json` points to PostgreSQL on `localhost:5432`; override it with `ConnectionStrings__MoongladeDatabase` for your environment.
 
-Email notifications are optional. The supplied default Email section intentionally contains no provider credentials; the application still starts, logs a warning, and serves the blog with email notification inactive. Open `/admin/settings/notification` to see the setup guidance after signing in. Add provider configuration through deployment secrets only when email delivery is required.
+Email notifications are optional. The supplied default Email section intentionally contains no SMTP credentials; the application still starts, logs a warning, and serves the blog with email notification inactive. Open `/admin/settings/notification` to see the setup guidance after signing in. Add SMTP configuration through deployment secrets only when email delivery is required.
 
 ### Quick Azure Deployment (App Service on Linux)
 
@@ -227,7 +227,6 @@ Email notifications for new comments, replies, and Webmentions are optional. Whe
 
 ```json
 "Email": {
-  "Provider": "smtp",
   "SmtpServer": "",
   "SmtpUserName": "",
   "SmtpSenderAddress": "",
@@ -240,14 +239,14 @@ Email notifications for new comments, replies, and Webmentions are optional. Whe
 }
 ```
 
-The default provider is `smtp`; `AzureCommunication` is also supported. Adjust the SMTP port and TLS setting for your provider, and use environment variable overrides such as `Email__SmtpPassword` or `Email__AcsConnectionString` for real secrets.
+Email delivery supports SMTP only; no provider selection is required. Adjust the SMTP port and TLS setting for your service, and use the `Email__SmtpPassword` environment variable for real secrets.
 
 For SMTP, `SmtpUserName` is the authentication username. Set `SmtpSenderAddress` to a bare email address when the sender differs from the authentication username. It controls the `From` and `Sender` headers and the SMTP envelope sender; `SenderDisplayName` controls the display name unless overridden by the blog's Notification settings. When `SmtpSenderAddress` is omitted, empty, or whitespace, Moonglade continues to use `SmtpUserName` as the sender for compatibility. Override it with `Email__SmtpSenderAddress` in deployment configuration. The SMTP service must permit the selected sender address.
 
 Email configuration never controls application liveness or database readiness:
 
-- Missing required provider values leave email inactive, produce one startup warning, and show setup guidance in `/admin/settings/notification`. The application continues to start normally.
-- Unsupported, malformed, out-of-range, or inconsistent values leave email inactive, produce a startup error log, and show secret-safe validation details on the Notification settings page. They do not stop application startup.
+- Missing required SMTP values leave email inactive, produce one startup warning, and show setup guidance in `/admin/settings/notification`. The application continues to start normally.
+- Malformed, out-of-range, or inconsistent values leave email inactive, produce a startup error log, and show secret-safe validation details on the Notification settings page. They do not stop application startup.
 - Setting `Email:OutboxWorker:Enabled` to `false` deliberately disables email notification and is shown as a separate non-error state in the admin portal.
 
 While email is unavailable, the worker does not poll or send and notification handlers do not enqueue new messages. Existing pending outbox messages are retained and can be processed after valid configuration is supplied and the application is restarted. The test-email action is disabled while delivery is unavailable.
@@ -256,11 +255,10 @@ Email delivery uses at-least-once processing. If the application stops while a m
 
 #### Resend via SMTP
 
-Resend uses the existing SMTP provider and requires no additional SDK. Use a sender address on a domain verified in your Resend account, and configure:
+Resend uses SMTP and requires no additional SDK. Use a sender address on a domain verified in your Resend account, and configure:
 
 ```json
 "Email": {
-  "Provider": "smtp",
   "SmtpServer": "smtp.resend.com",
   "SmtpUserName": "resend",
   "SmtpSenderAddress": "notifications@example.com",

@@ -304,7 +304,6 @@ public class SettingsControllerTests
     {
         var serviceOptions = new EmailServiceOptions
         {
-            Provider = "smtp",
             SmtpServer = "smtp.example.com",
             SmtpUserName = "sender@example.com",
             SmtpPassword = "password",
@@ -315,9 +314,7 @@ public class SettingsControllerTests
         switch (state)
         {
             case EmailCapabilityState.NotConfigured:
-                serviceOptions.Provider = "AzureCommunication";
-                serviceOptions.AcsConnectionString = "";
-                serviceOptions.AcsSenderAddress = "";
+                serviceOptions.SmtpPassword = "";
                 break;
 
             case EmailCapabilityState.Invalid:

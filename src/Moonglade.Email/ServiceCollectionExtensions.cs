@@ -61,10 +61,7 @@ public static class ServiceCollectionExtensions
         });
 
         services.AddSingleton<MessageBuilder>();
-        services.AddSingleton<IAzureCommunicationEmailClient, AzureCommunicationEmailClient>();
-        services.AddSingleton<IEmailProviderSender, SmtpEmailSender>();
-        services.AddSingleton<IEmailProviderSender, AzureCommunicationSender>();
-        services.AddSingleton<IEmailDispatcher, EmailDispatcher>();
+        services.AddSingleton<IEmailDispatcher, SmtpEmailSender>();
 
         services.AddScoped<DbEmailNotificationQueue>();
         services.AddScoped<IEmailOutboxStore>(sp => sp.GetRequiredService<DbEmailNotificationQueue>());

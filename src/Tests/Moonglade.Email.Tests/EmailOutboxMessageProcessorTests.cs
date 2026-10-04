@@ -1,11 +1,10 @@
-using Azure;
+using MailKit.Net.Smtp;
 using Edi.TemplateEmail;
 using Edi.TemplateEmail.Smtp;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Moonglade.Email.Core;
 using Moq;
-using System.Net;
 using System.Text.Json;
 
 namespace Moonglade.Email.Tests;
@@ -60,7 +59,7 @@ public class EmailOutboxMessageProcessorTests
         {
             ExceptionFactory = message =>
                 message.Receipts.Single() == "reader@example.com"
-                    ? new RequestFailedException((int)HttpStatusCode.BadRequest, "bad recipient")
+                    ? new SmtpCommandException(SmtpErrorCode.RecipientNotAccepted, SmtpStatusCode.MailboxUnavailable, "bad recipient")
                     : null
         };
         var processor = CreateProcessor(store, dispatcher);
@@ -82,7 +81,7 @@ public class EmailOutboxMessageProcessorTests
         };
         var dispatcher = new CapturingDispatcher
         {
-            ExceptionFactory = _ => new RequestFailedException((int)HttpStatusCode.BadRequest, "bad request")
+            ExceptionFactory = _ => new SmtpCommandException(SmtpErrorCode.MessageNotAccepted, SmtpStatusCode.MailboxUnavailable, "bad request")
         };
         var processor = CreateProcessor(store, dispatcher);
 
@@ -104,7 +103,7 @@ public class EmailOutboxMessageProcessorTests
         };
         var dispatcher = new CapturingDispatcher
         {
-            ExceptionFactory = _ => new RequestFailedException((int)HttpStatusCode.ServiceUnavailable, "service unavailable")
+            ExceptionFactory = _ => new SmtpCommandException(SmtpErrorCode.MessageNotAccepted, SmtpStatusCode.ServiceNotAvailable, "service unavailable")
         };
         var processor = CreateProcessor(store, dispatcher);
 
@@ -127,7 +126,7 @@ public class EmailOutboxMessageProcessorTests
         };
         var dispatcher = new CapturingDispatcher
         {
-            ExceptionFactory = _ => new RequestFailedException((int)HttpStatusCode.ServiceUnavailable, "service unavailable")
+            ExceptionFactory = _ => new SmtpCommandException(SmtpErrorCode.MessageNotAccepted, SmtpStatusCode.ServiceNotAvailable, "service unavailable")
         };
         var processor = CreateProcessor(store, dispatcher);
 

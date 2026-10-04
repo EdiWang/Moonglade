@@ -1,4 +1,3 @@
-using Azure;
 using MailKit.Net.Smtp;
 using Moonglade.Email.Core;
 
@@ -35,13 +34,14 @@ public class EmailDeliveryFailureClassifierTests
     }
 
     [Theory]
-    [InlineData(400, EmailDeliveryFailureKind.Permanent)]
-    [InlineData(408, EmailDeliveryFailureKind.Transient)]
-    [InlineData(429, EmailDeliveryFailureKind.Transient)]
-    [InlineData(503, EmailDeliveryFailureKind.Transient)]
-    public void TryClassify_RequestFailedException_UsesStatusCode(int statusCode, EmailDeliveryFailureKind expectedKind)
+    [InlineData(SmtpStatusCode.MailboxBusy, EmailDeliveryFailureKind.Transient)]
+    [InlineData(SmtpStatusCode.ErrorInProcessing, EmailDeliveryFailureKind.Transient)]
+    [InlineData(SmtpStatusCode.InsufficientStorage, EmailDeliveryFailureKind.Transient)]
+    [InlineData(SmtpStatusCode.TransactionFailed, EmailDeliveryFailureKind.Transient)]
+    [InlineData(SmtpStatusCode.AuthenticationRequired, EmailDeliveryFailureKind.Permanent)]
+    public void TryClassify_SmtpCommandException_UsesStatusCode(SmtpStatusCode statusCode, EmailDeliveryFailureKind expectedKind)
     {
-        var exception = new RequestFailedException(statusCode, "Request failed");
+        var exception = new SmtpCommandException(SmtpErrorCode.MessageNotAccepted, statusCode, "SMTP command failed");
 
         var classified = EmailDeliveryFailureClassifier.TryClassify(exception, out var kind);
 

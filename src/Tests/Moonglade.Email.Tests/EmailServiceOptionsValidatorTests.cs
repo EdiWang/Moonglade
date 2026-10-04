@@ -12,7 +12,6 @@ public class EmailServiceOptionsValidatorTests
     {
         var options = new EmailServiceOptions
         {
-            Provider = "smtp",
             SmtpServer = "smtp.example.com",
             SmtpUserName = "user@example.com",
             SmtpPassword = "password",
@@ -25,9 +24,9 @@ public class EmailServiceOptionsValidatorTests
     }
 
     [Fact]
-    public void Validate_BlankProviderUsesSmtpRules()
+    public void Validate_MissingSmtpSettings_Fails()
     {
-        var options = new EmailServiceOptions { Provider = "" };
+        var options = new EmailServiceOptions();
 
         var result = _sut.Validate(Options.DefaultName, options);
 
@@ -63,20 +62,6 @@ public class EmailServiceOptionsValidatorTests
         }
     }
 
-    [Fact]
-    public void Validate_AzureCommunication_IgnoresSmtpSenderAddress()
-    {
-        var options = new EmailServiceOptions
-        {
-            Provider = "AzureCommunication",
-            AcsConnectionString = "endpoint=https://example.communication.azure.com/;accesskey=fake",
-            AcsSenderAddress = "no-reply@example.com",
-            SmtpSenderAddress = "not-an-email"
-        };
-
-        Assert.True(_sut.Validate(Options.DefaultName, options).Succeeded);
-    }
-
     [Theory]
     [InlineData(0)]
     [InlineData(65536)]
@@ -84,7 +69,6 @@ public class EmailServiceOptionsValidatorTests
     {
         var options = new EmailServiceOptions
         {
-            Provider = "smtp",
             SmtpServer = "smtp.example.com",
             SmtpUserName = "user@example.com",
             SmtpPassword = "password",
@@ -97,60 +81,4 @@ public class EmailServiceOptionsValidatorTests
         Assert.Contains("Email:SmtpPort", result.FailureMessage);
     }
 
-    [Fact]
-    public void Validate_AzureCommunicationWithRequiredSettings_Succeeds()
-    {
-        var options = new EmailServiceOptions
-        {
-            Provider = "AzureCommunication",
-            AcsConnectionString = "endpoint=https://example.communication.azure.com/;accesskey=fake",
-            AcsSenderAddress = "no-reply@example.com"
-        };
-
-        var result = _sut.Validate(Options.DefaultName, options);
-
-        Assert.False(result.Failed);
-    }
-
-    [Fact]
-    public void Validate_AzureCommunicationMissingConnectionString_Fails()
-    {
-        var options = new EmailServiceOptions
-        {
-            Provider = "AzureCommunication",
-            AcsSenderAddress = "no-reply@example.com"
-        };
-
-        var result = _sut.Validate(Options.DefaultName, options);
-
-        Assert.True(result.Failed);
-        Assert.Contains("Email:AcsConnectionString", result.FailureMessage);
-    }
-
-    [Fact]
-    public void Validate_AzureCommunicationInvalidSenderAddress_Fails()
-    {
-        var options = new EmailServiceOptions
-        {
-            Provider = "AzureCommunication",
-            AcsConnectionString = "endpoint=https://example.communication.azure.com/;accesskey=fake",
-            AcsSenderAddress = "not-an-email"
-        };
-
-        var result = _sut.Validate(Options.DefaultName, options);
-
-        Assert.True(result.Failed);
-        Assert.Contains("Email:AcsSenderAddress", result.FailureMessage);
-    }
-
-    [Fact]
-    public void Validate_UnsupportedProvider_Fails()
-    {
-        var options = new EmailServiceOptions { Provider = "sendgrid" };
-
-        var result = _sut.Validate(Options.DefaultName, options);
-
-        Assert.True(result.Failed);
-        Assert.Contains("Email provider", result.FailureMessage);
-    }
 }
