@@ -1,5 +1,5 @@
-﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Data.Sqlite;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Moonglade.Data;
 using Moonglade.Data.Entities;

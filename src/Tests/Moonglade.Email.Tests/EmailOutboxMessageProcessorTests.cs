@@ -1,6 +1,6 @@
-using MailKit.Net.Smtp;
 using Edi.TemplateEmail;
 using Edi.TemplateEmail.Smtp;
+using MailKit.Net.Smtp;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Moonglade.Email.Core;
