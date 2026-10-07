@@ -1,4 +1,4 @@
-﻿.input-validation-error {
+.input-validation-error {
     border: 1px solid var(--bs-danger);
 }
 
@@ -17,8 +17,17 @@
     width: 24px;
 }
 
+.admin-body {
+    display: flex;
+    flex-direction: column;
+    height: 100dvh;
+    overflow: hidden;
+}
+
 .admin-body-wrapper {
-    overflow-x: hidden;
+    flex: 1;
+    min-height: 0;
+    overflow: hidden;
 }
 
 .navbar-brand {
@@ -57,6 +66,7 @@
     }
 
 .admin-navbar {
+    flex-shrink: 0;
     box-shadow: inherit !important;
 }
 
@@ -67,8 +77,9 @@
 }
 
 .admin-nav {
-    width: 190px;
-    min-height: calc(100vh - 54px);
+    flex: 0 0 190px;
+    min-height: 0;
+    margin-left: 5px;
     border-right: 1px solid var(--bs-border-color);
     display: flex;
     flex-direction: column;
@@ -84,12 +95,22 @@
     }
 }
 
+.admin-nav-section {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+}
+
 .admin-nav-bottom {
+    flex: none;
     margin-top: auto;
 }
 
 .admin-main {
-    min-width: 100vw;
+    flex: 1;
+    min-width: 0;
+    min-height: 0;
+    overflow: auto;
 }
 
 .admin-toolbar {
@@ -104,19 +125,11 @@
     line-height: 36px;
 }
 
-.admin-nav {
-    margin-left: 5px;
-}
-
-.admin-main {
-    min-width: 0;
-    width: 100%;
-}
-
 .admin-editor-wrapper {
     display: flex;
     flex-direction: column;
-    height: calc(100vh - 56px);
+    flex: 1;
+    min-height: 0;
     overflow: hidden;
 }
 
@@ -275,11 +288,6 @@
     margin: 0 auto;
     padding-top: 52px;
     width: 208px;
-}
-
-.tag-manager-container {
-    height: calc(100vh - 215px);
-    overflow-y: scroll;
 }
 
 .admin-tags-filter {
@@ -531,17 +539,6 @@
 
 .admin-subtitle {
     font-size: 0.9rem;
-}
-
-.admin-settings-entry-container {
-    height: calc(100vh - 215px);
-    overflow-x: hidden;
-}
-
-.admin-main-entry-container {
-    height: calc(100vh - 230px);
-    overflow-y: scroll;
-    overflow-x: hidden;
 }
 
 .h-30px {

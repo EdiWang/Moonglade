@@ -1,4 +1,4 @@
-﻿@inject IOptions<AuthenticationSettings> AuthOptions
+@inject IOptions<AuthenticationSettings> AuthOptions
 @inject IConfiguration Configuration
 @inject ICacheAside Cache
 @inject Moonglade.BackgroundServices.UpdateCheckerState UpdateCheckerState
@@ -46,7 +46,7 @@
 </head>
 
 <body class="admin-body bg-gray-1">
-    <nav class="admin-navbar navbar sticky-top navbar-expand-lg navbar-moonglade" data-bs-theme="dark">
+    <nav class="admin-navbar navbar navbar-expand-lg navbar-moonglade" data-bs-theme="dark">
         <a class="navbar-brand font-sairas" asp-page="/Admin/Dashboard">
             @BlogConfig.GeneralSettings.SiteTitle
         </a>
@@ -124,13 +124,13 @@
     {
         <div class="d-flex admin-body-wrapper">
             <partial name="_AsideAdmin" />
-            <div class="admin-main mt-3 mb-3 me-3 ms-3" x-data="@ViewBag.XData">
+            <main class="admin-main p-3" tabindex="0" x-data="@ViewBag.XData">
                 @await RenderSectionAsync("admintoolbar", false)
 
                 <div class="admin-main-body">
                     @RenderBody()
                 </div>
-            </div>
+            </main>
         </div>
     }
 
