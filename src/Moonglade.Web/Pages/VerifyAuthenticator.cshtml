@@ -41,18 +41,7 @@
 
                         <form method="post">
                             <div asp-validation-summary="All" class="text-danger"></div>
-                            <div class="form-floating mb-3">
-                                <input asp-for="AuthenticatorCode"
-                                       class="form-control"
-                                       inputmode="numeric"
-                                       autocomplete="one-time-code"
-                                       pattern="[0-9]{6}"
-                                       minlength="6"
-                                       maxlength="6"
-                                       required
-                                       placeholder="@Html.DisplayNameFor(m => m.AuthenticatorCode)" />
-                                <label asp-for="AuthenticatorCode"></label>
-                            </div>
+                            <partial name="_AuthenticatorCode" />
 
                             <input type="submit" value="@SharedLocalizer["Verify"]" class="btn w-100 btn-accent" />
                         </form>
@@ -65,5 +54,6 @@
         </main>
     </div>
     <script type="module" src="~/js/app/base.mjs"></script>
+    <script type="module" src="~/js/app/authenticator-code.mjs" asp-append-version="true"></script>
 </body>
 </html>

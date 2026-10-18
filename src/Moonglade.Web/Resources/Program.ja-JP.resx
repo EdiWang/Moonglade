@@ -2001,4 +2001,7 @@
   <data name="Upload File" xml:space="preserve">
     <value>ファイルをアップロード</value>
   </data>
+  <data name="Digit {0} of 6" xml:space="preserve">
+    <value>6 桁中 {0} 桁目</value>
+  </data>
 </root>

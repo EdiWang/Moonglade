@@ -2001,4 +2001,7 @@
   <data name="Upload File" xml:space="preserve">
     <value>Datei hochladen</value>
   </data>
+  <data name="Digit {0} of 6" xml:space="preserve">
+    <value>Ziffer {0} von 6</value>
+  </data>
 </root>

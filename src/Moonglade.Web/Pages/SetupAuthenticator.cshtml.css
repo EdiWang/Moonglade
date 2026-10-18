@@ -3,7 +3,8 @@ main {
 }
 
 .login-card {
-    min-width: 365px;
+    width: 365px;
+    max-width: calc(100vw - 2rem);
 }
 
 .authenticator-qr {

@@ -2001,4 +2001,7 @@
   <data name="Upload File" xml:space="preserve">
     <value>上傳檔案</value>
   </data>
+  <data name="Digit {0} of 6" xml:space="preserve">
+    <value>第 {0} 位，共 6 位</value>
+  </data>
 </root>

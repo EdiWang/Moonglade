@@ -1,0 +1,14 @@
+.auth-code-digits {
+    display: grid;
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+    gap: 8px;
+}
+
+.auth-code-digits input {
+    min-width: 0;
+    height: 48px;
+    padding: 0;
+    text-align: center;
+    font-size: 24px;
+    font-variant-numeric: tabular-nums;
+}

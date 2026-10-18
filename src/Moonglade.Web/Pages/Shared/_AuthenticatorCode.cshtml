@@ -1,0 +1,17 @@
+<div class="mb-3" role="group" aria-labelledby="auth-code-label">
+    <span id="auth-code-label" class="form-label d-block">@SharedLocalizer["Authenticator code"]</span>
+    <input type="hidden" id="AuthenticatorCode" name="AuthenticatorCode" />
+    <div class="auth-code-digits">
+        @for (var digit = 1; digit <= 6; digit++)
+        {
+            <input type="text"
+                   class="form-control"
+                   inputmode="numeric"
+                   autocomplete="@(digit == 1 ? "one-time-code" : "off")"
+                   aria-label="@SharedLocalizer["Digit {0} of 6", digit]"
+                   pattern="[0-9]"
+                   maxlength="6"
+                   required />
+        }
+    </div>
+</div>
