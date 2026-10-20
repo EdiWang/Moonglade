@@ -175,7 +175,7 @@ ALTER TABLE [dbo].[CommentReply] WITH CHECK ADD CONSTRAINT [FK_CommentReply_Comm
 GO
 
 UPDATE [dbo].[BlogConfiguration]
-SET [CfgValue] = N'{"versionString":"16.8.0","installTimeUtc":"' +
+SET [CfgValue] = N'{"versionString":"16.8.1","installTimeUtc":"' +
         CONVERT(nvarchar(33), SYSUTCDATETIME(), 126) + N'Z"}',
     [LastModifiedTimeUtc] = SYSUTCDATETIME()
 WHERE [CfgKey] = N'SystemManifestSettings';
