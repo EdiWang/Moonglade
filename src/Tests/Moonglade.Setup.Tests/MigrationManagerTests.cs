@@ -7,6 +7,7 @@ using Moonglade.Configuration;
 using Moonglade.Data;
 using Moonglade.Data.Entities;
 using Moq;
+using System.Text.RegularExpressions;
 
 namespace Moonglade.Setup.Tests;
 
@@ -52,6 +53,28 @@ public sealed class MigrationManagerTests
     {
         await using var context = CreateContext(SystemManifestSettings.DefaultValueNew.ToJson());
         var manager = CreateManager();
+
+        var result = await manager.TryMigrationAsync(context, TestContext.Current.CancellationToken);
+
+        Assert.Equal(MigrationStatus.NotRequired, result.Status);
+        Assert.True(result.CanContinueStartup);
+    }
+
+    [Theory]
+    [InlineData("SqlServer")]
+    [InlineData("PostgreSql")]
+    public async Task TryMigrationAsync_MigrationScriptManifest_DoesNotRequireMigration(string providerKey)
+    {
+        var manager = CreateManager();
+        var script = manager.LoadEmbeddedMigrationScript(providerKey);
+        var versionMatch = Regex.Match(script, @"['""]versionString['""]\s*[:,]\s*['""](?<version>[^'""]+)['""]");
+        Assert.True(versionMatch.Success);
+        var manifest = new SystemManifestSettings
+        {
+            VersionString = versionMatch.Groups["version"].Value,
+            InstallTimeUtc = new DateTime(2026, 1, 1, 0, 0, 0, DateTimeKind.Utc)
+        };
+        await using var context = CreateContext(manifest.ToJson());
 
         var result = await manager.TryMigrationAsync(context, TestContext.Current.CancellationToken);
 
