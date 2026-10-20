@@ -10,6 +10,7 @@
 	</PropertyGroup>
 	<ItemGroup>
 		<FrameworkReference Include="Microsoft.AspNetCore.App" />
+		<InternalsVisibleTo Include="Moonglade.Email.Tests" />
 	</ItemGroup>
 	<ItemGroup>
 		<PackageReference Include="Edi.TemplateEmail" Version="2026.4.2" />

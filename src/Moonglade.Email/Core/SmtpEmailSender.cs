@@ -44,7 +44,7 @@ public class SmtpEmailSender(
         await smtp.ConnectAsync(
             settings.SmtpServer,
             settings.SmtpServerPort,
-            settings.EnableTls ? SecureSocketOptions.StartTls : SecureSocketOptions.Auto);
+            GetSocketOptions(settings.SmtpServerPort, settings.EnableTls));
         if (!string.IsNullOrEmpty(settings.SmtpUserName))
         {
             await smtp.AuthenticateAsync(settings.SmtpUserName, settings.SmtpPassword);
@@ -54,4 +54,8 @@ public class SmtpEmailSender(
         await smtp.DisconnectAsync(true);
         logger.LogInformation("SMTP response: {Response}", response);
     }
+
+    internal static SecureSocketOptions GetSocketOptions(int port, bool enableTls) =>
+        port == 465 ? SecureSocketOptions.SslOnConnect :
+        enableTls ? SecureSocketOptions.StartTls : SecureSocketOptions.Auto;
 }

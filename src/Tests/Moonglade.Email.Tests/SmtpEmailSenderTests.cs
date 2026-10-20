@@ -1,5 +1,6 @@
 using Edi.TemplateEmail;
 using Edi.TemplateEmail.Smtp;
+using MailKit.Security;
 using Microsoft.Extensions.Logging.Abstractions;
 using Microsoft.Extensions.Options;
 using MimeKit;
@@ -12,6 +13,20 @@ namespace Moonglade.Email.Tests;
 
 public class SmtpEmailSenderTests
 {
+    [Theory]
+    [InlineData(465, true, SecureSocketOptions.SslOnConnect)]
+    [InlineData(465, false, SecureSocketOptions.SslOnConnect)]
+    [InlineData(587, true, SecureSocketOptions.StartTls)]
+    [InlineData(587, false, SecureSocketOptions.Auto)]
+    [InlineData(25, true, SecureSocketOptions.StartTls)]
+    [InlineData(25, false, SecureSocketOptions.Auto)]
+    [InlineData(2525, true, SecureSocketOptions.StartTls)]
+    [InlineData(2525, false, SecureSocketOptions.Auto)]
+    public void GetSocketOptions_SelectsTransportSecurity(int port, bool enableTls, SecureSocketOptions expected)
+    {
+        Assert.Equal(expected, SmtpEmailSender.GetSocketOptions(port, enableTls));
+    }
+
     [Theory]
     [InlineData("resend", "notifications@example.com", true)]
     [InlineData("resend", "notifications@example.com", false)]

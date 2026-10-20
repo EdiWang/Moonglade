@@ -241,6 +241,8 @@ Email notifications for new comments, replies, and Webmentions are optional. Whe
 
 Email delivery supports SMTP only; no provider selection is required. Adjust the SMTP port and TLS setting for your service, and use the `Email__SmtpPassword` environment variable for real secrets.
 
+Port `465` uses implicit TLS. On other ports, `EnableSsl=true` requires STARTTLS; `EnableSsl=false` uses STARTTLS when the server offers it and otherwise permits an unencrypted connection.
+
 For SMTP, `SmtpUserName` is the authentication username. Set `SmtpSenderAddress` to a bare email address when the sender differs from the authentication username. It controls the `From` and `Sender` headers and the SMTP envelope sender; `SenderDisplayName` controls the display name unless overridden by the blog's Notification settings. When `SmtpSenderAddress` is omitted, empty, or whitespace, Moonglade continues to use `SmtpUserName` as the sender for compatibility. Override it with `Email__SmtpSenderAddress` in deployment configuration. The SMTP service must permit the selected sender address.
 
 Email configuration never controls application liveness or database readiness:

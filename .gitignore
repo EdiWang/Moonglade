@@ -272,3 +272,4 @@ __pycache__/
 !/package-src/Moonglade.MonacoEditor.*.nupkg
 
 .env
+/state
