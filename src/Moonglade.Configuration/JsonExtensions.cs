@@ -26,6 +26,8 @@ public static class JsonExtensions
 
     public static T FromJson<T>(this string json) => JsonSerializer.Deserialize<T>(json, JsonOptions);
 
+    public static object FromJson(this string json, Type type) => JsonSerializer.Deserialize(json, type, JsonOptions);
+
     public static string ToJson<T>(this T obj)
     {
         return JsonSerializer.Serialize(obj, JsonOptions);

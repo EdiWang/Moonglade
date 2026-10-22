@@ -105,6 +105,10 @@ Successful article saves, publication changes (including scheduled publishing), 
 
 Article, feed, and sitemap cache keys include a process-local version so a query started before invalidation cannot repopulate the active cache with old content. Feeds and the sitemap expire after one hour; article expiration continues to use `PostCacheMinutes`. Page-specific sitemap invalidation preserves article and feed caches. Deployments with multiple application instances must coordinate cache invalidation separately.
 
+### Saving Blog Settings
+
+Admin settings are saved to the database before the running configuration is replaced. A failed save keeps the active settings unchanged and prevents success actions such as completing authenticator setup. Related CDN image settings and the avatar address are saved together in one database transaction. Settings updates are serialized within the current process; other application instances must reload or synchronize their configuration separately.
+
 ### Authentication
 
 - By default: Local accounts with TOTP authenticator app verification (manage via `/admin/account`)

@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Microsoft.EntityFrameworkCore;
 using Moonglade.Auth;
 using Moonglade.Configuration;
 using Moonglade.Data;
@@ -27,7 +28,7 @@ public class SetupAuthenticatorModelTests
     [Fact]
     public async Task OnGetAsync_GeneratesSecretAndBuildsAuthenticatorDisplay()
     {
-        var commandMediator = new RecordingCommandMediator();
+        using var commandMediator = new ConfigurationCommandRecorder();
         var model = CreateModel(
             LocalAccountSettings.DefaultValue,
             commandMediator,
@@ -40,7 +41,7 @@ public class SetupAuthenticatorModelTests
         Assert.StartsWith("data:image/png;base64,", model.QrCodeImageUri);
 
         var settings = JsonSerializer.Deserialize<LocalAccountSettings>(
-            commandMediator.Single<UpdateConfigurationCommand>().Json,
+            commandMediator.Single<UpdateConfigurationCommand>().Settings[nameof(LocalAccountSettings)],
             JsonOptions)!;
         Assert.Equal("JBSWY3DPEHPK3PXP", settings.TotpSecret);
         Assert.False(settings.IsTotpEnabled);
@@ -49,7 +50,7 @@ public class SetupAuthenticatorModelTests
     [Fact]
     public async Task OnPostAsync_InvalidModelState_ReturnsBadRequestAndKeepsSetupDisplay()
     {
-        var commandMediator = new RecordingCommandMediator();
+        using var commandMediator = new ConfigurationCommandRecorder();
         var authenticationService = new Mock<IAuthenticationService>();
         var model = CreateModel(
             LocalAccountSettings.DefaultValue,
@@ -76,7 +77,7 @@ public class SetupAuthenticatorModelTests
     [Fact]
     public async Task OnPostAsync_InvalidCode_ReturnsPageWithoutSigningIn()
     {
-        var commandMediator = new RecordingCommandMediator();
+        using var commandMediator = new ConfigurationCommandRecorder();
         var authenticationService = new Mock<IAuthenticationService>();
         var account = LocalAccountSettings.DefaultValue;
         account.TotpSecret = "JBSWY3DPEHPK3PXP";
@@ -105,7 +106,7 @@ public class SetupAuthenticatorModelTests
     [Fact]
     public async Task OnPostAsync_ValidCode_EnablesTotpAndSignsInAdmin()
     {
-        var commandMediator = new RecordingCommandMediator();
+        using var commandMediator = new ConfigurationCommandRecorder();
         var authenticationService = new Mock<IAuthenticationService>();
         var account = LocalAccountSettings.DefaultValue;
         account.TotpSecret = "JBSWY3DPEHPK3PXP";
@@ -122,7 +123,7 @@ public class SetupAuthenticatorModelTests
         Assert.Equal("/Admin/Dashboard", redirect.PageName);
 
         var settings = JsonSerializer.Deserialize<LocalAccountSettings>(
-            commandMediator.Single<UpdateConfigurationCommand>().Json,
+            commandMediator.Single<UpdateConfigurationCommand>().Settings[nameof(LocalAccountSettings)],
             JsonOptions)!;
         Assert.True(settings.IsTotpEnabled);
         Assert.Equal("JBSWY3DPEHPK3PXP", settings.TotpSecret);
@@ -139,9 +140,38 @@ public class SetupAuthenticatorModelTests
             Times.Once);
     }
 
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public async Task SaveFailure_DoesNotChangeSecretOrEnableTotpOrSignIn(bool hasSecret)
+    {
+        using var mediator = new ConfigurationCommandRecorder();
+        var account = LocalAccountSettings.DefaultValue;
+        account.TotpSecret = hasSecret ? "JBSWY3DPEHPK3PXP" : string.Empty;
+        var originalJson = account.ToJson();
+        var authentication = new Mock<IAuthenticationService>();
+        var model = CreateModel(account, mediator, new FakeTotpService { VerifyResult = true }, authentication);
+        model.AuthenticatorCode = "123456";
+        await mediator.Db.Database.ExecuteSqlRawAsync(
+            "CREATE TRIGGER reject_account_settings BEFORE UPDATE ON BlogConfiguration BEGIN SELECT RAISE(ABORT, 'Save rejected'); END;",
+            TestContext.Current.CancellationToken);
+
+        await Assert.ThrowsAsync<DbUpdateException>(() => hasSecret ? model.OnPostAsync() : model.OnGetAsync());
+
+        Assert.Same(account, mediator.Config.LocalAccountSettings);
+        Assert.Equal(originalJson, account.ToJson());
+        authentication.Verify(p => p.SignInAsync(It.IsAny<HttpContext>(), It.IsAny<string>(),
+            It.IsAny<ClaimsPrincipal>(), It.IsAny<AuthenticationProperties>()), Times.Never);
+        authentication.Verify(p => p.SignOutAsync(It.IsAny<HttpContext>(), It.IsAny<string>(),
+            It.IsAny<AuthenticationProperties>()), Times.Never);
+        mediator.Db.ChangeTracker.Clear();
+        Assert.Equal(originalJson, (await mediator.Db.BlogConfiguration.SingleAsync(
+            p => p.CfgKey == nameof(LocalAccountSettings), TestContext.Current.CancellationToken)).CfgValue);
+    }
+
     private static SetupAuthenticatorModel CreateModel(
         LocalAccountSettings account,
-        RecordingCommandMediator commandMediator,
+        ConfigurationCommandRecorder commandMediator,
         ILocalAccountTotpService totpService,
         Mock<IAuthenticationService>? authenticationService = null)
     {
@@ -155,13 +185,15 @@ public class SetupAuthenticatorModelTests
             RequestServices = services
         };
 
+        var blogConfig = new BlogConfig { LocalAccountSettings = account };
+        commandMediator.Initialize(blogConfig);
         var model = new SetupAuthenticatorModel(
             Options.Create(new AuthenticationSettings
             {
                 Provider = AuthenticationProvider.Local,
                 Totp = new TotpAuthenticationSettings { Issuer = "Moonglade Test" }
             }),
-            new BlogConfig { LocalAccountSettings = account },
+            blogConfig,
             commandMediator,
             totpService,
             Mock.Of<ILogger<SetupAuthenticatorModel>>());
@@ -187,32 +219,4 @@ public class SetupAuthenticatorModelTests
             $"otpauth://totp/{Uri.EscapeDataString(issuer)}:{Uri.EscapeDataString(accountName)}?secret={secret}&issuer={Uri.EscapeDataString(issuer)}";
     }
 
-    private sealed class RecordingCommandMediator : ICommandMediator
-    {
-        public List<ICommand> Commands { get; } = [];
-
-        public Task SendAsync(ICommand command, CommandMediationSettings? settings, CancellationToken cancellationToken)
-        {
-            Commands.Add(command);
-            return Task.CompletedTask;
-        }
-
-        public Task<TCommandResult> SendAsync<TCommandResult>(
-            ICommand<TCommandResult> command,
-            CommandMediationSettings? settings,
-            CancellationToken cancellationToken)
-        {
-            Commands.Add(command);
-
-            if (typeof(TCommandResult) == typeof(OperationCode))
-            {
-                return Task.FromResult((TCommandResult)(object)OperationCode.Done);
-            }
-
-            return Task.FromException<TCommandResult>(new NotSupportedException("No command results configured for this test."));
-        }
-
-        public TCommand Single<TCommand>() where TCommand : ICommand =>
-            Commands.OfType<TCommand>().Single();
-    }
 }

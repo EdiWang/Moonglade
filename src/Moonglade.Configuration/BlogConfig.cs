@@ -21,7 +21,6 @@ public interface IBlogConfig
     SystemManifestSettings SystemManifestSettings { get; set; }
 
     IEnumerable<string> LoadFromConfig(IDictionary<string, string> config);
-    KeyValuePair<string, string> UpdateAsync<T>(T blogSettings) where T : IBlogSettings<T>;
 }
 
 public class BlogConfig : IBlogConfig
@@ -78,17 +77,5 @@ public class BlogConfig : IBlogConfig
 
         _keysToInit.Add(name);
         setter(T.DefaultValue);
-    }
-
-    public KeyValuePair<string, string> UpdateAsync<T>(T blogSettings) where T : IBlogSettings<T>
-    {
-        var name = typeof(T).Name;
-        var json = blogSettings.ToJson();
-
-        // update singleton itself
-        var prop = GetType().GetProperty(name);
-        prop?.SetValue(this, blogSettings);
-
-        return new(name, json);
     }
 }

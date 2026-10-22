@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Microsoft.EntityFrameworkCore;
 using Moonglade.ActivityLog;
 using Moonglade.Auth;
 using Moonglade.Configuration;
@@ -37,7 +38,7 @@ public class SettingsControllerTests
         {
             CommentSettings = new CommentSettings { EnableMarkdownLinks = !enableLinks }
         };
-        var commandMediator = new RecordingCommandMediator();
+        using var commandMediator = new ConfigurationCommandRecorder();
         var controller = CreateController(
             blogConfig,
             commandMediator,
@@ -50,8 +51,7 @@ public class SettingsControllerTests
         Assert.IsType<NoContentResult>(result);
         Assert.Equal(enableLinks, blogConfig.CommentSettings.EnableMarkdownLinks);
         var update = commandMediator.Single<UpdateConfigurationCommand>();
-        Assert.Equal(nameof(CommentSettings), update.Name);
-        Assert.Equal(enableLinks, update.Json.FromJson<CommentSettings>().EnableMarkdownLinks);
+        Assert.Equal(enableLinks, update.Settings[nameof(CommentSettings)].FromJson<CommentSettings>().EnableMarkdownLinks);
         Assert.Equal(EventType.SettingsCommentUpdated, commandMediator.Single<CreateActivityLogCommand>().EventType);
     }
 
@@ -61,7 +61,7 @@ public class SettingsControllerTests
     public async Task Content_PersistsDefaultEditorAndUpdatesRuntimeSettings(EditorChoice editor)
     {
         var blogConfig = new BlogConfig();
-        var commandMediator = new RecordingCommandMediator();
+        using var commandMediator = new ConfigurationCommandRecorder();
         var controller = CreateController(
             blogConfig,
             commandMediator,
@@ -74,8 +74,7 @@ public class SettingsControllerTests
         Assert.IsType<NoContentResult>(result);
         Assert.Equal(editor, blogConfig.ContentSettings.DefaultEditor);
         var update = commandMediator.Single<UpdateConfigurationCommand>();
-        Assert.Equal(nameof(ContentSettings), update.Name);
-        Assert.Equal(editor, update.Json.FromJson<ContentSettings>().DefaultEditor);
+        Assert.Equal(editor, update.Settings[nameof(ContentSettings)].FromJson<ContentSettings>().DefaultEditor);
         Assert.Equal(EventType.SettingsContentUpdated, commandMediator.Single<CreateActivityLogCommand>().EventType);
     }
 
@@ -114,7 +113,7 @@ public class SettingsControllerTests
         var eventMediator = new Mock<IEventMediator>(MockBehavior.Strict);
         var controller = CreateController(
             CreateEmailEnabledBlogConfig(),
-            new RecordingCommandMediator(),
+            new ConfigurationCommandRecorder(),
             Mock.Of<IQueryMediator>(),
             new Mock<IAuthenticationService>(),
             eventMediator: eventMediator.Object,
@@ -143,7 +142,7 @@ public class SettingsControllerTests
         blogConfig.NotificationSettings.EnableEmailSending = false;
         var controller = CreateController(
             blogConfig,
-            new RecordingCommandMediator(),
+            new ConfigurationCommandRecorder(),
             Mock.Of<IQueryMediator>(),
             new Mock<IAuthenticationService>(),
             eventMediator: eventMediator.Object,
@@ -175,7 +174,7 @@ public class SettingsControllerTests
             .Returns(Task.CompletedTask);
         var controller = CreateController(
             CreateEmailEnabledBlogConfig(),
-            new RecordingCommandMediator(),
+            new ConfigurationCommandRecorder(),
             Mock.Of<IQueryMediator>(),
             new Mock<IAuthenticationService>(),
             eventMediator: eventMediator.Object,
@@ -205,7 +204,7 @@ public class SettingsControllerTests
             .ThrowsAsync(new InvalidOperationException("Queue failed"));
         var controller = CreateController(
             CreateEmailEnabledBlogConfig(),
-            new RecordingCommandMediator(),
+            new ConfigurationCommandRecorder(),
             Mock.Of<IQueryMediator>(),
             new Mock<IAuthenticationService>(),
             eventMediator: eventMediator.Object,
@@ -223,7 +222,7 @@ public class SettingsControllerTests
     public async Task ResetLocalAccountTotp_WhenPasswordIsValid_DisablesTotpAndSignsOut()
     {
         var account = CreateLocalAccount();
-        var commandMediator = new RecordingCommandMediator();
+        using var commandMediator = new ConfigurationCommandRecorder();
         var authenticationService = new Mock<IAuthenticationService>();
         var controller = CreateController(account, commandMediator, authenticationService);
 
@@ -235,7 +234,7 @@ public class SettingsControllerTests
         Assert.IsType<NoContentResult>(result);
 
         var settings = JsonSerializer.Deserialize<LocalAccountSettings>(
-            commandMediator.Single<UpdateConfigurationCommand>().Json,
+            commandMediator.Single<UpdateConfigurationCommand>().Settings[nameof(LocalAccountSettings)],
             JsonOptions)!;
         Assert.Equal(account.Username, settings.Username);
         Assert.Equal(account.PasswordHash, settings.PasswordHash);
@@ -261,7 +260,7 @@ public class SettingsControllerTests
     [Fact]
     public async Task ResetLocalAccountTotp_WhenPasswordIsInvalid_DoesNotUpdateSettingsOrSignOut()
     {
-        var commandMediator = new RecordingCommandMediator();
+        using var commandMediator = new ConfigurationCommandRecorder();
         var authenticationService = new Mock<IAuthenticationService>();
         var controller = CreateController(CreateLocalAccount(), commandMediator, authenticationService);
 
@@ -292,7 +291,7 @@ public class SettingsControllerTests
             GeneralSettings = generalSettings,
             ImageSettings = ImageSettings.DefaultValue
         };
-        var commandMediator = new RecordingCommandMediator();
+        using var commandMediator = new ConfigurationCommandRecorder();
         var queryMediator = new Mock<IQueryMediator>();
         queryMediator
             .Setup(x => x.QueryAsync(
@@ -323,9 +322,83 @@ public class SettingsControllerTests
         imageStorage.Verify(x => x.InsertOriginalAsync(It.IsAny<string>(), It.IsAny<byte[]>()), Times.Never);
         Assert.Equal("https://cdn.example.com/images/avatar-cdn.png", blogConfig.GeneralSettings.AvatarUrl);
 
-        var settingsUpdates = commandMediator.Commands.OfType<UpdateConfigurationCommand>().ToList();
-        Assert.Contains(settingsUpdates, command => command.Name == nameof(GeneralSettings));
-        Assert.Contains(settingsUpdates, command => command.Name == nameof(ImageSettings));
+        var settingsUpdate = commandMediator.Single<UpdateConfigurationCommand>();
+        Assert.Contains(nameof(GeneralSettings), settingsUpdate.Settings.Keys);
+        Assert.Contains(nameof(ImageSettings), settingsUpdate.Settings.Keys);
+    }
+
+    [Fact]
+    public async Task Content_WhenSaveFails_DoesNotChangeRuntimeOrLogSuccess()
+    {
+        var config = new BlogConfig();
+        var original = config.ContentSettings;
+        using var mediator = new ConfigurationCommandRecorder();
+        var controller = CreateController(config, mediator, Mock.Of<IQueryMediator>(), new Mock<IAuthenticationService>());
+        await mediator.Db.Database.ExecuteSqlRawAsync(
+            "CREATE TRIGGER reject_settings BEFORE UPDATE ON BlogConfiguration BEGIN SELECT RAISE(ABORT, 'Save rejected'); END;",
+            TestContext.Current.CancellationToken);
+
+        await Assert.ThrowsAsync<DbUpdateException>(() => controller.Content(new ContentSettings { DefaultEditor = EditorChoice.Markdown }));
+
+        Assert.Same(original, config.ContentSettings);
+        Assert.Empty(mediator.Commands.OfType<CreateActivityLogCommand>());
+        mediator.Db.ChangeTracker.Clear();
+        Assert.Equal(original.ToJson(), (await mediator.Db.BlogConfiguration.SingleAsync(
+            p => p.CfgKey == nameof(ContentSettings), TestContext.Current.CancellationToken)).CfgValue);
+    }
+
+    [Fact]
+    public async Task Image_WhenOneSettingFails_RollsBackBothRowsAndPreservesRuntime()
+    {
+        var config = new BlogConfig
+        {
+            GeneralSettings = new GeneralSettings { AvatarUrl = "/assets/avatar" },
+            ImageSettings = ImageSettings.DefaultValue
+        };
+        var originalGeneral = config.GeneralSettings;
+        var originalImage = config.ImageSettings;
+        using var mediator = new ConfigurationCommandRecorder();
+        var query = new Mock<IQueryMediator>();
+        query.Setup(p => p.QueryAsync(It.IsAny<GetAssetQuery>(), It.IsAny<QueryMediationSettings>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(Convert.ToBase64String([1, 2, 3]));
+        var storage = new Mock<IBlogImageStorage>();
+        storage.Setup(p => p.InsertAsync(It.IsAny<string>(), It.IsAny<byte[]>())).ReturnsAsync("avatar.png");
+        var controller = CreateController(config, mediator, query.Object, new Mock<IAuthenticationService>());
+        await mediator.Db.Database.ExecuteSqlRawAsync(
+            "CREATE TRIGGER reject_image_settings BEFORE UPDATE ON BlogConfiguration WHEN OLD.CfgKey = 'ImageSettings' BEGIN SELECT RAISE(ABORT, 'Save rejected'); END;",
+            TestContext.Current.CancellationToken);
+
+        await Assert.ThrowsAsync<DbUpdateException>(() => controller.Image(new ImageSettings
+        {
+            EnableCDNRedirect = true, CDNEndpoint = "https://cdn.example.com"
+        }, storage.Object));
+
+        Assert.Same(originalGeneral, config.GeneralSettings);
+        Assert.Same(originalImage, config.ImageSettings);
+        Assert.Empty(mediator.Commands.OfType<CreateActivityLogCommand>());
+        mediator.Db.ChangeTracker.Clear();
+        var rows = await mediator.Db.BlogConfiguration.ToDictionaryAsync(p => p.CfgKey, TestContext.Current.CancellationToken);
+        Assert.Equal(originalGeneral.ToJson(), rows[nameof(GeneralSettings)].CfgValue);
+        Assert.Equal(originalImage.ToJson(), rows[nameof(ImageSettings)].CfgValue);
+    }
+
+    [Fact]
+    public async Task ResetLocalAccountTotp_WhenConfigurationIsMissing_DoesNotSignOutOrChangeAccount()
+    {
+        var account = CreateLocalAccount();
+        using var mediator = new ConfigurationCommandRecorder();
+        var authentication = new Mock<IAuthenticationService>();
+        var controller = CreateController(account, mediator, authentication);
+        await mediator.Db.BlogConfiguration.Where(p => p.CfgKey == nameof(LocalAccountSettings))
+            .ExecuteDeleteAsync(TestContext.Current.CancellationToken);
+
+        await Assert.ThrowsAsync<InvalidOperationException>(() => controller.ResetLocalAccountTotp(
+            new ResetLocalAccountTotpRequest { CurrentPassword = "Password1" }));
+
+        Assert.Same(account, mediator.Config.LocalAccountSettings);
+        Assert.True(account.IsTotpEnabled);
+        Assert.Empty(mediator.Commands.OfType<CreateActivityLogCommand>());
+        authentication.Verify(p => p.SignOutAsync(It.IsAny<HttpContext>(), It.IsAny<string>(), It.IsAny<AuthenticationProperties>()), Times.Never);
     }
 
     private static LocalAccountSettings CreateLocalAccount()
@@ -387,7 +460,7 @@ public class SettingsControllerTests
 
     private static SettingsController CreateController(
         LocalAccountSettings account,
-        RecordingCommandMediator commandMediator,
+        ConfigurationCommandRecorder commandMediator,
         Mock<IAuthenticationService> authenticationService)
     {
         return CreateController(
@@ -400,13 +473,14 @@ public class SettingsControllerTests
 
     private static SettingsController CreateController(
         BlogConfig blogConfig,
-        RecordingCommandMediator commandMediator,
+        ConfigurationCommandRecorder commandMediator,
         IQueryMediator queryMediator,
         Mock<IAuthenticationService> authenticationService,
         string username = "admin",
         IEventMediator? eventMediator = null,
         EmailCapabilityStatus? emailCapabilityStatus = null)
     {
+        commandMediator.Initialize(blogConfig);
         var serviceCollection = new ServiceCollection();
         serviceCollection.AddSingleton(authenticationService.Object);
         serviceCollection.AddLogging();
@@ -440,32 +514,4 @@ public class SettingsControllerTests
         return controller;
     }
 
-    private sealed class RecordingCommandMediator : ICommandMediator
-    {
-        public List<ICommand> Commands { get; } = [];
-
-        public Task SendAsync(ICommand command, CommandMediationSettings? settings, CancellationToken cancellationToken)
-        {
-            Commands.Add(command);
-            return Task.CompletedTask;
-        }
-
-        public Task<TCommandResult> SendAsync<TCommandResult>(
-            ICommand<TCommandResult> command,
-            CommandMediationSettings? settings,
-            CancellationToken cancellationToken)
-        {
-            Commands.Add(command);
-
-            if (typeof(TCommandResult) == typeof(OperationCode))
-            {
-                return Task.FromResult((TCommandResult)(object)OperationCode.Done);
-            }
-
-            return Task.FromException<TCommandResult>(new NotSupportedException("No command results configured for this test."));
-        }
-
-        public TCommand Single<TCommand>() where TCommand : ICommand =>
-            Commands.OfType<TCommand>().Single();
-    }
 }

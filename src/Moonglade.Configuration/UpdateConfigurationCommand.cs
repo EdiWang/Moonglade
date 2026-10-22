@@ -1,48 +1,94 @@
 using LiteBus.Commands.Abstractions;
 using Microsoft.Extensions.Logging;
 using Moonglade.Data;
+using System.Collections.ObjectModel;
+using System.Reflection;
 
 namespace Moonglade.Configuration;
 
-public record UpdateConfigurationCommand(string Name, string Json) : ICommand<OperationCode>;
+public record UpdateConfigurationCommand : ICommand
+{
+    public IReadOnlyDictionary<string, string> Settings { get; }
+
+    private UpdateConfigurationCommand(params KeyValuePair<string, string>[] settings) =>
+        Settings = new ReadOnlyDictionary<string, string>(settings.ToDictionary());
+
+    public static UpdateConfigurationCommand Create<T>(T settings) where T : IBlogSettings<T> =>
+        new(Snapshot(settings));
+
+    public static UpdateConfigurationCommand Create<TFirst, TSecond>(TFirst first, TSecond second)
+        where TFirst : IBlogSettings<TFirst>
+        where TSecond : IBlogSettings<TSecond> => new(Snapshot(first), Snapshot(second));
+
+    private static KeyValuePair<string, string> Snapshot<T>(T settings) where T : IBlogSettings<T>
+    {
+        ArgumentNullException.ThrowIfNull(settings);
+        return new(typeof(T).Name, settings.ToJson());
+    }
+}
 
 public class UpdateConfigurationCommandHandler(
     BlogDbContext db,
-    ILogger<UpdateConfigurationCommandHandler> logger
-    ) : ICommandHandler<UpdateConfigurationCommand, OperationCode>
+    IBlogConfig blogConfig,
+    ILogger<UpdateConfigurationCommandHandler> logger) : ICommandHandler<UpdateConfigurationCommand>
 {
-    public async Task<OperationCode> HandleAsync(UpdateConfigurationCommand request, CancellationToken ct)
-    {
-        var (name, json) = request;
+    // Keep concurrent commits and singleton replacements in the same order within this process.
+    private static readonly SemaphoreSlim UpdateLock = new(1, 1);
 
+    public async Task HandleAsync(UpdateConfigurationCommand request, CancellationToken ct)
+    {
+        var names = request.Settings.Keys.ToArray();
+        await UpdateLock.WaitAsync(ct);
         try
         {
-            var entity = await db.BlogConfiguration.FirstOrDefaultAsync(p => p.CfgKey == name, ct);
-            if (entity == null)
+            var replacements = new List<(PropertyInfo Property, object Value)>();
+            foreach (var (name, json) in request.Settings)
             {
-                logger.LogWarning("Configuration entity not found: {Name}", name);
-                return OperationCode.ObjectNotFound;
+                var property = typeof(IBlogConfig).GetProperty(name)
+                    ?? throw new InvalidOperationException($"Unknown blog setting '{name}'.");
+                var value = json.FromJson(property.PropertyType)
+                    ?? throw new InvalidOperationException($"Blog setting '{name}' cannot be null.");
+                replacements.Add((property, value));
             }
 
-            // Check if the value has actually changed to avoid unnecessary updates
-            if (entity.CfgValue == json)
+            var entities = await db.BlogConfiguration
+                .Where(p => names.Contains(p.CfgKey))
+                .ToDictionaryAsync(p => p.CfgKey, ct);
+            foreach (var name in names)
             {
-                logger.LogDebug("Configuration value unchanged for {Name}, skipping update", name);
-                return OperationCode.Done;
+                if (!entities.ContainsKey(name))
+                {
+                    throw new InvalidOperationException($"Configuration '{name}' was not found.");
+                }
             }
 
-            entity.CfgValue = json;
-            entity.LastModifiedTimeUtc = DateTime.UtcNow;
+            var utcNow = DateTime.UtcNow;
+            foreach (var (name, json) in request.Settings)
+            {
+                var entity = entities[name];
+                if (entity.CfgValue == json) continue;
+
+                entity.CfgValue = json;
+                entity.LastModifiedTimeUtc = utcNow;
+            }
 
             await db.SaveChangesAsync(ct);
 
-            logger.LogInformation("Configuration updated successfully: {Name}", name);
-            return OperationCode.Done;
+            foreach (var (property, value) in replacements)
+            {
+                property.SetValue(blogConfig, value);
+            }
+
+            logger.LogInformation("Configuration updated successfully: {Names}", string.Join(", ", names));
         }
         catch (Exception ex)
         {
-            logger.LogError(ex, "Failed to update configuration {Name}", name);
+            logger.LogError(ex, "Failed to update configuration {Names}", string.Join(", ", names));
             throw;
+        }
+        finally
+        {
+            UpdateLock.Release();
         }
     }
 }

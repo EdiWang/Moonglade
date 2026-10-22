@@ -1,5 +1,6 @@
 using LiteBus.Commands.Abstractions;
 using Microsoft.Extensions.Logging;
+using Microsoft.EntityFrameworkCore;
 using Moonglade.Configuration;
 using Moonglade.Data;
 using Moonglade.Features.Asset;
@@ -9,13 +10,13 @@ using Moq;
 
 namespace Moonglade.Web.Tests;
 
-public class SaveAssetToCdnHandlerTests
+public class SaveAssetToCdnHandlerTests : IDisposable
 {
     private const string AvatarFileName = "avatar-0922e4.png";
 
     private readonly Mock<ILogger<SaveAssetToCdnHandler>> _logger = new();
     private readonly Mock<IBlogImageStorage> _imageStorage = new();
-    private readonly RecordingCommandMediator _commandMediator = new();
+    private readonly ConfigurationCommandRecorder _commandMediator = new();
 
     [Fact]
     public async Task HandleAsync_WhenAssetIsNotAvatar_DoesNothing()
@@ -83,19 +84,43 @@ public class SaveAssetToCdnHandlerTests
         Assert.InRange(int.Parse(cacheBuster), 100, 999);
 
         var command = _commandMediator.Single<UpdateConfigurationCommand>();
-        Assert.Equal(nameof(GeneralSettings), command.Name);
+        Assert.Single(command.Settings);
 
-        var persistedSettings = command.Json.FromJson<GeneralSettings>();
+        var persistedSettings = command.Settings[nameof(GeneralSettings)].FromJson<GeneralSettings>();
         Assert.NotNull(persistedSettings);
         Assert.Equal(avatarUrl, persistedSettings!.AvatarUrl);
     }
 
+    [Fact]
+    public async Task HandleAsync_WhenConfigurationSaveFails_PreservesRuntimeAvatarUrl()
+    {
+        var config = CreateBlogConfig();
+        config.GeneralSettings.AvatarUrl = "old-avatar.png";
+        var original = config.GeneralSettings;
+        var handler = CreateHandler(config);
+        _imageStorage.Setup(p => p.InsertAsync(AvatarFileName, It.IsAny<byte[]>())).ReturnsAsync("new-avatar.png");
+        await _commandMediator.Db.Database.ExecuteSqlRawAsync(
+            "CREATE TRIGGER reject_avatar_settings BEFORE UPDATE ON BlogConfiguration BEGIN SELECT RAISE(ABORT, 'Save rejected'); END;",
+            TestContext.Current.CancellationToken);
+
+        await Assert.ThrowsAsync<DbUpdateException>(() => handler.HandleAsync(
+            new SaveAssetEvent(AssetId.AvatarBase64, Convert.ToBase64String([1, 2, 3])), TestContext.Current.CancellationToken));
+
+        Assert.Same(original, config.GeneralSettings);
+        Assert.Equal("old-avatar.png", config.GeneralSettings.AvatarUrl);
+        _commandMediator.Db.ChangeTracker.Clear();
+        Assert.Equal(original.ToJson(), (await _commandMediator.Db.BlogConfiguration.SingleAsync(
+            p => p.CfgKey == nameof(GeneralSettings), TestContext.Current.CancellationToken)).CfgValue);
+    }
+
     private SaveAssetToCdnHandler CreateHandler(BlogConfig? blogConfig = null)
     {
+        blogConfig ??= CreateBlogConfig();
+        _commandMediator.Initialize(blogConfig);
         return new SaveAssetToCdnHandler(
             _logger.Object,
             _imageStorage.Object,
-            blogConfig ?? CreateBlogConfig(),
+            blogConfig,
             _commandMediator);
     }
 
@@ -112,34 +137,5 @@ public class SaveAssetToCdnHandlerTests
         };
     }
 
-    private sealed class RecordingCommandMediator : ICommandMediator
-    {
-        public List<ICommand> Commands { get; } = [];
-
-        public Task SendAsync(ICommand command, CommandMediationSettings? settings, CancellationToken cancellationToken)
-        {
-            Commands.Add(command);
-            return Task.CompletedTask;
-        }
-
-        public Task<TCommandResult> SendAsync<TCommandResult>(
-            ICommand<TCommandResult> command,
-            CommandMediationSettings? settings,
-            CancellationToken cancellationToken)
-        {
-            Commands.Add(command);
-
-            if (typeof(TCommandResult) == typeof(OperationCode))
-            {
-                return Task.FromResult((TCommandResult)(object)OperationCode.Done);
-            }
-
-            return Task.FromException<TCommandResult>(new NotSupportedException("No command results configured for this test."));
-        }
-
-        public TCommand Single<TCommand>() where TCommand : ICommand
-        {
-            return Commands.OfType<TCommand>().Single();
-        }
-    }
+    public void Dispose() => _commandMediator.Dispose();
 }

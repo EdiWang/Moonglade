@@ -38,11 +38,11 @@ public class SaveAssetToCdnHandler(
         // Update the CDN URL with cache-busting query
         var cacheBuster = Random.Shared.Next(100, 999);
         var cdnUrl = $"{blogConfig.ImageSettings.CDNEndpoint.CombineUrl(fileName)}?{cacheBuster}";
-        blogConfig.GeneralSettings.AvatarUrl = cdnUrl;
+        var generalSettings = blogConfig.GeneralSettings.ToJson().FromJson<GeneralSettings>();
+        generalSettings.AvatarUrl = cdnUrl;
 
         // Persist the new configuration
-        var (key, value) = blogConfig.UpdateAsync(blogConfig.GeneralSettings);
-        await commandMediator.SendAsync(new UpdateConfigurationCommand(key, value), ct);
+        await commandMediator.SendAsync(UpdateConfigurationCommand.Create(generalSettings), ct);
 
         logger.LogInformation("Avatar updated and saved to CDN. URL: {AvatarUrl}", cdnUrl);
     }
