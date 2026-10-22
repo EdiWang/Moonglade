@@ -25,7 +25,7 @@ The main solution file is `src/Moonglade.slnx`.
 | `src/Moonglade.Data.PostgreSql`, `src/Moonglade.Data.SqlServer` | PostgreSQL and SQL Server provider registration and provider-specific EF Core behavior. |
 | `src/Moonglade.Configuration` | Persisted blog settings models, defaults, loading, and update commands. |
 | `src/Moonglade.Auth` | Local account and standards-based OpenID Connect authentication support. |
-| `src/Moonglade.BackgroundServices` | Scheduled publishing, update checks, and fire-and-forget background work. |
+| `src/Moonglade.BackgroundServices` | Scheduled publishing and fire-and-forget background work. |
 | `src/Moonglade.*` | Supporting projects for image storage, email, IndexNow, moderation, Webmention, syndication, themes, widgets, setup, utilities, and middleware. |
 | `src/Tests/Moonglade.*.Tests` | xUnit test projects aligned with the production projects. |
 | `Deployment`, `Dockerfile`, `compose.yaml` | Azure and Docker deployment assets. |

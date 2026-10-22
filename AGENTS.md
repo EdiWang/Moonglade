@@ -19,7 +19,7 @@ The solution file is `src/Moonglade.slnx`. The root `README.md` is the main depl
 | Architecture style | Multi-project modular solution with LiteBus command/query/event handlers and feature-oriented folders. |
 | Data access | EF Core with `BlogDbContext`; PostgreSQL by default via `Moonglade.Data.PostgreSql`, with optional SQL Server via `Moonglade.Data.SqlServer`. |
 | Cache | `Edi.CacheAside.InMemory` with `BlogCachePartition` values `General`, `Post`, `Page`, `RssCategory`, and `AtomCategory`; widgets, sitemap, and uncategorized feeds use keys in the `General` partition. |
-| Background work | ASP.NET Core hosted services, `Cronos`, `ScheduledPublishService`, `UpdateCheckService`, `EmailOutboxWorker`, and `CannonService` for queued fire-and-forget work. |
+| Background work | ASP.NET Core hosted services, `ScheduledPublishService`, `EmailOutboxWorker`, and `CannonService` for queued fire-and-forget work. |
 | Authentication | Cookie-based local account authentication and one configurable OpenID Connect provider through the ASP.NET Core OIDC handler. |
 | Frontend | Server-rendered Razor, Bootstrap, Bootstrap Icons, Alpine.js, unified Moonglade.Editor for rich HTML post editing plus Markdown/CSS/HTML code-like modes, Tagify, Mermaid.js for Markdown diagrams on post reading pages, and project-local JavaScript modules under `src/Moonglade.Web/wwwroot/js/app`. |
 | Image storage | `IBlogImageStorage` with one filesystem implementation and separate public primary and private original-image roots. External storage mounts and CDN origins are operator-owned. |
@@ -58,7 +58,6 @@ Important configuration areas:
 | `PostCacheMinutes`, `PagesCacheMinutes`, `WidgetCacheMinutes` | Cache durations. | Optional | Revisit when changing rendering or invalidation paths. |
 | `AutoDatabaseMigration` | Production startup migration behavior. | Optional | Automatic migration is skipped outside `Production`. A stable Production release reads the manifest directly, migrates before configuration initialization writes, and then initializes configuration once. Cumulative scripts update the manifest as their completion marker. When disabled, startup skips migration and version checks; operators are responsible for applying the provider script before deploying a release that requires it. |
 | `CannonService:QueueCapacity` | Capacity for the in-process fire-and-forget background queue. | Optional | Defaults to `1000`; when full, new work is rejected and logged instead of running inline on the request path. |
-| `EnableUpdateCheck`, `UpdateCheckCron` | GitHub release update check scheduling. | Optional | Cron parsing is handled by `Cronos`. |
 | `ViewCount` | Crawler user-agent filtering and deduplication window. | Optional | Affects analytics/view-count behavior. |
 | `.env.example` / `POSTGRES_PASSWORD` | Docker Compose PostgreSQL password override. | Local/deployment-dependent | Use a strong secret value outside committed files. |
 
@@ -127,7 +126,7 @@ Important configuration areas:
 | Authentication | `src/Moonglade.Auth` | Local account, TOTP verification, generic OIDC configuration and validation, admin authorization, login validation, password updates, and authentication registration. |
 | Image storage | `src/Moonglade.ImageStorage` | Blog image storage abstraction, file naming, filesystem storage, primary/original path isolation, and storage-related options. |
 | Integrations | `src/Moonglade.Email`, `src/Moonglade.IndexNow.Client`, `src/Moonglade.Moderation`, `src/Moonglade.Webmention` | Email outbox delivery, external service clients, protocol send/receive logic, notifications, and moderation. |
-| Startup and background work | `src/Moonglade.Setup`, `src/Moonglade.BackgroundServices`, `src/Moonglade.Email` | Startup initialization, database creation/migration, seed data, scheduled publishing, update checks, email outbox delivery, and fire-and-forget background queueing. |
+| Startup and background work | `src/Moonglade.Setup`, `src/Moonglade.BackgroundServices`, `src/Moonglade.Email` | Startup initialization, database creation/migration, seed data, scheduled publishing, email outbox delivery, and fire-and-forget background queueing. |
 | Presentation helpers | `src/Moonglade.Theme`, `src/Moonglade.Widgets`, `src/Moonglade.Syndication` | Themes, widgets, feeds, and presentation-oriented read models. |
 | Shared utilities | `src/Moonglade.Utils`, `src/Moonglade.Web.Middleware` | Cross-cutting utilities, TagHelpers, and reusable middleware. |
 | Tests | `src/Tests/Moonglade.*.Tests` | Tests that match the production project or feature area being changed. |
@@ -195,7 +194,7 @@ Important configuration areas:
 - For settings and theme changes, review site-wide rendering, custom CSS, manifest, robots, FOAF, and sitemap impact.
 - Publishing posts can trigger Webmention and IndexNow. Comments, replies, and Webmentions can trigger email notifications. New side effects should usually be events or background work through existing services such as `CannonService`, LiteBus events, `IWebmentionSender`, `IIndexNowClient`, and the email outbox instead of slow inline request work.
 - `CannonService` is an in-process bounded queue controlled by `CannonService:QueueCapacity`; do not run overflow work inline on request paths.
-- Preserve hosted service patterns for scheduled publishing and update checks. Configuration-driven background behavior should remain controlled by `appsettings` values.
+- Preserve hosted service patterns for scheduled publishing. Configuration-driven background behavior should remain controlled by `appsettings` values.
 
 ### Razor, Static Assets, And Localization
 

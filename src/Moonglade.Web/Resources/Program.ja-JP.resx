@@ -1620,9 +1620,6 @@
   <data name="New username" xml:space="preserve">
     <value>新しいユーザー名</value>
   </data>
-  <data name="New version available" xml:space="preserve">
-    <value>新しいバージョンがあります</value>
-  </data>
   <data name="No active tags found" xml:space="preserve">
     <value>有効なタグが見つかりません</value>
   </data>

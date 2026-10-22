@@ -1,7 +1,6 @@
 @inject IOptions<AuthenticationSettings> AuthOptions
 @inject IConfiguration Configuration
 @inject ICacheAside Cache
-@inject Moonglade.BackgroundServices.UpdateCheckerState UpdateCheckerState
 
 @{
     if (string.IsNullOrEmpty(BlogConfig.GeneralSettings.AvatarUrl))
@@ -69,16 +68,6 @@
             }
 
             <ul class="navbar-nav @(string.IsNullOrEmpty(adminBackUrl) ? "ms-auto" : "")">
-                @if (UpdateCheckerState.HasNewVersion)
-                {
-                    <li class="nav-item">
-                        <a class="nav-link" href="https://github.com/EdiWang/Moonglade/releases" target="_blank" rel="noopener noreferrer">
-                            <i class="bi-arrow-up-circle me-1"></i>
-                            @SharedLocalizer["New version available"]: @UpdateCheckerState.NewVersion
-                        </a>
-                    </li>
-                }
-
                 @await RenderSectionAsync("navbarActions", false)
                 <li class="nav-item">
                     <a class="nav-link" asp-page="/Admin/About" title="about link">

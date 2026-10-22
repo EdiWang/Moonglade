@@ -1620,9 +1620,6 @@
   <data name="New username" xml:space="preserve">
     <value>新使用者名稱</value>
   </data>
-  <data name="New version available" xml:space="preserve">
-    <value>有新版本可用</value>
-  </data>
   <data name="No active tags found" xml:space="preserve">
     <value>找不到活躍標籤</value>
   </data>
