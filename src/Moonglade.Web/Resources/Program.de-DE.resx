@@ -2001,4 +2001,10 @@
   <data name="Digit {0} of 6" xml:space="preserve">
     <value>Ziffer {0} von 6</value>
   </data>
+  <data name="Default editor" xml:space="preserve">
+    <value>Standardeditor</value>
+  </data>
+  <data name="Applies to new posts only." xml:space="preserve">
+    <value>Gilt nur für neue Beiträge.</value>
+  </data>
 </root>

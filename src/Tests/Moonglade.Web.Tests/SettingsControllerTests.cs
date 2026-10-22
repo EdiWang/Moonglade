@@ -28,6 +28,30 @@ namespace Moonglade.Web.Tests;
 
 public class SettingsControllerTests
 {
+    [Theory]
+    [InlineData(EditorChoice.Html)]
+    [InlineData(EditorChoice.Markdown)]
+    public async Task Content_PersistsDefaultEditorAndUpdatesRuntimeSettings(EditorChoice editor)
+    {
+        var blogConfig = new BlogConfig();
+        var commandMediator = new RecordingCommandMediator();
+        var controller = CreateController(
+            blogConfig,
+            commandMediator,
+            Mock.Of<IQueryMediator>(),
+            new Mock<IAuthenticationService>());
+        var model = new ContentSettings { DefaultEditor = editor };
+
+        var result = await controller.Content(model);
+
+        Assert.IsType<NoContentResult>(result);
+        Assert.Equal(editor, blogConfig.ContentSettings.DefaultEditor);
+        var update = commandMediator.Single<UpdateConfigurationCommand>();
+        Assert.Equal(nameof(ContentSettings), update.Name);
+        Assert.Equal(editor, update.Json.FromJson<ContentSettings>().DefaultEditor);
+        Assert.Equal(EventType.SettingsContentUpdated, commandMediator.Single<CreateActivityLogCommand>().EventType);
+    }
+
     private static readonly JsonSerializerOptions JsonOptions = new()
     {
         PropertyNameCaseInsensitive = true

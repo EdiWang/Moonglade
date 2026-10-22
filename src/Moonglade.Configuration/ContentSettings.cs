@@ -5,6 +5,10 @@ namespace Moonglade.Configuration;
 
 public class ContentSettings : IBlogSettings<ContentSettings>
 {
+    [Display(Name = "Default editor")]
+    [EnumDataType(typeof(EditorChoice))]
+    public EditorChoice DefaultEditor { get; set; } = EditorChoice.Html;
+
     [Required]
     [Display(Name = "Post list page size")]
     [Range(5, 30)]

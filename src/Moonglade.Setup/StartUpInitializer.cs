@@ -1,5 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Moonglade.Data;
 
@@ -15,7 +14,6 @@ public class StartUpInitializer(
     BlogDbContext context,
     IConfigInitializer blogConfigInitializer,
     IMigrationManager migrationManager,
-    IConfiguration configuration,
     ISiteIconBuilder siteIconInitializer) : IStartUpInitializer
 {
     public async Task<InitStartUpResult> InitStartUpAsync(CancellationToken cancellationToken = default)
@@ -44,11 +42,6 @@ public class StartUpInitializer(
             if (!isNewDatabase)
             {
                 result = await MigrateDatabaseAsync(cancellationToken);
-                if (result != InitStartUpResult.Success)
-                    return result;
-
-                // Step 3.5: Backfill ContentType for existing posts
-                result = await BackfillPostContentTypeAsync(cancellationToken);
                 if (result != InitStartUpResult.Success)
                     return result;
             }
@@ -140,28 +133,6 @@ public class StartUpInitializer(
                 if (!migrationResult.CanContinueStartup)
                 {
                     throw new InvalidOperationException($"Migration failed with result: {migrationResult}");
-                }
-            },
-            InitStartUpResult.FailedDatabaseMigration,
-            cancellationToken);
-    }
-
-    private async Task<InitStartUpResult> BackfillPostContentTypeAsync(CancellationToken cancellationToken)
-    {
-        return await ExecuteStepAsync(
-            "Backfilling post content type",
-            async () =>
-            {
-                var editorValue = configuration.GetValue<string>("DefaultEditor")?.ToLower() ?? "html";
-                var affected = await context.Post
-                    .Where(p => p.ContentType == "")
-                    .ExecuteUpdateAsync(s => s.SetProperty(p => p.ContentType, editorValue), cancellationToken);
-
-                if (affected > 0)
-                {
-                    logger.LogInformation(
-                        "Backfilled ContentType='{ContentType}' for {Count} existing posts.",
-                        editorValue, affected);
                 }
             },
             InitStartUpResult.FailedDatabaseMigration,

@@ -19,6 +19,23 @@
     <div class="admin-settings-entry-container">
         <div class="row">
             <div class="col-md-6">
+                <h4 class="admin-subtitle fw-bold mb-2">@SharedLocalizer["Editor"]</h4>
+                <div class="settings-entry row align-items-center py-3 px-2 rounded-3 border mb-3">
+                    <div class="col-auto">
+                        <i class="bi-pencil-square settings-entry-icon"></i>
+                    </div>
+                    <div class="col">
+                        <label asp-for="@settings.DefaultEditor"></label>
+                        <div class="form-text">@SharedLocalizer["Applies to new posts only."]</div>
+                    </div>
+                    <div class="col-md-5">
+                        <select asp-for="@settings.DefaultEditor" class="form-select">
+                            <option value="Html">HTML</option>
+                            <option value="Markdown">Markdown</option>
+                        </select>
+                    </div>
+                </div>
+
                 <h4 class="admin-subtitle fw-bold mb-2">@SharedLocalizer["Posts list"]</h4>
                 <div class="rounded-3 border mb-3">
                     <div class="settings-entry row align-items-center rounded-3 py-3 px-2">

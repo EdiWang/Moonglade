@@ -13,7 +13,6 @@ namespace Moonglade.Web.Controllers;
 
 [Route("api/[controller]")]
 public class PostController(
-    IConfiguration configuration,
     ICommandMediator commandMediator,
     IQueryMediator queryMediator,
     IBlogConfig blogConfig,
@@ -120,12 +119,11 @@ public class PostController(
     [HttpGet("meta")]
     public async Task<IActionResult> GetMeta([FromServices] IOptions<RequestLocalizationOptions> locOptions)
     {
-        var ec = configuration.GetValue<EditorChoice>("DefaultEditor");
         var cats = await queryMediator.QueryAsync(new ListCategoriesQuery());
 
         var response = new PostEditorMeta
         {
-            EditorChoice = ec.ToString().ToLower(),
+            EditorChoice = blogConfig.ContentSettings.DefaultEditor.ToString().ToLowerInvariant(),
             DefaultAuthor = blogConfig.GeneralSettings.OwnerName,
             Categories = cats.Select(c => new CategoryBrief
             {

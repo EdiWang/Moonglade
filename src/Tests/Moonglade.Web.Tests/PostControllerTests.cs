@@ -1,13 +1,15 @@
 using LiteBus.Commands.Abstractions;
 using LiteBus.Queries.Abstractions;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Localization;
+using Microsoft.Extensions.Options;
 using Moonglade.Configuration;
 using Moonglade.Data;
 using Moonglade.Data.DTO;
 using Moonglade.Data.Entities;
+using Moonglade.Features.Category;
 using Moonglade.Features.Post;
 using Moonglade.Web.Commands;
 using Moonglade.Web.Controllers;
@@ -19,6 +21,35 @@ namespace Moonglade.Web.Tests;
 
 public class PostControllerTests
 {
+    [Fact]
+    public async Task GetMeta_UsesCurrentDefaultEditorWithoutRestart()
+    {
+        var blogConfig = new BlogConfig();
+        var queryMediator = new Mock<IQueryMediator>();
+        queryMediator
+            .Setup(mediator => mediator.QueryAsync(
+                It.IsAny<ListCategoriesQuery>(),
+                It.IsAny<QueryMediationSettings>(),
+                It.IsAny<CancellationToken>()))
+            .ReturnsAsync([]);
+        var controller = new PostController(
+            Mock.Of<ICommandMediator>(),
+            queryMediator.Object,
+            blogConfig,
+            Mock.Of<IStringLocalizer<Program>>());
+        var localizationOptions = Options.Create(new RequestLocalizationOptions());
+
+        var initialResult = await controller.GetMeta(localizationOptions);
+        var initialMeta = Assert.IsType<PostEditorMeta>(Assert.IsType<OkObjectResult>(initialResult).Value);
+        Assert.Equal("html", initialMeta.EditorChoice);
+
+        blogConfig.ContentSettings = new ContentSettings { DefaultEditor = EditorChoice.Markdown };
+
+        var updatedResult = await controller.GetMeta(localizationOptions);
+        var updatedMeta = Assert.IsType<PostEditorMeta>(Assert.IsType<OkObjectResult>(updatedResult).Value);
+        Assert.Equal("markdown", updatedMeta.EditorChoice);
+    }
+
     [Fact]
     public void PostEditRequest_NullLastModifiedUtc_DeserializesAsNoPreviousSave()
     {
@@ -51,12 +82,12 @@ public class PostControllerTests
                 Title = "UTC post",
                 Slug = "utc-post",
                 PostContent = "Content",
+                ContentType = "markdown",
                 PubDateUtc = publishDateUtc,
                 ScheduledPublishTimeUtc = scheduledPublishTimeUtc,
                 LastModifiedUtc = lastModifiedUtc
             });
         var controller = new PostController(
-            new ConfigurationBuilder().Build(),
             Mock.Of<ICommandMediator>(),
             queryMediator.Object,
             new BlogConfig(),
@@ -66,6 +97,7 @@ public class PostControllerTests
 
         var response = Assert.IsType<PostEditDetail>(Assert.IsType<OkObjectResult>(result).Value);
         Assert.Equal(lastModifiedUtc, response.LastModifiedUtc);
+        Assert.Equal("markdown", response.ContentType);
 
         var json = JsonSerializer.Serialize(response, new JsonSerializerOptions(JsonSerializerDefaults.Web));
         Assert.Contains("\"publishDate\":\"2026-08-15T01:02:03Z\"", json);
@@ -85,7 +117,6 @@ public class PostControllerTests
                 ScheduledPublishValidationMessages.InvalidLocalTime,
                 localizedMessage));
         var controller = new PostController(
-            new ConfigurationBuilder().Build(),
             commandMediator.Object,
             Mock.Of<IQueryMediator>(),
             new BlogConfig(),
@@ -129,7 +160,6 @@ public class PostControllerTests
                 dispatchedCommand = Assert.IsType<SavePostCommand>(command))
             .ReturnsAsync(PostOperationResult.Success(Guid.NewGuid(), null));
         var controller = new PostController(
-            new ConfigurationBuilder().Build(),
             commandMediator.Object,
             Mock.Of<IQueryMediator>(),
             new BlogConfig(),

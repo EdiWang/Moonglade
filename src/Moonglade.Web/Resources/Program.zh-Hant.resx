@@ -2001,4 +2001,10 @@
   <data name="Digit {0} of 6" xml:space="preserve">
     <value>第 {0} 位，共 6 位</value>
   </data>
+  <data name="Default editor" xml:space="preserve">
+    <value>預設編輯器</value>
+  </data>
+  <data name="Applies to new posts only." xml:space="preserve">
+    <value>僅適用於新建文章。</value>
+  </data>
 </root>

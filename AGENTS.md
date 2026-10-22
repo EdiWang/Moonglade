@@ -54,7 +54,6 @@ Important configuration areas:
 | `ForwardedHeaders` | Reverse proxy/client IP configuration. | Deployment-dependent | Required behind some proxies/load balancers. Only explicitly configured `KnownProxies` are trusted; an empty or invalid list retains ASP.NET Core's loopback-only defaults. |
 | `EnableCSP`, `CSPValue` | Optional Content Security Policy response header. | Optional | `X-Content-Type-Options: nosniff` is always emitted; CSP is emitted only when enabled and non-empty. |
 | `ImageStorage` | Configures filesystem image storage through `FileSystemPath`, `OriginalFileSystemPath`, and `CacheMinutes`. | Yes | Both paths must be absolute, writable, durable, distinct, and non-overlapping. Environment overrides are `ImageStorage__FileSystemPath` and `ImageStorage__OriginalFileSystemPath`. |
-| `DefaultEditor` | Default post content editor/content type. | Optional | Used during startup backfill for older posts. |
 | `PostCacheMinutes`, `PagesCacheMinutes`, `WidgetCacheMinutes` | Cache durations. | Optional | Revisit when changing rendering or invalidation paths. |
 | `AutoDatabaseMigration` | Production startup migration behavior. | Optional | Automatic migration is skipped outside `Production`. A stable Production release reads the manifest directly, migrates before configuration initialization writes, and then initializes configuration once. Cumulative scripts update the manifest as their completion marker. When disabled, startup skips migration and version checks; operators are responsible for applying the provider script before deploying a release that requires it. |
 | `CannonService:QueueCapacity` | Capacity for the in-process fire-and-forget background queue. | Optional | Defaults to `1000`; when full, new work is rejected and logged instead of running inline on the request path. |
@@ -85,6 +84,7 @@ Important configuration areas:
 - Application-level configuration lives in `src/Moonglade.Web/appsettings.json`, including database, authentication, comment rate limiting, comment submission guard settings, image storage, email, IndexNow, security headers, cache durations, and background task switches.
 - Runtime blog settings are managed by `Moonglade.Configuration.BlogConfig` and persisted in the `BlogConfiguration` table. When adding a blog setting, follow the `IBlogSettings<T>` pattern, provide a default value, and consider initialization and update commands.
 - `/admin/settings` is the main UI for blog settings. Do not hard-code administrator-configurable blog behavior in the Web layer.
+- The default post editor is stored in `ContentSettings.DefaultEditor` and managed at `/admin/settings/content` (HTML or Markdown, default HTML). It applies to new posts immediately; existing post content types are preserved. The former application-level `DefaultEditor` key and startup content-type backfill have been removed.
 
 ### Authentication And Security
 

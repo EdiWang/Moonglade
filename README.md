@@ -99,6 +99,10 @@ dotnet run --project src/Moonglade.Web/Moonglade.Web.csproj
 
 > These settings are managed in `appsettings.json`. For blog settings, use the `/admin/settings` UI.
 
+### Default Post Editor
+
+Choose HTML or Markdown under **Settings > Content > Default editor** (`/admin/settings/content`). The default is HTML. Changes are stored in the database and apply immediately when creating a new post; existing posts retain their own content type. The former `DefaultEditor` application configuration key is no longer used or imported. Startup no longer fills empty content types on historical posts.
+
 ### Authentication
 
 - By default: Local accounts with TOTP authenticator app verification (manage via `/admin/account`)
