@@ -28,7 +28,7 @@ The main solution file is `src/Moonglade.slnx`.
 | `src/Moonglade.BackgroundServices` | Scheduled publishing and fire-and-forget background work. |
 | `src/Moonglade.*` | Supporting projects for image storage, email, IndexNow, moderation, Webmention, syndication, themes, widgets, setup, utilities, and middleware. |
 | `src/Tests/Moonglade.*.Tests` | xUnit test projects aligned with the production projects. |
-| `Deployment`, `Dockerfile`, `compose.yaml` | Azure and Docker deployment assets. |
+| `Dockerfile`, `compose.yaml` | Docker deployment assets. |
 
 ## 🚀 Deployment
 
@@ -51,10 +51,6 @@ The supplied Compose file maps separate writable named volumes to `/app/images` 
 Compose starts PostgreSQL and supplies the database connection string to the web container. For a direct `dotnet run`, the default connection string in `appsettings.json` points to PostgreSQL on `localhost:5432`; override it with `ConnectionStrings__MoongladeDatabase` for your environment.
 
 Email notifications are optional. The supplied default Email section intentionally contains no SMTP credentials; the application still starts, logs a warning, and serves the blog with email notification inactive. Open `/admin/settings/notification` to see the setup guidance after signing in. Add SMTP configuration through deployment secrets only when email delivery is required.
-
-### Quick Azure Deployment (App Service on Linux)
-
-The optional [automated deployment script](https://github.com/EdiWang/Moonglade/wiki/Quick-Deploy-on-Azure) provisions Azure SQL and sets `ConnectionStrings__DatabaseProvider=SqlServer`. It also mounts separate writable Azure Files shares at `/app/images` and `/app/images-origin`. It does not provision a CDN or migrate images from an older Blob container.
 
 ## 🛠️ Development
 

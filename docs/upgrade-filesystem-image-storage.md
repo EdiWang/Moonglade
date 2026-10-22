@@ -79,7 +79,7 @@ Plan a maintenance window or otherwise prevent image uploads during the final co
 7. Start one replica and complete the verification checklist below.
 8. Start additional replicas only after shared visibility has been verified.
 
-Moonglade does not migrate image data. The official Azure template provisions new Azure Files shares and App Service path mappings, but it does not copy images from legacy Blob containers or any existing filesystem location. Complete that copy before the upgraded application accepts traffic.
+Moonglade does not migrate image data. Complete the copy from the previous storage locations before the upgraded application accepts traffic.
 
 Database records and saved post HTML do not require URL rewriting. Upload responses and saved content continue to use `/image/{filename}`.
 
@@ -118,9 +118,3 @@ The `/health` endpoint intentionally remains a liveness check and does not valid
 Keep the old image locations and their backup unchanged until the new deployment has been verified. To roll back, stop writes, restore the previous application version and its provider configuration, and reconcile any images uploaded after the cutover. A rollback cannot automatically copy new files back to the former provider.
 
 Do not point both application versions at a partially migrated dataset or expose the private original root while attempting a rollback.
-
-## Official Azure Deployment
-
-The repository's Bicep deployment remains an infrastructure-specific convenience while the application stays vendor-neutral. It provisions one Storage Account, creates separate writable Azure Files shares for primary and original images, mounts them into the Linux App Service container at `/app/images` and `/app/images-origin`, and sets the two filesystem path environment variables.
-
-The template does not provision a CDN and does not migrate legacy Blob data. Live Azure validation must confirm that both App Service Path mappings are present, writable by the container identity, persistent across restart, and isolated so the original-image share is not used as a public or CDN origin.

@@ -4,9 +4,9 @@ This file is for AI agents working in this repository. Before changing code, rea
 
 ## Project Overview
 
-Moonglade is a personal blogging platform built with ASP.NET Core / .NET 10. The main application host is `src/Moonglade.Web`. It targets developer-focused personal blogs and includes posts, pages, categories, tags, comments, archives, themes, widgets, image storage, syndication feeds, Webmention, IndexNow, email notifications, content moderation, an admin portal, container deployment assets, and optional provider-specific deployment examples.
+Moonglade is a personal blogging platform built with ASP.NET Core / .NET 10. The main application host is `src/Moonglade.Web`. It targets developer-focused personal blogs and includes posts, pages, categories, tags, comments, archives, themes, widgets, image storage, syndication feeds, Webmention, IndexNow, email notifications, content moderation, an admin portal, container deployment assets, and deployment guides.
 
-Moonglade is intended to remain cloud-platform-neutral. Application code, default configuration, and supported runtime behavior must not require Azure or any other cloud provider. Vendor-specific deployment examples may remain in the repository, but they do not define application compatibility requirements and must not drive provider-specific behavior into the core projects.
+Moonglade is intended to remain cloud-platform-neutral. Application code, default configuration, and supported runtime behavior must not require Azure or any other cloud provider. The repository does not include Azure deployment scripts, templates, or instructions. Vendor-specific deployment guides do not define application compatibility requirements and must not drive provider-specific behavior into the core projects.
 
 The solution file is `src/Moonglade.slnx`. The root `README.md` is the main deployment and configuration guide. `AGENTS.md` is the consolidated repository-specific guidance for AI coding agents.
 
@@ -25,7 +25,7 @@ The solution file is `src/Moonglade.slnx`. The root `README.md` is the main depl
 | Image storage | `IBlogImageStorage` with one filesystem implementation and separate public primary and private original-image roots. External storage mounts and CDN origins are operator-owned. |
 | External integrations | Webmention, IndexNow, site ownership verification files, email outbox delivery through SMTP, local content moderation, and Gravatar. |
 | Package management | NuGet package references in project files; no repository-level `Directory.Packages.props`, `NuGet.config`, or package lock file was found at the time this document was updated. |
-| Build tools | .NET SDK CLI, Visual Studio, VS Code task `dotnet build ${workspaceFolder}/src/Moonglade.Web/Moonglade.Web.csproj`, Docker multi-stage build, Docker Compose, and optional provider-specific Bicep/PowerShell deployment examples. |
+| Build tools | .NET SDK CLI, Visual Studio, VS Code task `dotnet build ${workspaceFolder}/src/Moonglade.Web/Moonglade.Web.csproj`, Docker multi-stage build, and Docker Compose. |
 | Tests | xUnit v3, Moq, `Microsoft.NET.Test.Sdk`, `coverlet.collector`, EF Core InMemory/Sqlite patterns, and ASP.NET Core TestHost for Web tests. |
 | Formatting/linting | Minimal repository-level `.editorconfig` for UTF-8, CRLF, final newlines, trimmed trailing whitespace, 4-space C#/Razor/JS/JSON/YAML indentation, and tab-indented MSBuild XML. No dedicated analyzer config or lint task was found at the time this document was updated. Follow nearby style and avoid bulk formatting. |
 
@@ -174,7 +174,7 @@ Important configuration areas:
 - Use structured logging placeholders, for example `logger.LogInformation("Post updated with ID: {PostId}", post.Id);`.
 - Keep comments sparse and useful. Add comments only for non-obvious compatibility, security, localization, protocol, or business decisions.
 - Keep changes cross-platform, especially paths, environment variables, reverse-proxy behavior, container behavior, and mounted-filesystem semantics.
-- Treat vendor-specific deployment assets, including files under `Deployment`, as optional examples. They must not dictate application architecture, default configuration, storage abstractions, or compatibility requirements. Do not add cloud SDKs, provider detection, or vendor-specific settings to core application projects merely to preserve a deployment example.
+- Treat vendor-specific deployment guides as optional examples. They must not dictate application architecture, default configuration, storage abstractions, or compatibility requirements. Do not add cloud SDKs, provider detection, or vendor-specific settings to core application projects merely to preserve a deployment example.
 - For platform-neutral deployments, preserve standard environment-variable configuration, OCI/Docker compatibility, SQL Server and PostgreSQL support, and separate durable mounts for `/app/images` and `/app/images-origin`. The default Docker image pre-creates both paths for the `app` user, and Compose persists them in separate named volumes.
 
 ### HTTP And Error Handling
