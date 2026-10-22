@@ -163,6 +163,7 @@ Important configuration areas:
 ### C# / ASP.NET Core
 
 - The target framework is `net10.0`. Follow the existing C# style, including implicit usings, primary constructors, record request models, and feature-local files.
+- The Email and SQL Server projects explicitly reference `System.Security.Cryptography.Pkcs` 10.0.13 to override vulnerable MimeKit/SqlClient transitive dependencies. Keep these references until their upstream dependencies resolve a patched version without overrides.
 - Use the latest applicable C# features while staying readable and consistent with nearby code.
 - Keep namespaces aligned with folders. Put new code in the project and feature folder that owns the behavior.
 - Use constructor injection. Do not introduce service locators or unnecessary static mutable state.
