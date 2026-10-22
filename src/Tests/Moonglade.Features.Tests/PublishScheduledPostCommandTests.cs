@@ -1,6 +1,7 @@
 using Moonglade.Data;
 using Moonglade.Data.Entities;
 using Moonglade.Features.Post;
+using LiteBus.Events.Abstractions;
 
 namespace Moonglade.Features.Tests;
 
@@ -98,7 +99,7 @@ public class PublishScheduledPostCommandTests
     }
 
     private static PublishScheduledPostCommandHandler CreateHandler(BlogDbContext db) =>
-        new(db, new SequenceTimeProvider(DueCutoffUtc, SuccessfulPublishTimeUtc));
+        new(db, new SequenceTimeProvider(DueCutoffUtc, SuccessfulPublishTimeUtc), Moq.Mock.Of<IEventMediator>());
 
     private static PostEntity CreatePostEntity(Guid id, PostStatus status, string slug, DateTime? scheduledPublishTimeUtc = null, DateTime? pubDateUtc = null)
     {

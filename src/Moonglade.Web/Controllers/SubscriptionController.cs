@@ -9,6 +9,7 @@ namespace Moonglade.Web.Controllers;
 public class SubscriptionController(
         IBlogConfig blogConfig,
         ICacheAside cache,
+        PostCacheInvalidator postCacheInvalidator,
         IQueryMediator queryMediator) : ControllerBase
 {
     [HttpGet("opml")]
@@ -66,7 +67,7 @@ public class SubscriptionController(
 
         return await cache.GetOrCreateAsync(
             hasRoute ? categoryPartition.ToString() : BlogCachePartition.General.ToString(),
-            route ?? defaultCacheKey,
+            postCacheInvalidator.GetCacheKey(route ?? defaultCacheKey),
             async () =>
             {
                 var xml = await queryMediator.QueryAsync(queryFactory(slug));

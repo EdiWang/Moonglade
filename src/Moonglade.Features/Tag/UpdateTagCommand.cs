@@ -1,5 +1,7 @@
 using LiteBus.Commands.Abstractions;
+using LiteBus.Events.Abstractions;
 using Microsoft.Extensions.Logging;
+using Moonglade.Features.Post;
 using Moonglade.Utils;
 
 namespace Moonglade.Features.Tag;
@@ -8,7 +10,8 @@ public record UpdateTagCommand(int Id, string Name) : ICommand<OperationCode>;
 
 public class UpdateTagCommandHandler(
     BlogDbContext db,
-    ILogger<UpdateTagCommandHandler> logger) : ICommandHandler<UpdateTagCommand, OperationCode>
+    ILogger<UpdateTagCommandHandler> logger,
+    IEventMediator eventMediator) : ICommandHandler<UpdateTagCommand, OperationCode>
 {
     public async Task<OperationCode> HandleAsync(UpdateTagCommand request, CancellationToken ct)
     {
@@ -18,7 +21,10 @@ public class UpdateTagCommandHandler(
 
         tag.DisplayName = name;
         tag.NormalizedName = BlogTagHelper.NormalizeName(name, BlogTagHelper.TagNormalizationDictionary);
-        await db.SaveChangesAsync(ct);
+        if (await db.SaveChangesAsync(ct) > 0)
+        {
+            await eventMediator.PublishAsync(new PostChangedEvent(), cancellationToken: CancellationToken.None);
+        }
 
         logger.LogInformation("Updated tag: {TagId}", request.Id);
         return OperationCode.Done;

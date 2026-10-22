@@ -64,7 +64,7 @@ Important configuration areas:
 ### Blog Content
 
 - Posts are the core entity, defined by `Moonglade.Data.Entities.PostEntity`. Their lifecycle is represented by `PostStatus`, including draft, published, and scheduled states.
-- Post creation and updates are handled by commands such as `Moonglade.Features.Post.CreatePostCommand` and `UpdatePostCommand`. The Web-layer save workflow lives in `Moonglade.Web/Commands/PostManagementCommands.cs` and coordinates create/update, activity logs, cache cleanup, scheduled publishing wake-up, Webmention, and IndexNow.
+- Post creation and updates are handled by commands such as `Moonglade.Features.Post.CreatePostCommand` and `UpdatePostCommand`. The Web-layer save workflow lives in `Moonglade.Web/Commands/PostManagementCommands.cs` and coordinates create/update, activity logs, scheduled publishing wake-up, Webmention, and IndexNow. Cache invalidation is triggered by feature-level `PostChangedEvent` publication after database commit.
 - Published posts generate a `RouteLink` based on publish date and slug. Do not casually change the published URL shape because old links, RSS/Atom, sitemap, search engines, and caches depend on it.
 - Scheduled publishing converts client local time to UTC and is handled by `ScheduledPublishWakeUp` / `ScheduledPublishService`. Persisted and cross-boundary timestamps should use UTC.
 - Pages, categories, tags, assets, recycle bin behavior, and related blog features live under the relevant feature folders in `Moonglade.Features`.
@@ -189,7 +189,8 @@ Important configuration areas:
 ### Caching And Side Effects
 
 - Write operations must consider cache impact. Changes to posts, pages, categories, tags, widgets, configuration, themes, comments, and assets can affect page caches, post caches, sitemap, feeds, archives, tag/category lists, and widget caches.
-- Existing caching uses `Edi.CacheAside.InMemory` and `BlogCachePartition`. Controllers commonly use the `ClearBlogCache` filter, and workflows sometimes call `cache.Remove` directly.
+- Existing caching uses `Edi.CacheAside.InMemory` and `BlogCachePartition`. Successful post content, metadata, and lifecycle writes, plus category/tag updates and deletes, publish `PostChangedEvent` once after database commit. The Web event handler uses the singleton `PostCacheInvalidator` to clear the entire `Post`, `RssCategory`, and `AtomCategory` partitions and the uncategorized RSS, Atom, and sitemap entries in `General`. Publish without request cancellation so a disconnected client cannot skip invalidation after a successful commit. Failed writes, missing objects, empty batches, and view/request count updates do not invalidate these caches.
+- Post and feed readers use `PostCacheInvalidator.GetCacheKey`; sitemap readers use `SiteMapCacheKey`. The versioned keys prevent older in-flight queries from repopulating the active cache after invalidation. Sitemap has a separate version so page-specific sitemap invalidation preserves article/feed caches; sitemap and feeds expire after one hour. Other controller caches retain their existing rules and `ClearBlogCache` filter. All invalidation is local to the current process.
 - Prefer centralized invalidation through filters or event handlers over scattered controller-level `cache.Remove(...)` calls when adding new write paths.
 - For post and page writes, review sitemap, feed/subscription, per-post/page, archive, tag/category, and widget cache impact.
 - For settings and theme changes, review site-wide rendering, custom CSS, manifest, robots, FOAF, and sitemap impact.

@@ -32,11 +32,6 @@ public class PostController(
     }
 
     [HttpPost("createoredit")]
-    [TypeFilter(typeof(ClearBlogCache), Arguments =
-    [
-        BlogCacheType.SiteMap |
-        BlogCacheType.Subscription
-    ])]
     public async Task<IActionResult> CreateOrEdit(PostEditRequest model)
     {
         if (model.PostStatus == PostStatus.Scheduled)
@@ -74,11 +69,6 @@ public class PostController(
         return Ok(new SavePostResponse(result.PostId, result.LastModifiedUtc));
     }
 
-    [TypeFilter(typeof(ClearBlogCache), Arguments =
-    [
-        BlogCacheType.SiteMap |
-        BlogCacheType.Subscription
-    ])]
     [HttpDelete("{postId:guid}/recycle")]
     public async Task<IActionResult> Delete([NotEmpty] Guid postId)
     {
@@ -87,7 +77,6 @@ public class PostController(
         return NoContent();
     }
 
-    [TypeFilter(typeof(ClearBlogCache), Arguments = [BlogCacheType.Subscription | BlogCacheType.SiteMap])]
     [HttpPut("{postId:guid}/publish")]
     public async Task<IActionResult> Publish([NotEmpty] Guid postId)
     {
@@ -96,7 +85,6 @@ public class PostController(
         return NoContent();
     }
 
-    [TypeFilter(typeof(ClearBlogCache), Arguments = [BlogCacheType.Subscription | BlogCacheType.SiteMap])]
     [HttpPut("{postId:guid}/unpublish")]
     public async Task<IActionResult> Unpublish([NotEmpty] Guid postId)
     {

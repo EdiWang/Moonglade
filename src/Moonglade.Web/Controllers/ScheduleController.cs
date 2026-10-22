@@ -8,7 +8,6 @@ namespace Moonglade.Web.Controllers;
 
 [Route("api/[controller]")]
 public class ScheduleController(
-    ICacheAside cache,
     IQueryMediator queryMediator,
     ICommandMediator commandMediator
     ) : BlogControllerBase(commandMediator)
@@ -24,7 +23,6 @@ public class ScheduleController(
     public async Task<IActionResult> Cancel([NotEmpty] Guid postId)
     {
         await CommandMediator.SendAsync(new CancelScheduleCommand(postId));
-        cache.Remove(BlogCachePartition.Post.ToString(), postId.ToString());
 
         await LogActivityAsync(
             EventType.PostScheduleCancelled,

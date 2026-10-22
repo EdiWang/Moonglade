@@ -7,7 +7,6 @@ using Moonglade.Features.Post;
 namespace Moonglade.Web.Controllers;
 
 [Route("api/post")]
-[TypeFilter(typeof(ClearBlogCache), Arguments = [BlogCacheType.Subscription | BlogCacheType.SiteMap])]
 public class RecycleBinController(
     ICacheAside cache,
     IQueryMediator queryMediator,
@@ -26,7 +25,6 @@ public class RecycleBinController(
     public async Task<IActionResult> Restore([NotEmpty] Guid postId)
     {
         await CommandMediator.SendAsync(new RestorePostCommand(postId));
-        cache.Remove(BlogCachePartition.Post.ToString(), postId.ToString());
 
         await LogActivityAsync(
             EventType.PostRestored,
@@ -41,7 +39,6 @@ public class RecycleBinController(
     public async Task<IActionResult> Delete([NotEmpty] Guid postId)
     {
         await CommandMediator.SendAsync(new DeletePostCommand(postId));
-        cache.Remove(BlogCachePartition.Post.ToString(), postId.ToString());
 
         await LogActivityAsync(
             EventType.PostPermanentlyDeleted,
@@ -53,6 +50,7 @@ public class RecycleBinController(
     }
 
     [HttpPost("page/{pageId:guid}/restore")]
+    [TypeFilter(typeof(ClearBlogCache), Arguments = [BlogCacheType.SiteMap])]
     public async Task<IActionResult> RestorePage([NotEmpty] Guid pageId)
     {
         var page = await queryMediator.QueryAsync(new GetPageByIdQuery(pageId));
@@ -73,6 +71,7 @@ public class RecycleBinController(
     }
 
     [HttpDelete("page/{pageId:guid}/destroy")]
+    [TypeFilter(typeof(ClearBlogCache), Arguments = [BlogCacheType.SiteMap])]
     public async Task<IActionResult> DeletePage([NotEmpty] Guid pageId)
     {
         var page = await queryMediator.QueryAsync(new GetPageByIdQuery(pageId));
@@ -93,6 +92,7 @@ public class RecycleBinController(
     }
 
     [HttpDelete("page/recyclebin")]
+    [TypeFilter(typeof(ClearBlogCache), Arguments = [BlogCacheType.SiteMap])]
     public async Task<IActionResult> ClearPages()
     {
         var slugs = await CommandMediator.SendAsync(new EmptyPageRecycleBinCommand());
@@ -115,11 +115,6 @@ public class RecycleBinController(
     public async Task<IActionResult> Clear()
     {
         var guids = await CommandMediator.SendAsync(new EmptyRecycleBinCommand());
-
-        foreach (var guid in guids)
-        {
-            cache.Remove(BlogCachePartition.Post.ToString(), guid.ToString());
-        }
 
         await LogActivityAsync(
             EventType.RecycleBinCleared,

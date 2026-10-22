@@ -4,6 +4,7 @@ using Moonglade.Data;
 using Moonglade.Data.Entities;
 using Moonglade.Features.Tag;
 using Moq;
+using LiteBus.Events.Abstractions;
 
 namespace Moonglade.Features.Tests;
 
@@ -54,7 +55,7 @@ public class TagCommandTests
         var tag = new TagEntity { DisplayName = "Old", NormalizedName = "old" };
         db.Tag.Add(tag);
         await db.SaveChangesAsync(TestContext.Current.CancellationToken);
-        var handler = new UpdateTagCommandHandler(db, Mock.Of<ILogger<UpdateTagCommandHandler>>());
+        var handler = new UpdateTagCommandHandler(db, Mock.Of<ILogger<UpdateTagCommandHandler>>(), Mock.Of<IEventMediator>());
 
         var result = await handler.HandleAsync(new UpdateTagCommand(tag.Id, "New Tag"), TestContext.Current.CancellationToken);
 
@@ -68,7 +69,7 @@ public class TagCommandTests
     public async Task UpdateTagCommand_MissingTag_ReturnsObjectNotFound()
     {
         using var db = CreateDbContext();
-        var handler = new UpdateTagCommandHandler(db, Mock.Of<ILogger<UpdateTagCommandHandler>>());
+        var handler = new UpdateTagCommandHandler(db, Mock.Of<ILogger<UpdateTagCommandHandler>>(), Mock.Of<IEventMediator>());
 
         var result = await handler.HandleAsync(new UpdateTagCommand(42, "Missing"), TestContext.Current.CancellationToken);
 
@@ -91,7 +92,7 @@ public class TagCommandTests
         post.Tags.Add(tag);
         db.Post.Add(post);
         await db.SaveChangesAsync(TestContext.Current.CancellationToken);
-        var handler = new DeleteTagCommandHandler(db, Mock.Of<ILogger<DeleteTagCommandHandler>>());
+        var handler = new DeleteTagCommandHandler(db, Mock.Of<ILogger<DeleteTagCommandHandler>>(), Mock.Of<IEventMediator>());
 
         var result = await handler.HandleAsync(new DeleteTagCommand(tag.Id), TestContext.Current.CancellationToken);
 
@@ -111,7 +112,7 @@ public class TagCommandTests
             .Options;
         await using var db = new BlogDbContext(options);
         await db.Database.EnsureCreatedAsync(TestContext.Current.CancellationToken);
-        var handler = new DeleteTagCommandHandler(db, Mock.Of<ILogger<DeleteTagCommandHandler>>());
+        var handler = new DeleteTagCommandHandler(db, Mock.Of<ILogger<DeleteTagCommandHandler>>(), Mock.Of<IEventMediator>());
 
         var result = await handler.HandleAsync(new DeleteTagCommand(42), TestContext.Current.CancellationToken);
 

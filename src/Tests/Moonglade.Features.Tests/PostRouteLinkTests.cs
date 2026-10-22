@@ -3,6 +3,7 @@ using Moonglade.Data;
 using Moonglade.Data.Entities;
 using Moonglade.Features.Post;
 using Moq;
+using LiteBus.Events.Abstractions;
 
 namespace Moonglade.Features.Tests;
 
@@ -22,7 +23,7 @@ public class PostRouteLinkTests
     {
         using var db = CreateDbContext();
         var logger = new Mock<ILogger<CreatePostCommandHandler>>();
-        var handler = new CreatePostCommandHandler(db, logger.Object);
+        var handler = new CreatePostCommandHandler(db, logger.Object, Mock.Of<IEventMediator>());
 
         var result = await handler.HandleAsync(new CreatePostCommand(CreatePostEditModel(PostStatus.Draft)), TestContext.Current.CancellationToken);
 
@@ -37,7 +38,7 @@ public class PostRouteLinkTests
     {
         using var db = CreateDbContext();
         var logger = new Mock<ILogger<CreatePostCommandHandler>>();
-        var handler = new CreatePostCommandHandler(db, logger.Object);
+        var handler = new CreatePostCommandHandler(db, logger.Object, Mock.Of<IEventMediator>());
 
         var result = await handler.HandleAsync(new CreatePostCommand(CreatePostEditModel(PostStatus.Published)), TestContext.Current.CancellationToken);
 
@@ -71,7 +72,7 @@ public class PostRouteLinkTests
         await db.SaveChangesAsync(TestContext.Current.CancellationToken);
 
         var logger = new Mock<ILogger<UpdatePostCommandHandler>>();
-        var handler = new UpdatePostCommandHandler(db, logger.Object);
+        var handler = new UpdatePostCommandHandler(db, logger.Object, Mock.Of<IEventMediator>());
         var model = CreatePostEditModel(PostStatus.Draft);
         model.PostId = postId;
 

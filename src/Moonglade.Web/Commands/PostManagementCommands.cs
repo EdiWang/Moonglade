@@ -33,7 +33,6 @@ public record SavePostCommand(
     PostOperationContext Context) : ICommand<PostOperationResult>;
 
 public class SavePostCommandHandler(
-    ICacheAside cache,
     IConfiguration configuration,
     ICommandMediator commandMediator,
     IBlogConfig blogConfig,
@@ -59,11 +58,6 @@ public class SavePostCommandHandler(
             {
                 wakeUp.WakeUp();
                 logger.LogInformation("Scheduled publish wake-up triggered for post: {PostId}", postEntity.Id);
-            }
-
-            if (!string.IsNullOrWhiteSpace(postEntity.RouteLink))
-            {
-                cache.Remove(BlogCachePartition.Post.ToString(), postEntity.RouteLink);
             }
 
             await PostActivityLogger.LogAsync(
@@ -182,13 +176,11 @@ public class RecyclePostCommandHandler(
 public record PublishPostWorkflowCommand(Guid PostId, PostOperationContext Context) : ICommand;
 
 public class PublishPostWorkflowCommandHandler(
-    ICacheAside cache,
     ICommandMediator commandMediator) : ICommandHandler<PublishPostWorkflowCommand>
 {
     public async Task HandleAsync(PublishPostWorkflowCommand request, CancellationToken ct)
     {
         await commandMediator.SendAsync(new PublishPostCommand(request.PostId), ct);
-        cache.Remove(BlogCachePartition.Post.ToString(), request.PostId.ToString());
 
         await PostActivityLogger.LogAsync(
             commandMediator,
@@ -205,13 +197,11 @@ public class PublishPostWorkflowCommandHandler(
 public record UnpublishPostWorkflowCommand(Guid PostId, PostOperationContext Context) : ICommand;
 
 public class UnpublishPostWorkflowCommandHandler(
-    ICacheAside cache,
     ICommandMediator commandMediator) : ICommandHandler<UnpublishPostWorkflowCommand>
 {
     public async Task HandleAsync(UnpublishPostWorkflowCommand request, CancellationToken ct)
     {
         await commandMediator.SendAsync(new UnpublishPostCommand(request.PostId), ct);
-        cache.Remove(BlogCachePartition.Post.ToString(), request.PostId.ToString());
 
         await PostActivityLogger.LogAsync(
             commandMediator,

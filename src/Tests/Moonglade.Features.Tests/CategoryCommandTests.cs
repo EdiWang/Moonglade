@@ -3,6 +3,7 @@ using Moonglade.Data;
 using Moonglade.Data.Entities;
 using Moonglade.Features.Category;
 using Moq;
+using LiteBus.Events.Abstractions;
 
 namespace Moonglade.Features.Tests;
 
@@ -61,7 +62,7 @@ public class CategoryCommandTests
         var categoryId = Guid.NewGuid();
         db.Category.Add(CreateCategoryEntity(categoryId, "old"));
         await db.SaveChangesAsync(TestContext.Current.CancellationToken);
-        var handler = new UpdateCategoryCommandHandler(db, Mock.Of<ILogger<UpdateCategoryCommandHandler>>());
+        var handler = new UpdateCategoryCommandHandler(db, Mock.Of<ILogger<UpdateCategoryCommandHandler>>(), Mock.Of<IEventMediator>());
 
         var result = await handler.HandleAsync(new UpdateCategoryCommand
         {
@@ -82,7 +83,7 @@ public class CategoryCommandTests
     public async Task UpdateCategoryCommand_MissingCategory_ReturnsObjectNotFound()
     {
         using var db = CreateDbContext();
-        var handler = new UpdateCategoryCommandHandler(db, Mock.Of<ILogger<UpdateCategoryCommandHandler>>());
+        var handler = new UpdateCategoryCommandHandler(db, Mock.Of<ILogger<UpdateCategoryCommandHandler>>(), Mock.Of<IEventMediator>());
 
         var result = await handler.HandleAsync(new UpdateCategoryCommand
         {
@@ -102,7 +103,7 @@ public class CategoryCommandTests
         var categoryId = Guid.NewGuid();
         db.Category.Add(CreateCategoryEntity(categoryId, "dotnet"));
         await db.SaveChangesAsync(TestContext.Current.CancellationToken);
-        var handler = new DeleteCategoryCommandHandler(db, Mock.Of<ILogger<DeleteCategoryCommandHandler>>());
+        var handler = new DeleteCategoryCommandHandler(db, Mock.Of<ILogger<DeleteCategoryCommandHandler>>(), Mock.Of<IEventMediator>());
 
         var result = await handler.HandleAsync(new DeleteCategoryCommand(categoryId), TestContext.Current.CancellationToken);
 
@@ -114,7 +115,7 @@ public class CategoryCommandTests
     public async Task DeleteCategoryCommand_MissingCategory_ReturnsObjectNotFound()
     {
         using var db = CreateDbContext();
-        var handler = new DeleteCategoryCommandHandler(db, Mock.Of<ILogger<DeleteCategoryCommandHandler>>());
+        var handler = new DeleteCategoryCommandHandler(db, Mock.Of<ILogger<DeleteCategoryCommandHandler>>(), Mock.Of<IEventMediator>());
 
         var result = await handler.HandleAsync(new DeleteCategoryCommand(Guid.NewGuid()), TestContext.Current.CancellationToken);
 

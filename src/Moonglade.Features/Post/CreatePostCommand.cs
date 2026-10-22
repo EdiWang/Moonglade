@@ -1,4 +1,5 @@
 using LiteBus.Commands.Abstractions;
+using LiteBus.Events.Abstractions;
 using Microsoft.Extensions.Logging;
 using Moonglade.Data.DTO;
 using Moonglade.Utils;
@@ -9,7 +10,8 @@ public record CreatePostCommand(PostEditModel Payload) : ICommand<PostCommandRes
 
 public class CreatePostCommandHandler(
         BlogDbContext db,
-        ILogger<CreatePostCommandHandler> logger)
+        ILogger<CreatePostCommandHandler> logger,
+        IEventMediator eventMediator)
     : ICommandHandler<CreatePostCommand, PostCommandResult>
 {
     public async Task<PostCommandResult> HandleAsync(CreatePostCommand request, CancellationToken ct)
@@ -53,7 +55,10 @@ public class CreatePostCommandHandler(
         await PostEntityHelper.ResolveAndAssignTagsAsync(post, request.Payload.Tags, db, logger, ct);
 
         db.Post.Add(post);
-        await db.SaveChangesAsync(ct);
+        if (await db.SaveChangesAsync(ct) > 0)
+        {
+            await eventMediator.PublishAsync(new PostChangedEvent(), cancellationToken: CancellationToken.None);
+        }
 
         logger.LogInformation("Created post Id: {PostId}, Title: '{PostTitle}'", post.Id, post.Title);
         return new PostCommandResult

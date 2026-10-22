@@ -1,4 +1,5 @@
 using LiteBus.Commands.Abstractions;
+using LiteBus.Events.Abstractions;
 using Microsoft.Extensions.Logging;
 
 namespace Moonglade.Features.Post;
@@ -7,7 +8,8 @@ public record UnpublishPostCommand(Guid Id) : ICommand;
 
 public class UnpublishPostCommandHandler(
     BlogDbContext db,
-    ILogger<UnpublishPostCommandHandler> logger
+    ILogger<UnpublishPostCommandHandler> logger,
+    IEventMediator eventMediator
     ) : ICommandHandler<UnpublishPostCommand>
 {
     public async Task HandleAsync(UnpublishPostCommand request, CancellationToken ct)
@@ -21,7 +23,10 @@ public class UnpublishPostCommandHandler(
         post.RouteLink = null;
         post.LastModifiedUtc = DateTime.UtcNow;
 
-        await db.SaveChangesAsync(ct);
+        if (await db.SaveChangesAsync(ct) > 0)
+        {
+            await eventMediator.PublishAsync(new PostChangedEvent(), cancellationToken: CancellationToken.None);
+        }
 
         logger.LogInformation("Post [{PostId}] unpublished", request.Id);
     }

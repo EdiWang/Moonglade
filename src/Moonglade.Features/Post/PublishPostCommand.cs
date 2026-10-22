@@ -1,4 +1,5 @@
 using LiteBus.Commands.Abstractions;
+using LiteBus.Events.Abstractions;
 using Microsoft.Extensions.Logging;
 using Moonglade.Utils;
 
@@ -8,7 +9,8 @@ public record PublishPostCommand(Guid Id) : ICommand;
 
 public class PublishPostCommandHandler(
     BlogDbContext db,
-    ILogger<PublishPostCommandHandler> logger
+    ILogger<PublishPostCommandHandler> logger,
+    IEventMediator eventMediator
     ) : ICommandHandler<PublishPostCommand>
 {
     public async Task HandleAsync(PublishPostCommand request, CancellationToken ct)
@@ -24,7 +26,10 @@ public class PublishPostCommandHandler(
         post.LastModifiedUtc = utcNow;
         post.RouteLink = UrlHelper.GenerateRouteLink(post.PubDateUtc.GetValueOrDefault(), post.Slug);
 
-        await db.SaveChangesAsync(ct);
+        if (await db.SaveChangesAsync(ct) > 0)
+        {
+            await eventMediator.PublishAsync(new PostChangedEvent(), cancellationToken: CancellationToken.None);
+        }
 
         logger.LogInformation("Post [{PostId}] Published", request.Id);
     }

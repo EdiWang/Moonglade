@@ -99,6 +99,12 @@ dotnet run --project src/Moonglade.Web/Moonglade.Web.csproj
 
 Choose HTML or Markdown under **Settings > Content > Default editor** (`/admin/settings/content`). The default is HTML. Changes are stored in the database and apply immediately when creating a new post; existing posts retain their own content type. The former `DefaultEditor` application configuration key is no longer used or imported. Startup no longer fills empty content types on historical posts.
 
+### Content Cache Invalidation
+
+Successful article saves, publication changes (including scheduled publishing), and article recycle-bin operations clear all article caches, RSS/Atom feeds (including category feeds), and the sitemap in the current process. Category and tag updates or deletions use the same rule. This deliberately favors simple, reliable invalidation for infrequent personal-blog writes. View and request counters do not trigger invalidation.
+
+Article, feed, and sitemap cache keys include a process-local version so a query started before invalidation cannot repopulate the active cache with old content. Feeds and the sitemap expire after one hour; article expiration continues to use `PostCacheMinutes`. Page-specific sitemap invalidation preserves article and feed caches. Deployments with multiple application instances must coordinate cache invalidation separately.
+
 ### Authentication
 
 - By default: Local accounts with TOTP authenticator app verification (manage via `/admin/account`)

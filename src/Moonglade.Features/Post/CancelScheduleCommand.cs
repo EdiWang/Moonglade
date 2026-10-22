@@ -1,4 +1,5 @@
 using LiteBus.Commands.Abstractions;
+using LiteBus.Events.Abstractions;
 using Microsoft.Extensions.Logging;
 
 namespace Moonglade.Features.Post;
@@ -7,7 +8,8 @@ public record CancelScheduleCommand(Guid Id) : ICommand;
 
 public class CancelScheduleCommandHandler(
     BlogDbContext db,
-    ILogger<CancelScheduleCommandHandler> logger
+    ILogger<CancelScheduleCommandHandler> logger,
+    IEventMediator eventMediator
     ) : ICommandHandler<CancelScheduleCommand>
 {
     public async Task HandleAsync(CancelScheduleCommand request, CancellationToken ct)
@@ -27,7 +29,10 @@ public class CancelScheduleCommandHandler(
         post.PubDateUtc = null;
         post.LastModifiedUtc = DateTime.UtcNow;
 
-        await db.SaveChangesAsync(ct);
+        if (await db.SaveChangesAsync(ct) > 0)
+        {
+            await eventMediator.PublishAsync(new PostChangedEvent(), cancellationToken: CancellationToken.None);
+        }
 
         logger.LogInformation("Post [{PostId}] schedule canceled", request.Id);
     }

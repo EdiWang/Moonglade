@@ -1,5 +1,7 @@
 using LiteBus.Commands.Abstractions;
+using LiteBus.Events.Abstractions;
 using Microsoft.Extensions.Logging;
+using Moonglade.Features.Post;
 
 namespace Moonglade.Features.Category;
 
@@ -10,7 +12,8 @@ public class UpdateCategoryCommand : CreateCategoryCommand, ICommand<OperationCo
 
 public class UpdateCategoryCommandHandler(
     BlogDbContext db,
-    ILogger<UpdateCategoryCommandHandler> logger) : ICommandHandler<UpdateCategoryCommand, OperationCode>
+    ILogger<UpdateCategoryCommandHandler> logger,
+    IEventMediator eventMediator) : ICommandHandler<UpdateCategoryCommand, OperationCode>
 {
     public async Task<OperationCode> HandleAsync(UpdateCategoryCommand request, CancellationToken ct)
     {
@@ -21,7 +24,10 @@ public class UpdateCategoryCommandHandler(
         cat.DisplayName = request.DisplayName.Trim();
         cat.Note = request.Note?.Trim();
 
-        await db.SaveChangesAsync(ct);
+        if (await db.SaveChangesAsync(ct) > 0)
+        {
+            await eventMediator.PublishAsync(new PostChangedEvent(), cancellationToken: CancellationToken.None);
+        }
 
         logger.LogInformation("Category updated: {Category}", cat.Id);
         return OperationCode.Done;

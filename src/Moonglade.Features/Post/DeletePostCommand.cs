@@ -1,4 +1,5 @@
 using LiteBus.Commands.Abstractions;
+using LiteBus.Events.Abstractions;
 using Microsoft.Extensions.Logging;
 
 namespace Moonglade.Features.Post;
@@ -7,7 +8,8 @@ public record DeletePostCommand(Guid Id, bool SoftDelete = false) : ICommand;
 
 public class DeletePostCommandHandler(
     BlogDbContext db,
-    ILogger<DeletePostCommandHandler> logger
+    ILogger<DeletePostCommandHandler> logger,
+    IEventMediator eventMediator
     ) : ICommandHandler<DeletePostCommand>
 {
     public async Task HandleAsync(DeletePostCommand request, CancellationToken ct)
@@ -25,7 +27,10 @@ public class DeletePostCommandHandler(
             db.Post.Remove(post);
         }
 
-        await db.SaveChangesAsync(ct);
+        if (await db.SaveChangesAsync(ct) > 0)
+        {
+            await eventMediator.PublishAsync(new PostChangedEvent(), cancellationToken: CancellationToken.None);
+        }
 
         logger.LogInformation("Post {PostId} deleted", guid);
     }

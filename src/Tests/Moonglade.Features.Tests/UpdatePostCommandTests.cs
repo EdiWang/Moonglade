@@ -3,6 +3,7 @@ using Moonglade.Data;
 using Moonglade.Data.Entities;
 using Moonglade.Features.Post;
 using Moq;
+using LiteBus.Events.Abstractions;
 
 namespace Moonglade.Features.Tests;
 
@@ -172,7 +173,7 @@ public class UpdatePostCommandTests
     private static UpdatePostCommandHandler CreateHandler(BlogDbContext db)
     {
         var logger = new Mock<ILogger<UpdatePostCommandHandler>>();
-        return new UpdatePostCommandHandler(db, logger.Object);
+        return new UpdatePostCommandHandler(db, logger.Object, Mock.Of<IEventMediator>());
     }
 
     private static PostEditModel CreatePostEditModel(PostStatus postStatus)

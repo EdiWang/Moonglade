@@ -4,6 +4,7 @@ using Moonglade.Data;
 using Moonglade.Data.Entities;
 using Moonglade.Features.Post;
 using Moq;
+using LiteBus.Events.Abstractions;
 
 namespace Moonglade.Features.Tests;
 
@@ -26,7 +27,7 @@ public class PostStatusCommandTests
         db.Post.Add(CreatePostEntity(postId, PostStatus.Published, "published-post", DateTime.UtcNow.AddDays(-1)));
         await db.SaveChangesAsync(TestContext.Current.CancellationToken);
 
-        var handler = new DeletePostCommandHandler(db, Mock.Of<ILogger<DeletePostCommandHandler>>());
+        var handler = new DeletePostCommandHandler(db, Mock.Of<ILogger<DeletePostCommandHandler>>(), Mock.Of<IEventMediator>());
 
         await handler.HandleAsync(new DeletePostCommand(postId, SoftDelete: true), TestContext.Current.CancellationToken);
 
@@ -42,7 +43,7 @@ public class PostStatusCommandTests
         db.Post.Add(CreatePostEntity(postId, PostStatus.Published, "published-post", DateTime.UtcNow.AddDays(-1)));
         await db.SaveChangesAsync(TestContext.Current.CancellationToken);
 
-        var handler = new DeletePostCommandHandler(db, Mock.Of<ILogger<DeletePostCommandHandler>>());
+        var handler = new DeletePostCommandHandler(db, Mock.Of<ILogger<DeletePostCommandHandler>>(), Mock.Of<IEventMediator>());
 
         await handler.HandleAsync(new DeletePostCommand(postId), TestContext.Current.CancellationToken);
 
@@ -59,7 +60,7 @@ public class PostStatusCommandTests
         db.Post.Add(post);
         await db.SaveChangesAsync(TestContext.Current.CancellationToken);
 
-        var handler = new RestorePostCommandHandler(db, Mock.Of<ILogger<RestorePostCommandHandler>>());
+        var handler = new RestorePostCommandHandler(db, Mock.Of<ILogger<RestorePostCommandHandler>>(), Mock.Of<IEventMediator>());
 
         await handler.HandleAsync(new RestorePostCommand(postId), TestContext.Current.CancellationToken);
 
@@ -75,7 +76,7 @@ public class PostStatusCommandTests
         db.Post.Add(CreatePostEntity(postId, PostStatus.Published, "published-post", DateTime.UtcNow.AddDays(-1)));
         await db.SaveChangesAsync(TestContext.Current.CancellationToken);
 
-        var handler = new UnpublishPostCommandHandler(db, Mock.Of<ILogger<UnpublishPostCommandHandler>>());
+        var handler = new UnpublishPostCommandHandler(db, Mock.Of<ILogger<UnpublishPostCommandHandler>>(), Mock.Of<IEventMediator>());
         var before = DateTime.UtcNow;
 
         await handler.HandleAsync(new UnpublishPostCommand(postId), TestContext.Current.CancellationToken);
@@ -100,7 +101,7 @@ public class PostStatusCommandTests
         db.Post.Add(post);
         await db.SaveChangesAsync(TestContext.Current.CancellationToken);
 
-        var handler = new CancelScheduleCommandHandler(db, Mock.Of<ILogger<CancelScheduleCommandHandler>>());
+        var handler = new CancelScheduleCommandHandler(db, Mock.Of<ILogger<CancelScheduleCommandHandler>>(), Mock.Of<IEventMediator>());
         var before = DateTime.UtcNow;
 
         await handler.HandleAsync(new CancelScheduleCommand(postId), TestContext.Current.CancellationToken);
@@ -124,7 +125,7 @@ public class PostStatusCommandTests
         db.Post.Add(CreatePostEntity(postId, PostStatus.Published, "published-post", pubDate));
         await db.SaveChangesAsync(TestContext.Current.CancellationToken);
 
-        var handler = new CancelScheduleCommandHandler(db, Mock.Of<ILogger<CancelScheduleCommandHandler>>());
+        var handler = new CancelScheduleCommandHandler(db, Mock.Of<ILogger<CancelScheduleCommandHandler>>(), Mock.Of<IEventMediator>());
 
         await handler.HandleAsync(new CancelScheduleCommand(postId), TestContext.Current.CancellationToken);
 
@@ -145,7 +146,7 @@ public class PostStatusCommandTests
         db.Post.Add(post);
         await db.SaveChangesAsync(TestContext.Current.CancellationToken);
 
-        var handler = new PostponePostCommandHandler(db, Mock.Of<ILogger<PostponePostCommandHandler>>());
+        var handler = new PostponePostCommandHandler(db, Mock.Of<ILogger<PostponePostCommandHandler>>(), Mock.Of<IEventMediator>());
 
         await handler.HandleAsync(new PostponePostCommand(postId, 3), TestContext.Current.CancellationToken);
 
@@ -161,7 +162,7 @@ public class PostStatusCommandTests
         db.Post.Add(CreatePostEntity(postId, PostStatus.Draft, "draft-post"));
         await db.SaveChangesAsync(TestContext.Current.CancellationToken);
 
-        var handler = new PostponePostCommandHandler(db, Mock.Of<ILogger<PostponePostCommandHandler>>());
+        var handler = new PostponePostCommandHandler(db, Mock.Of<ILogger<PostponePostCommandHandler>>(), Mock.Of<IEventMediator>());
 
         await handler.HandleAsync(new PostponePostCommand(postId, 3), TestContext.Current.CancellationToken);
 
@@ -187,7 +188,7 @@ public class PostStatusCommandTests
         db.Post.Add(CreatePostEntity(activePostId, PostStatus.Published, "active-post", DateTime.UtcNow.AddDays(-1)));
         await db.SaveChangesAsync(TestContext.Current.CancellationToken);
 
-        var handler = new EmptyRecycleBinCommandHandler(db, Mock.Of<ILogger<EmptyRecycleBinCommandHandler>>());
+        var handler = new EmptyRecycleBinCommandHandler(db, Mock.Of<ILogger<EmptyRecycleBinCommandHandler>>(), Mock.Of<IEventMediator>());
 
         var result = await handler.HandleAsync(new EmptyRecycleBinCommand(), TestContext.Current.CancellationToken);
 

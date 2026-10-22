@@ -1,4 +1,3 @@
-using Edi.CacheAside.InMemory;
 using LiteBus.Commands.Abstractions;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -16,13 +15,10 @@ namespace Moonglade.Web.Tests;
 
 public class PostManagementCommandTests
 {
-    private const string PostCachePartition = "Post";
-
-    private readonly Mock<ICacheAside> _cacheMock = new();
     private readonly RecordingCommandMediator _commandMediator = new();
 
     [Fact]
-    public async Task SavePostCommand_CreatePost_RemovesPostCacheAndWritesActivityLog()
+    public async Task SavePostCommand_CreatePost_WritesActivityLog()
     {
         var handler = CreateSavePostHandler();
         var model = CreatePostEditModel(PostStatus.Draft);
@@ -41,7 +37,6 @@ public class PostManagementCommandTests
 
         Assert.True(result.Succeeded);
         Assert.Equal(postId, result.PostId);
-        _cacheMock.Verify(c => c.Remove(PostCachePartition, routeLink), Times.Once);
         var createCommand = _commandMediator.Single<CreatePostCommand>();
         Assert.Same(model, createCommand.Payload);
         var activityLogCommand = _commandMediator.Single<CreateActivityLogCommand>();
@@ -88,28 +83,26 @@ public class PostManagementCommandTests
     }
 
     [Fact]
-    public async Task PublishPostWorkflowCommand_PublishesPostClearsCacheAndWritesActivityLog()
+    public async Task PublishPostWorkflowCommand_PublishesPostAndWritesActivityLog()
     {
         var postId = Guid.NewGuid();
-        var handler = new PublishPostWorkflowCommandHandler(_cacheMock.Object, _commandMediator);
+        var handler = new PublishPostWorkflowCommandHandler(_commandMediator);
 
         await handler.HandleAsync(new PublishPostWorkflowCommand(postId, CreateContext()), TestContext.Current.CancellationToken);
 
         Assert.Equal(postId, _commandMediator.Single<PublishPostCommand>().Id);
-        _cacheMock.Verify(c => c.Remove(PostCachePartition, postId.ToString()), Times.Once);
         Assert.Equal(EventType.PostPublished, _commandMediator.Single<CreateActivityLogCommand>().EventType);
     }
 
     [Fact]
-    public async Task UnpublishPostWorkflowCommand_UnpublishesPostClearsCacheAndWritesActivityLog()
+    public async Task UnpublishPostWorkflowCommand_UnpublishesPostAndWritesActivityLog()
     {
         var postId = Guid.NewGuid();
-        var handler = new UnpublishPostWorkflowCommandHandler(_cacheMock.Object, _commandMediator);
+        var handler = new UnpublishPostWorkflowCommandHandler(_commandMediator);
 
         await handler.HandleAsync(new UnpublishPostWorkflowCommand(postId, CreateContext()), TestContext.Current.CancellationToken);
 
         Assert.Equal(postId, _commandMediator.Single<UnpublishPostCommand>().Id);
-        _cacheMock.Verify(c => c.Remove(PostCachePartition, postId.ToString()), Times.Once);
         Assert.Equal(EventType.PostUnpublished, _commandMediator.Single<CreateActivityLogCommand>().EventType);
     }
 
@@ -145,7 +138,6 @@ public class PostManagementCommandTests
         };
 
         return new SavePostCommandHandler(
-            _cacheMock.Object,
             configuration,
             _commandMediator,
             blogConfig,

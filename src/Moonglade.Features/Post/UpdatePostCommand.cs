@@ -1,4 +1,5 @@
 using LiteBus.Commands.Abstractions;
+using LiteBus.Events.Abstractions;
 using Microsoft.Extensions.Logging;
 using Moonglade.Data.DTO;
 using Moonglade.Utils;
@@ -8,7 +9,8 @@ namespace Moonglade.Features.Post;
 public record UpdatePostCommand(Guid Id, PostEditModel Payload) : ICommand<PostCommandResult>;
 public class UpdatePostCommandHandler(
     BlogDbContext db,
-    ILogger<UpdatePostCommandHandler> logger) : ICommandHandler<UpdatePostCommand, PostCommandResult>
+    ILogger<UpdatePostCommandHandler> logger,
+    IEventMediator eventMediator) : ICommandHandler<UpdatePostCommand, PostCommandResult>
 {
     public async Task<PostCommandResult> HandleAsync(UpdatePostCommand request, CancellationToken ct)
     {
@@ -25,7 +27,10 @@ public class UpdatePostCommandHandler(
         await PostEntityHelper.ResolveAndAssignTagsAsync(post, postEditModel.Tags, db, logger, ct);
         PostEntityHelper.SetCategories(post, postEditModel.SelectedCatIds);
 
-        await db.SaveChangesAsync(ct);
+        if (await db.SaveChangesAsync(ct) > 0)
+        {
+            await eventMediator.PublishAsync(new PostChangedEvent(), cancellationToken: CancellationToken.None);
+        }
 
         logger.LogInformation("Post updated with ID: {PostId}", post.Id);
         return new PostCommandResult

@@ -35,6 +35,7 @@ public static class ServiceCollectionExtensions
         List<CultureInfo> cultures)
     {
         services.AddMoongladeLiteBus();
+        services.AddSingleton<PostCacheInvalidator>();
         services.AddHttpClient();
         services.AddOptions().AddHttpContextAccessor();
         services.AddMoongladeLocalization();

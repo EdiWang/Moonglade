@@ -10,6 +10,7 @@ public class PostModel(
     IConfiguration configuration,
     IBlogConfig blogConfig,
     ICacheAside cache,
+    PostCacheInvalidator postCacheInvalidator,
     IQueryMediator queryMediator,
     ICommandMediator commandMediator) : PageModel
 {
@@ -25,7 +26,7 @@ public class PostModel(
 
         var routeLink = $"{year}/{month}/{day}/{slug}".ToLower();
 
-        var psm = await cache.GetOrCreateAsync(BlogCachePartition.Post.ToString(), $"{routeLink}", async () =>
+        var psm = await cache.GetOrCreateAsync(BlogCachePartition.Post.ToString(), postCacheInvalidator.GetCacheKey(routeLink), async () =>
         {
             var post = await queryMediator.QueryAsync(new GetPostBySlugQuery(routeLink));
             return post;
