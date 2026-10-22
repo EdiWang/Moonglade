@@ -28,7 +28,7 @@ internal sealed class EmailCapabilityStatusReporter(
 
             case EmailCapabilityState.Disabled:
                 logger.LogInformation(
-                    "Email notifications are disabled because Email:OutboxWorker:Enabled is false.");
+                    "Email notifications are disabled because Email:Enabled is false.");
                 break;
         }
 

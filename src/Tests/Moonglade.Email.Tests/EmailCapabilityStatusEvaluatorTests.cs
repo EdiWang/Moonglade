@@ -73,14 +73,12 @@ public class EmailCapabilityStatusEvaluatorTests
     }
 
     [Fact]
-    public void Evaluate_ValidSmtpWithDisabledWorker_IsDisabled()
+    public void Evaluate_ValidSmtpWithEmailDisabled_IsDisabled()
     {
-        var workerOptions = new EmailOutboxWorkerOptions
-        {
-            Enabled = false
-        };
+        var serviceOptions = CreateValidSmtpOptions();
+        serviceOptions.Enabled = false;
 
-        var status = _sut.Evaluate(CreateValidSmtpOptions(), workerOptions);
+        var status = _sut.Evaluate(serviceOptions, new EmailOutboxWorkerOptions());
 
         Assert.Equal(EmailCapabilityState.Disabled, status.State);
         Assert.False(status.IsAvailable);

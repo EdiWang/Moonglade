@@ -7,13 +7,13 @@ public sealed class EmailNotificationPageState
     private EmailNotificationPageState(
         EmailCapabilityStatus capabilityStatus,
         string senderAddress,
-        bool workerEnabled,
+        bool emailEnabled,
         bool emailSendingEnabled)
     {
         CapabilityState = capabilityStatus.State;
         ValidationErrors = capabilityStatus.ValidationErrors;
         SenderAddress = senderAddress;
-        WorkerEnabled = workerEnabled;
+        EmailEnabled = emailEnabled;
         CanSendTestEmail = capabilityStatus.IsAvailable && emailSendingEnabled;
     }
 
@@ -25,7 +25,7 @@ public sealed class EmailNotificationPageState
 
     public string SenderAddress { get; }
 
-    public bool WorkerEnabled { get; }
+    public bool EmailEnabled { get; }
 
     public bool CanSendTestEmail { get; }
 
@@ -38,17 +38,15 @@ public sealed class EmailNotificationPageState
     public static EmailNotificationPageState Create(
         EmailCapabilityStatus capabilityStatus,
         EmailServiceOptions serviceOptions,
-        EmailOutboxWorkerOptions workerOptions,
         bool emailSendingEnabled)
     {
         ArgumentNullException.ThrowIfNull(capabilityStatus);
         ArgumentNullException.ThrowIfNull(serviceOptions);
-        ArgumentNullException.ThrowIfNull(workerOptions);
 
         return new(
             capabilityStatus,
             serviceOptions.EffectiveSmtpSenderAddress,
-            workerOptions.Enabled,
+            serviceOptions.Enabled,
             emailSendingEnabled);
     }
 }

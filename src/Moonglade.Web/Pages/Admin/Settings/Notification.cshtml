@@ -3,7 +3,6 @@
 @using Moonglade.Web.Pages.Admin.Settings
 @inject EmailCapabilityStatus EmailCapabilityStatus
 @inject IOptions<EmailServiceOptions> EmailServiceOptions
-@inject IOptions<EmailOutboxWorkerOptions> EmailOutboxWorkerOptions
 @section scripts {
     <script type="module" src="~/js/app/admin.settings.notification.mjs"></script>
 }
@@ -18,7 +17,6 @@
     var pageState = EmailNotificationPageState.Create(
         EmailCapabilityStatus,
         EmailServiceOptions.Value,
-        EmailOutboxWorkerOptions.Value,
         settings.EnableEmailSending);
 }
 
@@ -59,7 +57,7 @@
                     @if (pageState.ShowDisabledNotice)
                     {
                         <div class="alert alert-info">
-                            @SharedLocalizer["Email outbox worker is disabled."]
+                            @SharedLocalizer["Email notifications are disabled."]
                         </div>
                     }
 
@@ -92,10 +90,10 @@
                             <i class="bi-inboxes settings-entry-icon"></i>
                         </div>
                         <div class="col">
-                            <label>@SharedLocalizer["Outbox Worker"]</label>
+                            <label>@SharedLocalizer["Email Notifications"]</label>
                         </div>
                         <div class="col-6">
-                            <input readonly="readonly" class="form-control" spellcheck="false" value="@(pageState.WorkerEnabled ? SharedLocalizer["Enabled"] : SharedLocalizer["Disabled"])" />
+                            <input readonly="readonly" class="form-control" spellcheck="false" value="@(pageState.EmailEnabled ? SharedLocalizer["Enabled"] : SharedLocalizer["Disabled"])" />
                         </div>
                     </div>
 

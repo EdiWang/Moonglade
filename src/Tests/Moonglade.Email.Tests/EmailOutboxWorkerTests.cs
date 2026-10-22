@@ -74,7 +74,7 @@ public class EmailOutboxWorkerTests
                 break;
 
             case EmailCapabilityState.Disabled:
-                workerOptions.Enabled = false;
+                serviceOptions.Enabled = false;
                 break;
         }
 

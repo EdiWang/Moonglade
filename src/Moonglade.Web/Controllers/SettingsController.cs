@@ -320,7 +320,7 @@ public class SettingsController(
                 title: "Email notification configuration is invalid."),
 
             EmailCapabilityState.Disabled => Problem(
-                detail: "Set Email:OutboxWorker:Enabled to true before sending a test email.",
+                detail: "Set Email:Enabled to true before sending a test email.",
                 statusCode: StatusCodes.Status409Conflict,
                 title: "Email notifications are disabled."),
 

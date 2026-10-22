@@ -54,7 +54,7 @@ public class SettingsControllerTests
     [InlineData(
         EmailCapabilityState.Disabled,
         StatusCodes.Status409Conflict,
-        "Email:OutboxWorker:Enabled")]
+        "Email:Enabled")]
     public async Task TestEmail_WhenCapabilityUnavailable_ReturnsProblemWithoutPublishing(
         EmailCapabilityState state,
         int expectedStatusCode,
@@ -322,7 +322,7 @@ public class SettingsControllerTests
                 break;
 
             case EmailCapabilityState.Disabled:
-                workerOptions.Enabled = false;
+                serviceOptions.Enabled = false;
                 break;
         }
 

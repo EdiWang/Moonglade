@@ -227,15 +227,13 @@ Email notifications for new comments, replies, and Webmentions are optional. Whe
 
 ```json
 "Email": {
+  "Enabled": true,
   "SmtpServer": "",
   "SmtpUserName": "",
   "SmtpSenderAddress": "",
   "SmtpPassword": "",
   "SmtpPort": 25,
-  "EnableSsl": false,
-  "OutboxWorker": {
-    "Enabled": true
-  }
+  "EnableSsl": false
 }
 ```
 
@@ -249,7 +247,9 @@ Email configuration never controls application liveness or database readiness:
 
 - Missing required SMTP values leave email inactive, produce one startup warning, and show setup guidance in `/admin/settings/notification`. The application continues to start normally.
 - Malformed, out-of-range, or inconsistent values leave email inactive, produce a startup error log, and show secret-safe validation details on the Notification settings page. They do not stop application startup.
-- Setting `Email:OutboxWorker:Enabled` to `false` deliberately disables email notification and is shown as a separate non-error state in the admin portal.
+- Setting `Email:Enabled` to `false` deliberately disables email notification and is shown as a separate non-error state in the admin portal. It defaults to `true`; delivery always uses the outbox.
+
+Replace the former `Email:OutboxWorker:Enabled` deployment override with `Email:Enabled` (or `Email__Enabled` for environment variables), then restart the application. The old key is no longer read.
 
 While email is unavailable, the worker does not poll or send and notification handlers do not enqueue new messages. Existing pending outbox messages are retained and can be processed after valid configuration is supplied and the application is restarted. The test-email action is disabled while delivery is unavailable.
 

@@ -30,10 +30,10 @@ public class EmailNotificationPageStateTests
         var pageState = EmailNotificationPageState.Create(
             capabilityStatus,
             serviceOptions,
-            workerOptions,
             emailSendingEnabled: true);
 
         Assert.Equal(expectedState, pageState.CapabilityState);
+        Assert.Equal(serviceOptions.Enabled, pageState.EmailEnabled);
         Assert.Equal(showNotConfiguredPrompt, pageState.ShowNotConfiguredPrompt);
         Assert.Equal(showInvalidConfiguration, pageState.ShowInvalidConfiguration);
         Assert.Equal(showDisabledNotice, pageState.ShowDisabledNotice);
@@ -59,7 +59,6 @@ public class EmailNotificationPageStateTests
         var pageState = EmailNotificationPageState.Create(
             capabilityStatus,
             serviceOptions,
-            workerOptions,
             emailSendingEnabled: false);
 
         Assert.False(pageState.CanSendTestEmail);
@@ -76,7 +75,7 @@ public class EmailNotificationPageStateTests
         serviceOptions.SmtpSenderAddress = configuredAddress;
 
         var pageState = EmailNotificationPageState.Create(
-            CreateStatus(serviceOptions, workerOptions), serviceOptions, workerOptions, emailSendingEnabled: true);
+            CreateStatus(serviceOptions, workerOptions), serviceOptions, emailSendingEnabled: true);
 
         Assert.Equal("SMTP", pageState.ProviderLabel);
         Assert.Equal(expectedAddress, pageState.SenderAddress);
@@ -90,7 +89,7 @@ public class EmailNotificationPageStateTests
         serviceOptions.SmtpSenderAddress = "not-an-email";
 
         var pageState = EmailNotificationPageState.Create(
-            CreateStatus(serviceOptions, workerOptions), serviceOptions, workerOptions, emailSendingEnabled: true);
+            CreateStatus(serviceOptions, workerOptions), serviceOptions, emailSendingEnabled: true);
 
         Assert.True(pageState.ShowInvalidConfiguration);
         Assert.False(pageState.CanSendTestEmail);
@@ -117,6 +116,8 @@ public class EmailNotificationPageStateTests
 
         Assert.Contains(SetupPromptResourceKey, resourceKeys);
         Assert.Contains(InvalidConfigurationResourceKey, resourceKeys);
+        Assert.Contains("Email notifications are disabled.", resourceKeys);
+        Assert.Contains("Email Notifications", resourceKeys);
     }
 
     private static EmailCapabilityStatus CreateStatus(
@@ -148,7 +149,7 @@ public class EmailNotificationPageStateTests
                 serviceOptions.SmtpPort = 0;
                 break;
             case EmailCapabilityState.Disabled:
-                workerOptions.Enabled = false;
+                serviceOptions.Enabled = false;
                 break;
         }
 

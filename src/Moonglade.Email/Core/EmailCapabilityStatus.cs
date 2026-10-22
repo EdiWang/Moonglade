@@ -60,7 +60,7 @@ public sealed class EmailCapabilityStatusEvaluator(
             return new(EmailCapabilityState.NotConfigured, []);
         }
 
-        if (!workerOptions.Enabled)
+        if (!serviceOptions.Enabled)
         {
             return new(EmailCapabilityState.Disabled, []);
         }

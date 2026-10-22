@@ -107,7 +107,7 @@ public class ServiceCollectionExtensionsTests
     {
         var configuration = CreateConfiguration(
             new KeyValuePair<string, string>("Email:SmtpPassword", ""),
-            new KeyValuePair<string, string>("Email:OutboxWorker:Enabled", "false"));
+            new KeyValuePair<string, string>("Email:Enabled", "false"));
         var logs = new CapturingLoggerProvider();
         using var host = CreateHost(configuration, logs);
 
@@ -137,7 +137,7 @@ public class ServiceCollectionExtensionsTests
         var configuration = CreateConfiguration(
             new KeyValuePair<string, string>("Email:SmtpPassword", secret),
             new KeyValuePair<string, string>("Email:SmtpPort", "0"),
-            new KeyValuePair<string, string>("Email:OutboxWorker:Enabled", "false"));
+            new KeyValuePair<string, string>("Email:Enabled", "false"));
         var logs = new CapturingLoggerProvider();
         using var host = CreateHost(configuration, logs);
 
@@ -188,10 +188,10 @@ public class ServiceCollectionExtensionsTests
     }
 
     [Fact]
-    public async Task AddMoongladeEmail_DisabledWorkerStartsHostAndLogsInformation()
+    public async Task AddMoongladeEmail_DisabledEmailStartsHostAndLogsInformation()
     {
         var configuration = CreateConfiguration(
-            new KeyValuePair<string, string>("Email:OutboxWorker:Enabled", "false"));
+            new KeyValuePair<string, string>("Email:Enabled", "false"));
         var logs = new CapturingLoggerProvider();
         using var host = CreateHost(configuration, logs);
 
@@ -201,9 +201,10 @@ public class ServiceCollectionExtensionsTests
             var status = host.Services.GetRequiredService<EmailCapabilityStatus>();
 
             Assert.Equal(EmailCapabilityState.Disabled, status.State);
+            Assert.False(host.Services.GetRequiredService<IOptions<EmailServiceOptions>>().Value.Enabled);
             Assert.Single(logs.Entries, entry =>
                 entry.Level == LogLevel.Information &&
-                entry.Message.Contains("Email notifications are disabled because", StringComparison.Ordinal));
+                entry.Message.Contains("Email notifications are disabled because Email:Enabled is false.", StringComparison.Ordinal));
             Assert.DoesNotContain(logs.Entries, entry => entry.Level >= LogLevel.Warning);
         }
         finally
@@ -224,6 +225,7 @@ public class ServiceCollectionExtensionsTests
             var status = host.Services.GetRequiredService<EmailCapabilityStatus>();
 
             Assert.Equal(EmailCapabilityState.Available, status.State);
+            Assert.True(host.Services.GetRequiredService<IOptions<EmailServiceOptions>>().Value.Enabled);
             Assert.NotNull(host.Services.GetRequiredService<EmailSettings>());
             Assert.NotNull(host.Services.GetRequiredService<IEmailHelper>());
             Assert.NotNull(host.Services.GetRequiredService<IEmailDispatcher>());
