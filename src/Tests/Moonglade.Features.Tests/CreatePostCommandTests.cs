@@ -163,6 +163,21 @@ public class CreatePostCommandTests
         Assert.Contains(post.Tags, t => t.DisplayName == "aspnetcore");
     }
 
+    [Theory]
+    [InlineData(PostStatus.Default)]
+    [InlineData(PostStatus.Deleted)]
+    [InlineData((PostStatus)99)]
+    public async Task HandleAsync_InvalidWriteStatus_DoesNotCreatePost(PostStatus status)
+    {
+        using var db = CreateDbContext();
+        var handler = CreateHandler(db);
+
+        await Assert.ThrowsAsync<ArgumentOutOfRangeException>(() =>
+            handler.HandleAsync(new CreatePostCommand(CreatePostEditModel(status)), TestContext.Current.CancellationToken));
+
+        Assert.Empty(await db.Post.ToListAsync(TestContext.Current.CancellationToken));
+    }
+
     private static CreatePostCommandHandler CreateHandler(BlogDbContext db)
     {
         var logger = new Mock<ILogger<CreatePostCommandHandler>>();

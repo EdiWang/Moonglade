@@ -17,10 +17,7 @@ public class UnpublishPostCommandHandler(
         var post = await db.Post.FindAsync([request.Id], ct);
         if (post == null) return;
 
-        post.PostStatus = PostStatus.Draft;
-        post.PubDateUtc = null;
-        post.ScheduledPublishTimeUtc = null;
-        post.RouteLink = null;
+        PostEntityHelper.SetStatus(post, PostStatus.Draft);
         post.LastModifiedUtc = DateTime.UtcNow;
 
         if (await db.SaveChangesAsync(ct) > 0)

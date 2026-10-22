@@ -5,6 +5,25 @@ namespace Moonglade.Features.Post;
 
 internal static class PostEntityHelper
 {
+    public static void SetStatus(
+        PostEntity post,
+        PostStatus status,
+        DateTime? publishDateUtc = null,
+        DateTime? scheduledPublishTimeUtc = null)
+    {
+        if (status is not (PostStatus.Draft or PostStatus.Scheduled or PostStatus.Published))
+        {
+            throw new ArgumentOutOfRangeException(nameof(status), status, "Invalid post write status.");
+        }
+
+        post.PostStatus = status;
+        post.PubDateUtc = status == PostStatus.Published ? publishDateUtc : null;
+        post.ScheduledPublishTimeUtc = status == PostStatus.Scheduled ? scheduledPublishTimeUtc : null;
+        post.RouteLink = status == PostStatus.Published && publishDateUtc.HasValue
+            ? UrlHelper.GenerateRouteLink(publishDateUtc.Value, post.Slug)
+            : null;
+    }
+
     /// <summary>
     /// Resolves tags from a comma-separated string, creating any that don't exist,
     /// and assigns them to the post. Existing tags on the post are cleared first.

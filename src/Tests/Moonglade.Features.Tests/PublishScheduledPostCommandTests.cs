@@ -24,7 +24,9 @@ public class PublishScheduledPostCommandTests
     {
         using var db = CreateDbContext();
         var postId = Guid.NewGuid();
-        db.Post.Add(CreatePostEntity(postId, PostStatus.Scheduled, "scheduled-post", DueCutoffUtc.UtcDateTime.AddMinutes(-5)));
+        var existingPost = CreatePostEntity(postId, PostStatus.Scheduled, "scheduled-post", DueCutoffUtc.UtcDateTime.AddMinutes(-5));
+        var lastModifiedUtc = existingPost.LastModifiedUtc;
+        db.Post.Add(existingPost);
         await db.SaveChangesAsync(TestContext.Current.CancellationToken);
 
         var handler = CreateHandler(db);
@@ -37,6 +39,7 @@ public class PublishScheduledPostCommandTests
         Assert.Equal(SuccessfulPublishTimeUtc.UtcDateTime, post.PubDateUtc);
         Assert.Null(post.ScheduledPublishTimeUtc);
         Assert.Equal("2026/8/15/scheduled-post", post.RouteLink);
+        Assert.Equal(lastModifiedUtc, post.LastModifiedUtc);
     }
 
     [Fact]

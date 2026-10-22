@@ -19,6 +19,34 @@ public class PostStatusCommandTests
         return new BlogDbContext(options);
     }
 
+    [Theory]
+    [InlineData(PostStatus.Draft)]
+    [InlineData(PostStatus.Scheduled)]
+    [InlineData(PostStatus.Published)]
+    public async Task PublishPostCommand_SetsCurrentPublishDateAndClearsSchedule(PostStatus previousStatus)
+    {
+        using var db = CreateDbContext();
+        var postId = Guid.NewGuid();
+        var post = CreatePostEntity(postId, previousStatus, "test-post",
+            previousStatus == PostStatus.Published ? DateTime.UtcNow.AddDays(-1) : null);
+        post.ScheduledPublishTimeUtc = previousStatus == PostStatus.Scheduled ? DateTime.UtcNow.AddDays(1) : null;
+        db.Post.Add(post);
+        await db.SaveChangesAsync(TestContext.Current.CancellationToken);
+        var handler = new PublishPostCommandHandler(db, Mock.Of<ILogger<PublishPostCommandHandler>>(), Mock.Of<IEventMediator>());
+        var before = DateTime.UtcNow;
+
+        await handler.HandleAsync(new PublishPostCommand(postId), TestContext.Current.CancellationToken);
+
+        var after = DateTime.UtcNow;
+        await db.Entry(post).ReloadAsync(TestContext.Current.CancellationToken);
+        Assert.Equal(PostStatus.Published, post.PostStatus);
+        Assert.NotNull(post.PubDateUtc);
+        Assert.InRange(post.PubDateUtc.Value, before, after);
+        Assert.Equal(post.PubDateUtc, post.LastModifiedUtc);
+        Assert.Null(post.ScheduledPublishTimeUtc);
+        Assert.Equal($"{post.PubDateUtc:yyyy/M/d}/test-post", post.RouteLink);
+    }
+
     [Fact]
     public async Task DeletePostCommand_SoftDelete_SetsIsDeleted()
     {

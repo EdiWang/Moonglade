@@ -1,6 +1,5 @@
 using LiteBus.Commands.Abstractions;
 using LiteBus.Events.Abstractions;
-using Moonglade.Utils;
 
 namespace Moonglade.Features.Post;
 
@@ -24,10 +23,7 @@ public class PublishScheduledPostCommandHandler(BlogDbContext db, TimeProvider t
         var publishedTimeUtc = timeProvider.GetUtcNow().UtcDateTime;
         foreach (var post in scheduledPosts)
         {
-            post.PostStatus = PostStatus.Published;
-            post.PubDateUtc = publishedTimeUtc;
-            post.ScheduledPublishTimeUtc = null;
-            post.RouteLink = UrlHelper.GenerateRouteLink(post.PubDateUtc.GetValueOrDefault(), post.Slug);
+            PostEntityHelper.SetStatus(post, PostStatus.Published, publishedTimeUtc);
         }
 
         var rows = await db.SaveChangesAsync(ct);

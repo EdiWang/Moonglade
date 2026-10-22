@@ -24,7 +24,9 @@ public class UpdatePostCommandTests
         using var db = CreateDbContext();
         var postId = Guid.NewGuid();
         var originalPubDate = new DateTime(2024, 1, 2, 3, 4, 5, DateTimeKind.Utc);
-        db.Post.Add(CreatePostEntity(postId, PostStatus.Published, "old-slug", originalPubDate));
+        var existingPost = CreatePostEntity(postId, PostStatus.Published, "old-slug", originalPubDate);
+        existingPost.ScheduledPublishTimeUtc = DateTime.UtcNow.AddDays(1);
+        db.Post.Add(existingPost);
         await db.SaveChangesAsync(TestContext.Current.CancellationToken);
 
         var handler = CreateHandler(db);
@@ -36,15 +38,20 @@ public class UpdatePostCommandTests
         var post = await db.Post.SingleAsync(p => p.Id == postId, TestContext.Current.CancellationToken);
         Assert.Equal(originalPubDate, post.PubDateUtc);
         Assert.Equal(originalPubDate, result.PubDateUtc);
-        Assert.Contains("new-slug", post.RouteLink);
+        Assert.Equal("2024/1/2/new-slug", post.RouteLink);
+        Assert.Null(post.ScheduledPublishTimeUtc);
     }
 
-    [Fact]
-    public async Task HandleAsync_DraftToPublished_SetsPublishDateAndRouteLink()
+    [Theory]
+    [InlineData(PostStatus.Draft)]
+    [InlineData(PostStatus.Scheduled)]
+    public async Task HandleAsync_UnpublishedToPublished_SetsPublishDateAndClearsSchedule(PostStatus previousStatus)
     {
         using var db = CreateDbContext();
         var postId = Guid.NewGuid();
-        db.Post.Add(CreatePostEntity(postId, PostStatus.Draft, "draft-post"));
+        var existingPost = CreatePostEntity(postId, previousStatus, "unpublished-post");
+        existingPost.ScheduledPublishTimeUtc = previousStatus == PostStatus.Scheduled ? DateTime.UtcNow.AddDays(1) : null;
+        db.Post.Add(existingPost);
         await db.SaveChangesAsync(TestContext.Current.CancellationToken);
 
         var handler = CreateHandler(db);
@@ -60,14 +67,21 @@ public class UpdatePostCommandTests
         Assert.InRange(post.PubDateUtc.Value, before, after);
         Assert.NotNull(result.RouteLink);
         Assert.Contains("test-post", result.RouteLink);
+        Assert.Equal(result.RouteLink, post.RouteLink);
+        Assert.Null(post.ScheduledPublishTimeUtc);
     }
 
-    [Fact]
-    public async Task HandleAsync_ToDraft_ClearsPublishScheduleAndRouteLink()
+    [Theory]
+    [InlineData(PostStatus.Published)]
+    [InlineData(PostStatus.Scheduled)]
+    public async Task HandleAsync_ToDraft_ClearsPublishScheduleAndRouteLink(PostStatus previousStatus)
     {
         using var db = CreateDbContext();
         var postId = Guid.NewGuid();
-        db.Post.Add(CreatePostEntity(postId, PostStatus.Published, "published-post", DateTime.UtcNow.AddDays(-1)));
+        var existingPost = CreatePostEntity(postId, previousStatus, "test-post",
+            previousStatus == PostStatus.Published ? DateTime.UtcNow.AddDays(-1) : null);
+        existingPost.ScheduledPublishTimeUtc = previousStatus == PostStatus.Scheduled ? DateTime.UtcNow.AddDays(1) : null;
+        db.Post.Add(existingPost);
         await db.SaveChangesAsync(TestContext.Current.CancellationToken);
 
         var handler = CreateHandler(db);
@@ -82,12 +96,18 @@ public class UpdatePostCommandTests
         Assert.Null(result.RouteLink);
     }
 
-    [Fact]
-    public async Task HandleAsync_ToScheduled_SetsScheduledTimeAndClearsPublishedRoute()
+    [Theory]
+    [InlineData(PostStatus.Draft)]
+    [InlineData(PostStatus.Scheduled)]
+    [InlineData(PostStatus.Published)]
+    public async Task HandleAsync_ToScheduled_SetsScheduledTimeAndClearsPublishedRoute(PostStatus previousStatus)
     {
         using var db = CreateDbContext();
         var postId = Guid.NewGuid();
-        db.Post.Add(CreatePostEntity(postId, PostStatus.Published, "published-post", DateTime.UtcNow.AddDays(-1)));
+        var existingPost = CreatePostEntity(postId, previousStatus, "test-post",
+            previousStatus == PostStatus.Published ? DateTime.UtcNow.AddDays(-1) : null);
+        existingPost.ScheduledPublishTimeUtc = previousStatus == PostStatus.Scheduled ? DateTime.UtcNow.AddHours(1) : null;
+        db.Post.Add(existingPost);
         await db.SaveChangesAsync(TestContext.Current.CancellationToken);
 
         var scheduledTime = DateTime.UtcNow.AddDays(1);
@@ -168,6 +188,29 @@ public class UpdatePostCommandTests
             handler.HandleAsync(new UpdatePostCommand(postId, CreatePostEditModel(PostStatus.Draft)), TestContext.Current.CancellationToken));
 
         Assert.Contains(postId.ToString(), exception.Message);
+    }
+
+    [Theory]
+    [InlineData(PostStatus.Default)]
+    [InlineData(PostStatus.Deleted)]
+    [InlineData((PostStatus)99)]
+    public async Task HandleAsync_InvalidWriteStatus_DoesNotPersistChanges(PostStatus status)
+    {
+        using var db = CreateDbContext();
+        var postId = Guid.NewGuid();
+        var pubDateUtc = new DateTime(2024, 1, 2, 3, 4, 5, DateTimeKind.Utc);
+        var post = CreatePostEntity(postId, PostStatus.Published, "published-post", pubDateUtc);
+        db.Post.Add(post);
+        await db.SaveChangesAsync(TestContext.Current.CancellationToken);
+        var handler = CreateHandler(db);
+
+        await Assert.ThrowsAsync<ArgumentOutOfRangeException>(() =>
+            handler.HandleAsync(new UpdatePostCommand(postId, CreatePostEditModel(status)), TestContext.Current.CancellationToken));
+
+        await db.Entry(post).ReloadAsync(TestContext.Current.CancellationToken);
+        Assert.Equal(PostStatus.Published, post.PostStatus);
+        Assert.Equal(pubDateUtc, post.PubDateUtc);
+        Assert.Equal("published-post", post.Slug);
     }
 
     private static UpdatePostCommandHandler CreateHandler(BlogDbContext db)

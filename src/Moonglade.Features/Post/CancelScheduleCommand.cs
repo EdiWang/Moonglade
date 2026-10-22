@@ -23,10 +23,7 @@ public class CancelScheduleCommandHandler(
             return;
         }
 
-        post.PostStatus = PostStatus.Draft;
-        post.ScheduledPublishTimeUtc = null;
-        post.RouteLink = null;
-        post.PubDateUtc = null;
+        PostEntityHelper.SetStatus(post, PostStatus.Draft);
         post.LastModifiedUtc = DateTime.UtcNow;
 
         if (await db.SaveChangesAsync(ct) > 0)
