@@ -19,8 +19,7 @@ public class CommentController(
         IBlogConfig blogConfig,
         ICommentSubmissionGuard submissionGuard,
         IEventMediator eventMediator,
-        ILogger<CommentController> logger,
-        IConfiguration configuration) : BlogControllerBase(commandMediator)
+        ILogger<CommentController> logger) : BlogControllerBase(commandMediator)
 {
     [HttpPost("{postId:guid}")]
     [AllowAnonymous]
@@ -144,7 +143,7 @@ public class CommentController(
         var count = await queryMediator.QueryAsync(new CountCommentsQuery(filter));
 
         // Convert markdown to HTML for display
-        var enableLinks = configuration.GetValue<bool>("CommentMarkdown:EnableLinks");
+        var enableLinks = blogConfig.CommentSettings.EnableMarkdownLinks;
         var commentsWithHtml = comments.Select(c => new CommentListItem(
             c.Id,
             c.Username,

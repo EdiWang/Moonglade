@@ -1,6 +1,6 @@
 using Microsoft.Data.Sqlite;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using Moonglade.Configuration;
 using Moonglade.Data;
 using Moonglade.Data.Entities;
 using Moonglade.Features.Comment;
@@ -31,9 +31,11 @@ public class CommentManagementCommandTests
         db.Comment.Add(CreateCommentEntity(commentId, postId, isApproved: true));
         await db.SaveChangesAsync(TestContext.Current.CancellationToken);
 
-        var configuration = new ConfigurationBuilder().AddInMemoryCollection().Build();
-        configuration["CommentMarkdown:EnableLinks"] = enableLinks.ToString();
-        var handler = new ReplyCommentCommandHandler(Mock.Of<ILogger<ReplyCommentCommandHandler>>(), db, configuration);
+        var blogConfig = new BlogConfig
+        {
+            CommentSettings = new CommentSettings { EnableMarkdownLinks = enableLinks }
+        };
+        var handler = new ReplyCommentCommandHandler(Mock.Of<ILogger<ReplyCommentCommandHandler>>(), db, blogConfig);
 
         const string markdown = "**Thanks** [example](https://example.com)";
         var result = await handler.HandleAsync(new ReplyCommentCommand(commentId, markdown), TestContext.Current.CancellationToken);
@@ -66,7 +68,7 @@ public class CommentManagementCommandTests
     {
         using var db = CreateDbContext();
         var commentId = Guid.NewGuid();
-        var handler = new ReplyCommentCommandHandler(Mock.Of<ILogger<ReplyCommentCommandHandler>>(), db, new ConfigurationBuilder().Build());
+        var handler = new ReplyCommentCommandHandler(Mock.Of<ILogger<ReplyCommentCommandHandler>>(), db, new BlogConfig());
 
         var exception = await Assert.ThrowsAsync<InvalidOperationException>(() =>
             handler.HandleAsync(new ReplyCommentCommand(commentId, "Reply"), TestContext.Current.CancellationToken));

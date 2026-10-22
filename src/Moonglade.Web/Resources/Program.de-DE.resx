@@ -2007,4 +2007,7 @@
   <data name="Applies to new posts only." xml:space="preserve">
     <value>Gilt nur für neue Beiträge.</value>
   </data>
+  <data name="Enable Markdown links in comments and replies" xml:space="preserve">
+    <value>Markdown-Links in Kommentaren und Antworten aktivieren</value>
+  </data>
 </root>

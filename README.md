@@ -149,7 +149,7 @@ For Microsoft Entra ID, use the tenant-specific authority `https://login.microso
 
 ### Comment Markdown Links
 
-Comment Markdown links are disabled by default. Set `CommentMarkdown:EnableLinks` to `true` in `appsettings.json` (or `CommentMarkdown__EnableLinks=true` through an environment variable) to enable hyperlinks. When disabled, links retain their original Markdown syntax and URL as plain text; other Markdown formatting still renders. This setting applies to comments and replies in public pages, the admin portal, and generated email notifications. Stored content and post Markdown are unchanged. Enabled links retain protocol validation and `rel="nofollow ugc noopener noreferrer"`.
+Comment Markdown links are disabled by default. Enable **Settings > Comments > Enable Markdown links in comments and replies** (`/admin/settings/comment`) to allow hyperlinks. The setting is stored in the database and takes effect without a restart. The former `CommentMarkdown:EnableLinks` application configuration key is no longer used or imported. When disabled, links retain their original Markdown syntax and URL as plain text; other Markdown formatting still renders. This setting applies to comments and replies in public pages, the admin portal, and newly generated email notifications; emails already queued retain their generated content. Stored comments and post Markdown are unchanged. Enabled links retain protocol validation and `rel="nofollow ugc noopener noreferrer"`.
 
 ### Comment Rate Limiting
 

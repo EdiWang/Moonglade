@@ -44,7 +44,6 @@ Important configuration areas:
 | `Authentication:Totp:Issuer` | Display issuer for local-account authenticator app QR codes. | Optional | Defaults to `Moonglade`; the TOTP secret is stored in `LocalAccountSettings`. |
 | `Authentication:Totp:Required` | Requires local-account authenticator verification after password sign-in. | Optional | Defaults to `true`; `false` is honored only in the `Development` environment. |
 | `Authentication:LocalAccountRateLimit` | Fixed-window rate limiting for local password sign-in and TOTP verification attempts. | Optional | Defaults to enabled, 10 attempts per 1 minute, partitioned by client IP and account context. |
-| `CommentMarkdown:EnableLinks` | Enables Markdown hyperlinks in comments and replies. | Optional | Defaults to `false`; disabled links retain their original syntax and URLs as plain text across public/admin rendering and generated email notifications. Post Markdown is unaffected. |
 | `CommentRateLimit` | Built-in comment submission rate limiting by client IP and post ID. | Optional | Uses a fixed window policy. |
 | `CommentSubmissionGuard` | Built-in comment honeypot and elapsed-time checks. | Optional | Rejects filled honeypot fields, too-fast submissions, and stale form timestamps. |
 | `Webmention` | Webmention options, including source rate limiting. | Optional | Preserve protocol endpoint behavior. |
@@ -74,6 +73,7 @@ Important configuration areas:
 
 - The public comment entry point is `Moonglade.Web.Controllers.CommentController`; comment creation is handled by `Moonglade.Features.Comment.CreateCommentCommand`.
 - Whether comments are enabled, require review, close after a number of days, or use word filtering comes from `IBlogConfig.CommentSettings`.
+- `CommentSettings.EnableMarkdownLinks` is managed at `/admin/settings/comment` and defaults to `false`. It controls comment/reply hyperlinks in public/admin rendering and newly generated email notifications. Disabled links retain their original syntax and URLs as plain text; post Markdown is unaffected. The former `CommentMarkdown:EnableLinks` application configuration key is no longer read or imported.
 - Built-in comment creation is also protected by host-level `CommentRateLimit` settings that partition requests by client IP and post ID.
 - Built-in comment creation checks `CommentSubmissionGuard` honeypot and elapsed-time fields before dispatching the create command.
 - Content moderation is abstracted in `Moonglade.Moderation` and supports local keyword filtering. Do not put moderation behavior directly in controllers.

@@ -1,10 +1,9 @@
 ﻿@using Moonglade.Data.DTO
 @using Moonglade.Utils
 @model List<Comment>
-@inject Microsoft.Extensions.Configuration.IConfiguration Configuration
 
 @{
-    var enableLinks = Configuration.GetValue<bool>("CommentMarkdown:EnableLinks");
+    var enableLinks = BlogConfig.CommentSettings.EnableMarkdownLinks;
     static string GetUserAvatarChar(string username)
     {
         if (string.IsNullOrWhiteSpace(username))

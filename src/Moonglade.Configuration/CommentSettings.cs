@@ -21,6 +21,9 @@ public class CommentSettings : IBlogSettings<CommentSettings>
     [Display(Name = "Enable Gravatar in comment list")]
     public bool EnableGravatar { get; set; }
 
+    [Display(Name = "Enable Markdown links in comments and replies")]
+    public bool EnableMarkdownLinks { get; set; }
+
     [Display(Name = "Comments require review and approval")]
     public bool RequireCommentReview { get; set; }
 

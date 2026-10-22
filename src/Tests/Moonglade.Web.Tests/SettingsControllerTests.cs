@@ -29,6 +29,33 @@ namespace Moonglade.Web.Tests;
 public class SettingsControllerTests
 {
     [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public async Task Comment_PersistsMarkdownLinksAndUpdatesRuntimeSettings(bool enableLinks)
+    {
+        var blogConfig = new BlogConfig
+        {
+            CommentSettings = new CommentSettings { EnableMarkdownLinks = !enableLinks }
+        };
+        var commandMediator = new RecordingCommandMediator();
+        var controller = CreateController(
+            blogConfig,
+            commandMediator,
+            Mock.Of<IQueryMediator>(),
+            new Mock<IAuthenticationService>());
+        var model = new CommentSettings { EnableMarkdownLinks = enableLinks };
+
+        var result = await controller.Comment(model);
+
+        Assert.IsType<NoContentResult>(result);
+        Assert.Equal(enableLinks, blogConfig.CommentSettings.EnableMarkdownLinks);
+        var update = commandMediator.Single<UpdateConfigurationCommand>();
+        Assert.Equal(nameof(CommentSettings), update.Name);
+        Assert.Equal(enableLinks, update.Json.FromJson<CommentSettings>().EnableMarkdownLinks);
+        Assert.Equal(EventType.SettingsCommentUpdated, commandMediator.Single<CreateActivityLogCommand>().EventType);
+    }
+
+    [Theory]
     [InlineData(EditorChoice.Html)]
     [InlineData(EditorChoice.Markdown)]
     public async Task Content_PersistsDefaultEditorAndUpdatesRuntimeSettings(EditorChoice editor)

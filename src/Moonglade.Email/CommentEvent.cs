@@ -1,5 +1,4 @@
 using LiteBus.Events.Abstractions;
-using Microsoft.Extensions.Configuration;
 using Moonglade.Configuration;
 using Moonglade.Email.Core;
 using Moonglade.Utils;
@@ -17,8 +16,7 @@ public record CommentEvent(
 public class CommentNotificationEventHandler(
     IEmailNotificationQueue queue,
     IBlogConfig blogConfig,
-    EmailCapabilityStatus capabilityStatus,
-    IConfiguration configuration) : IEventHandler<CommentEvent>
+    EmailCapabilityStatus capabilityStatus) : IEventHandler<CommentEvent>
 {
     public async Task HandleAsync(CommentEvent notification, CancellationToken ct)
     {
@@ -34,7 +32,7 @@ public class CommentNotificationEventHandler(
             IpAddress = notification.IPAddress,
             PostTitle = notification.PostTitle,
             CommentContent = ContentProcessor.MarkdownToCommentHtml(notification.CommentContent,
-                configuration.GetValue<bool>("CommentMarkdown:EnableLinks"))
+                blogConfig.CommentSettings.EnableMarkdownLinks)
         };
 
         await queue.EnqueueAsync(new EmailNotification

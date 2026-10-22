@@ -2007,4 +2007,7 @@
   <data name="Applies to new posts only." xml:space="preserve">
     <value>僅適用於新建文章。</value>
   </data>
+  <data name="Enable Markdown links in comments and replies" xml:space="preserve">
+    <value>啟用評論及回覆中的 Markdown 連結</value>
+  </data>
 </root>

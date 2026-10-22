@@ -3,7 +3,6 @@ using LiteBus.Events.Abstractions;
 using LiteBus.Queries.Abstractions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Moonglade.ActivityLog;
 using Moonglade.Configuration;
@@ -322,9 +321,8 @@ public class CommentControllerTests
         _queryMediator
             .Setup(x => x.QueryAsync(It.IsAny<CountCommentsQuery>(), It.IsAny<QueryMediationSettings>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(12);
-        var configuration = new ConfigurationBuilder().AddInMemoryCollection().Build();
-        configuration["CommentMarkdown:EnableLinks"] = enableLinks?.ToString();
-        var controller = CreateController(configuration: configuration);
+        var controller = CreateController();
+        _blogConfig.CommentSettings.EnableMarkdownLinks = enableLinks ?? false;
 
         var result = await controller.List(2, 10, filter);
 
@@ -524,8 +522,7 @@ public class CommentControllerTests
         string? username = null,
         IPAddress? remoteIpAddress = null,
         string? userAgent = null,
-        Action<DefaultHttpContext>? configureHttpContext = null,
-        IConfiguration? configuration = null)
+        Action<DefaultHttpContext>? configureHttpContext = null)
     {
         var controller = new CommentController(
             _commandMediator,
@@ -534,7 +531,7 @@ public class CommentControllerTests
             _blogConfig,
             _submissionGuard.Object,
             _eventMediator.Object,
-            Mock.Of<ILogger<CommentController>>(), configuration ?? new ConfigurationBuilder().Build());
+            Mock.Of<ILogger<CommentController>>());
         var httpContext = new DefaultHttpContext();
         httpContext.Request.Scheme = "https";
         httpContext.Request.Host = new HostString("blog.example.com");
