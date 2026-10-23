@@ -2,6 +2,7 @@
 using LiteBus.Queries.Abstractions;
 using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Options;
+using Moonglade.ActivityLog;
 using Moonglade.Data.DTO;
 using Moonglade.Features.Category;
 using Moonglade.Features.Post;
@@ -72,7 +73,13 @@ public class PostController(
     [HttpDelete("{postId:guid}/recycle")]
     public async Task<IActionResult> Delete([NotEmpty] Guid postId)
     {
-        await CommandMediator.SendAsync(new RecyclePostCommand(postId, CreatePostOperationContext()));
+        await CommandMediator.SendAsync(new DeletePostCommand(postId, SoftDelete: true));
+
+        await LogActivityAsync(
+            EventType.PostDeleted,
+            "Delete Post (Move to Recycle Bin)",
+            $"Post #{postId}",
+            ActivityLogMetaData.Create(("PostId", postId)));
 
         return NoContent();
     }
@@ -80,7 +87,13 @@ public class PostController(
     [HttpPut("{postId:guid}/publish")]
     public async Task<IActionResult> Publish([NotEmpty] Guid postId)
     {
-        await CommandMediator.SendAsync(new PublishPostWorkflowCommand(postId, CreatePostOperationContext()));
+        await CommandMediator.SendAsync(new PublishPostCommand(postId));
+
+        await LogActivityAsync(
+            EventType.PostPublished,
+            "Publish Post",
+            $"Post #{postId}",
+            ActivityLogMetaData.Create(("PostId", postId)));
 
         return NoContent();
     }
@@ -88,7 +101,13 @@ public class PostController(
     [HttpPut("{postId:guid}/unpublish")]
     public async Task<IActionResult> Unpublish([NotEmpty] Guid postId)
     {
-        await CommandMediator.SendAsync(new UnpublishPostWorkflowCommand(postId, CreatePostOperationContext()));
+        await CommandMediator.SendAsync(new UnpublishPostCommand(postId));
+
+        await LogActivityAsync(
+            EventType.PostUnpublished,
+            "Unpublish Post",
+            $"Post #{postId}",
+            ActivityLogMetaData.Create(("PostId", postId)));
 
         return NoContent();
     }

@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Options;
+using Moonglade.ActivityLog;
 using Moonglade.Configuration;
 using Moonglade.Data;
 using Moonglade.Data.DTO;
@@ -15,12 +16,77 @@ using Moonglade.Web.Commands;
 using Moonglade.Web.Controllers;
 using Moonglade.Web.Models;
 using Moq;
+using System.Net;
+using System.Security.Claims;
 using System.Text.Json;
 
 namespace Moonglade.Web.Tests;
 
 public class PostControllerTests
 {
+    [Theory]
+    [InlineData("recycle", EventType.PostDeleted, "Delete Post (Move to Recycle Bin)")]
+    [InlineData("publish", EventType.PostPublished, "Publish Post")]
+    [InlineData("unpublish", EventType.PostUnpublished, "Unpublish Post")]
+    public async Task StateChange_DispatchesFeatureCommandThenActivityLog(
+        string operation, EventType eventType, string logOperation)
+    {
+        var commands = new List<ICommand>();
+        var commandMediator = new Mock<ICommandMediator>();
+        commandMediator
+            .Setup(mediator => mediator.SendAsync(
+                It.IsAny<ICommand>(), It.IsAny<CommandMediationSettings>(), It.IsAny<CancellationToken>()))
+            .Callback<ICommand, CommandMediationSettings, CancellationToken>((command, _, _) => commands.Add(command))
+            .Returns(Task.CompletedTask);
+        var controller = CreateStateChangeController(commandMediator.Object);
+        var postId = Guid.NewGuid();
+
+        var result = await InvokeStateChangeAsync(controller, operation, postId);
+
+        Assert.IsType<NoContentResult>(result);
+        Assert.Equal(2, commands.Count);
+        ICommand expectedCommand = operation switch
+        {
+            "recycle" => new DeletePostCommand(postId, SoftDelete: true),
+            "publish" => new PublishPostCommand(postId),
+            "unpublish" => new UnpublishPostCommand(postId),
+            _ => throw new ArgumentOutOfRangeException(nameof(operation))
+        };
+        Assert.Equal(expectedCommand, commands[0]);
+        var activity = Assert.IsType<CreateActivityLogCommand>(commands[1]);
+        Assert.Equal(eventType, activity.EventType);
+        Assert.Equal(logOperation, activity.Operation);
+        Assert.Equal($"Post #{postId}", activity.TargetName);
+        Assert.Equal("admin", activity.ActorId);
+        Assert.Equal("192.0.2.1", activity.IpAddress);
+        Assert.Equal("post-controller-test", activity.UserAgent);
+        var metadata = Assert.IsAssignableFrom<IReadOnlyDictionary<string, object?>>(activity.MetaData);
+        Assert.Equal(postId, Assert.Single(metadata).Value);
+        Assert.True(metadata.ContainsKey("PostId"));
+    }
+
+    [Theory]
+    [InlineData("recycle")]
+    [InlineData("publish")]
+    [InlineData("unpublish")]
+    public async Task StateChange_FeatureCommandFails_DoesNotWriteSuccessActivity(string operation)
+    {
+        var commandMediator = new Mock<ICommandMediator>();
+        var failure = new InvalidOperationException("Write failed.");
+        commandMediator
+            .Setup(mediator => mediator.SendAsync(
+                It.IsAny<ICommand>(), It.IsAny<CommandMediationSettings>(), It.IsAny<CancellationToken>()))
+            .ThrowsAsync(failure);
+        var controller = CreateStateChangeController(commandMediator.Object);
+
+        var exception = await Assert.ThrowsAsync<InvalidOperationException>(() =>
+            InvokeStateChangeAsync(controller, operation, Guid.NewGuid()));
+
+        Assert.Same(failure, exception);
+        commandMediator.Verify(mediator => mediator.SendAsync(
+            It.IsAny<CreateActivityLogCommand>(), It.IsAny<CommandMediationSettings>(), It.IsAny<CancellationToken>()), Times.Never);
+    }
+
     [Fact]
     public async Task GetMeta_UsesCurrentDefaultEditorWithoutRestart()
     {
@@ -187,4 +253,28 @@ public class PostControllerTests
             dispatchedCommand.Payload.ScheduledPublishTimeUtc);
         Assert.Equal(DateTimeKind.Utc, dispatchedCommand.Payload.ScheduledPublishTimeUtc!.Value.Kind);
     }
+    private static PostController CreateStateChangeController(ICommandMediator commandMediator)
+    {
+        var controller = new PostController(
+            commandMediator,
+            Mock.Of<IQueryMediator>(),
+            new BlogConfig(),
+            Mock.Of<IStringLocalizer<Program>>())
+        {
+            ControllerContext = new ControllerContext { HttpContext = new DefaultHttpContext() }
+        };
+        controller.HttpContext.User = new ClaimsPrincipal(new ClaimsIdentity(
+            [new Claim(ClaimTypes.Name, "admin")], "test"));
+        controller.HttpContext.Connection.RemoteIpAddress = IPAddress.Parse("192.0.2.1");
+        controller.Request.Headers.UserAgent = "post-controller-test";
+        return controller;
+    }
+
+    private static Task<IActionResult> InvokeStateChangeAsync(PostController controller, string operation, Guid postId) => operation switch
+    {
+        "recycle" => controller.Delete(postId),
+        "publish" => controller.Publish(postId),
+        "unpublish" => controller.Unpublish(postId),
+        _ => throw new ArgumentOutOfRangeException(nameof(operation))
+    };
 }

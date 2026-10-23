@@ -152,69 +152,6 @@ public class SavePostCommandHandler(
 
 }
 
-public record RecyclePostCommand(Guid PostId, PostOperationContext Context) : ICommand;
-
-public class RecyclePostCommandHandler(
-    ICommandMediator commandMediator) : ICommandHandler<RecyclePostCommand>
-{
-    public async Task HandleAsync(RecyclePostCommand request, CancellationToken ct)
-    {
-        await commandMediator.SendAsync(new DeletePostCommand(request.PostId, true), ct);
-
-        await PostActivityLogger.LogAsync(
-            commandMediator,
-            request.Context,
-            EventType.PostDeleted,
-            "Delete Post (Move to Recycle Bin)",
-            $"Post #{request.PostId}",
-            ActivityLogMetaData.Create(("PostId", request.PostId)),
-            ct);
-    }
-
-}
-
-public record PublishPostWorkflowCommand(Guid PostId, PostOperationContext Context) : ICommand;
-
-public class PublishPostWorkflowCommandHandler(
-    ICommandMediator commandMediator) : ICommandHandler<PublishPostWorkflowCommand>
-{
-    public async Task HandleAsync(PublishPostWorkflowCommand request, CancellationToken ct)
-    {
-        await commandMediator.SendAsync(new PublishPostCommand(request.PostId), ct);
-
-        await PostActivityLogger.LogAsync(
-            commandMediator,
-            request.Context,
-            EventType.PostPublished,
-            "Publish Post",
-            $"Post #{request.PostId}",
-            ActivityLogMetaData.Create(("PostId", request.PostId)),
-            ct);
-    }
-
-}
-
-public record UnpublishPostWorkflowCommand(Guid PostId, PostOperationContext Context) : ICommand;
-
-public class UnpublishPostWorkflowCommandHandler(
-    ICommandMediator commandMediator) : ICommandHandler<UnpublishPostWorkflowCommand>
-{
-    public async Task HandleAsync(UnpublishPostWorkflowCommand request, CancellationToken ct)
-    {
-        await commandMediator.SendAsync(new UnpublishPostCommand(request.PostId), ct);
-
-        await PostActivityLogger.LogAsync(
-            commandMediator,
-            request.Context,
-            EventType.PostUnpublished,
-            "Unpublish Post",
-            $"Post #{request.PostId}",
-            ActivityLogMetaData.Create(("PostId", request.PostId)),
-            ct);
-    }
-
-}
-
 file static class PostActivityLogger
 {
     public static async Task LogAsync(

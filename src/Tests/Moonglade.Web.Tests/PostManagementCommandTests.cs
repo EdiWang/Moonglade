@@ -82,44 +82,6 @@ public class PostManagementCommandTests
         Assert.Equal(EventType.PostUpdated, _commandMediator.Single<CreateActivityLogCommand>().EventType);
     }
 
-    [Fact]
-    public async Task PublishPostWorkflowCommand_PublishesPostAndWritesActivityLog()
-    {
-        var postId = Guid.NewGuid();
-        var handler = new PublishPostWorkflowCommandHandler(_commandMediator);
-
-        await handler.HandleAsync(new PublishPostWorkflowCommand(postId, CreateContext()), TestContext.Current.CancellationToken);
-
-        Assert.Equal(postId, _commandMediator.Single<PublishPostCommand>().Id);
-        Assert.Equal(EventType.PostPublished, _commandMediator.Single<CreateActivityLogCommand>().EventType);
-    }
-
-    [Fact]
-    public async Task UnpublishPostWorkflowCommand_UnpublishesPostAndWritesActivityLog()
-    {
-        var postId = Guid.NewGuid();
-        var handler = new UnpublishPostWorkflowCommandHandler(_commandMediator);
-
-        await handler.HandleAsync(new UnpublishPostWorkflowCommand(postId, CreateContext()), TestContext.Current.CancellationToken);
-
-        Assert.Equal(postId, _commandMediator.Single<UnpublishPostCommand>().Id);
-        Assert.Equal(EventType.PostUnpublished, _commandMediator.Single<CreateActivityLogCommand>().EventType);
-    }
-
-    [Fact]
-    public async Task RecyclePostCommand_MovesPostToRecycleBinAndWritesActivityLog()
-    {
-        var postId = Guid.NewGuid();
-        var handler = new RecyclePostCommandHandler(_commandMediator);
-
-        await handler.HandleAsync(new RecyclePostCommand(postId, CreateContext()), TestContext.Current.CancellationToken);
-
-        var deleteCommand = _commandMediator.Single<DeletePostCommand>();
-        Assert.Equal(postId, deleteCommand.Id);
-        Assert.True(deleteCommand.SoftDelete);
-        Assert.Equal(EventType.PostDeleted, _commandMediator.Single<CreateActivityLogCommand>().EventType);
-    }
-
     private SavePostCommandHandler CreateSavePostHandler(ScheduledPublishWakeUp? wakeUp = null)
     {
         var configuration = new ConfigurationBuilder()
