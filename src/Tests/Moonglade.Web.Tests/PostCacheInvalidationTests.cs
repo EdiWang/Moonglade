@@ -83,7 +83,9 @@ public class PostCacheInvalidationTests
             "scheduled-publish" => mediator.SendAsync(new PublishScheduledPostCommand(), ct),
             "category-update" => mediator.SendAsync(new UpdateCategoryCommand
             {
-                Id = environment.CategoryId, DisplayName = "Updated category", Slug = "updated"
+                Id = environment.CategoryId,
+                DisplayName = "Updated category",
+                Slug = "updated"
             }, ct),
             "category-delete" => mediator.SendAsync(new DeleteCategoryCommand(environment.CategoryId), ct),
             "tag-update" => mediator.SendAsync(new UpdateTagCommand(environment.TagId, "updated"), ct),
@@ -315,7 +317,10 @@ public class PostCacheInvalidationTests
             {
                 GeneralSettings = new GeneralSettings
                 {
-                    SiteTitle = "Test blog", Description = "Test", Copyright = "Test", DefaultLanguageCode = "en-us",
+                    SiteTitle = "Test blog",
+                    Description = "Test",
+                    Copyright = "Test",
+                    DefaultLanguageCode = "en-us",
                     OwnerEmail = "owner@example.com"
                 },
                 ContentSettings = new ContentSettings { EnableViewCount = false },
@@ -394,17 +399,36 @@ public class PostCacheInvalidationTests
 
         public PostEditModel EditModel() => new()
         {
-            PostId = PostId, Title = "New title", Slug = "new-post", Author = "Test author", EditorContent = "New content", Abstract = "New abstract",
-            PostStatus = PostStatus.Published, ContentType = "html", FeedIncluded = true, LanguageCode = "en-us",
-            SelectedCatIds = [CategoryId], Tags = "original"
+            PostId = PostId,
+            Title = "New title",
+            Slug = "new-post",
+            Author = "Test author",
+            EditorContent = "New content",
+            Abstract = "New abstract",
+            PostStatus = PostStatus.Published,
+            ContentType = "html",
+            FeedIncluded = true,
+            LanguageCode = "en-us",
+            SelectedCatIds = [CategoryId],
+            Tags = "original"
         };
 
         public static PostEntity CreatePost(Guid id, DateTime publishDateUtc) => new()
         {
-            Id = id, Title = "Old title", Slug = "old-post", Author = "Test author", PostContent = "Old content", ContentAbstract = "Old abstract",
-            PostStatus = PostStatus.Published, PubDateUtc = publishDateUtc, CreateTimeUtc = publishDateUtc,
-            LastModifiedUtc = publishDateUtc, RouteLink = UrlHelper.GenerateRouteLink(publishDateUtc, "old-post"),
-            IsFeedIncluded = true, ContentLanguageCode = "en-us", ContentType = "html"
+            Id = id,
+            Title = "Old title",
+            Slug = "old-post",
+            Author = "Test author",
+            PostContent = "Old content",
+            ContentAbstract = "Old abstract",
+            PostStatus = PostStatus.Published,
+            PubDateUtc = publishDateUtc,
+            CreateTimeUtc = publishDateUtc,
+            LastModifiedUtc = publishDateUtc,
+            RouteLink = UrlHelper.GenerateRouteLink(publishDateUtc, "old-post"),
+            IsFeedIncluded = true,
+            ContentLanguageCode = "en-us",
+            ContentType = "html"
         };
 
         public void Dispose()

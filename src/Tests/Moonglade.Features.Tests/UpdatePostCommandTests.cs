@@ -1,9 +1,9 @@
+using LiteBus.Events.Abstractions;
 using Microsoft.Extensions.Logging;
 using Moonglade.Data;
 using Moonglade.Data.Entities;
 using Moonglade.Features.Post;
 using Moq;
-using LiteBus.Events.Abstractions;
 
 namespace Moonglade.Features.Tests;
 

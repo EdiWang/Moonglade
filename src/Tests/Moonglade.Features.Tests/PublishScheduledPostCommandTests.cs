@@ -1,7 +1,7 @@
+using LiteBus.Events.Abstractions;
 using Moonglade.Data;
 using Moonglade.Data.Entities;
 using Moonglade.Features.Post;
-using LiteBus.Events.Abstractions;
 
 namespace Moonglade.Features.Tests;
 

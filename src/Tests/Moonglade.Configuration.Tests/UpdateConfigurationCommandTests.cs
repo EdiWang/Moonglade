@@ -197,7 +197,9 @@ public class UpdateConfigurationCommandTests
     {
         db.BlogConfiguration.Add(new BlogConfigurationEntity
         {
-            CfgKey = typeof(T).Name, CfgValue = settings.ToJson(), LastModifiedTimeUtc = DateTime.UtcNow.AddDays(-1)
+            CfgKey = typeof(T).Name,
+            CfgValue = settings.ToJson(),
+            LastModifiedTimeUtc = DateTime.UtcNow.AddDays(-1)
         });
         await db.SaveChangesAsync(TestContext.Current.CancellationToken);
     }

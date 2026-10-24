@@ -31,7 +31,9 @@ internal sealed class ConfigurationCommandRecorder : ICommandMediator, IDisposab
         {
             Db.BlogConfiguration.Add(new BlogConfigurationEntity
             {
-                CfgKey = property.Name, CfgValue = property.GetValue(config).ToJson(), LastModifiedTimeUtc = DateTime.UtcNow
+                CfgKey = property.Name,
+                CfgValue = property.GetValue(config).ToJson(),
+                LastModifiedTimeUtc = DateTime.UtcNow
             });
         }
         Db.SaveChanges();

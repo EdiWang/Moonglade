@@ -1,10 +1,10 @@
+using LiteBus.Events.Abstractions;
 using Microsoft.Data.Sqlite;
 using Microsoft.Extensions.Logging;
 using Moonglade.Data;
 using Moonglade.Data.Entities;
 using Moonglade.Features.Tag;
 using Moq;
-using LiteBus.Events.Abstractions;
 
 namespace Moonglade.Features.Tests;
 

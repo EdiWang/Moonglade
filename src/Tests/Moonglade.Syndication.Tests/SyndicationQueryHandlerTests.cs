@@ -106,19 +106,37 @@ public class SyndicationQueryHandlerTests
         var publishDate = new DateTime(2025, 1, 1, 0, 0, 0, DateTimeKind.Utc);
         var post = new PostEntity
         {
-            Id = Guid.NewGuid(), Title = "First Post", Slug = "first-post", Author = "Author",
-            PostContent = "Description", ContentAbstract = "Description", ContentType = "html",
-            ContentLanguageCode = "en-us", CreateTimeUtc = publishDate, PubDateUtc = publishDate,
-            RouteLink = "2025/1/1/first-post", PostStatus = PostStatus.Published, IsFeedIncluded = true
+            Id = Guid.NewGuid(),
+            Title = "First Post",
+            Slug = "first-post",
+            Author = "Author",
+            PostContent = "Description",
+            ContentAbstract = "Description",
+            ContentType = "html",
+            ContentLanguageCode = "en-us",
+            CreateTimeUtc = publishDate,
+            PubDateUtc = publishDate,
+            RouteLink = "2025/1/1/first-post",
+            PostStatus = PostStatus.Published,
+            IsFeedIncluded = true
         };
         post.PostCategory.Add(new PostCategoryEntity { PostId = post.Id, CategoryId = category.Id, Category = category });
         db.Post.Add(post);
         db.Post.Add(new PostEntity
         {
-            Id = Guid.NewGuid(), Title = "Other category post", Slug = "other-post", Author = "Author",
-            PostContent = "Other", ContentAbstract = "Other", ContentType = "html", ContentLanguageCode = "en-us",
-            CreateTimeUtc = publishDate, PubDateUtc = publishDate, RouteLink = "2025/1/1/other-post",
-            PostStatus = PostStatus.Published, IsFeedIncluded = true
+            Id = Guid.NewGuid(),
+            Title = "Other category post",
+            Slug = "other-post",
+            Author = "Author",
+            PostContent = "Other",
+            ContentAbstract = "Other",
+            ContentType = "html",
+            ContentLanguageCode = "en-us",
+            CreateTimeUtc = publishDate,
+            PubDateUtc = publishDate,
+            RouteLink = "2025/1/1/other-post",
+            PostStatus = PostStatus.Published,
+            IsFeedIncluded = true
         });
         await db.SaveChangesAsync(TestContext.Current.CancellationToken);
         return db;

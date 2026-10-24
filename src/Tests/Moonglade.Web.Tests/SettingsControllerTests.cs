@@ -1,5 +1,4 @@
 using Edi.AspNetCore.Utils;
-using LiteBus.Commands.Abstractions;
 using LiteBus.Events.Abstractions;
 using LiteBus.Queries.Abstractions;
 using Microsoft.AspNetCore.Authentication;
@@ -8,13 +7,12 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.AspNetCore.Routing;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Microsoft.EntityFrameworkCore;
 using Moonglade.ActivityLog;
 using Moonglade.Auth;
 using Moonglade.Configuration;
-using Moonglade.Data;
 using Moonglade.Email;
 using Moonglade.Email.Core;
 using Moonglade.Features.Asset;
@@ -370,7 +368,8 @@ public class SettingsControllerTests
 
         await Assert.ThrowsAsync<DbUpdateException>(() => controller.Image(new ImageSettings
         {
-            EnableCDNRedirect = true, CDNEndpoint = "https://cdn.example.com"
+            EnableCDNRedirect = true,
+            CDNEndpoint = "https://cdn.example.com"
         }, storage.Object));
 
         Assert.Same(originalGeneral, config.GeneralSettings);
