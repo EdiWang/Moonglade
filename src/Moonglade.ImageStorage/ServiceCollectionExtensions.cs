@@ -31,7 +31,7 @@ public static class ServiceCollectionExtensions
 
         services.AddSingleton(imageConfiguration)
             .AddSingleton<IBlogImageStorage, FileSystemImageStorage>()
-            .AddScoped<IFileNameGenerator, DatedGuidFileNameGenerator>();
+            .AddScoped<DatedGuidFileNameGenerator>();
 
         return services;
     }

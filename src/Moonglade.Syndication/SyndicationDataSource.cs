@@ -7,16 +7,10 @@ using Moonglade.Utils;
 
 namespace Moonglade.Syndication;
 
-public interface ISyndicationDataSource
-{
-    Task<List<FeedEntry>> GetFeedDataAsync(string catSlug = null);
-}
-
 public class SyndicationDataSource(
     IBlogConfig blogConfig,
     IHttpContextAccessor httpContextAccessor,
     BlogDbContext db)
-    : ISyndicationDataSource
 {
     private readonly string _baseUrl = $"{httpContextAccessor.HttpContext!.Request.Scheme}://{httpContextAccessor.HttpContext.Request.Host}";
 

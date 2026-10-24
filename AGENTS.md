@@ -170,6 +170,7 @@ Important configuration areas:
 - Use the latest applicable C# features while staying readable and consistent with nearby code.
 - Keep namespaces aligned with folders. Put new code in the project and feature folder that owns the behavior.
 - Use constructor injection. Do not introduce service locators or unnecessary static mutable state.
+- Startup services (`StartUpInitializer`, `ConfigInitializer`, `MigrationManager`, `SiteIconBuilder`), `DatedGuidFileNameGenerator`, `ImageUploadValidator`, `CommentSubmissionGuard`, and `SyndicationDataSource` use concrete constructor injection with their existing DI lifetimes. Do not add interfaces or virtual methods solely to mock them in tests. Keep contracts with actual application boundaries, such as image storage, configuration, moderation, email, and external communication.
 - Use async APIs end to end and pass `CancellationToken` through command/query handlers and EF Core calls where available.
 - Use UTC for persisted or cross-boundary timestamps. Convert to user/client time only at the UI or boundary layer.
 - Prefer nullable-safe code and explicit validation for public inputs.

@@ -10,10 +10,10 @@ public record GetRssStringQuery(string CategoryName = null) : IQuery<string>;
 
 public class GetRssStringQueryHandler : IQueryHandler<GetRssStringQuery, string>
 {
-    private readonly ISyndicationDataSource _sdds;
+    private readonly SyndicationDataSource _sdds;
     private readonly FeedGenerator _feedGenerator;
 
-    public GetRssStringQueryHandler(IBlogConfig blogConfig, ISyndicationDataSource sdds, IHttpContextAccessor httpContextAccessor)
+    public GetRssStringQueryHandler(IBlogConfig blogConfig, SyndicationDataSource sdds, IHttpContextAccessor httpContextAccessor)
     {
         _sdds = sdds;
 

@@ -11,11 +11,6 @@ using System.Text.RegularExpressions;
 
 namespace Moonglade.Setup;
 
-public interface IMigrationManager
-{
-    Task<MigrationResult> TryMigrationAsync(BlogDbContext context, CancellationToken cancellationToken = default);
-}
-
 public enum MigrationStatus
 {
     Success = 0,
@@ -35,7 +30,7 @@ public record MigrationResult(MigrationStatus Status, string ErrorMessage = null
 public partial class MigrationManager(
     ILogger<MigrationManager> logger,
     IConfiguration configuration,
-    IHostEnvironment hostEnvironment) : IMigrationManager
+    IHostEnvironment hostEnvironment)
 {
     public async Task<MigrationResult> TryMigrationAsync(BlogDbContext context, CancellationToken cancellationToken = default)
     {

@@ -13,7 +13,7 @@ public class AssetsController(
     IQueryMediator queryMediator,
     IWebHostEnvironment env,
     ILogger<AssetsController> logger,
-    ISiteIconBuilder siteIconBuilder,
+    SiteIconBuilder siteIconBuilder,
     ICommandMediator commandMediator) : BlogControllerBase(commandMediator)
 {
     [AllowAnonymous]

@@ -5,13 +5,7 @@ using Moonglade.Features.Asset;
 
 namespace Moonglade.Setup;
 
-public interface ISiteIconBuilder
-{
-    Task GenerateSiteIcons();
-    Task RegenerateSiteIcons(string base64Data);
-}
-
-public class SiteIconBuilder(ILogger<SiteIconBuilder> logger, IQueryMediator queryMediator, IWebHostEnvironment env) : ISiteIconBuilder
+public class SiteIconBuilder(ILogger<SiteIconBuilder> logger, IQueryMediator queryMediator, IWebHostEnvironment env)
 {
     public async Task GenerateSiteIcons()
     {

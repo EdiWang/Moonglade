@@ -10,11 +10,11 @@ public record GetAtomStringQuery(string Slug = null) : IQuery<string>;
 
 public class GetAtomStringQueryHandler : IQueryHandler<GetAtomStringQuery, string>
 {
-    private readonly ISyndicationDataSource _sdds;
+    private readonly SyndicationDataSource _sdds;
     private readonly IBlogConfig _blogConfig;
     private readonly FeedGenerator _feedGenerator;
 
-    public GetAtomStringQueryHandler(IBlogConfig blogConfig, ISyndicationDataSource sdds, IHttpContextAccessor httpContextAccessor)
+    public GetAtomStringQueryHandler(IBlogConfig blogConfig, SyndicationDataSource sdds, IHttpContextAccessor httpContextAccessor)
     {
         _sdds = sdds;
         _blogConfig = blogConfig;

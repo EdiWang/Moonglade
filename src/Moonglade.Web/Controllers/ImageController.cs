@@ -17,8 +17,8 @@ public class ImageController(
         ILogger<ImageController> logger,
         IBlogConfig blogConfig,
         IMemoryCache cache,
-        IFileNameGenerator fileNameGen,
-        IImageUploadValidator imageUploadValidator,
+        DatedGuidFileNameGenerator fileNameGen,
+        ImageUploadValidator imageUploadValidator,
         IOptions<ImageStorageSettings> imageStorageSettings,
         CannonService cannonService,
         ICommandMediator commandMediator)

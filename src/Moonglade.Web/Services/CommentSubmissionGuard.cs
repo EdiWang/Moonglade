@@ -4,11 +4,6 @@ using Microsoft.Extensions.Options;
 
 namespace Moonglade.Web.Services;
 
-public interface ICommentSubmissionGuard
-{
-    CommentSubmissionGuardResult Validate(CommentRequest? request);
-}
-
 public record CommentSubmissionGuardResult(bool Succeeded, string? ModelStateKey = null, string? ErrorMessage = null)
 {
     public static CommentSubmissionGuardResult Success { get; } = new(true);
@@ -19,7 +14,7 @@ public record CommentSubmissionGuardResult(bool Succeeded, string? ModelStateKey
 
 public class CommentSubmissionGuard(
     IOptionsMonitor<CommentSubmissionGuardOptions> options,
-    TimeProvider timeProvider) : ICommentSubmissionGuard
+    TimeProvider timeProvider)
 {
     private const string InvalidSubmissionMessage = "Invalid comment submission.";
 

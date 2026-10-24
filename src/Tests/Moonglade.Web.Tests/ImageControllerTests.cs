@@ -22,7 +22,7 @@ namespace Moonglade.Web.Tests;
 public class ImageControllerTests
 {
     private readonly Mock<IBlogImageStorage> _imageStorage = new();
-    private readonly Mock<IFileNameGenerator> _fileNameGenerator = new();
+    private readonly DatedGuidFileNameGenerator _fileNameGenerator = new();
     private readonly RecordingCommandMediator _commandMediator = new();
     private readonly IMemoryCache _cache = new MemoryCache(new MemoryCacheOptions());
     private CannonService _cannonService = null!;
@@ -60,8 +60,8 @@ public class ImageControllerTests
         var storageConfiguration = FileSystemImageStorage.ResolveImageStoragePaths(primaryPath, originalPath);
         var storage = new FileSystemImageStorage(storageConfiguration, Mock.Of<ILogger<FileSystemImageStorage>>());
         var imageBytes = ValidSvgBytes();
-        _fileNameGenerator.Setup(x => x.GetFileName("photo.svg", "")).Returns("photo.svg");
-        _fileNameGenerator.Setup(x => x.GetFileName("photo.svg", "origin")).Returns("photo-origin.svg");
+        var primaryName = _fileNameGenerator.GetFileName("photo.svg");
+        var originalName = _fileNameGenerator.GetFileName("photo.svg", "origin");
         var controller = CreateController(
             new BlogConfig
             {
@@ -81,12 +81,12 @@ public class ImageControllerTests
             await StopCannonServiceAsync();
 
             var okResult = Assert.IsType<OkObjectResult>(uploadResult);
-            Assert.Equal("/image/photo.svg", okResult.Value!.GetType().GetProperty("Location")!.GetValue(okResult.Value));
-            Assert.True(File.Exists(Path.Combine(primaryPath, "photo.svg")));
-            Assert.True(File.Exists(Path.Combine(originalPath, "photo-origin.svg")));
-            Assert.False(File.Exists(Path.Combine(primaryPath, "photo-origin.svg")));
+            Assert.Equal($"/image/{primaryName}", okResult.Value!.GetType().GetProperty("Location")!.GetValue(okResult.Value));
+            Assert.True(File.Exists(Path.Combine(primaryPath, primaryName)));
+            Assert.True(File.Exists(Path.Combine(originalPath, originalName)));
+            Assert.False(File.Exists(Path.Combine(primaryPath, originalName)));
 
-            var originalResult = await controller.Image("photo-origin.svg", TestContext.Current.CancellationToken);
+            var originalResult = await controller.Image(originalName, TestContext.Current.CancellationToken);
             Assert.IsType<NotFoundResult>(originalResult);
         }
         finally
@@ -276,9 +276,8 @@ public class ImageControllerTests
     public async Task Image_Post_WhenValidFileAndWatermarkDisabled_SavesImageAndWritesActivityLog()
     {
         var imageBytes = ValidPngBytes();
-        _fileNameGenerator.Setup(x => x.GetFileName("photo.png", "")).Returns("photo-primary.png");
-        _fileNameGenerator.Setup(x => x.GetFileName("photo.png", "origin")).Returns("photo-origin.png");
-        _imageStorage.Setup(x => x.InsertAsync("photo-primary.png", It.IsAny<byte[]>())).ReturnsAsync("photo-cdn.png");
+        var primaryName = _fileNameGenerator.GetFileName("photo.png");
+        _imageStorage.Setup(x => x.InsertAsync(primaryName, It.IsAny<byte[]>())).ReturnsAsync("photo-cdn.png");
         var controller = CreateController(
             new BlogConfig { ImageSettings = new ImageSettings { IsWatermarkEnabled = false } },
             username: "admin",
@@ -291,7 +290,7 @@ public class ImageControllerTests
         var okResult = Assert.IsType<OkObjectResult>(result);
         Assert.Equal("/image/photo-cdn.png", okResult.Value!.GetType().GetProperty("Location")!.GetValue(okResult.Value));
         Assert.Equal("/image/photo-cdn.png", okResult.Value.GetType().GetProperty("Filename")!.GetValue(okResult.Value));
-        _imageStorage.Verify(x => x.InsertAsync("photo-primary.png", It.Is<byte[]>(bytes => bytes.SequenceEqual(imageBytes))), Times.Once);
+        _imageStorage.Verify(x => x.InsertAsync(primaryName, It.Is<byte[]>(bytes => bytes.SequenceEqual(imageBytes))), Times.Once);
         _imageStorage.Verify(x => x.InsertOriginalAsync(It.IsAny<string>(), It.IsAny<byte[]>()), Times.Never);
 
         var activityCommand = _commandMediator.Single<CreateActivityLogCommand>();
@@ -310,9 +309,8 @@ public class ImageControllerTests
     [Fact]
     public async Task Image_Post_WhenSkipWatermarkIsTrue_DoesNotStoreOriginalImage()
     {
-        _fileNameGenerator.Setup(x => x.GetFileName("photo.png", "")).Returns("photo-primary.png");
-        _fileNameGenerator.Setup(x => x.GetFileName("photo.png", "origin")).Returns("photo-origin.png");
-        _imageStorage.Setup(x => x.InsertAsync("photo-primary.png", It.IsAny<byte[]>())).ReturnsAsync("photo-primary.png");
+        var primaryName = _fileNameGenerator.GetFileName("photo.png");
+        _imageStorage.Setup(x => x.InsertAsync(primaryName, It.IsAny<byte[]>())).ReturnsAsync(primaryName);
         var controller = CreateController(new BlogConfig { ImageSettings = ImageSettings.DefaultValue });
         var file = CreateFormFile("photo.png", ValidPngBytes());
 
@@ -326,9 +324,9 @@ public class ImageControllerTests
     public async Task Image_Post_WhenWatermarkEnabledAndKeepOriginalEnabled_StoresOriginalImageInBackgroundQueue()
     {
         var imageBytes = ValidSvgBytes();
-        _fileNameGenerator.Setup(x => x.GetFileName("photo.svg", "")).Returns("photo.svg");
-        _fileNameGenerator.Setup(x => x.GetFileName("photo.svg", "origin")).Returns("photo-origin.svg");
-        _imageStorage.Setup(x => x.InsertAsync("photo.svg", It.IsAny<byte[]>())).ReturnsAsync("photo.svg");
+        var primaryName = _fileNameGenerator.GetFileName("photo.svg");
+        var originalName = _fileNameGenerator.GetFileName("photo.svg", "origin");
+        _imageStorage.Setup(x => x.InsertAsync(primaryName, It.IsAny<byte[]>())).ReturnsAsync(primaryName);
         var controller = CreateController(new BlogConfig
         {
             ImageSettings = new ImageSettings
@@ -344,7 +342,7 @@ public class ImageControllerTests
         await controller.Image(file);
         await StopCannonServiceAsync();
 
-        _imageStorage.Verify(x => x.InsertOriginalAsync("photo-origin.svg", It.Is<byte[]>(bytes =>
+        _imageStorage.Verify(x => x.InsertOriginalAsync(originalName, It.Is<byte[]>(bytes =>
             Encoding.UTF8.GetString(bytes).Contains("<svg", StringComparison.Ordinal))), Times.Once);
     }
 
@@ -352,12 +350,11 @@ public class ImageControllerTests
     public async Task Image_Post_WhenSvgContainsActiveContent_SavesSanitizedSvg()
     {
         byte[]? savedBytes = null;
-        _fileNameGenerator.Setup(x => x.GetFileName("payload.svg", "")).Returns("payload.svg");
-        _fileNameGenerator.Setup(x => x.GetFileName("payload.svg", "origin")).Returns("payload-origin.svg");
+        var primaryName = _fileNameGenerator.GetFileName("payload.svg");
         _imageStorage
-            .Setup(x => x.InsertAsync("payload.svg", It.IsAny<byte[]>()))
+            .Setup(x => x.InsertAsync(primaryName, It.IsAny<byte[]>()))
             .Callback<string, byte[]>((_, bytes) => savedBytes = bytes)
-            .ReturnsAsync("payload.svg");
+            .ReturnsAsync(primaryName);
         var controller = CreateController(new BlogConfig
         {
             ImageSettings = new ImageSettings { IsWatermarkEnabled = false }
@@ -416,7 +413,7 @@ public class ImageControllerTests
             Mock.Of<ILogger<ImageController>>(),
             blogConfig ?? new BlogConfig { ImageSettings = new ImageSettings() },
             _cache,
-            _fileNameGenerator.Object,
+            _fileNameGenerator,
             new ImageUploadValidator(),
             Options.Create(new ImageStorageSettings { CacheMinutes = 5 }),
             _cannonService,

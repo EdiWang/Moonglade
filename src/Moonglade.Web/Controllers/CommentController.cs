@@ -17,7 +17,7 @@ public class CommentController(
         IQueryMediator queryMediator,
         IModeratorService moderator,
         IBlogConfig blogConfig,
-        ICommentSubmissionGuard submissionGuard,
+        CommentSubmissionGuard submissionGuard,
         IEventMediator eventMediator,
         ILogger<CommentController> logger) : BlogControllerBase(commandMediator)
 {

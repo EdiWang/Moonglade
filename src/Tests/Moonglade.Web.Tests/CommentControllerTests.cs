@@ -4,6 +4,7 @@ using LiteBus.Queries.Abstractions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using Moonglade.ActivityLog;
 using Moonglade.Configuration;
 using Moonglade.Data.DTO;
@@ -11,6 +12,7 @@ using Moonglade.Email;
 using Moonglade.Features.Comment;
 using Moonglade.Moderation;
 using Moonglade.Web.Controllers;
+using Moonglade.Web.Configuration;
 using Moonglade.Web.Services;
 using Moq;
 using System.Net;
@@ -33,13 +35,9 @@ public class CommentControllerTests
     private readonly Mock<IQueryMediator> _queryMediator = new();
     private readonly Mock<IEventMediator> _eventMediator = new();
     private readonly Mock<IModeratorService> _moderator = new();
-    private readonly Mock<ICommentSubmissionGuard> _submissionGuard = new();
 
     public CommentControllerTests()
     {
-        _submissionGuard
-            .Setup(x => x.Validate(It.IsAny<CommentRequest>()))
-            .Returns(CommentSubmissionGuardResult.Success);
         _eventMediator
             .Setup(x => x.PublishAsync(It.IsAny<IEvent>(), It.IsAny<EventMediationSettings>(), It.IsAny<CancellationToken>()))
             .Returns(Task.CompletedTask);
@@ -73,12 +71,11 @@ public class CommentControllerTests
     [Fact]
     public async Task Create_WhenSubmissionGuardRejectsRequest_ReturnsValidationProblem()
     {
-        _submissionGuard
-            .Setup(x => x.Validate(It.IsAny<CommentRequest>()))
-            .Returns(CommentSubmissionGuardResult.Failure(nameof(CommentRequest.FormRenderedUtc), "Invalid comment submission."));
         var controller = CreateController();
+        var request = CreateCommentRequest();
+        request.FormRenderedUtc = null;
 
-        var result = await controller.Create(Guid.NewGuid(), CreateCommentRequest());
+        var result = await controller.Create(Guid.NewGuid(), request);
 
         var problemResult = Assert.IsType<ObjectResult>(result);
         Assert.IsType<ValidationProblemDetails>(problemResult.Value);
@@ -524,12 +521,14 @@ public class CommentControllerTests
         string? userAgent = null,
         Action<DefaultHttpContext>? configureHttpContext = null)
     {
+        var options = new Mock<IOptionsMonitor<CommentSubmissionGuardOptions>>();
+        options.SetupGet(value => value.CurrentValue).Returns(new CommentSubmissionGuardOptions());
         var controller = new CommentController(
             _commandMediator,
             _queryMediator.Object,
             _moderator.Object,
             _blogConfig,
-            _submissionGuard.Object,
+            new CommentSubmissionGuard(options.Object, TimeProvider.System),
             _eventMediator.Object,
             Mock.Of<ILogger<CommentController>>());
         var httpContext = new DefaultHttpContext();

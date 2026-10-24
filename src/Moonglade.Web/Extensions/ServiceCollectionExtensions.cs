@@ -55,7 +55,7 @@ public static class ServiceCollectionExtensions
         services.AddMoongladeCoreServices(configuration);
         services.AddMoongladeDatabase(configuration);
         services.AddMoongladeInitializers();
-        services.AddSingleton<IImageUploadValidator, ImageUploadValidator>();
+        services.AddSingleton<ImageUploadValidator>();
 
         return services;
     }
@@ -269,7 +269,7 @@ public static class ServiceCollectionExtensions
             .ValidateOnStart();
 
         services.TryAddSingleton(TimeProvider.System);
-        services.AddSingleton<ICommentSubmissionGuard, CommentSubmissionGuard>();
+        services.AddSingleton<CommentSubmissionGuard>();
 
         return services;
     }
@@ -326,10 +326,10 @@ public static class ServiceCollectionExtensions
 
     private static IServiceCollection AddMoongladeInitializers(this IServiceCollection services)
     {
-        services.AddTransient<ISiteIconBuilder, SiteIconBuilder>();
-        services.AddScoped<IMigrationManager, MigrationManager>();
-        services.AddScoped<IConfigInitializer, ConfigInitializer>();
-        services.AddScoped<IStartUpInitializer, StartUpInitializer>();
+        services.AddTransient<SiteIconBuilder>();
+        services.AddScoped<MigrationManager>();
+        services.AddScoped<ConfigInitializer>();
+        services.AddScoped<StartUpInitializer>();
 
         return services;
     }

@@ -4,17 +4,12 @@ using Moonglade.Data;
 
 namespace Moonglade.Setup;
 
-public interface IStartUpInitializer
-{
-    Task<InitStartUpResult> InitStartUpAsync(CancellationToken cancellationToken = default);
-}
-
 public class StartUpInitializer(
     ILogger<StartUpInitializer> logger,
     BlogDbContext context,
-    IConfigInitializer blogConfigInitializer,
-    IMigrationManager migrationManager,
-    ISiteIconBuilder siteIconInitializer) : IStartUpInitializer
+    ConfigInitializer blogConfigInitializer,
+    MigrationManager migrationManager,
+    SiteIconBuilder siteIconInitializer)
 {
     public async Task<InitStartUpResult> InitStartUpAsync(CancellationToken cancellationToken = default)
     {

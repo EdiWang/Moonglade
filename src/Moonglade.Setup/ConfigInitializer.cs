@@ -6,19 +6,6 @@ using Moonglade.Configuration;
 namespace Moonglade.Setup;
 
 /// <summary>
-/// Defines the contract for initializing blog configuration settings.
-/// </summary>
-public interface IConfigInitializer
-{
-    /// <summary>
-    /// Loads persisted blog configuration and writes defaults for missing settings.
-    /// </summary>
-    /// <param name="isNew">Indicates whether this is a new blog installation.</param>
-    /// <returns>A task representing the asynchronous initialization operation.</returns>
-    Task Initialize(bool isNew, CancellationToken cancellationToken = default);
-}
-
-/// <summary>
 /// Initializes blog configuration settings by loading default values for missing configuration keys.
 /// This class ensures that all required configuration settings have appropriate default values
 /// when the blog is first set up or when new settings are introduced.
@@ -31,7 +18,7 @@ public class ConfigInitializer(
     IQueryMediator queryMediator,
     ICommandMediator commandMediator,
     IBlogConfig blogConfig,
-    ILogger<ConfigInitializer> logger) : IConfigInitializer
+    ILogger<ConfigInitializer> logger)
 {
     /// <summary>
     /// Dictionary that maps configuration setting names to their corresponding default value providers.

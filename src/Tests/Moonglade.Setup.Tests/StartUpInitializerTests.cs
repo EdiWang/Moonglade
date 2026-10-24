@@ -1,13 +1,33 @@
+using LiteBus.Commands.Abstractions;
+using LiteBus.Queries.Abstractions;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging.Abstractions;
+using Moonglade.Configuration;
 using Moonglade.Data;
 using Moonglade.Data.Entities;
 using Moq;
 
 namespace Moonglade.Setup.Tests;
 
-public class StartUpInitializerTests
+[Collection("Startup site icon cache")]
+public class StartUpInitializerTests : IDisposable
 {
+    private readonly string _testTempDirectory = Path.Combine(Path.GetTempPath(), "moonglade-startup-tests", Guid.NewGuid().ToString("N"));
+    private readonly Dictionary<string, string> _originalTempVariables = new[] { "TEMP", "TMP", "TMPDIR" }
+        .ToDictionary(name => name, Environment.GetEnvironmentVariable);
+
+    public StartUpInitializerTests()
+    {
+        Directory.CreateDirectory(_testTempDirectory);
+        foreach (var name in _originalTempVariables.Keys)
+        {
+            Environment.SetEnvironmentVariable(name, _testTempDirectory);
+        }
+    }
+
     [Fact]
     public async Task InitStartUpAsync_ExistingDatabase_PreservesEmptyPostContentType()
     {
@@ -31,29 +51,57 @@ public class StartUpInitializerTests
         };
         context.Post.Add(post);
         await context.SaveChangesAsync(cancellationToken);
-        var migrationManager = new Mock<IMigrationManager>();
-        migrationManager
-            .Setup(manager => manager.TryMigrationAsync(context, cancellationToken))
-            .ReturnsAsync(new MigrationResult(MigrationStatus.NotRequired));
-        var configInitializer = new Mock<IConfigInitializer>();
-        configInitializer
-            .Setup(initializer => initializer.Initialize(false, cancellationToken))
-            .Returns(Task.CompletedTask);
-        var siteIconBuilder = new Mock<ISiteIconBuilder>();
-        siteIconBuilder.Setup(builder => builder.GenerateSiteIcons()).Returns(Task.CompletedTask);
+        var queryMediator = new Mock<IQueryMediator>();
+        queryMediator
+            .Setup(mediator => mediator.QueryAsync(
+                It.IsAny<ListConfigurationsQuery>(), It.IsAny<QueryMediationSettings>(), cancellationToken))
+            .Returns(async () => (IDictionary<string, string>)await context.BlogConfiguration
+                .ToDictionaryAsync(row => row.CfgKey, row => row.CfgValue, cancellationToken));
+        var commandMediator = new Mock<ICommandMediator>();
+        var addDefaultHandler = new AddDefaultConfigurationCommandHandler(context, NullLogger<AddDefaultConfigurationCommandHandler>.Instance);
+        commandMediator
+            .Setup(mediator => mediator.SendAsync(
+                It.IsAny<AddDefaultConfigurationCommand>(), It.IsAny<CommandMediationSettings>(), cancellationToken))
+            .Returns((ICommand<OperationCode> command, CommandMediationSettings _, CancellationToken ct) =>
+                addDefaultHandler.HandleAsync((AddDefaultConfigurationCommand)command, ct));
+        var configInitializer = new ConfigInitializer(
+            queryMediator.Object, commandMediator.Object, new BlogConfig(), NullLogger<ConfigInitializer>.Instance);
+        var hostEnvironment = new Mock<IHostEnvironment>();
+        hostEnvironment.SetupGet(environment => environment.EnvironmentName).Returns("Development");
+        var migrationManager = new MigrationManager(
+            NullLogger<MigrationManager>.Instance, new ConfigurationBuilder().Build(), hostEnvironment.Object);
+        var webEnvironment = new Mock<IWebHostEnvironment>();
+        webEnvironment.SetupGet(environment => environment.WebRootPath).Returns(Path.GetTempPath());
+        var siteIconBuilder = new SiteIconBuilder(
+            NullLogger<SiteIconBuilder>.Instance, queryMediator.Object, webEnvironment.Object);
         var initializer = new StartUpInitializer(
             NullLogger<StartUpInitializer>.Instance,
             context,
-            configInitializer.Object,
-            migrationManager.Object,
-            siteIconBuilder.Object);
+            configInitializer,
+            migrationManager,
+            siteIconBuilder);
 
         var result = await initializer.InitStartUpAsync(cancellationToken);
 
         Assert.Equal(InitStartUpResult.Success, result);
         context.ChangeTracker.Clear();
         Assert.Empty((await context.Post.SingleAsync(cancellationToken)).ContentType);
-        migrationManager.Verify(manager => manager.TryMigrationAsync(context, cancellationToken), Times.Once);
-        configInitializer.Verify(config => config.Initialize(false, cancellationToken), Times.Once);
+        Assert.Equal(11, await context.BlogConfiguration.CountAsync(cancellationToken));
+        queryMediator.Verify(mediator => mediator.QueryAsync(
+            It.IsAny<ListConfigurationsQuery>(), It.IsAny<QueryMediationSettings>(), cancellationToken), Times.Once);
     }
+
+    public void Dispose()
+    {
+        foreach (var (name, value) in _originalTempVariables)
+        {
+            Environment.SetEnvironmentVariable(name, value);
+        }
+        Directory.Delete(_testTempDirectory, recursive: true);
+    }
+}
+
+[CollectionDefinition("Startup site icon cache", DisableParallelization = true)]
+public class StartupSiteIconCacheCollection
+{
 }

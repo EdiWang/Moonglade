@@ -18,17 +18,26 @@ using System.Security.Claims;
 
 namespace Moonglade.Web.Tests;
 
-public class AssetsControllerTests
+[Collection("Site icon cache")]
+public class AssetsControllerTests : IDisposable
 {
+    private readonly string _testTempDirectory = Path.Combine(Path.GetTempPath(), "moonglade-assets-tests", Guid.NewGuid().ToString("N"));
+    private readonly Dictionary<string, string?> _originalTempVariables = new[] { "TEMP", "TMP", "TMPDIR" }
+        .ToDictionary(name => name, Environment.GetEnvironmentVariable);
     private readonly Mock<IEventMediator> _eventMediator = new();
     private readonly Mock<IQueryMediator> _queryMediator = new();
     private readonly Mock<IWebHostEnvironment> _environment = new();
     private readonly Mock<ICacheAside> _cache = new();
-    private readonly Mock<ISiteIconBuilder> _siteIconBuilder = new();
     private readonly RecordingCommandMediator _commandMediator = new();
 
     public AssetsControllerTests()
     {
+        Directory.CreateDirectory(_testTempDirectory);
+        foreach (var name in _originalTempVariables.Keys)
+        {
+            Environment.SetEnvironmentVariable(name, _testTempDirectory);
+        }
+        InMemoryIconGenerator.ClearIcons();
         _environment.SetupProperty(x => x.WebRootPath, @"E:\webroot");
         _environment.SetupProperty(x => x.ApplicationName, nameof(AssetsControllerTests));
         _environment.SetupProperty(x => x.EnvironmentName, "Development");
@@ -228,7 +237,7 @@ public class AssetsControllerTests
         var conflictResult = Assert.IsType<ConflictObjectResult>(result);
         Assert.Equal("Bad base64 data", conflictResult.Value);
         _eventMediator.Verify(x => x.PublishAsync(It.IsAny<SaveAssetEvent>(), It.IsAny<EventMediationSettings>(), It.IsAny<CancellationToken>()), Times.Never);
-        _siteIconBuilder.Verify(x => x.RegenerateSiteIcons(It.IsAny<string>()), Times.Never);
+        Assert.Empty(InMemoryIconGenerator.SiteIconDictionary);
         Assert.Empty(_commandMediator.Commands);
     }
 
@@ -243,7 +252,7 @@ public class AssetsControllerTests
         var conflictResult = Assert.IsType<ConflictObjectResult>(result);
         Assert.Equal("image height must be equal to width", conflictResult.Value);
         _eventMediator.Verify(x => x.PublishAsync(It.IsAny<SaveAssetEvent>(), It.IsAny<EventMediationSettings>(), It.IsAny<CancellationToken>()), Times.Never);
-        _siteIconBuilder.Verify(x => x.RegenerateSiteIcons(It.IsAny<string>()), Times.Never);
+        Assert.Empty(InMemoryIconGenerator.SiteIconDictionary);
         Assert.Empty(_commandMediator.Commands);
     }
 
@@ -262,7 +271,11 @@ public class AssetsControllerTests
                 It.IsAny<EventMediationSettings>(),
                 It.IsAny<CancellationToken>()),
             Times.Once);
-        _siteIconBuilder.Verify(x => x.RegenerateSiteIcons(base64), Times.Once);
+        var icon = InMemoryIconGenerator.GetIcon("favicon-32x32.png");
+        Assert.NotNull(icon);
+        using var bitmap = SKBitmap.Decode(icon);
+        Assert.Equal(32, bitmap.Width);
+        Assert.Equal(32, bitmap.Height);
 
         var activityCommand = _commandMediator.Single<CreateActivityLogCommand>();
         Assert.Equal(EventType.SiteIconUpdated, activityCommand.EventType);
@@ -275,6 +288,15 @@ public class AssetsControllerTests
         Assert.Equal("64x64", ActivityLogMetaDataAssert.Value<string>(activityCommand, "ImageSize"));
     }
 
+    public void Dispose()
+    {
+        foreach (var (name, value) in _originalTempVariables)
+        {
+            Environment.SetEnvironmentVariable(name, value);
+        }
+        Directory.Delete(_testTempDirectory, recursive: true);
+    }
+
     private AssetsController CreateController(
         string? username = null,
         IPAddress? remoteIpAddress = null,
@@ -285,7 +307,7 @@ public class AssetsControllerTests
             _queryMediator.Object,
             _environment.Object,
             Mock.Of<ILogger<AssetsController>>(),
-            _siteIconBuilder.Object,
+            new SiteIconBuilder(Mock.Of<ILogger<SiteIconBuilder>>(), _queryMediator.Object, _environment.Object),
             _commandMediator);
 
         var httpContext = new DefaultHttpContext();
@@ -348,4 +370,9 @@ public class AssetsControllerTests
             return Commands.OfType<TCommand>().Single();
         }
     }
+}
+
+[CollectionDefinition("Site icon cache", DisableParallelization = true)]
+public class SiteIconCacheCollection
+{
 }

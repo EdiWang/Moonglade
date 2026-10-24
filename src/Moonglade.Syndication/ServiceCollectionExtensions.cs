@@ -6,7 +6,7 @@ public static class ServiceCollectionExtensions
 {
     public static IServiceCollection AddSyndication(this IServiceCollection services)
     {
-        services.AddScoped<ISyndicationDataSource, SyndicationDataSource>();
+        services.AddScoped<SyndicationDataSource>();
 
         return services;
     }
