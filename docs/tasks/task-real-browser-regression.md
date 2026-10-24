@@ -69,7 +69,7 @@ Final source/build revision is `fcc00eca6` (`16.9.0-preview.1`). Early browser f
 - Reproduce: sign into the isolated installation, open Tags, and delete `qa-renamed-tag`; `DELETE /api/tags/3` returns 500 and the tag remains.
 - Evidence: server reports that `NpgsqlRetryingExecutionStrategy` does not support the user-initiated transaction. `DeleteTagCommand.cs:21` begins that transaction outside the configured execution strategy.
 - History: the transaction predates the six refactors (commit `e6e17797d8`, March 2026). The recent cache event is never reached on this failure.
-- Status: recorded, not fixed. The retained tag is useful for reproduction. A fix must retain atomic deletion of the tag and its article associations.
+- Status: fixed and verified in the follow-up [retry-safe tag deletion task](task-tag-delete-retry.md), including actual PostgreSQL and SQL Server LocalDB. The formerly failing retained tag was successfully deleted through Edge. The initial findings above remain the historical results of this regression run.
 
 ### Malformed persisted settings prevent startup
 

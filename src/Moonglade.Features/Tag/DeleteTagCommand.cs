@@ -18,12 +18,14 @@ public class DeleteTagCommandHandler(
         if (!await db.Tag.AnyAsync(t => t.Id == request.Id, ct))
             return OperationCode.ObjectNotFound;
 
-        await using var transaction = await db.Database.BeginTransactionAsync(ct);
-
-        await db.PostTag.Where(pt => pt.TagId == request.Id).ExecuteDeleteAsync(ct);
-        var rows = await db.Tag.Where(t => t.Id == request.Id).ExecuteDeleteAsync(ct);
-
-        await transaction.CommitAsync(ct);
+        var rows = await db.Database.CreateExecutionStrategy().ExecuteInTransactionAsync(
+            async token =>
+            {
+                await db.PostTag.Where(pt => pt.TagId == request.Id).ExecuteDeleteAsync(token);
+                return await db.Tag.Where(t => t.Id == request.Id).ExecuteDeleteAsync(token);
+            },
+            async token => !await db.Tag.AnyAsync(t => t.Id == request.Id, token),
+            ct);
         if (rows > 0)
         {
             await eventMediator.PublishAsync(new PostChangedEvent(), cancellationToken: CancellationToken.None);
