@@ -20,7 +20,7 @@ public interface IBlogConfig
     LocalAccountSettings LocalAccountSettings { get; set; }
     SystemManifestSettings SystemManifestSettings { get; set; }
 
-    IEnumerable<string> LoadFromConfig(IDictionary<string, string> config);
+    IReadOnlyDictionary<string, string> LoadFromConfig(IDictionary<string, string> config, bool isNew = false);
 }
 
 public class BlogConfig : IBlogConfig
@@ -37,45 +37,45 @@ public class BlogConfig : IBlogConfig
     public LocalAccountSettings LocalAccountSettings { get; set; } = new();
     public SystemManifestSettings SystemManifestSettings { get; set; } = new();
 
-    private readonly List<string> _keysToInit = [];
-
-    public IEnumerable<string> LoadFromConfig(IDictionary<string, string> config)
+    public IReadOnlyDictionary<string, string> LoadFromConfig(IDictionary<string, string> config, bool isNew = false)
     {
-        _keysToInit.Clear();
+        var defaultsToInit = new Dictionary<string, string>();
 
-        Assign<GeneralSettings>(config, v => GeneralSettings = v);
-        Assign<ContentSettings>(config, v => ContentSettings = v);
-        Assign<CommentSettings>(config, v => CommentSettings = v);
-        Assign<NotificationSettings>(config, v => NotificationSettings = v);
-        Assign<FeedSettings>(config, v => FeedSettings = v);
-        Assign<ImageSettings>(config, v => ImageSettings = v);
-        Assign<AdvancedSettings>(config, v => AdvancedSettings = v);
-        Assign<AppearanceSettings>(config, v => AppearanceSettings = v);
-        Assign<CustomMenuSettings>(config, v => CustomMenuSettings = v);
-        Assign<LocalAccountSettings>(config, v => LocalAccountSettings = v);
-        Assign<SystemManifestSettings>(config, v => SystemManifestSettings = v);
+        Assign<GeneralSettings>(v => GeneralSettings = v);
+        Assign<ContentSettings>(v => ContentSettings = v);
+        Assign<CommentSettings>(v => CommentSettings = v);
+        Assign<NotificationSettings>(v => NotificationSettings = v);
+        Assign<FeedSettings>(v => FeedSettings = v);
+        Assign<ImageSettings>(v => ImageSettings = v);
+        Assign<AdvancedSettings>(v => AdvancedSettings = v);
+        Assign<AppearanceSettings>(v => AppearanceSettings = v);
+        Assign<CustomMenuSettings>(v => CustomMenuSettings = v);
+        Assign<LocalAccountSettings>(v => LocalAccountSettings = v);
+        Assign<SystemManifestSettings>(v => SystemManifestSettings = v,
+            () => isNew ? SystemManifestSettings.DefaultValueNew : SystemManifestSettings.DefaultValue);
 
-        return _keysToInit.AsEnumerable();
-    }
+        return defaultsToInit;
 
-    private void Assign<T>(IDictionary<string, string> config, Action<T> setter) where T : IBlogSettings<T>
-    {
-        var name = typeof(T).Name;
-
-        if (config.TryGetValue(name, out var json))
+        void Assign<T>(Action<T> setter, Func<T> defaultProvider = null) where T : IBlogSettings<T>
         {
-            try
-            {
-                setter(json.FromJson<T>());
-                return;
-            }
-            catch
-            {
-                // Fall through to use default value
-            }
-        }
+            var name = typeof(T).Name;
 
-        _keysToInit.Add(name);
-        setter(T.DefaultValue);
+            if (config.TryGetValue(name, out var json))
+            {
+                try
+                {
+                    setter(json.FromJson<T>());
+                    return;
+                }
+                catch
+                {
+                    // Fall through to use default value
+                }
+            }
+
+            var defaultValue = defaultProvider is null ? T.DefaultValue : defaultProvider();
+            defaultsToInit.Add(name, defaultValue.ToJson());
+            setter(defaultValue);
+        }
     }
 }

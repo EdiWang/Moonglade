@@ -42,6 +42,53 @@ public sealed class ConfigInitializerTests
         Assert.DoesNotContain(
             commandMediator.Commands.OfType<AddDefaultConfigurationCommand>(),
             command => command.CfgKey == nameof(SystemManifestSettings));
+        foreach (var command in commandMediator.Commands.OfType<AddDefaultConfigurationCommand>())
+        {
+            var runtimeValue = typeof(IBlogConfig).GetProperty(command.CfgKey)!.GetValue(blogConfig);
+            Assert.Equal(runtimeValue.ToJson(), command.DefaultJson);
+        }
+    }
+
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public async Task Initialize_EmptyStore_PersistsTheSameManifestAsRuntime(bool isNew)
+    {
+        var cancellationToken = TestContext.Current.CancellationToken;
+        var queryMediator = new Mock<IQueryMediator>();
+        queryMediator.Setup(mediator => mediator.QueryAsync(
+                It.IsAny<ListConfigurationsQuery>(), It.IsAny<QueryMediationSettings>(), cancellationToken))
+            .ReturnsAsync(new Dictionary<string, string>());
+        var commandMediator = new RecordingCommandMediator();
+        var config = new BlogConfig();
+        var initializer = new ConfigInitializer(queryMediator.Object, commandMediator, config, NullLogger<ConfigInitializer>.Instance);
+
+        await initializer.Initialize(isNew, cancellationToken);
+
+        var commands = commandMediator.Commands.OfType<AddDefaultConfigurationCommand>().ToArray();
+        Assert.Equal(typeof(IBlogConfig).GetProperties().Length, commands.Length);
+        var manifestCommand = Assert.Single(commands, command => command.CfgKey == nameof(SystemManifestSettings));
+        Assert.Equal(config.SystemManifestSettings.ToJson(), manifestCommand.DefaultJson);
+        Assert.Equal(
+            isNew ? SystemManifestSettings.DefaultValueNew.VersionString : "0.0.0.0",
+            config.SystemManifestSettings.VersionString);
+    }
+
+    [Fact]
+    public async Task Initialize_CompleteStore_DoesNotWriteDefaults()
+    {
+        var cancellationToken = TestContext.Current.CancellationToken;
+        var persisted = new BlogConfig().LoadFromConfig(new Dictionary<string, string>(), isNew: true).ToDictionary();
+        var queryMediator = new Mock<IQueryMediator>();
+        queryMediator.Setup(mediator => mediator.QueryAsync(
+                It.IsAny<ListConfigurationsQuery>(), It.IsAny<QueryMediationSettings>(), cancellationToken))
+            .ReturnsAsync(persisted);
+        var commandMediator = new RecordingCommandMediator();
+        var initializer = new ConfigInitializer(queryMediator.Object, commandMediator, new BlogConfig(), NullLogger<ConfigInitializer>.Instance);
+
+        await initializer.Initialize(isNew: false, cancellationToken);
+
+        Assert.Empty(commandMediator.Commands);
     }
 
     private sealed class RecordingCommandMediator : ICommandMediator
