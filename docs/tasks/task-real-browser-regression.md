@@ -84,7 +84,9 @@ Final source/build revision is `fcc00eca6` (`16.9.0-preview.1`). Early browser f
 - Evidence: the browser reports an invalid regular expression under HTML pattern's `v` rules for `(?!-)([a-z0-9-]+)` in `Pages/Admin/Category.cshtml:81`.
 - Impact: browser pattern validation is ignored; valid category saves still work and server validation remains in place.
 - History: the markup predates the six refactors (commit `c7d6fce899`, February 2026).
-- Status: recorded, not fixed.
+- Status: fixed in the follow-up category validation task by escaping the literal hyphen in the HTML pattern. The existing .NET validation and accepted slug values are unchanged. Reference: [HTML pattern character escaping](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Attributes/pattern#overview).
+- Verification: reproduced the original Edge error and incorrect acceptance of `Invalid_slug`. After the fix, 13 browser validity cases pass; invalid create/edit submissions send no API request, valid creation returns 201, valid editing returns 204, and direct invalid API input still returns 400. No regular-expression console errors occur. Eight CategoryControllerTests pass and the Web build has zero warnings/errors. The temporary category was removed from the isolated LocalDB database; temporary host/browser sessions were stopped. No README or AGENTS.md update was needed.
+- Evidence: `category-validation-results.json`, `category-edit-results.json`, `category-invalid-blocked.png`, and `category-edit-saved.png` under `%LOCALAPPDATA%/Temp/moonglade-tag-delete-20261024`. Browser validation used installed headed Edge at 1440 x 1000 through Playwright CLI; Firefox/Safari were not exercised. No new dependency or production test abstraction was introduced.
 
 ### Existing automated migration assertions
 

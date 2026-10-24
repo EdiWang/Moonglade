@@ -78,7 +78,7 @@
                 </div>
                 <div class="mb-3">
                     <label class="form-label" asp-for="@EditCategoryRequest.Slug"></label>
-                    <input x-model="formData.slug" class="form-control" required pattern="(?!-)([a-z0-9-]+)" />
+                    <input x-model="formData.slug" class="form-control" required pattern="(?!-)([a-z0-9\-]+)" />
                     <small class="text-muted">
                         @SharedLocalizer["lower case English letters (a-z) and numbers (0-9) with/out hyphen (-) in middle."]
                     </small>
