@@ -33,6 +33,12 @@ Tests that only repeat a happy path, pass an uncancelled token without testing c
 
 See [AGENTS.md](../../AGENTS.md#development-and-verification) for the repository's verification requirements.
 
+## Migration Version Checks
+
+Setup tests always verify that both embedded migration scripts load and contain parseable manifest versions. Prerelease builds may keep the previous release's script versions while the application version advances. The two stable-release version checks are explicitly skipped during prerelease development and require exact equality with the application version in stable builds. Update both script manifests when preparing a stable release.
+
+The existing migration-decision tests separately verify that prerelease builds reject automatic migration when an upgrade is required. Those prerelease-only cases are explicitly skipped in stable builds.
+
 ## Run Tests
 
 Run commands from the repository root. For a focused change, select the owning project:

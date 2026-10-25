@@ -186,6 +186,8 @@ The default local launch URL comes from `src/Moonglade.Web/Properties/launchSett
 
 The current migration scripts retain v16.7 steps and intentionally omit earlier migration steps. Tests no longer maintain pre-v16.7 database upgrade fixtures.
 
+During prerelease development, the application version can advance while script manifest versions remain at the previous release. Script loading and manifest version parsing tests always run. Stable-build tests require both script manifest versions to equal the application version; these checks are explicitly skipped for prerelease builds. Synchronize the script versions when preparing a stable release. Prerelease automatic-migration rejection is tested separately.
+
 Run `Moonglade.Setup.Tests` when changing database mappings, startup migration order, cumulative SQL, or upgrade documentation. Check both SQL Server and PostgreSQL compatibility; in-memory tests alone do not establish relational migration correctness. Verify the available integration tests and their prerequisites before claiming a migration has been tested against either database.
 
 The filesystem-only image-storage cutover is documented in [upgrade-filesystem-image-storage.md](upgrade-filesystem-image-storage.md).

@@ -63,23 +63,20 @@ public sealed class MigrationManagerTests
     [Theory]
     [InlineData("SqlServer")]
     [InlineData("PostgreSql")]
-    public async Task TryMigrationAsync_MigrationScriptManifest_DoesNotRequireMigration(string providerKey)
+    public void LoadEmbeddedMigrationScript_HasValidManifestVersion(string providerKey)
     {
-        var manager = CreateManager();
-        var script = manager.LoadEmbeddedMigrationScript(providerKey);
-        var versionMatch = Regex.Match(script, @"['""]versionString['""]\s*[:,]\s*['""](?<version>[^'""]+)['""]");
-        Assert.True(versionMatch.Success);
-        var manifest = new SystemManifestSettings
-        {
-            VersionString = versionMatch.Groups["version"].Value,
-            InstallTimeUtc = new DateTime(2026, 1, 1, 0, 0, 0, DateTimeKind.Utc)
-        };
-        await using var context = CreateContext(manifest.ToJson());
+        Assert.True(Version.TryParse(ReadScriptManifestVersion(providerKey), out _));
+    }
 
-        var result = await manager.TryMigrationAsync(context, TestContext.Current.CancellationToken);
+    [Theory]
+    [InlineData("SqlServer")]
+    [InlineData("PostgreSql")]
+    public void MigrationScriptManifest_StableBuild_MatchesApplicationVersion(string providerKey)
+    {
+        Assert.SkipWhen(VersionHelper.IsNonStableVersion(),
+            "Script manifest versions are synchronized for stable releases.");
 
-        Assert.Equal(MigrationStatus.NotRequired, result.Status);
-        Assert.True(result.CanContinueStartup);
+        Assert.Equal(VersionHelper.AppVersionBasic, ReadScriptManifestVersion(providerKey));
     }
 
     [Fact]
@@ -101,10 +98,8 @@ public sealed class MigrationManagerTests
         bool autoMigrationEnabled,
         MigrationStatus expectedStatus)
     {
-        if (!VersionHelper.IsNonStableVersion())
-        {
-            return;
-        }
+        Assert.SkipUnless(VersionHelper.IsNonStableVersion(),
+            "Automatic migration rejection is specific to prerelease builds.");
 
         var manifest = new SystemManifestSettings
         {
@@ -133,6 +128,14 @@ public sealed class MigrationManagerTests
         var result = new MigrationResult(status);
 
         Assert.Equal(expected, result.CanContinueStartup);
+    }
+
+    private static string ReadScriptManifestVersion(string providerKey)
+    {
+        var script = CreateManager().LoadEmbeddedMigrationScript(providerKey);
+        var versionMatch = Regex.Match(script, @"['""]versionString['""]\s*[:,]\s*['""](?<version>[^'""]+)['""]");
+        Assert.True(versionMatch.Success, $"The {providerKey} migration script must contain a manifest version.");
+        return versionMatch.Groups["version"].Value;
     }
 
     private static MigrationManager CreateManager(

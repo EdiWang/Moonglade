@@ -36,7 +36,7 @@ Establish the baseline, remove or merge only cases with a documented reason, org
 
 The initial cleanup completed without changing production code, packages, project references, or the solution. Reorganized 59 existing files in Web, Features, and Email with matching namespaces. Split content processing and tag utilities by behavior, separated color calculation from the theme catalog, moved the outbox options validator out of the processor suite, and merged the comment rate-limit attribute test into the controller suite.
 
-The final suite has 1,130 cases versus 1,167 at baseline, a net reduction of 37 cases. Test C# is approximately 1,200 lines shorter. Existing validation, security, cancellation, persistence failure, UTC, caching, and protocol tests remain. The README links to `src/Tests/README.md` for the new layout and maintenance guidance.
+The initial cleaned suite had 1,130 cases versus 1,167 at baseline, a net reduction of 37 cases. The release-aware follow-up below adds two always-run script-validation cases. Test C# is approximately 1,200 lines shorter. Existing validation, security, cancellation, persistence failure, UTC, caching, and protocol tests remain. The README links to `src/Tests/README.md` for the new layout and maintenance guidance.
 
 ## Verification Log
 
@@ -74,7 +74,7 @@ The final suite has 1,130 cases versus 1,167 at baseline, a net reduction of 37 
 
 ## Follow-ups
 
-- Resolve the existing migration script/current-version mismatch in a separately scoped migration/release change; do not suppress the failing checks.
+- Resolved by the release-aware migration checks below: prerelease builds may retain the previous script versions, while stable builds require synchronized versions.
 - No coverage report or real PostgreSQL/SQL Server migration run was performed. This task changes tests and documentation only.
 - Saved fully qualified test filters must follow the new namespaces; assembly names and project-level test commands are unchanged.
 
@@ -109,4 +109,45 @@ Both unused `Fixtures/*/latest-stable.sql` resources still described a v16.3.0 u
 
 ### Remaining Limits
 
-No real database migration was executed. The current script/application version mismatch remains a separate release/migration concern; removing support for older SQL steps does not resolve it.
+No real database migration was executed. Removing support for older SQL steps does not change the script/application version relationship. The user subsequently clarified the intended development/release workflow, implemented below.
+
+## Follow-up: Release-Aware Migration Checks
+
+### Confirmed Workflow
+
+During prerelease development, the application version advances first. Script manifest versions remain at the previous release until stable-release preparation. The user authorized separating always-run script validation from stable-release version checks.
+
+### Implementation
+
+| Task | Status |
+| --- | --- |
+| Split script loading/version parsing from stable-release equality checks | Complete |
+| Use explicit xUnit skips for release-specific cases | Complete |
+| Verify prerelease, synchronized stable, and mismatched stable builds | Complete |
+| Update engineering/test documentation and inspect the final diff | Complete |
+
+- Replaced the unconditional migration-script no-migration expectation with two theories, each covering PostgreSQL and SQL Server.
+- `LoadEmbeddedMigrationScript_HasValidManifestVersion` always loads the embedded resource and verifies its manifest version parses.
+- `MigrationScriptManifest_StableBuild_MatchesApplicationVersion` explicitly skips prerelease builds and compares the script version with `VersionHelper.AppVersionBasic` for stable builds.
+- The existing prerelease migration-rejection theory now explicitly skips stable builds instead of returning without assertions.
+- A small test-local helper shares resource loading and manifest-version extraction.
+- Production migration logic, SQL files, and repository version numbers remain unchanged. No dependencies were added.
+- Updated `docs/agent-reference.md` and `src/Tests/README.md` with the confirmed release workflow.
+
+### Verification
+
+Stable verification builds used an isolated temporary artifacts directory and MSBuild global properties, without changing tracked version files. They were run using `dotnet test --root-directory <artifacts> --test-modules bin/Moonglade.Setup.Tests/debug/Moonglade.Setup.Tests.dll`.
+
+| Date | Command or scenario | Result |
+| --- | --- | --- |
+| 2026-10-25 | `dotnet test --project src/Tests/Moonglade.Setup.Tests/Moonglade.Setup.Tests.csproj --no-progress --output Normal` | Prerelease: 31 passed, 2 stable-release checks skipped, 0 failed |
+| 2026-10-25 | Isolated build with `-p:Version=16.8.1 -p:AssemblyVersion=16.8.1 -p:FileVersion=16.8.1` | Matching stable version: 31 passed, 2 prerelease-only cases skipped, 0 failed |
+| 2026-10-25 | Isolated build with `-p:Version=16.9.0 -p:AssemblyVersion=16.9.0 -p:FileVersion=16.9.0` | Negative check succeeded: exactly 2 release-version assertions failed, showing expected 16.9.0 versus script 16.8.1; other cases passed/skipped |
+| 2026-10-25 | First full solution run with build | 1,129 passed, 2 skipped, 1 unrelated image background-queue test failed |
+| 2026-10-25 | `dotnet test --project src/Tests/Moonglade.Web.Tests/Moonglade.Web.Tests.csproj --no-progress --output Normal` | All 251 Web tests passed on rerun |
+| 2026-10-25 | `dotnet test --solution src/Moonglade.slnx --no-build --no-progress --output Normal` | Final full run: 1,130 passed, 2 stable-release checks skipped, 0 failed across all 15 projects |
+| 2026-10-25 | `git diff --check` and final Git status | Passed; only Setup tests and related documentation changed |
+
+### Remaining Limits
+
+No real database migration was executed. `Image_Post_WhenWatermarkEnabledAndKeepOriginalEnabled_StoresOriginalImageInBackgroundQueue` failed once during the first full run, then passed in both the Web-only and final full reruns. That test and production image handling were not changed; the intermittent queue-test failure remains a separate follow-up. The existing three nullable warnings in Cannon logging tests are unchanged.
