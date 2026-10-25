@@ -65,7 +65,7 @@ public class AddDefaultConfigurationCommandTests
         Assert.NotNull(entity);
         Assert.Equal("TestKey", entity.CfgKey);
         Assert.Equal("{\"value\":\"default\"}", entity.CfgValue);
-        Assert.True(entity.LastModifiedTimeUtc >= beforeAdd);
+        Assert.InRange(entity.LastModifiedTimeUtc!.Value, beforeAdd, DateTime.UtcNow);
     }
 
     [Fact]
@@ -83,46 +83,4 @@ public class AddDefaultConfigurationCommandTests
             () => handler.HandleAsync(command, TestContext.Current.CancellationToken));
     }
 
-    [Fact]
-    public async Task HandleAsync_SetsCorrectCfgKeyAndCfgValue()
-    {
-        // Arrange
-        using var db = CreateDbContext();
-        var handler = new AddDefaultConfigurationCommandHandler(db, _mockLogger.Object);
-        var cfgKey = "GeneralSettings";
-        var defaultJson = "{\"theme\":\"dark\",\"language\":\"en\"}";
-        var command = new AddDefaultConfigurationCommand(cfgKey, defaultJson);
-
-        // Act
-        await handler.HandleAsync(command, TestContext.Current.CancellationToken);
-
-        // Assert
-        var entity = await db.BlogConfiguration.FirstOrDefaultAsync(c => c.CfgKey == cfgKey, TestContext.Current.CancellationToken);
-        Assert.NotNull(entity);
-        Assert.Equal(cfgKey, entity.CfgKey);
-        Assert.Equal(defaultJson, entity.CfgValue);
-    }
-
-    [Fact]
-    public async Task HandleAsync_SetsLastModifiedTimeUtcToCurrentUtcTime()
-    {
-        // Arrange
-        using var db = CreateDbContext();
-        var handler = new AddDefaultConfigurationCommandHandler(db, _mockLogger.Object);
-        var command = new AddDefaultConfigurationCommand("TimeTestKey", "{\"value\":\"test\"}");
-
-        var before = DateTime.UtcNow;
-
-        // Act
-        await handler.HandleAsync(command, TestContext.Current.CancellationToken);
-
-        var after = DateTime.UtcNow;
-
-        // Assert
-        var entity = await db.BlogConfiguration.FirstOrDefaultAsync(c => c.CfgKey == "TimeTestKey", TestContext.Current.CancellationToken);
-        Assert.NotNull(entity);
-        Assert.NotNull(entity.LastModifiedTimeUtc);
-        Assert.True(entity.LastModifiedTimeUtc >= before);
-        Assert.True(entity.LastModifiedTimeUtc <= after);
-    }
 }

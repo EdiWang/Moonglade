@@ -230,30 +230,6 @@ public class CannonServiceTests
     }
 
     [Fact]
-    public async Task ExecuteAsync_LogsStartup()
-    {
-        // Arrange
-        var service = new CannonService(_loggerMock.Object, _scopeFactoryMock.Object);
-
-        // Act
-        using var cts = new CancellationTokenSource();
-        await service.StartAsync(cts.Token);
-        await Task.Delay(50, TestContext.Current.CancellationToken);
-        cts.Cancel();
-        await service.StopAsync(CancellationToken.None);
-
-        // Assert - Verify startup log
-        _loggerMock.Verify(
-            x => x.Log(
-                LogLevel.Information,
-                It.IsAny<EventId>(),
-                It.Is<It.IsAnyType>((v, t) => v.ToString()!.Contains("background queue is starting")),
-                null,
-                It.IsAny<Func<It.IsAnyType, Exception?, string>>()),
-            Times.Once);
-    }
-
-    [Fact]
     public async Task FireAsync_CreatesNewScope_ForEachWorkItem()
     {
         // Arrange

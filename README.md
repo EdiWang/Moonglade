@@ -27,7 +27,7 @@ The main solution file is `src/Moonglade.slnx`.
 | `src/Moonglade.Auth` | Local account and standards-based OpenID Connect authentication support. |
 | `src/Moonglade.BackgroundServices` | Scheduled publishing and fire-and-forget background work. |
 | `src/Moonglade.*` | Supporting projects for image storage, email, IndexNow, moderation, Webmention, syndication, themes, widgets, setup, utilities, and middleware. |
-| `src/Tests/Moonglade.*.Tests` | xUnit test projects aligned with the production projects. |
+| `src/Tests/Moonglade.*.Tests` | xUnit test projects aligned with the production projects. See the [test layout and maintenance guide](src/Tests/README.md). |
 | `Dockerfile`, `compose.yaml` | Docker deployment assets. |
 
 ## 🚀 Deployment

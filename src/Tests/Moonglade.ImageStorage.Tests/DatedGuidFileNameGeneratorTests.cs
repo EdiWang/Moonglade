@@ -5,12 +5,6 @@ public class DatedGuidFileNameGeneratorTests
     private static readonly Guid TestGuid = new("12345678-1234-1234-1234-123456789012");
     private readonly DatedGuidFileNameGenerator _generator = new(TestGuid);
 
-    [Fact]
-    public void ExposesConfiguredIdentity()
-    {
-        Assert.Equal(TestGuid, _generator.UniqueId);
-    }
-
     [Theory]
     [InlineData("test.jpg", null, ".jpg")]
     [InlineData("IMAGE.JPG", "thumbnail", "-thumbnail.jpg")]

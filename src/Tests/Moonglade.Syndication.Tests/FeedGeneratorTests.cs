@@ -50,32 +50,9 @@ public class FeedGeneratorTests
     }
 
     [Fact]
-    public void Constructor_Parameterless_InitializesEmptyCollection()
-    {
-        var gen = new FeedGenerator();
-        Assert.NotNull(gen.FeedItemCollection);
-        Assert.Empty(gen.FeedItemCollection);
-    }
-
-    [Fact]
-    public void Constructor_WithParameters_SetsProperties()
-    {
-        var gen = CreateGenerator();
-
-        Assert.Equal("https://example.com", gen.HostUrl);
-        Assert.Equal("Test Blog", gen.HeadTitle);
-        Assert.Equal("A test blog description", gen.HeadDescription);
-        Assert.Equal("© 2025 Test", gen.Copyright);
-        Assert.Equal("Moonglade vTest", gen.Generator);
-        Assert.Equal("https://example.com", gen.TrackBackUrl);
-        Assert.Equal("en-us", gen.Language);
-    }
-
-    [Fact]
     public async Task WriteRssAsync_EmptyItems_ProducesValidXml()
     {
         var gen = CreateGenerator();
-        gen.FeedItemCollection = [];
 
         var xml = await gen.WriteRssAsync();
 
@@ -86,6 +63,15 @@ public class FeedGeneratorTests
         var rss = doc.Root;
         Assert.NotNull(rss);
         Assert.Equal("rss", rss.Name.LocalName);
+        var channel = rss.Element("channel");
+        Assert.NotNull(channel);
+        Assert.Empty(channel.Elements("item"));
+        Assert.Equal("Test Blog", channel.Element("title")?.Value);
+        Assert.Equal("A test blog description", channel.Element("description")?.Value);
+        Assert.Equal("https://example.com/", channel.Element("link")?.Value);
+        Assert.Equal("© 2025 Test", channel.Element("copyright")?.Value);
+        Assert.Equal("Moonglade vTest", channel.Element("generator")?.Value);
+        Assert.Equal("en-US", channel.Element("language")?.Value);
     }
 
     [Fact]
@@ -105,24 +91,9 @@ public class FeedGeneratorTests
     }
 
     [Fact]
-    public async Task WriteRssAsync_ContainsTitleAndDescription()
-    {
-        var gen = CreateGenerator();
-        gen.FeedItemCollection = [];
-
-        var xml = await gen.WriteRssAsync();
-        var doc = XDocument.Parse(xml);
-        var channel = doc.Root.Element("channel");
-
-        Assert.Equal("Test Blog", channel.Element("title")?.Value);
-        Assert.Equal("A test blog description", channel.Element("description")?.Value);
-    }
-
-    [Fact]
     public async Task WriteAtomAsync_EmptyItems_ProducesValidXml()
     {
         var gen = CreateGenerator();
-        gen.FeedItemCollection = [];
 
         var xml = await gen.WriteAtomAsync();
 
@@ -131,7 +102,16 @@ public class FeedGeneratorTests
 
         var doc = XDocument.Parse(xml);
         Assert.NotNull(doc.Root);
-        Assert.Equal("feed", doc.Root.Name.LocalName);
+        XNamespace atom = "http://www.w3.org/2005/Atom";
+        Assert.Equal(atom + "feed", doc.Root.Name);
+        Assert.Empty(doc.Root.Elements(atom + "entry"));
+        Assert.Equal("Test Blog", doc.Root.Element(atom + "title")?.Value);
+        Assert.Equal("A test blog description", doc.Root.Element(atom + "subtitle")?.Value);
+        Assert.Equal("© 2025 Test", doc.Root.Element(atom + "rights")?.Value);
+        var generator = doc.Root.Element(atom + "generator");
+        Assert.NotNull(generator);
+        Assert.Equal("Moonglade vTest", generator.Value);
+        Assert.Equal("https://example.com", generator.Attribute("uri")?.Value);
     }
 
     [Fact]
@@ -146,19 +126,6 @@ public class FeedGeneratorTests
         XNamespace atom = "http://www.w3.org/2005/Atom";
         var entries = doc.Root.Elements(atom + "entry").ToList();
         Assert.Equal(2, entries.Count);
-    }
-
-    [Fact]
-    public async Task WriteAtomAsync_ContainsTitleElement()
-    {
-        var gen = CreateGenerator();
-        gen.FeedItemCollection = [];
-
-        var xml = await gen.WriteAtomAsync();
-        var doc = XDocument.Parse(xml);
-
-        XNamespace atom = "http://www.w3.org/2005/Atom";
-        Assert.Equal("Test Blog", doc.Root.Element(atom + "title")?.Value);
     }
 
     [Fact]

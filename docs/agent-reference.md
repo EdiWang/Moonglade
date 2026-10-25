@@ -184,6 +184,8 @@ The default local launch URL comes from `src/Moonglade.Web/Properties/launchSett
 
 ## Migration Verification
 
+The current migration scripts retain v16.7 steps and intentionally omit earlier migration steps. Tests no longer maintain pre-v16.7 database upgrade fixtures.
+
 Run `Moonglade.Setup.Tests` when changing database mappings, startup migration order, cumulative SQL, or upgrade documentation. Check both SQL Server and PostgreSQL compatibility; in-memory tests alone do not establish relational migration correctness. Verify the available integration tests and their prerequisites before claiming a migration has been tested against either database.
 
 The filesystem-only image-storage cutover is documented in [upgrade-filesystem-image-storage.md](upgrade-filesystem-image-storage.md).
