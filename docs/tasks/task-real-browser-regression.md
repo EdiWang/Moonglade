@@ -76,7 +76,7 @@ Final source/build revision is `fcc00eca6` (`16.9.0-preview.1`). Early browser f
 - Reproduce: back up FeedSettings, replace its JSON with invalid text, and restart the isolated host. The homepage returns 500 with the initialization failure message.
 - Evidence: `BlogConfig.LoadFromConfig` falls back to defaults and sends the existing key to `AddDefaultConfigurationCommand`; its unconditional INSERT violates `PK_BlogConfiguration`.
 - History: the same fallback-to-insert sequence exists before the default-list refactor (`ab444eadd^`). This is not a newly introduced regression.
-- Status: recorded, not fixed. Restored both backed-up configuration values and timestamps, removed the backup table, and confirmed successful restart with no defaults added.
+- Status: fixed in the follow-up [configuration JSON recovery task](task-configuration-json-recovery.md). Ordinary invalid settings now recover in their existing rows; invalid account/manifest settings retain a protective startup failure. PostgreSQL and SQL Server LocalDB verification includes successful recovery, unchanged valid rows, repeat startup, and exact restoration of all test settings.
 
 ### Category modal browser pattern is invalid
 

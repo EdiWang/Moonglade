@@ -6,7 +6,7 @@ using Moonglade.Configuration;
 namespace Moonglade.Setup;
 
 /// <summary>
-/// Initializes blog configuration settings by loading default values for missing configuration keys.
+/// Initializes blog configuration settings by loading default values for missing or invalid configuration keys.
 /// This class ensures that all required configuration settings have appropriate default values
 /// when the blog is first set up or when new settings are introduced.
 /// </summary>

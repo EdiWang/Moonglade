@@ -109,6 +109,8 @@ Article, feed, and sitemap cache keys include a process-local version so a query
 
 Admin settings are saved to the database before the running configuration is replaced. A failed save keeps the active settings unchanged and prevents success actions such as completing authenticator setup. Related CDN image settings and the avatar address are saved together in one database transaction. Settings updates are serialized within the current process; other application instances must reload or synchronize their configuration separately.
 
+At startup, malformed ordinary settings JSON, incompatible JSON values, and null settings are restored to that setting's default in the existing database row. Missing settings are initialized, and valid settings retain their values and modification timestamps. Recovery warnings identify the configuration key without logging its JSON. Invalid `LocalAccountSettings` or `SystemManifestSettings` stop initialization with a restoration message to protect administrator credentials and installation/upgrade history; restore those values from a trusted database backup before restarting.
+
 ### Authentication
 
 - By default: Local accounts with TOTP authenticator app verification (manage via `/admin/account`)

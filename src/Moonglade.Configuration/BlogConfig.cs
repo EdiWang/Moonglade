@@ -1,4 +1,6 @@
 ﻿
+using System.Text.Json;
+
 namespace Moonglade.Configuration;
 
 public interface IBlogSettings<TSelf> where TSelf : IBlogSettings<TSelf>
@@ -64,12 +66,22 @@ public class BlogConfig : IBlogConfig
             {
                 try
                 {
-                    setter(json.FromJson<T>());
-                    return;
+                    var settings = json is null ? default : json.FromJson<T>();
+                    if (settings is not null)
+                    {
+                        setter(settings);
+                        return;
+                    }
                 }
-                catch
+                catch (JsonException)
                 {
                     // Fall through to use default value
+                }
+
+                if (typeof(T) == typeof(LocalAccountSettings) || typeof(T) == typeof(SystemManifestSettings))
+                {
+                    throw new InvalidOperationException(
+                        $"Stored configuration '{name}' is invalid. Restore a valid value before restarting.");
                 }
             }
 

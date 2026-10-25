@@ -47,14 +47,21 @@ public class BlogConfigTests
         Assert.Equal(manifest.ToJson(), config.SystemManifestSettings.ToJson());
     }
 
-    [Fact]
-    public void LoadFromConfig_MalformedJson_ReturnsFallbackWithoutReplacingValidSettings()
+    [Theory]
+    [InlineData("not-json")]
+    [InlineData("null")]
+    [InlineData(null)]
+    [InlineData("")]
+    [InlineData("[]")]
+    [InlineData("42")]
+    [InlineData("{\"siteTitle\":[]}")]
+    public void LoadFromConfig_MalformedJson_ReturnsFallbackWithoutReplacingValidSettings(string? json)
     {
         var config = new BlogConfig();
 
         var defaults = config.LoadFromConfig(new Dictionary<string, string>
         {
-            [nameof(GeneralSettings)] = "not-json",
+            [nameof(GeneralSettings)] = json!,
             [nameof(ContentSettings)] = """{"postListPageSize":20}"""
         });
 
@@ -62,6 +69,25 @@ public class BlogConfigTests
         Assert.Equal(config.GeneralSettings.ToJson(), defaults[nameof(GeneralSettings)]);
         Assert.DoesNotContain(nameof(ContentSettings), defaults.Keys);
         Assert.Equal(20, config.ContentSettings.PostListPageSize);
+    }
+
+    [Theory]
+    [InlineData(nameof(LocalAccountSettings), "not-json")]
+    [InlineData(nameof(LocalAccountSettings), "null")]
+    [InlineData(nameof(LocalAccountSettings), null)]
+    [InlineData(nameof(SystemManifestSettings), "not-json")]
+    [InlineData(nameof(SystemManifestSettings), "null")]
+    public void LoadFromConfig_InvalidAccountOrManifest_DoesNotResetToDefaults(string key, string? json)
+    {
+        var config = new BlogConfig();
+        var persisted = new Dictionary<string, string> { [key] = json! };
+
+        var exception = Assert.Throws<InvalidOperationException>(() => config.LoadFromConfig(persisted));
+
+        Assert.Contains(key, exception.Message);
+        Assert.Contains("Restore", exception.Message);
+        Assert.Null(exception.InnerException);
+        if (key == nameof(LocalAccountSettings)) Assert.Null(config.LocalAccountSettings.PasswordHash);
     }
 
     [Fact]

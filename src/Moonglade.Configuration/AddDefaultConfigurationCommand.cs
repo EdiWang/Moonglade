@@ -19,17 +19,22 @@ public class AddDefaultConfigurationCommandHandler(
     {
         try
         {
-            var entity = new BlogConfigurationEntity
+            var entity = await db.BlogConfiguration.FindAsync([request.CfgKey], ct);
+            if (entity is null)
             {
-                CfgKey = request.CfgKey,
-                CfgValue = request.DefaultJson,
-                LastModifiedTimeUtc = DateTime.UtcNow
-            };
+                entity = new BlogConfigurationEntity { CfgKey = request.CfgKey };
+                await db.BlogConfiguration.AddAsync(entity, ct);
+            }
+            else
+            {
+                logger.LogWarning("Replacing existing configuration with defaults: {CfgKey}", request.CfgKey);
+            }
 
-            await db.BlogConfiguration.AddAsync(entity, ct);
+            entity.CfgValue = request.DefaultJson;
+            entity.LastModifiedTimeUtc = DateTime.UtcNow;
             await db.SaveChangesAsync(ct);
 
-            logger.LogInformation("Successfully added default configuration: {CfgKey}", request.CfgKey);
+            logger.LogInformation("Successfully initialized default configuration: {CfgKey}", request.CfgKey);
             return OperationCode.Done;
         }
         catch (Exception ex)
