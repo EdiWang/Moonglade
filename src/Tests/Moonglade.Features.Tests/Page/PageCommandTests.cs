@@ -1,4 +1,5 @@
 using LiteBus.Commands.Abstractions;
+using LiteBus.Messaging.Abstractions;
 using Microsoft.Data.Sqlite;
 using Microsoft.Extensions.Logging;
 using Moonglade.Data;
@@ -256,6 +257,15 @@ public class PageCommandTests
         private readonly Dictionary<Type, object> _results = [];
 
         public List<ICommand> Commands { get; } = [];
+
+        public Task<MediationResult> TrySendAsync(ICommand command, CommandMediationSettings? settings, CancellationToken cancellationToken) =>
+            throw new NotSupportedException();
+
+        public Task<MediationResult<TCommandResult>> TrySendAsync<TCommandResult>(ICommand<TCommandResult> command, CommandMediationSettings? settings, CancellationToken cancellationToken) =>
+            throw new NotSupportedException();
+
+        public Task<MediationDecision> EvaluateAsync(ICommand command, CommandMediationSettings? settings, CancellationToken cancellationToken) =>
+            throw new NotSupportedException();
 
         public Task SendAsync(ICommand command, CommandMediationSettings? settings, CancellationToken cancellationToken)
         {

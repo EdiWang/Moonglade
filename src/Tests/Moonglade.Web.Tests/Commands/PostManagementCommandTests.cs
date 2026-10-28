@@ -1,4 +1,5 @@
 using LiteBus.Commands.Abstractions;
+using LiteBus.Messaging.Abstractions;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -152,6 +153,15 @@ public class PostManagementCommandTests
 
         public List<ICommand> Commands { get; } = [];
         public Action<ICommand>? BeforeSend { get; set; }
+
+        public Task<MediationResult> TrySendAsync(ICommand command, CommandMediationSettings? settings, CancellationToken cancellationToken) =>
+            throw new NotSupportedException();
+
+        public Task<MediationResult<TCommandResult>> TrySendAsync<TCommandResult>(ICommand<TCommandResult> command, CommandMediationSettings? settings, CancellationToken cancellationToken) =>
+            throw new NotSupportedException();
+
+        public Task<MediationDecision> EvaluateAsync(ICommand command, CommandMediationSettings? settings, CancellationToken cancellationToken) =>
+            throw new NotSupportedException();
 
         public Task SendAsync(ICommand command, CommandMediationSettings? settings, CancellationToken cancellationToken)
         {

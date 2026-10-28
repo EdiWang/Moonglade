@@ -134,7 +134,7 @@ Important configuration areas:
 
 ### CQRS And LiteBus
 
-- The repository uses LiteBus with a command/query/event style.
+- The repository uses LiteBus 7.0.0 with a command/query/event style.
 - Commands mutate state and are usually named `CreateXCommand`, `UpdateXCommand`, or `DeleteXCommand`, with matching `*Handler` classes in the same or nearby files.
 - Queries read state and are usually named `GetXQuery`, `ListXQuery`, or `CountXQuery`.
 - Events trigger side effects such as email, Webmention, IndexNow, or background notifications.

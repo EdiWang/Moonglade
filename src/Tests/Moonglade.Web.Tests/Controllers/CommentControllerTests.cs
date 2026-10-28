@@ -1,4 +1,5 @@
 using LiteBus.Commands.Abstractions;
+using LiteBus.Messaging.Abstractions;
 using LiteBus.Events.Abstractions;
 using LiteBus.Queries.Abstractions;
 using Microsoft.AspNetCore.Http;
@@ -590,6 +591,15 @@ public class CommentControllerTests
         private readonly Dictionary<Type, Exception> _exceptions = [];
 
         public List<ICommand> Commands { get; } = [];
+
+        public Task<MediationResult> TrySendAsync(ICommand command, CommandMediationSettings? settings, CancellationToken cancellationToken) =>
+            throw new NotSupportedException();
+
+        public Task<MediationResult<TCommandResult>> TrySendAsync<TCommandResult>(ICommand<TCommandResult> command, CommandMediationSettings? settings, CancellationToken cancellationToken) =>
+            throw new NotSupportedException();
+
+        public Task<MediationDecision> EvaluateAsync(ICommand command, CommandMediationSettings? settings, CancellationToken cancellationToken) =>
+            throw new NotSupportedException();
 
         public Task SendAsync(ICommand command, CommandMediationSettings? settings, CancellationToken cancellationToken)
         {

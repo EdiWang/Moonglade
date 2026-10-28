@@ -1,4 +1,5 @@
 using LiteBus.Commands.Abstractions;
+using LiteBus.Messaging.Abstractions;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging.Abstractions;
@@ -38,6 +39,15 @@ internal sealed class ConfigurationCommandRecorder : ICommandMediator, IDisposab
         }
         Db.SaveChanges();
     }
+
+    public Task<MediationResult> TrySendAsync(ICommand command, CommandMediationSettings? settings, CancellationToken cancellationToken) =>
+        throw new NotSupportedException();
+
+    public Task<MediationResult<TCommandResult>> TrySendAsync<TCommandResult>(ICommand<TCommandResult> command, CommandMediationSettings? settings, CancellationToken cancellationToken) =>
+        throw new NotSupportedException();
+
+    public Task<MediationDecision> EvaluateAsync(ICommand command, CommandMediationSettings? settings, CancellationToken cancellationToken) =>
+        throw new NotSupportedException();
 
     public async Task SendAsync(ICommand command, CommandMediationSettings? settings, CancellationToken cancellationToken)
     {

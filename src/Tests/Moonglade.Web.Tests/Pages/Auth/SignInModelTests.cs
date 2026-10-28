@@ -1,4 +1,5 @@
 using LiteBus.Commands.Abstractions;
+using LiteBus.Messaging.Abstractions;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Hosting;
@@ -216,6 +217,15 @@ public class SignInModelTests
     private sealed class StubCommandMediator(bool loginValid) : ICommandMediator
     {
         public int SendResultCallCount { get; private set; }
+
+        public Task<MediationResult> TrySendAsync(ICommand command, CommandMediationSettings? settings, CancellationToken cancellationToken) =>
+            throw new NotSupportedException();
+
+        public Task<MediationResult<TCommandResult>> TrySendAsync<TCommandResult>(ICommand<TCommandResult> command, CommandMediationSettings? settings, CancellationToken cancellationToken) =>
+            throw new NotSupportedException();
+
+        public Task<MediationDecision> EvaluateAsync(ICommand command, CommandMediationSettings? settings, CancellationToken cancellationToken) =>
+            throw new NotSupportedException();
 
         public Task SendAsync(ICommand command, CommandMediationSettings? settings, CancellationToken cancellationToken) =>
             Task.CompletedTask;

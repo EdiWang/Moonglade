@@ -1,5 +1,6 @@
 using Edi.CacheAside.InMemory;
 using LiteBus.Commands.Abstractions;
+using LiteBus.Messaging.Abstractions;
 using LiteBus.Events.Abstractions;
 using LiteBus.Queries.Abstractions;
 using Microsoft.AspNetCore.Hosting;
@@ -350,6 +351,15 @@ public class AssetsControllerTests : IDisposable
     private sealed class RecordingCommandMediator : ICommandMediator
     {
         public List<ICommand> Commands { get; } = [];
+
+        public Task<MediationResult> TrySendAsync(ICommand command, CommandMediationSettings? settings, CancellationToken cancellationToken) =>
+            throw new NotSupportedException();
+
+        public Task<MediationResult<TCommandResult>> TrySendAsync<TCommandResult>(ICommand<TCommandResult> command, CommandMediationSettings? settings, CancellationToken cancellationToken) =>
+            throw new NotSupportedException();
+
+        public Task<MediationDecision> EvaluateAsync(ICommand command, CommandMediationSettings? settings, CancellationToken cancellationToken) =>
+            throw new NotSupportedException();
 
         public Task SendAsync(ICommand command, CommandMediationSettings? settings, CancellationToken cancellationToken)
         {
