@@ -48,7 +48,6 @@ Important configuration areas:
 | `EnableCSP`, `CSPValue` | Optional Content Security Policy response header. | Optional | `X-Content-Type-Options: nosniff` is always emitted; CSP is emitted only when enabled and non-empty. |
 | `ImageStorage` | Configures filesystem image storage through `FileSystemPath`, `OriginalFileSystemPath`, and `CacheMinutes`. | Yes | Both paths must be absolute, writable, durable, distinct, and non-overlapping. Environment overrides are `ImageStorage__FileSystemPath` and `ImageStorage__OriginalFileSystemPath`. |
 | `PostCacheMinutes`, `PagesCacheMinutes`, `WidgetCacheMinutes` | Cache durations. | Optional | Revisit when changing rendering or invalidation paths. |
-| `AutoDatabaseMigration` | Production startup migration behavior. | Optional | Automatic migration is skipped outside `Production`. A stable Production release reads the manifest directly, migrates before configuration initialization writes, and then initializes configuration once. Cumulative scripts update the manifest as their completion marker. When disabled, startup skips migration and version checks; operators are responsible for applying the provider script before deploying a release that requires it. |
 | `CannonService:QueueCapacity` | Capacity for the in-process fire-and-forget background queue. | Optional | Defaults to `1000`; when full, new work is rejected and logged instead of running inline on the request path. |
 | `ViewCount` | Crawler user-agent filtering and deduplication window. | Optional | Affects analytics/view-count behavior. |
 | `.env.example` / `POSTGRES_PASSWORD` | Docker Compose PostgreSQL password override. | Local/deployment-dependent | Use a strong secret value outside committed files. |
@@ -121,7 +120,7 @@ Important configuration areas:
 | Authentication | `src/Moonglade.Auth` | Local account, TOTP verification, generic OIDC configuration and validation, admin authorization, login validation, password updates, and authentication registration. |
 | Image storage | `src/Moonglade.ImageStorage` | Blog image storage abstraction, file naming, filesystem storage, primary/original path isolation, and storage-related options. |
 | Integrations | `src/Moonglade.Email`, `src/Moonglade.IndexNow.Client`, `src/Moonglade.Moderation`, `src/Moonglade.Webmention` | Email outbox delivery, external service clients, protocol send/receive logic, notifications, and moderation. |
-| Startup and background work | `src/Moonglade.Setup`, `src/Moonglade.BackgroundServices`, `src/Moonglade.Email` | Startup initialization, database creation/migration, seed data, scheduled publishing, email outbox delivery, and fire-and-forget background queueing. |
+| Startup and background work | `src/Moonglade.Setup`, `src/Moonglade.BackgroundServices`, `src/Moonglade.Email` | Startup initialization, fresh database creation, seed data, scheduled publishing, email outbox delivery, and fire-and-forget background queueing. |
 | Presentation helpers | `src/Moonglade.Theme`, `src/Moonglade.Widgets`, `src/Moonglade.Syndication` | Themes, widgets, feeds, and presentation-oriented read models. |
 | Shared utilities | `src/Moonglade.Utils`, `src/Moonglade.Web.Middleware` | Cross-cutting utilities, TagHelpers, and reusable middleware. |
 | Tests | `src/Tests/Moonglade.*.Tests` | Tests that match the production project or feature area being changed. |
@@ -151,7 +150,7 @@ Important configuration areas:
 - Be careful with many-to-many relationships, cascade behavior, slug/route link generation, publish timestamps, and soft-delete fields because posts, lists, archives, tags, feeds, sitemap, and cache invalidation depend on them.
 - Persisted `DateTime` properties whose names end in `Utc` use the shared UTC contract: SQL Server `datetime2(7)`, PostgreSQL `timestamp with time zone`, UTC materialization, and rejection of local or unspecified tracked writes. `PostViewDaily.ViewDateUtc` is a `DateOnly` stored as `date`.
 - Browser wall-clock values are accepted only by Web request DTOs. Convert them with the supplied IANA time zone before dispatching feature commands; feature models and persisted values must contain UTC timestamps only.
-- Handwritten cumulative migration scripts live under `src/Moonglade.Setup/MigrationScripts`. Preserve explicit UTC conversion, transactional execution, dependent key/index recreation, the final `SystemManifestSettings` completion marker, and backup-based rollback when changing these scripts. Do not re-enable `Npgsql.EnableLegacyTimestampBehavior`.
+- Existing databases are upgraded only by administrators running SQL scripts manually before starting a newer release. The automatic migration runner, `AutoDatabaseMigration` setting, and previous cumulative scripts have been removed. Preserve fresh database creation and seeding. Do not re-enable `Npgsql.EnableLegacyTimestampBehavior`.
 
 ## Caching And Side Effects
 
@@ -184,11 +183,9 @@ The default local launch URL comes from `src/Moonglade.Web/Properties/launchSett
 
 ## Migration Verification
 
-The current migration scripts retain v16.7 steps and intentionally omit earlier migration steps. Tests no longer maintain pre-v16.7 database upgrade fixtures.
+No automatic migration implementation, embedded migration SQL, or migration version-check tests remain. Startup tests cover existing databases with missing or older installation manifests and preserve stored content and manifest values. Startup does not check database version compatibility; administrators must complete required SQL upgrades before launching the new version.
 
-During prerelease development, the application version can advance while script manifest versions remain at the previous release. Script loading and manifest version parsing tests always run. Stable-build tests require both script manifest versions to equal the application version; these checks are explicitly skipped for prerelease builds. Synchronize the script versions when preparing a stable release. Prerelease automatic-migration rejection is tested separately.
-
-Run `Moonglade.Setup.Tests` when changing database mappings, startup migration order, cumulative SQL, or upgrade documentation. Check both SQL Server and PostgreSQL compatibility; in-memory tests alone do not establish relational migration correctness. Verify the available integration tests and their prerequisites before claiming a migration has been tested against either database.
+Run `Moonglade.Setup.Tests` when changing database mappings, initialization, or upgrade documentation. For future manual SQL scripts, check both SQL Server and PostgreSQL compatibility, UTC conversion, transactions, dependent keys/indexes, and backup-based rollback. In-memory tests alone do not establish relational migration correctness. Verify the available integration tests and their prerequisites before claiming a migration has been tested against either database.
 
 The filesystem-only image-storage cutover is documented in [upgrade-filesystem-image-storage.md](upgrade-filesystem-image-storage.md).
 

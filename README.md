@@ -38,6 +38,12 @@ The main solution file is `src/Moonglade.slnx`.
 - **Security:** Enable **HTTPS** and **HTTP/2** on your web server for optimal security and performance.
 - **Deployment Options:** Moonglade can run on any cloud provider or on-premises.
 
+### Database Upgrades
+
+Database upgrades are manual. Before starting a newer release against an existing database, back up the database and have an administrator run any required release-specific SQL scripts for PostgreSQL or SQL Server. Validate the upgrade on a restored backup first; restore the backup if rollback is needed.
+
+Moonglade does not automatically migrate existing databases or check their version compatibility at startup. The former `AutoDatabaseMigration` setting is no longer supported, and the previous cumulative SQL migration scripts have been removed. Fresh installations still create the current database schema and seed initial data automatically.
+
 ### Quick Local Deployment (Docker)
 
 For local testing or small-scale use, deploy Moonglade using Docker:

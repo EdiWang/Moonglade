@@ -11,7 +11,7 @@ public class SystemManifestSettings : IBlogSettings<SystemManifestSettings>
     [JsonIgnore]
     public static SystemManifestSettings DefaultValue => new()
     {
-        VersionString = "0.0.0.0", // to trigger a database update
+        VersionString = "0.0.0.0",
         InstallTimeUtc = DateTime.UtcNow
     };
 

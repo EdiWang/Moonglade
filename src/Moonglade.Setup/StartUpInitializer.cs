@@ -8,7 +8,6 @@ public class StartUpInitializer(
     ILogger<StartUpInitializer> logger,
     BlogDbContext context,
     ConfigInitializer blogConfigInitializer,
-    MigrationManager migrationManager,
     SiteIconBuilder siteIconInitializer)
 {
     public async Task<InitStartUpResult> InitStartUpAsync(CancellationToken cancellationToken = default)
@@ -33,20 +32,12 @@ public class StartUpInitializer(
                     return result;
             }
 
-            // Step 3: Migrate existing databases before configuration initialization writes
-            if (!isNewDatabase)
-            {
-                result = await MigrateDatabaseAsync(cancellationToken);
-                if (result != InitStartUpResult.Success)
-                    return result;
-            }
-
-            // Step 4: Load configuration and add missing defaults only after migration
+            // Step 3: Load configuration and add missing defaults
             result = await InitializeBlogConfigurationAsync(isNewDatabase, cancellationToken);
             if (result != InitStartUpResult.Success)
                 return result;
 
-            // Step 5: Generate site icons (non-blocking operation)
+            // Step 4: Generate site icons (non-blocking operation)
             await GenerateSiteIconsAsync(cancellationToken);
 
             stopwatch.Stop();
@@ -118,22 +109,6 @@ public class StartUpInitializer(
             cancellationToken);
     }
 
-    private async Task<InitStartUpResult> MigrateDatabaseAsync(CancellationToken cancellationToken)
-    {
-        return await ExecuteStepAsync(
-            "Migrating database",
-            async () =>
-            {
-                var migrationResult = await migrationManager.TryMigrationAsync(context, cancellationToken);
-                if (!migrationResult.CanContinueStartup)
-                {
-                    throw new InvalidOperationException($"Migration failed with result: {migrationResult}");
-                }
-            },
-            InitStartUpResult.FailedDatabaseMigration,
-            cancellationToken);
-    }
-
     private async Task GenerateSiteIconsAsync(CancellationToken cancellationToken)
     {
         try
@@ -188,7 +163,6 @@ public enum InitStartUpResult
     FailedCreateDatabase,
     FailedSeedingDatabase,
     FailedInitBlogConfig,
-    FailedDatabaseMigration,
     FailedCancellation,
     UnexpectedError
 }

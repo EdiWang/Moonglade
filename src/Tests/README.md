@@ -10,7 +10,7 @@ The 15 test projects follow the production project boundaries and use xUnit v3 w
 | `Moonglade.Web.Tests` | `Controllers`, `Pages`, `Commands`, `Handlers`, `Services`, `Models`, `Caching`, and `Hosting`. Shared test helpers live in `TestSupport`. Page folders mirror the production pages. |
 | `Moonglade.Email.Tests` | `Configuration`, `Delivery`, `Notifications`, and `Outbox`. |
 | `Moonglade.Utils.Tests` | Content processing tests are split by behavior under `Content`; tag validation and normalization live under `Tags`. Other utilities have their own test files. |
-| `Moonglade.Setup.Tests` | Startup, configuration initialization, migration decisions, and UTC validation. Obsolete pre-v16.7 database upgrade fixtures and their unused container/SSH dependencies have been removed. |
+| `Moonglade.Setup.Tests` | Startup, configuration initialization, preservation of existing content and installation metadata, and UTC validation. |
 | Other test projects | Keep the existing small, focused suites close to their production ownership. |
 
 Namespaces match folders. Test helpers used by several Web suites are imported explicitly from `Moonglade.Web.Tests.TestSupport`; helpers used by only one suite remain local to that suite. Production project boundaries and test assembly names are unchanged.
@@ -33,11 +33,11 @@ Tests that only repeat a happy path, pass an uncancelled token without testing c
 
 See [AGENTS.md](../../AGENTS.md#development-and-verification) for the repository's verification requirements.
 
-## Migration Version Checks
+## Database Upgrade Coverage
 
-Setup tests always verify that both embedded migration scripts load and contain parseable manifest versions. Prerelease builds may keep the previous release's script versions while the application version advances. The two stable-release version checks are explicitly skipped during prerelease development and require exact equality with the application version in stable builds. Update both script manifests when preparing a stable release.
+Database upgrades require administrators to run SQL scripts manually. The automatic migration runner, its decision/version-check tests, and the previous embedded SQL scripts have been removed.
 
-The existing migration-decision tests separately verify that prerelease builds reject automatic migration when an upgrade is required. Those prerelease-only cases are explicitly skipped in stable builds.
+Startup tests use EF Core InMemory to verify that existing databases with missing or older manifests still initialize settings while preserving stored post content and existing manifest JSON and timestamps. These tests do not validate relational schema compatibility or manual SQL upgrades against PostgreSQL or SQL Server.
 
 ## Run Tests
 

@@ -50,7 +50,7 @@ public class ConcreteServiceRegistrationTests
 
         foreach (var type in new[]
         {
-            typeof(StartUpInitializer), typeof(ConfigInitializer), typeof(MigrationManager),
+            typeof(StartUpInitializer), typeof(ConfigInitializer),
             typeof(SyndicationDataSource), typeof(DatedGuidFileNameGenerator)
         })
         {

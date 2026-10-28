@@ -14,8 +14,7 @@ public static class WebApplicationExtensions
     {
         { InitStartUpResult.FailedCreateDatabase, "Database connection test failed, please check your connection string and firewall settings, then RESTART Moonglade manually." },
         { InitStartUpResult.FailedSeedingDatabase, "Error seeding database, please check error log, then RESTART Moonglade manually." },
-        { InitStartUpResult.FailedInitBlogConfig, "Error initializing blog configuration, please check error log, then RESTART Moonglade manually." },
-        { InitStartUpResult.FailedDatabaseMigration, "Error migrating database, please check error log, then RESTART Moonglade manually." }
+        { InitStartUpResult.FailedInitBlogConfig, "Error initializing blog configuration, please check error log, then RESTART Moonglade manually." }
     };
 
     /// <summary>

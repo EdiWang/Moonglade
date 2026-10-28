@@ -327,7 +327,6 @@ public static class ServiceCollectionExtensions
     private static IServiceCollection AddMoongladeInitializers(this IServiceCollection services)
     {
         services.AddTransient<SiteIconBuilder>();
-        services.AddScoped<MigrationManager>();
         services.AddScoped<ConfigInitializer>();
         services.AddScoped<StartUpInitializer>();
 

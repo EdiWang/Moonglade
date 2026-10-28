@@ -39,6 +39,7 @@ The linked sections retain the detailed project rules and must be followed when 
 - Keep controllers and Razor Pages focused on HTTP binding, authorization, status codes, and view data. Business rules belong in the owning class library command, query, or service.
 - Keep `Program.cs` as startup orchestration. Use the existing owning-project DI extensions, Web service composition, and centralized pipeline and endpoint mapping.
 - Preserve compatibility with both PostgreSQL and SQL Server. Keep provider-specific behavior in the provider projects.
+- Database upgrades require administrators to run SQL scripts manually before starting the upgraded application. Do not add automatic schema/data migration or restore the removed cumulative migration scripts. Preserve fresh database creation and seeding.
 - Application code, default configuration, and supported runtime behavior must remain cloud-platform-neutral. Do not add cloud SDKs, provider detection, vendor-specific settings, or image-storage providers to core projects to satisfy a deployment example. Vendor-specific guides are optional operational examples.
 - Preserve standard environment-variable configuration, OCI/Docker compatibility, and separate durable mounts for `/app/images` and `/app/images-origin`. The Docker image pre-creates both paths for the `app` user; Compose uses separate named volumes.
 - Preserve published URLs, protocol endpoints, HTTPS, forwarded-header handling, health semantics, authentication, security headers, and content moderation unless the task explicitly targets them.
@@ -52,7 +53,7 @@ The linked sections retain the detailed project rules and must be followed when 
 - Use the latest applicable C# features while staying readable and consistent with nearby code.
 - Keep namespaces aligned with folders. Put new code in the project and feature folder that owns the behavior.
 - Use constructor injection. Do not introduce service locators or unnecessary static mutable state.
-- Startup services (`StartUpInitializer`, `ConfigInitializer`, `MigrationManager`, `SiteIconBuilder`), `DatedGuidFileNameGenerator`, `ImageUploadValidator`, `CommentSubmissionGuard`, and `SyndicationDataSource` use concrete constructor injection with their existing DI lifetimes. Do not add interfaces or virtual methods solely to mock them in tests. Keep contracts with actual application boundaries, such as image storage, configuration, moderation, email, and external communication.
+- Startup services (`StartUpInitializer`, `ConfigInitializer`, `SiteIconBuilder`), `DatedGuidFileNameGenerator`, `ImageUploadValidator`, `CommentSubmissionGuard`, and `SyndicationDataSource` use concrete constructor injection with their existing DI lifetimes. Do not add interfaces or virtual methods solely to mock them in tests. Keep contracts with actual application boundaries, such as image storage, configuration, moderation, email, and external communication.
 - Use async APIs end to end and pass `CancellationToken` through command/query handlers and EF Core calls where available.
 - Use UTC for persisted or cross-boundary timestamps. Convert to user/client time only at the UI or boundary layer.
 - Prefer nullable-safe code and explicit validation for public inputs.

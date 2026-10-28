@@ -2,8 +2,6 @@ using LiteBus.Commands.Abstractions;
 using LiteBus.Queries.Abstractions;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging.Abstractions;
 using Moonglade.Configuration;
 using Moonglade.Data;
@@ -28,8 +26,10 @@ public class StartUpInitializerTests : IDisposable
         }
     }
 
-    [Fact]
-    public async Task InitStartUpAsync_ExistingDatabase_PreservesEmptyPostContentType()
+    [Theory]
+    [InlineData(null)]
+    [InlineData("16.7.0")]
+    public async Task InitStartUpAsync_ExistingDatabase_PreservesContentAndManifest(string manifestVersion)
     {
         var cancellationToken = TestContext.Current.CancellationToken;
         var options = new DbContextOptionsBuilder<BlogDbContext>()
@@ -42,6 +42,21 @@ public class StartUpInitializerTests : IDisposable
             CfgValue = "{}",
             LastModifiedTimeUtc = DateTime.UtcNow
         });
+        var manifest = new SystemManifestSettings
+        {
+            VersionString = manifestVersion,
+            InstallTimeUtc = new DateTime(2026, 1, 1, 0, 0, 0, DateTimeKind.Utc)
+        };
+        var manifestJson = manifest.ToJson();
+        if (manifestVersion is not null)
+        {
+            context.BlogConfiguration.Add(new BlogConfigurationEntity
+            {
+                CfgKey = nameof(SystemManifestSettings),
+                CfgValue = manifestJson,
+                LastModifiedTimeUtc = manifest.InstallTimeUtc
+            });
+        }
         var post = new PostEntity
         {
             Id = Guid.NewGuid(),
@@ -66,10 +81,6 @@ public class StartUpInitializerTests : IDisposable
                 addDefaultHandler.HandleAsync((AddDefaultConfigurationCommand)command, ct));
         var configInitializer = new ConfigInitializer(
             queryMediator.Object, commandMediator.Object, new BlogConfig(), NullLogger<ConfigInitializer>.Instance);
-        var hostEnvironment = new Mock<IHostEnvironment>();
-        hostEnvironment.SetupGet(environment => environment.EnvironmentName).Returns("Development");
-        var migrationManager = new MigrationManager(
-            NullLogger<MigrationManager>.Instance, new ConfigurationBuilder().Build(), hostEnvironment.Object);
         var webEnvironment = new Mock<IWebHostEnvironment>();
         webEnvironment.SetupGet(environment => environment.WebRootPath).Returns(Path.GetTempPath());
         var siteIconBuilder = new SiteIconBuilder(
@@ -78,7 +89,6 @@ public class StartUpInitializerTests : IDisposable
             NullLogger<StartUpInitializer>.Instance,
             context,
             configInitializer,
-            migrationManager,
             siteIconBuilder);
 
         var result = await initializer.InitStartUpAsync(cancellationToken);
@@ -87,6 +97,13 @@ public class StartUpInitializerTests : IDisposable
         context.ChangeTracker.Clear();
         Assert.Empty((await context.Post.SingleAsync(cancellationToken)).ContentType);
         Assert.Equal(11, await context.BlogConfiguration.CountAsync(cancellationToken));
+        if (manifestVersion is not null)
+        {
+            var savedManifest = await context.BlogConfiguration.SingleAsync(
+                row => row.CfgKey == nameof(SystemManifestSettings), cancellationToken);
+            Assert.Equal(manifestJson, savedManifest.CfgValue);
+            Assert.Equal(manifest.InstallTimeUtc, savedManifest.LastModifiedTimeUtc);
+        }
         queryMediator.Verify(mediator => mediator.QueryAsync(
             It.IsAny<ListConfigurationsQuery>(), It.IsAny<QueryMediationSettings>(), cancellationToken), Times.Once);
     }
