@@ -15,7 +15,7 @@
 	<ItemGroup>
 		<PackageReference Include="Edi.TemplateEmail" Version="2026.4.2" />
 		<PackageReference Include="Edi.TemplateEmail.Smtp" Version="2026.4.2" />
-		<PackageReference Include="System.Security.Cryptography.Pkcs" Version="10.0.13" />
+		<PackageReference Include="System.Security.Cryptography.Pkcs" Version="10.0.14" />
 	</ItemGroup>
 	<ItemGroup>
 		<ProjectReference Include="..\Moonglade.Configuration\Moonglade.Configuration.csproj" />
