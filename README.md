@@ -29,6 +29,7 @@ The main solution file is `src/Moonglade.slnx`.
 | `src/Moonglade.*` | Supporting projects for image storage, email, IndexNow, moderation, Webmention, syndication, themes, widgets, setup, utilities, and middleware. |
 | `src/Tests/Moonglade.*.Tests` | xUnit test projects aligned with the production projects. See the [test layout and maintenance guide](src/Tests/README.md). |
 | `Dockerfile`, `compose.yaml` | Docker deployment assets. |
+| `database/` | Manual, idempotent database migration SQL scripts and their conventions. |
 
 ## 🚀 Deployment
 
@@ -41,6 +42,8 @@ The main solution file is `src/Moonglade.slnx`.
 ### Database Upgrades
 
 Database upgrades are manual. Before starting a newer release against an existing database, back up the database and have an administrator run any required release-specific SQL scripts for PostgreSQL or SQL Server. Validate the upgrade on a restored backup first; restore the backup if rollback is needed.
+
+All future migration scripts belong in the repository-root [`database/`](database/README.md) directory and must be idempotent, so administrators can execute them repeatedly without duplicating objects or data or reapplying data transformations. Tasks that change the schema or require migrating existing data must include the corresponding scripts for both supported databases.
 
 Moonglade does not automatically migrate existing databases or check their version compatibility at startup. The former `AutoDatabaseMigration` setting is no longer supported, and the previous cumulative SQL migration scripts have been removed. Fresh installations still create the current database schema and seed initial data automatically.
 

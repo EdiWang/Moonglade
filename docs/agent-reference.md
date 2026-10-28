@@ -151,6 +151,7 @@ Important configuration areas:
 - Persisted `DateTime` properties whose names end in `Utc` use the shared UTC contract: SQL Server `datetime2(7)`, PostgreSQL `timestamp with time zone`, UTC materialization, and rejection of local or unspecified tracked writes. `PostViewDaily.ViewDateUtc` is a `DateOnly` stored as `date`.
 - Browser wall-clock values are accepted only by Web request DTOs. Convert them with the supplied IANA time zone before dispatching feature commands; feature models and persisted values must contain UTC timestamps only.
 - Existing databases are upgraded only by administrators running SQL scripts manually before starting a newer release. The automatic migration runner, `AutoDatabaseMigration` setting, and previous cumulative scripts have been removed. Preserve fresh database creation and seeding. Do not re-enable `Npgsql.EnableLegacyTimestampBehavior`.
+- All future migration SQL belongs under the repository-root `database/` directory and must be idempotent. Any task that changes schema or requires migrating existing data must include the corresponding scripts for both PostgreSQL and SQL Server. This applies to AI agents as well as human developers; follow [database/README.md](../database/README.md).
 
 ## Caching And Side Effects
 
@@ -186,6 +187,8 @@ The default local launch URL comes from `src/Moonglade.Web/Properties/launchSett
 No automatic migration implementation, embedded migration SQL, or migration version-check tests remain. Startup tests cover existing databases with missing or older installation manifests and preserve stored content and manifest values. Startup does not check database version compatibility; administrators must complete required SQL upgrades before launching the new version.
 
 Run `Moonglade.Setup.Tests` when changing database mappings, initialization, or upgrade documentation. For future manual SQL scripts, check both SQL Server and PostgreSQL compatibility, UTC conversion, transactions, dependent keys/indexes, and backup-based rollback. In-memory tests alone do not establish relational migration correctness. Verify the available integration tests and their prerequisites before claiming a migration has been tested against either database.
+
+Verify each new or changed script on its target database using a representative pre-upgrade database, then run it again against the upgraded database. Both runs must succeed, and the second run must preserve the resulting schema and data without duplicate objects, duplicate rows, or repeated transformations. If database verification is unavailable, report that limitation explicitly; source review or in-memory tests do not prove SQL idempotency.
 
 The filesystem-only image-storage cutover is documented in [upgrade-filesystem-image-storage.md](upgrade-filesystem-image-storage.md).
 
