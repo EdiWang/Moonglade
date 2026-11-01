@@ -34,7 +34,6 @@ public class CreateCategoryCommandHandler(
 
         var category = new CategoryEntity
         {
-            Id = Guid.NewGuid(),
             Slug = request.Slug.Trim(),
             Note = request.Note?.Trim(),
             DisplayName = request.DisplayName.Trim()

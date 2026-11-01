@@ -2,6 +2,7 @@
 using LiteBus.Queries.Abstractions;
 using Moonglade.ActivityLog;
 using Moonglade.Features.Category;
+using System.ComponentModel.DataAnnotations;
 
 namespace Moonglade.Web.Controllers;
 
@@ -10,8 +11,8 @@ public class CategoryController(
     IQueryMediator queryMediator,
     ICommandMediator commandMediator) : BlogControllerBase(commandMediator)
 {
-    [HttpGet("{id:guid}")]
-    public async Task<IActionResult> Get([NotEmpty] Guid id)
+    [HttpGet("{id:int}")]
+    public async Task<IActionResult> Get([Range(1, int.MaxValue)] int id)
     {
         var cat = await queryMediator.QueryAsync(new GetCategoryQuery(id));
         if (cat == null) return NotFound();
@@ -42,8 +43,8 @@ public class CategoryController(
         return Created(string.Empty, command);
     }
 
-    [HttpPut("{id:guid}")]
-    public async Task<IActionResult> Update([NotEmpty] Guid id, UpdateCategoryCommand command)
+    [HttpPut("{id:int}")]
+    public async Task<IActionResult> Update([Range(1, int.MaxValue)] int id, UpdateCategoryCommand command)
     {
         command.Id = id;
         var oc = await CommandMediator.SendAsync(command);
@@ -61,8 +62,8 @@ public class CategoryController(
         return NoContent();
     }
 
-    [HttpDelete("{id:guid}")]
-    public async Task<IActionResult> Delete([NotEmpty] Guid id)
+    [HttpDelete("{id:int}")]
+    public async Task<IActionResult> Delete([Range(1, int.MaxValue)] int id)
     {
         var oc = await CommandMediator.SendAsync(new DeleteCategoryCommand(id));
         if (oc == OperationCode.ObjectNotFound) return NotFound();

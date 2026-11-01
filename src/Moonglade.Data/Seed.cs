@@ -89,7 +89,6 @@ public class Seed
         [
             new()
             {
-                Id = Guid.Parse("b0c15707-dfc8-4b09-9aa0-5bfca744c50b"),
                 DisplayName = "Default",
                 Note = "Default Category",
                 Slug = "default"

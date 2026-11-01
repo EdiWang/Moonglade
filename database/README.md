@@ -18,4 +18,10 @@ All future database migration SQL scripts belong in this directory. Administrato
 3. Record the provider, prerequisites, and verification result with the change. If a target database is unavailable, explicitly report that the script and its idempotency were not verified against that database.
 4. Have an administrator apply the required scripts before starting the upgraded application. Use backup restoration if rollback is needed.
 
-The previous cumulative migration scripts have been discarded. This directory currently establishes the conventions for future scripts and supplies no upgrade SQL.
+## Available Scripts
+
+| Upgrade | PostgreSQL | SQL Server | Prerequisites and execution order |
+| --- | --- | --- | --- |
+| Category integer identity IDs | [PostgreSql/category-int-identity.sql](PostgreSql/category-int-identity.sql) | [SqlServer/category-int-identity.sql](SqlServer/category-int-identity.sql) | Existing GUID-based `Category.Id` and `PostCategory.CategoryId` in the standard Moonglade schema. Apply the script for your provider once before starting the release introducing integer category IDs; repeat executions are safe. See the [upgrade guide](../docs/upgrade-category-int-identity.md). |
+
+The previous cumulative migration scripts have been discarded. These scripts do not replace older, unrelated database upgrades.

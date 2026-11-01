@@ -148,6 +148,7 @@ Important configuration areas:
 - Prefer `AsNoTracking()` for read-only queries. Use async EF Core APIs and pass `CancellationToken` through write operations and handlers where available.
 - Use EF Core set-based operations such as `ExecuteDeleteAsync` when they fit the existing pattern.
 - Be careful with many-to-many relationships, cascade behavior, slug/route link generation, publish timestamps, and soft-delete fields because posts, lists, archives, tags, feeds, sitemap, and cache invalidation depend on them.
+- `Category.Id` and `PostCategory.CategoryId` are `int`; both supported provider contexts configure category identity generation from 100 with increment 1. Category creation and fresh seeding must leave the ID to the database. Administrative category APIs and post-editor DTOs use integers; public category and subscription URLs retain slugs. Existing GUID category databases require the [manual category upgrade](upgrade-category-int-identity.md).
 - Persisted `DateTime` properties whose names end in `Utc` use the shared UTC contract: SQL Server `datetime2(7)`, PostgreSQL `timestamp with time zone`, UTC materialization, and rejection of local or unspecified tracked writes. `PostViewDaily.ViewDateUtc` is a `DateOnly` stored as `date`.
 - Browser wall-clock values are accepted only by Web request DTOs. Convert them with the supplied IANA time zone before dispatching feature commands; feature models and persisted values must contain UTC timestamps only.
 - Existing databases are upgraded only by administrators running SQL scripts manually before starting a newer release. The automatic migration runner, `AutoDatabaseMigration` setting, and previous cumulative scripts have been removed. Preserve fresh database creation and seeding. Do not re-enable `Npgsql.EnableLegacyTimestampBehavior`.
@@ -189,6 +190,8 @@ No automatic migration implementation, embedded migration SQL, or migration vers
 Run `Moonglade.Setup.Tests` when changing database mappings, initialization, or upgrade documentation. For future manual SQL scripts, check both SQL Server and PostgreSQL compatibility, UTC conversion, transactions, dependent keys/indexes, and backup-based rollback. In-memory tests alone do not establish relational migration correctness. Verify the available integration tests and their prerequisites before claiming a migration has been tested against either database.
 
 Verify each new or changed script on its target database using a representative pre-upgrade database, then run it again against the upgraded database. Both runs must succeed, and the second run must preserve the resulting schema and data without duplicate objects, duplicate rows, or repeated transformations. If database verification is unavailable, report that limitation explicitly; source review or in-memory tests do not prove SQL idempotency.
+
+Category identity migration tests in `Moonglade.Setup.Tests` use opt-in disposable PostgreSQL and SQL Server containers. See the [category upgrade guide](upgrade-category-int-identity.md#automated-verification) for the Docker prerequisites and `MOONGLADE_TEST_CATEGORY_DATABASES` command; a normal test run skips these relational groups explicitly.
 
 The filesystem-only image-storage cutover is documented in [upgrade-filesystem-image-storage.md](upgrade-filesystem-image-storage.md).
 

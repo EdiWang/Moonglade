@@ -102,7 +102,7 @@ public class SyndicationQueryHandlerTests
             .UseInMemoryDatabase(Guid.NewGuid().ToString())
             .Options;
         var db = new BlogDbContext(options);
-        var category = new CategoryEntity { Id = Guid.NewGuid(), Slug = "tech", DisplayName = "Tech" };
+        var category = new CategoryEntity { Id = 100, Slug = "tech", DisplayName = "Tech" };
         var publishDate = new DateTime(2025, 1, 1, 0, 0, 0, DateTimeKind.Utc);
         var post = new PostEntity
         {

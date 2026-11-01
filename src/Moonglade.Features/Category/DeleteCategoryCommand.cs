@@ -5,7 +5,7 @@ using Moonglade.Features.Post;
 
 namespace Moonglade.Features.Category;
 
-public record DeleteCategoryCommand(Guid Id) : ICommand<OperationCode>;
+public record DeleteCategoryCommand(int Id) : ICommand<OperationCode>;
 
 public class DeleteCategoryCommandHandler(
     BlogDbContext db,

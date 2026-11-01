@@ -7,7 +7,7 @@ namespace Moonglade.Features.Category;
 
 public class UpdateCategoryCommand : CreateCategoryCommand, ICommand<OperationCode>
 {
-    public Guid Id { get; set; }
+    public int Id { get; set; }
 }
 
 public class UpdateCategoryCommandHandler(

@@ -135,7 +135,7 @@ public class CreatePostCommandTests
     public async Task HandleAsync_AssignsCategoriesAndCreatesTags()
     {
         using var db = CreateDbContext();
-        var categoryId = Guid.NewGuid();
+        var categoryId = 100;
         db.Category.Add(new CategoryEntity
         {
             Id = categoryId,
@@ -158,6 +158,8 @@ public class CreatePostCommandTests
             .SingleAsync(p => p.Id == result.Id, TestContext.Current.CancellationToken);
 
         Assert.Collection(post.PostCategory, pc => Assert.Equal(categoryId, pc.CategoryId));
+        Assert.NotEqual(Guid.Empty, post.Id);
+        Assert.All(post.PostCategory, pc => Assert.Equal(post.Id, pc.PostId));
         Assert.Equal(2, post.Tags.Count);
         Assert.Contains(post.Tags, t => t.DisplayName == "dotnet");
         Assert.Contains(post.Tags, t => t.DisplayName == "aspnetcore");

@@ -4,14 +4,14 @@ using Moonglade.Utils;
 
 namespace Moonglade.Features.Post;
 
-public class ListPostsQuery(int pageSize, int pageIndex, Guid? catId = null)
+public class ListPostsQuery(int pageSize, int pageIndex, int? catId = null)
     : IQuery<List<PostDigest>>
 {
     public int PageSize { get; set; } = pageSize;
 
     public int PageIndex { get; set; } = pageIndex;
 
-    public Guid? CatId { get; set; } = catId;
+    public int? CatId { get; set; } = catId;
 }
 
 public class ListPostsQueryHandler(BlogDbContext db) : IQueryHandler<ListPostsQuery, List<PostDigest>>

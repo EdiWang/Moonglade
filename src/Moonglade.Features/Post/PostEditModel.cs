@@ -19,7 +19,7 @@ public class PostEditModel
     [MaxLength(64)]
     public string Author { get; set; }
 
-    public Guid[] SelectedCatIds { get; set; }
+    public int[] SelectedCatIds { get; set; }
 
     [Required]
     [Display(Name = "Enable Comment")]

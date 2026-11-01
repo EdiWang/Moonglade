@@ -88,6 +88,51 @@ public class PostControllerTests
     }
 
     [Fact]
+    public async Task GetMeta_IntegerCategoryIds_SerializesExactNumericIdsAndNames()
+    {
+        var queryMediator = new Mock<IQueryMediator>();
+        queryMediator.Setup(mediator => mediator.QueryAsync(It.IsAny<ListCategoriesQuery>(),
+                It.IsAny<QueryMediationSettings>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(
+            [
+                new CategoryEntity { Id = 100, DisplayName = "Cloud", Slug = "cloud", Note = "Cloud" },
+                new CategoryEntity { Id = 101, DisplayName = "Cloud", Slug = "other", Note = "Other" }
+            ]);
+        var controller = new PostController(Mock.Of<ICommandMediator>(), queryMediator.Object,
+            new BlogConfig(), Mock.Of<IStringLocalizer<Program>>());
+
+        var result = await controller.GetMeta(Options.Create(new RequestLocalizationOptions()));
+        var metadata = Assert.IsType<PostEditorMeta>(Assert.IsType<OkObjectResult>(result).Value);
+        using var document = JsonDocument.Parse(JsonSerializer.Serialize(metadata, JsonSerializerOptions.Web));
+        var categories = document.RootElement.GetProperty("categories").EnumerateArray().ToArray();
+        Assert.Equal([100, 101], categories.Select(category => category.GetProperty("id").GetInt32()).ToArray());
+        Assert.All(categories, category => Assert.Equal(JsonValueKind.Number, category.GetProperty("id").ValueKind));
+        Assert.Equal(["Cloud", "Cloud"], categories.Select(category => category.GetProperty("displayName").GetString()).ToArray());
+    }
+
+    [Fact]
+    public async Task GetPost_IntegerCategoryLinks_SerializesSelectionWithoutChangingPostGuid()
+    {
+        var postId = Guid.NewGuid();
+        var post = new PostEntity { Id = postId, Title = "Categorized article", Slug = "article", PostContent = "Content" };
+        post.PostCategory.Add(new PostCategoryEntity { PostId = postId, CategoryId = 101 });
+        post.PostCategory.Add(new PostCategoryEntity { PostId = postId, CategoryId = 100 });
+        var queryMediator = new Mock<IQueryMediator>();
+        queryMediator.Setup(mediator => mediator.QueryAsync(It.Is<GetPostByIdQuery>(query => query.Id == postId),
+            It.IsAny<QueryMediationSettings>(), It.IsAny<CancellationToken>())).ReturnsAsync(post);
+        var controller = new PostController(Mock.Of<ICommandMediator>(), queryMediator.Object,
+            new BlogConfig(), Mock.Of<IStringLocalizer<Program>>());
+
+        var result = await controller.GetPost(postId);
+        var detail = Assert.IsType<PostEditDetail>(Assert.IsType<OkObjectResult>(result).Value);
+        using var document = JsonDocument.Parse(JsonSerializer.Serialize(detail, JsonSerializerOptions.Web));
+        Assert.Equal(postId, document.RootElement.GetProperty("postId").GetGuid());
+        Assert.Equal([100, 101], document.RootElement.GetProperty("selectedCatIds")
+            .EnumerateArray().Select(id => id.GetInt32()).Order().ToArray());
+        Assert.Equal("Categorized article", document.RootElement.GetProperty("title").GetString());
+    }
+
+    [Fact]
     public async Task GetMeta_UsesCurrentDefaultEditorWithoutRestart()
     {
         var blogConfig = new BlogConfig();

@@ -25,6 +25,9 @@
 
 	<ItemGroup>
 		<ProjectReference Include="..\..\Moonglade.Setup\Moonglade.Setup.csproj" />
+		<ProjectReference Include="..\..\Moonglade.Data.PostgreSql\Moonglade.Data.PostgreSql.csproj" />
+		<ProjectReference Include="..\..\Moonglade.Data.SqlServer\Moonglade.Data.SqlServer.csproj" />
+		<ProjectReference Include="..\..\Moonglade.Features\Moonglade.Features.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>

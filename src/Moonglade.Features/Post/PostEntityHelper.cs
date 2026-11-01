@@ -55,7 +55,7 @@ internal static class PostEntityHelper
     /// <summary>
     /// Sets the categories on a post. Existing categories on the post are cleared first.
     /// </summary>
-    public static void SetCategories(PostEntity post, Guid[] categoryIds)
+    public static void SetCategories(PostEntity post, int[] categoryIds)
     {
         post.PostCategory.Clear();
 

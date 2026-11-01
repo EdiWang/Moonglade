@@ -7,7 +7,7 @@ import { showDeleteConfirmModal, hideConfirmModal } from './adminModal.mjs';
 Alpine.data('categoryManager', () => ({
     categories: [],
     isLoading: true,
-    currentCategoryId: window.emptyGuid,
+    currentCategoryId: 0,
     editCanvas: null,
     pendingDeleteId: null,
     formData: {
@@ -43,7 +43,7 @@ Alpine.data('categoryManager', () => ({
     },
 
     initCreateCategory() {
-        this.currentCategoryId = window.emptyGuid;
+        this.currentCategoryId = 0;
         this.formData = { slug: '', displayName: '', note: '' };
         this.editCanvas.show();
     },
@@ -80,7 +80,7 @@ Alpine.data('categoryManager', () => ({
     },
 
     async handleSubmit() {
-        const isCreate = this.currentCategoryId === window.emptyGuid;
+        const isCreate = this.currentCategoryId === 0;
         const apiAddress = isCreate ? '/api/category' : `/api/category/${this.currentCategoryId}`;
         const verb = isCreate ? 'POST' : 'PUT';
 

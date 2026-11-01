@@ -40,8 +40,8 @@ public class PostQueryTests
     public async Task ListPostsQuery_FiltersByCategory()
     {
         using var db = CreateDbContext();
-        var targetCategoryId = Guid.NewGuid();
-        var otherCategoryId = Guid.NewGuid();
+        var targetCategoryId = 100;
+        var otherCategoryId = 101;
         var targetPost = CreatePost(Guid.NewGuid(), "target", PostStatus.Published, DateTime.UtcNow.AddDays(-1));
         targetPost.PostCategory.Add(new PostCategoryEntity { PostId = targetPost.Id, CategoryId = targetCategoryId });
         var otherPost = CreatePost(Guid.NewGuid(), "other", PostStatus.Published, DateTime.UtcNow);
@@ -55,6 +55,33 @@ public class PostQueryTests
 
         Assert.Single(result);
         Assert.Equal("target", result[0].Slug);
+    }
+
+    [Fact]
+    public async Task CategoryCountAndList_IntegerFilter_ExcludeOtherCategoriesDraftsAndDeletedPosts()
+    {
+        using var db = CreateDbContext();
+        var published = CreatePost(Guid.NewGuid(), "published", PostStatus.Published, DateTime.UtcNow);
+        var draft = CreatePost(Guid.NewGuid(), "draft", PostStatus.Draft, null);
+        var deleted = CreatePost(Guid.NewGuid(), "deleted", PostStatus.Published, DateTime.UtcNow, isDeleted: true);
+        var other = CreatePost(Guid.NewGuid(), "other", PostStatus.Published, DateTime.UtcNow);
+        foreach (var post in new[] { published, draft, deleted })
+            post.PostCategory.Add(new PostCategoryEntity { PostId = post.Id, CategoryId = 100 });
+        other.PostCategory.Add(new PostCategoryEntity { PostId = other.Id, CategoryId = 101 });
+        db.Post.AddRange(published, draft, deleted, other);
+        await db.SaveChangesAsync(TestContext.Current.CancellationToken);
+
+        var count = new CountPostQueryHandler(db);
+        var list = new ListPostsQueryHandler(db);
+        Assert.Equal(1, await count.HandleAsync(new CountPostQuery(CountType.Category, 100), TestContext.Current.CancellationToken));
+        Assert.Equal(0, await count.HandleAsync(new CountPostQuery(CountType.Category, 999), TestContext.Current.CancellationToken));
+        Assert.Equal(2, await count.HandleAsync(new CountPostQuery(CountType.Public), TestContext.Current.CancellationToken));
+        Assert.Equal("published", Assert.Single(await list.HandleAsync(new ListPostsQuery(10, 1, 100), TestContext.Current.CancellationToken)).Slug);
+        Assert.Empty(await list.HandleAsync(new ListPostsQuery(10, 1, 999), TestContext.Current.CancellationToken));
+        Assert.Equal(2, (await list.HandleAsync(new ListPostsQuery(10, 1), TestContext.Current.CancellationToken)).Count);
+        var exception = await Assert.ThrowsAsync<InvalidOperationException>(() =>
+            count.HandleAsync(new CountPostQuery(CountType.Category), TestContext.Current.CancellationToken));
+        Assert.Equal("CatId must be provided for Category count.", exception.Message);
     }
 
     [Fact]
@@ -77,7 +104,7 @@ public class PostQueryTests
         var abstractPost = CreatePost(Guid.NewGuid(), "abstract-match", PostStatus.Published, DateTime.UtcNow.AddDays(-3), title: "Serverless Notes", contentAbstract: "Azure hosting");
         var keywordPost = CreatePost(Guid.NewGuid(), "keyword-match", PostStatus.Published, DateTime.UtcNow.AddDays(-4), title: "Serverless Notes");
         keywordPost.Keywords = "Azure";
-        var category = new CategoryEntity { Id = Guid.NewGuid(), Slug = "cloud", DisplayName = "Azure" };
+        var category = new CategoryEntity { Id = 100, Slug = "cloud", DisplayName = "Azure" };
         var categoryPost = CreatePost(Guid.NewGuid(), "category-match", PostStatus.Published, DateTime.UtcNow.AddDays(-5), title: "Serverless Notes");
         categoryPost.PostCategory.Add(new PostCategoryEntity { Post = categoryPost, Category = category, CategoryId = category.Id });
         db.Category.Add(category);
@@ -141,7 +168,7 @@ public class PostQueryTests
     public async Task SearchPostQuery_FiltersByCategoryTagLanguageAndDate()
     {
         using var db = CreateDbContext();
-        var category = new CategoryEntity { Id = Guid.NewGuid(), Slug = "cloud", DisplayName = "Cloud" };
+        var category = new CategoryEntity { Id = 100, Slug = "cloud", DisplayName = "Cloud" };
         var tag = new TagEntity { DisplayName = "Azure", NormalizedName = "azure" };
         var matchingPost = CreatePost(
             Guid.NewGuid(),

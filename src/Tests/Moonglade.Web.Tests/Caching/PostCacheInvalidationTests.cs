@@ -197,8 +197,8 @@ public class PostCacheInvalidationTests
         await mediator.SendAsync(new RestorePostCommand(missing), ct);
         await mediator.SendAsync(new CancelScheduleCommand(environment.PostId), ct);
         await mediator.SendAsync(new PostponePostCommand(environment.PostId, 1), ct);
-        await mediator.SendAsync(new DeleteCategoryCommand(missing), ct);
-        await mediator.SendAsync(new UpdateCategoryCommand { Id = missing }, ct);
+        await mediator.SendAsync(new DeleteCategoryCommand(int.MaxValue), ct);
+        await mediator.SendAsync(new UpdateCategoryCommand { Id = int.MaxValue }, ct);
         await mediator.SendAsync(new DeleteTagCommand(int.MaxValue), ct);
         await mediator.SendAsync(new UpdateTagCommand(int.MaxValue, "missing"), ct);
         await mediator.SendAsync(new EmptyRecycleBinCommand(), ct);
@@ -299,7 +299,7 @@ public class PostCacheInvalidationTests
         public ICacheAside Cache => Services.GetRequiredService<ICacheAside>();
         public PostCacheInvalidator Invalidator => Services.GetRequiredService<PostCacheInvalidator>();
         public Guid PostId { get; } = Guid.NewGuid();
-        public Guid CategoryId { get; } = Guid.NewGuid();
+        public int CategoryId { get; } = 100;
         public int TagId { get; private set; }
         public DateTime PublishDateUtc { get; } = DateTime.UtcNow.AddDays(-1);
 

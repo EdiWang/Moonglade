@@ -229,7 +229,7 @@ public class SearchPageTests
             [
                 new CategoryEntity
                 {
-                    Id = Guid.NewGuid(),
+                    Id = 100,
                     DisplayName = ".NET",
                     Slug = "dotnet"
                 }

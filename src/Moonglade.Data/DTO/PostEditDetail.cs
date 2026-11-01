@@ -20,6 +20,6 @@ public record PostEditDetail
     public DateTime? PublishDate { get; set; }
     public DateTime? ScheduledPublishTimeUtc { get; set; }
     public DateTime? LastModifiedUtc { get; set; }
-    public Guid[] SelectedCatIds { get; set; }
+    public int[] SelectedCatIds { get; set; }
     public string ContentType { get; set; }
 }

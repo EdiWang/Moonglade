@@ -19,6 +19,8 @@ public class PostgreSqlBlogDbContext : BlogDbContext
         base.OnModelCreating(modelBuilder);
 
         modelBuilder.ApplyConfiguration(new BlogThemeConfiguration());
+        modelBuilder.Entity<Entities.CategoryEntity>()
+            .Property(e => e.Id).UseIdentityByDefaultColumn().HasIdentityOptions(startValue: 100, incrementBy: 1);
         Data.Configurations.UtcDateTimeConvention.ConfigureUtcDateTimeColumnType(
             modelBuilder,
             "timestamp with time zone");

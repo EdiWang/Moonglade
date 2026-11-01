@@ -41,7 +41,7 @@ public class CategoryCommandTests
     public async Task CreateCategoryCommand_DuplicateSlug_DoesNotCreateCategory()
     {
         using var db = CreateDbContext();
-        db.Category.Add(CreateCategoryEntity(Guid.NewGuid(), "dotnet"));
+        db.Category.Add(CreateCategoryEntity(100, "dotnet"));
         await db.SaveChangesAsync(TestContext.Current.CancellationToken);
         var handler = new CreateCategoryCommandHandler(db, Mock.Of<ILogger<CreateCategoryCommandHandler>>());
 
@@ -59,7 +59,7 @@ public class CategoryCommandTests
     public async Task UpdateCategoryCommand_ExistingCategory_UpdatesFieldsAndReturnsDone()
     {
         using var db = CreateDbContext();
-        var categoryId = Guid.NewGuid();
+        var categoryId = 100;
         db.Category.Add(CreateCategoryEntity(categoryId, "old"));
         await db.SaveChangesAsync(TestContext.Current.CancellationToken);
         var handler = new UpdateCategoryCommandHandler(db, Mock.Of<ILogger<UpdateCategoryCommandHandler>>(), Mock.Of<IEventMediator>());
@@ -87,7 +87,7 @@ public class CategoryCommandTests
 
         var result = await handler.HandleAsync(new UpdateCategoryCommand
         {
-            Id = Guid.NewGuid(),
+            Id = 999,
             DisplayName = "Name",
             Slug = "slug",
             Note = "Note"
@@ -100,7 +100,7 @@ public class CategoryCommandTests
     public async Task DeleteCategoryCommand_ExistingCategory_RemovesCategoryAndReturnsDone()
     {
         using var db = CreateDbContext();
-        var categoryId = Guid.NewGuid();
+        var categoryId = 100;
         db.Category.Add(CreateCategoryEntity(categoryId, "dotnet"));
         await db.SaveChangesAsync(TestContext.Current.CancellationToken);
         var handler = new DeleteCategoryCommandHandler(db, Mock.Of<ILogger<DeleteCategoryCommandHandler>>(), Mock.Of<IEventMediator>());
@@ -117,12 +117,12 @@ public class CategoryCommandTests
         using var db = CreateDbContext();
         var handler = new DeleteCategoryCommandHandler(db, Mock.Of<ILogger<DeleteCategoryCommandHandler>>(), Mock.Of<IEventMediator>());
 
-        var result = await handler.HandleAsync(new DeleteCategoryCommand(Guid.NewGuid()), TestContext.Current.CancellationToken);
+        var result = await handler.HandleAsync(new DeleteCategoryCommand(999), TestContext.Current.CancellationToken);
 
         Assert.Equal(OperationCode.ObjectNotFound, result);
     }
 
-    private static CategoryEntity CreateCategoryEntity(Guid id, string slug)
+    private static CategoryEntity CreateCategoryEntity(int id, string slug)
     {
         return new CategoryEntity
         {

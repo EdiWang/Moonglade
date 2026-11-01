@@ -35,8 +35,8 @@ public class DashboardQueryTests
             CreatePost(PostStatus.Published, isDeleted: true));
 
         db.Category.AddRange(
-            new CategoryEntity { Id = Guid.NewGuid(), DisplayName = "Cloud", Slug = "cloud" },
-            new CategoryEntity { Id = Guid.NewGuid(), DisplayName = "Dev", Slug = "dev" });
+            new CategoryEntity { Id = 100, DisplayName = "Cloud", Slug = "cloud" },
+            new CategoryEntity { Id = 101, DisplayName = "Dev", Slug = "dev" });
         db.Tag.Add(new TagEntity { DisplayName = "Azure", NormalizedName = "azure" });
 
         await db.SaveChangesAsync(TestContext.Current.CancellationToken);

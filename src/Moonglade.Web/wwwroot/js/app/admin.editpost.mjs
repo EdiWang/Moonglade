@@ -6,7 +6,7 @@ import { showConfirmModal, hideConfirmModal, escapeHtml } from './adminModal.mjs
 import { getLocalizedString, parseUtcDate } from './utils.module.mjs';
 import { createSlugMixin } from './admin.editpost.slug.mjs';
 import { createEditorMixin } from './admin.editpost.editor.mjs';
-import { createTagifyMixin } from './admin.editpost.tagify.mjs?v=1670';
+import { createTagifyMixin } from './admin.editpost.tagify.mjs?v=1671';
 import { createScheduleMixin } from './admin.editpost.schedule.mjs';
 import { createFormMixin } from './admin.editpost.form.mjs';
 

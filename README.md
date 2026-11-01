@@ -47,6 +47,8 @@ All future migration scripts belong in the repository-root [`database/`](databas
 
 Moonglade does not automatically migrate existing databases or check their version compatibility at startup. The former `AutoDatabaseMigration` setting is no longer supported, and the previous cumulative SQL migration scripts have been removed. Fresh installations still create the current database schema and seed initial data automatically.
 
+Category IDs are database-generated integers starting at 100 and incrementing by 1. Existing databases with GUID category keys require the [category integer ID upgrade](docs/upgrade-category-int-identity.md) before starting this version. Public category and subscription URLs continue to use the existing slugs; administrative category APIs and article-edit payloads now use integer IDs.
+
 ### Quick Local Deployment (Docker)
 
 For local testing or small-scale use, deploy Moonglade using Docker:

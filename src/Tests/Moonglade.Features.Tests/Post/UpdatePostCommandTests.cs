@@ -130,8 +130,8 @@ public class UpdatePostCommandTests
     {
         using var db = CreateDbContext();
         var postId = Guid.NewGuid();
-        var oldCategoryId = Guid.NewGuid();
-        var newCategoryId = Guid.NewGuid();
+        var oldCategoryId = 100;
+        var newCategoryId = 101;
         var oldTag = new TagEntity { DisplayName = "old", NormalizedName = "old" };
         var post = CreatePostEntity(postId, PostStatus.Draft, "draft-post");
         post.PostCategory.Add(new PostCategoryEntity { PostId = postId, CategoryId = oldCategoryId });
@@ -155,8 +155,36 @@ public class UpdatePostCommandTests
             .Include(p => p.Tags)
             .SingleAsync(p => p.Id == postId, TestContext.Current.CancellationToken);
         Assert.Collection(updatedPost.PostCategory, pc => Assert.Equal(newCategoryId, pc.CategoryId));
+        Assert.Equal(postId, updatedPost.Id);
+        Assert.All(updatedPost.PostCategory, pc => Assert.Equal(postId, pc.PostId));
         Assert.DoesNotContain(updatedPost.Tags, t => t.DisplayName == "old");
         Assert.Contains(updatedPost.Tags, t => t.DisplayName == "new-tag");
+    }
+
+    [Fact]
+    public async Task HandleAsync_EmptyCategorySelection_RemovesPersistedLinksWithoutChangingPostGuid()
+    {
+        using var db = CreateDbContext();
+        var postId = Guid.NewGuid();
+        var post = CreatePostEntity(postId, PostStatus.Draft, "draft-post");
+        db.Category.AddRange(
+            new CategoryEntity { Id = 100, Slug = "first", DisplayName = "First", Note = "First" },
+            new CategoryEntity { Id = 101, Slug = "second", DisplayName = "Second", Note = "Second" });
+        post.PostCategory.Add(new PostCategoryEntity { PostId = postId, CategoryId = 100 });
+        post.PostCategory.Add(new PostCategoryEntity { PostId = postId, CategoryId = 101 });
+        db.Post.Add(post);
+        await db.SaveChangesAsync(TestContext.Current.CancellationToken);
+
+        var model = CreatePostEditModel(PostStatus.Draft);
+        model.SelectedCatIds = [];
+        await CreateHandler(db).HandleAsync(new UpdatePostCommand(postId, model), TestContext.Current.CancellationToken);
+        db.ChangeTracker.Clear();
+        var reloaded = await db.Post.Include(p => p.PostCategory)
+            .SingleAsync(TestContext.Current.CancellationToken);
+        Assert.Equal(postId, reloaded.Id);
+        Assert.Empty(reloaded.PostCategory);
+        Assert.Empty(await db.PostCategory.ToListAsync(TestContext.Current.CancellationToken));
+        Assert.Equal(2, await db.Category.CountAsync(TestContext.Current.CancellationToken));
     }
 
     [Fact]

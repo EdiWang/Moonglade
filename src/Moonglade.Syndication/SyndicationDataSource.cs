@@ -32,7 +32,7 @@ public class SyndicationDataSource(
         return itemCollection;
     }
 
-    private async Task<List<FeedEntry>> GetFeedEntriesAsync(Guid? catId = null)
+    private async Task<List<FeedEntry>> GetFeedEntriesAsync(int? catId = null)
     {
         int? top = null;
         if (blogConfig.FeedSettings.FeedItemCount != 0)
