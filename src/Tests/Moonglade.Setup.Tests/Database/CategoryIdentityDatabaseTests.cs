@@ -166,6 +166,13 @@ public class CategoryIdentityDatabaseTests(DisposableCategoryDatabases databases
     {
         await using var db = await databases.CreateAsync(provider);
         await LegacySchemaAsync(db, populated: true, customNames: true);
+        if (provider == "PostgreSql")
+        {
+            await db.ExecuteAsync("""
+                ALTER TABLE "Category" RENAME CONSTRAINT "Category_Id_not_null" TO "NN_Category_Id";
+                ALTER TABLE "PostCategory" RENAME CONSTRAINT "PostCategory_CategoryId_not_null" TO "NN_PostCategory_CategoryId";
+                """);
+        }
         var keys = await KeysAsync(db);
         var links = await LinksAsync(db);
         await db.MigrateAsync();
@@ -177,6 +184,27 @@ public class CategoryIdentityDatabaseTests(DisposableCategoryDatabases databases
         await Assert.ThrowsAnyAsync<DbException>(() => db.ExecuteAsync($$"""DELETE FROM "Category" WHERE "Id" = {{cloudId}};"""));
         Assert.Equal(links, await LinksAsync(db));
         Assert.Equal(2, (await ContentAsync(db)).Length);
+    }
+
+    [DisposableDatabaseTheory]
+    [InlineData("PostgreSql")]
+    public async Task LegacyMigration_NotNullNamesMatchingReplacementColumns_ArePreserved(string provider)
+    {
+        await using var db = await databases.CreateAsync(provider);
+        await LegacySchemaAsync(db, populated: true);
+        await db.ExecuteAsync("""
+            ALTER TABLE "Category" RENAME CONSTRAINT "Category_Id_not_null" TO "Category_IdInt_not_null";
+            ALTER TABLE "PostCategory" RENAME CONSTRAINT "PostCategory_CategoryId_not_null" TO "PostCategory_CategoryIdInt_not_null";
+            """);
+        var keys = await KeysAsync(db);
+        var links = await LinksAsync(db);
+
+        await db.MigrateAsync();
+
+        Assert.Equal(keys, await KeysAsync(db));
+        Assert.Equal(links, await LinksAsync(db));
+        await AssertIdentityAsync(db);
+        await AssertRerunUnchangedAsync(db);
     }
 
     [DisposableDatabaseTheory]

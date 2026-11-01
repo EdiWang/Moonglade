@@ -32,7 +32,7 @@ public sealed class DisposableCategoryDatabases : IAsyncLifetime
         if (!Enabled) return;
         try
         {
-            await StartAsync("PostgreSql", "postgres:17", "5432", "postgres");
+            await StartAsync("PostgreSql", "postgres:18-alpine", "5432", "postgres");
             await StartAsync("SqlServer", "mcr.microsoft.com/mssql/server:2022-latest", "1433", "master");
         }
         catch

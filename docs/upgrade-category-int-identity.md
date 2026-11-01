@@ -17,7 +17,8 @@ Use the script matching your database provider:
 The scripts require the standard category primary key, the
 `(PostId, CategoryId)` association primary key, one foreign key from the
 association table to the category, and its single-column category index.
-They preserve the existing key/index names and category foreign-key actions.
+They preserve the existing key/index names and category foreign-key actions,
+including the named NOT NULL constraints introduced in PostgreSQL 18.
 Unexpected additional dependent indexes, check constraints, foreign keys, or
 partially converted column types cause an error rather than silently discarding
 custom schema. Have a database administrator adapt the script for such a schema.
@@ -27,7 +28,10 @@ custom schema. Have a database administrator adapt the script for such a schema.
    GUID-based application with the integer-based application.
 3. Execute the complete provider script against the restored copy using an
    account permitted to alter tables, keys, indexes, and identity generation.
-   Each script manages its own transaction; run it as a standalone script.
+   PostgreSQL requires table-owner privileges or a superuser; ordinary table
+   read/write grants are not sufficient. Use a separate maintenance connection
+   if needed rather than changing the runtime connection. Each script manages
+   its own transaction; run it as a standalone script.
 4. Compare category names, slugs, notes, category counts, and article/category
    associations with the backup. Verify that category pages and feeds still
    resolve through the same slugs and that article URLs and timestamps are
@@ -69,7 +73,7 @@ reuse deleted IDs, infer category counts from the ID, or use IDs for sorting.
 
 ## Automated Verification
 
-The migration tests were verified against PostgreSQL 17 and SQL Server 2022.
+The migration tests were verified against PostgreSQL 18 and SQL Server 2022.
 They exercise fresh database creation and seeding, populated and empty legacy
 schemas, mapping preservation, keys/indexes/cascade behavior, repeated execution
 after edits and deletions, and rollback on invalid prerequisites.
