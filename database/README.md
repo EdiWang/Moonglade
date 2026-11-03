@@ -23,5 +23,6 @@ All future database migration SQL scripts belong in this directory. Administrato
 | Upgrade | PostgreSQL | SQL Server | Prerequisites and execution order |
 | --- | --- | --- | --- |
 | Category integer identity IDs | [PostgreSql/category-int-identity.sql](PostgreSql/category-int-identity.sql) | [SqlServer/category-int-identity.sql](SqlServer/category-int-identity.sql) | Existing GUID-based `Category.Id` and `PostCategory.CategoryId` in the standard Moonglade schema. Apply the script for your provider once before starting the release introducing integer category IDs; repeat executions are safe. See the [upgrade guide](../docs/upgrade-category-int-identity.md). |
+| PostgreSQL snake_case table and column names | [PostgreSql/snake-case-names.sql](PostgreSql/snake-case-names.sql) | [SqlServer/snake-case-names.sql](SqlServer/snake-case-names.sql) (no-op) | All 19 standard PostgreSQL tables in `public`; integer category IDs are required. Apply the category ID upgrade first if needed, then the naming script before starting the release introducing snake_case mappings. SQL Server keeps PascalCase names. See the [upgrade guide](../docs/upgrade-postgresql-snake-case.md). |
 
 The previous cumulative migration scripts have been discarded. These scripts do not replace older, unrelated database upgrades.

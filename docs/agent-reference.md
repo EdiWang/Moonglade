@@ -144,6 +144,7 @@ Important configuration areas:
 
 - Use `BlogDbContext` for data access. Add entities under `Moonglade.Data.Entities` and DTO/read models under `Moonglade.Data.DTO`.
 - Prefer provider-neutral configuration in `Moonglade.Data.Configurations`; SQL Server/PostgreSQL-specific behavior belongs in the provider projects.
+- PostgreSQL converts table and column names to snake_case in `PostgreSqlBlogDbContext`; SQL Server retains PascalCase mappings. Keep C# names unchanged. Existing PostgreSQL databases require the [manual naming upgrade](upgrade-postgresql-snake-case.md) after any required category integer ID upgrade. Constraint, index, and sequence names are retained during this upgrade.
 - Keep queries compatible with both SQL Server and PostgreSQL. Avoid scattered provider-specific SQL; isolate it in provider projects if it is truly necessary.
 - Prefer `AsNoTracking()` for read-only queries. Use async EF Core APIs and pass `CancellationToken` through write operations and handlers where available.
 - Use EF Core set-based operations such as `ExecuteDeleteAsync` when they fit the existing pattern.

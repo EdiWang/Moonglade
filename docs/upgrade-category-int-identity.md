@@ -7,6 +7,8 @@ the default category ID from the database; no upgrade script is needed.
 
 ## Existing Databases
 
+For PostgreSQL, run this upgrade before the [snake_case naming upgrade](upgrade-postgresql-snake-case.md). This historical script requires the original PascalCase identifiers and must not be run against a schema already renamed to snake_case.
+
 Use the script matching your database provider:
 
 | Provider | Script | Source schema |

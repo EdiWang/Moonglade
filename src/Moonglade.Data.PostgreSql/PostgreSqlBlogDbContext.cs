@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Moonglade.Data.PostgreSql.Configurations;
+using Npgsql.NameTranslation;
 
 namespace Moonglade.Data.PostgreSql;
 
@@ -24,5 +25,17 @@ public class PostgreSqlBlogDbContext : BlogDbContext
         Data.Configurations.UtcDateTimeConvention.ConfigureUtcDateTimeColumnType(
             modelBuilder,
             "timestamp with time zone");
+
+        var translator = new NpgsqlSnakeCaseNameTranslator();
+        foreach (var entity in modelBuilder.Model.GetEntityTypes())
+        {
+            if (entity.GetTableName() is not { } tableName) continue;
+
+            entity.SetTableName(translator.TranslateTypeName(tableName));
+            foreach (var property in entity.GetProperties())
+            {
+                property.SetColumnName(translator.TranslateMemberName(property.GetColumnName()));
+            }
+        }
     }
 }

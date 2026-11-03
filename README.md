@@ -49,6 +49,8 @@ Moonglade does not automatically migrate existing databases or check their versi
 
 Category IDs are database-generated integers starting at 100 and incrementing by 1. Existing databases with GUID category keys require the [category integer ID upgrade](docs/upgrade-category-int-identity.md) before starting this version. Public category and subscription URLs continue to use the existing slugs; administrative category APIs and article-edit payloads now use integer IDs.
 
+PostgreSQL table and column names use snake_case; SQL Server keeps PascalCase names. Existing PostgreSQL databases require the [snake_case naming upgrade](docs/upgrade-postgresql-snake-case.md) before starting this version. Complete the category integer ID upgrade first if needed.
+
 ### Quick Local Deployment (Docker)
 
 For local testing or small-scale use, deploy Moonglade using Docker:

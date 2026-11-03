@@ -156,13 +156,13 @@ public sealed class CategoryTestDatabase(string provider, DbConnection connectio
         return rows.ToArray();
     }
 
-    public async Task MigrateAsync()
+    public async Task MigrateAsync(string scriptName = "category-int-identity.sql")
     {
         var directory = new DirectoryInfo(AppContext.BaseDirectory);
-        while (directory != null && !File.Exists(Path.Combine(directory.FullName, "database", Provider, "category-int-identity.sql")))
+        while (directory != null && !File.Exists(Path.Combine(directory.FullName, "database", Provider, scriptName)))
             directory = directory.Parent;
         Assert.NotNull(directory);
-        var sql = await File.ReadAllTextAsync(Path.Combine(directory!.FullName, "database", Provider, "category-int-identity.sql"),
+        var sql = await File.ReadAllTextAsync(Path.Combine(directory!.FullName, "database", Provider, scriptName),
             TestContext.Current.CancellationToken);
         try
         {

@@ -36,7 +36,7 @@ public class CategoryIdentityDatabaseTests(DisposableCategoryDatabases databases
         Assert.NotEqual(Guid.Empty, welcome.Id);
         Assert.Equal("welcome-to-moonglade", welcome.Slug);
         Assert.Contains("Getting Started", welcome.PostContent);
-        await AssertIdentityAsync(database);
+        await AssertIdentityAsync(database, snakeCase: provider == "PostgreSql");
 
         var createCategory = new CreateCategoryCommandHandler(db, Mock.Of<ILogger<CreateCategoryCommandHandler>>());
         await createCategory.HandleAsync(new CreateCategoryCommand
@@ -84,8 +84,8 @@ public class CategoryIdentityDatabaseTests(DisposableCategoryDatabases databases
         Assert.Equal(2, await db.Post.CountAsync(TestContext.Current.CancellationToken));
         Assert.Empty(await db.PostCategory.ToListAsync(TestContext.Current.CancellationToken));
         Assert.Equal(100, (await db.Category.SingleAsync(TestContext.Current.CancellationToken)).Id);
-        // A manually upgraded script is also a no-op on a fresh provider-created schema.
-        await database.MigrateAsync();
+        // The current upgrade is also a no-op on a fresh provider-created schema.
+        await database.MigrateAsync(provider == "PostgreSql" ? "snake-case-names.sql" : "category-int-identity.sql");
         await createCategory.HandleAsync(new CreateCategoryCommand { DisplayName = "Next", Slug = "next", Note = "Next" },
             TestContext.Current.CancellationToken);
         Assert.Equal(102, (await db.Category.SingleAsync(c => c.Slug == "next", TestContext.Current.CancellationToken)).Id);
@@ -352,27 +352,28 @@ public class CategoryIdentityDatabaseTests(DisposableCategoryDatabases databases
         ? """SELECT table_name, column_name, data_type, is_nullable FROM information_schema.columns WHERE table_schema = 'public' ORDER BY table_name, column_name"""
         : """SELECT TABLE_NAME, COLUMN_NAME, DATA_TYPE, IS_NULLABLE FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = 'dbo' ORDER BY TABLE_NAME, COLUMN_NAME""");
 
-    private static Task<string[][]> IdentityAsync(CategoryTestDatabase db) => db.RowsAsync(db.Provider == "PostgreSql"
+    private static Task<string[][]> IdentityAsync(CategoryTestDatabase db, bool snakeCase = false) => db.RowsAsync(db.Provider == "PostgreSql"
         ? """
             SELECT seq.seqstart, seq.seqincrement, view.last_value
             FROM pg_sequence seq JOIN pg_class c ON c.oid = seq.seqrelid
             JOIN pg_sequences view ON view.schemaname = 'public' AND view.sequencename = c.relname
             WHERE seq.seqrelid = pg_get_serial_sequence('public."Category"', 'Id')::regclass
-            """
+            """.Replace("public.\"Category\"", snakeCase ? "public.category" : "public.\"Category\"")
+                .Replace("'Id'", snakeCase ? "'id'" : "'Id'")
         : """
             SELECT CONVERT(bigint, seed_value), CONVERT(bigint, increment_value), CONVERT(bigint, last_value)
             FROM sys.identity_columns WHERE object_id = OBJECT_ID('dbo.Category') AND name = 'Id'
             """);
 
-    private static async Task AssertIdentityAsync(CategoryTestDatabase db)
+    private static async Task AssertIdentityAsync(CategoryTestDatabase db, bool snakeCase = false)
     {
-        var identity = Assert.Single(await IdentityAsync(db));
+        var identity = Assert.Single(await IdentityAsync(db, snakeCase));
         Assert.Equal("100", identity[0]);
         Assert.Equal("1", identity[1]);
         var columns = await ColumnsAsync(db);
-        Assert.Contains(columns, row => row[0] == "Category" && row[1] == "Id" &&
+        Assert.Contains(columns, row => row[0] == (snakeCase ? "category" : "Category") && row[1] == (snakeCase ? "id" : "Id") &&
             row[2] == (db.Provider == "PostgreSql" ? "integer" : "int") && row[3] == "NO");
-        Assert.Contains(columns, row => row[0] == "PostCategory" && row[1] == "CategoryId" &&
+        Assert.Contains(columns, row => row[0] == (snakeCase ? "post_category" : "PostCategory") && row[1] == (snakeCase ? "category_id" : "CategoryId") &&
             row[2] == (db.Provider == "PostgreSql" ? "integer" : "int") && row[3] == "NO");
         Assert.DoesNotContain(columns, row => row[1] is "IdInt" or "CategoryIdInt");
     }
