@@ -13,7 +13,7 @@ public class MessageBuilder(IEmailHelper emailHelper)
             .Map(nameof(SmtpSettings.SmtpServerPort), smtpSettings.SmtpSettings.SmtpServerPort)
             .Map(nameof(SmtpSettings.SmtpUserName), smtpSettings.SmtpSettings.SmtpUserName)
             .Map(nameof(EmailSettings.EmailDisplayName), smtpSettings.EmailDisplayName)
-            .Map(nameof(SmtpSettings.EnableTls), smtpSettings.SmtpSettings.EnableTls)
+            .Map(nameof(SmtpSettings.SocketOptions), smtpSettings.SmtpSettings.SocketOptions)
             .BuildMessage(toAddresses);
 
         return message;

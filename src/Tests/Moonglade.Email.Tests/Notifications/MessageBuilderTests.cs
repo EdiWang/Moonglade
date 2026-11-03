@@ -1,5 +1,6 @@
 using Edi.TemplateEmail;
 using Edi.TemplateEmail.Smtp;
+using MailKit.Security;
 using Moonglade.Email.Core;
 using Moq;
 
@@ -41,6 +42,29 @@ public class MessageBuilderTests
 
         _mockEmailHelper.Verify(h => h.ForType(MessageTypes.TestMail), Times.Once);
         Assert.Equal(expectedMessage, result);
+    }
+
+    [Theory]
+    [InlineData(SecureSocketOptions.StartTls)]
+    [InlineData(SecureSocketOptions.SslOnConnect)]
+    [InlineData(SecureSocketOptions.Auto)]
+    public void BuildTestNotification_RendersSmtpSecurityMode(SecureSocketOptions socketOptions)
+    {
+        var helper = new EmailHelper(Path.Join(AppContext.BaseDirectory, "mailConfiguration.xml"));
+        var builder = new MessageBuilder(helper);
+        var settings = new EmailSettings
+        {
+            SmtpSettings = new SmtpSettings("smtp.example.com", "sender@example.com", "password", 587)
+            {
+                SocketOptions = socketOptions
+            }
+        };
+
+        var message = builder.BuildTestNotification(["reader@example.com"], settings);
+
+        Assert.Contains($"{socketOptions}</td>", message.Body);
+        Assert.Contains("587</td>", message.Body);
+        Assert.DoesNotContain("{SocketOptions.Value}", message.Body);
     }
 
     [Fact]

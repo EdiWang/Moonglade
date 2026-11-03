@@ -1,5 +1,6 @@
 using Edi.TemplateEmail;
 using Edi.TemplateEmail.Smtp;
+using MailKit.Security;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -13,6 +14,29 @@ namespace Moonglade.Email.Tests.Configuration;
 
 public class ServiceCollectionExtensionsTests
 {
+    [Theory]
+    [InlineData(465, true, SecureSocketOptions.SslOnConnect)]
+    [InlineData(465, false, SecureSocketOptions.SslOnConnect)]
+    [InlineData(587, true, SecureSocketOptions.StartTls)]
+    [InlineData(587, false, SecureSocketOptions.Auto)]
+    [InlineData(25, true, SecureSocketOptions.StartTls)]
+    [InlineData(25, false, SecureSocketOptions.Auto)]
+    [InlineData(2525, true, SecureSocketOptions.StartTls)]
+    [InlineData(2525, false, SecureSocketOptions.Auto)]
+    public void AddMoongladeEmail_SelectsTransportSecurity(int port, bool enableSsl, SecureSocketOptions expected)
+    {
+        var services = new ServiceCollection();
+        services.AddSingleton<IBlogConfig>(new BlogConfig());
+        services.AddMoongladeEmail(CreateConfiguration(
+            new KeyValuePair<string, string>("Email:SmtpPort", port.ToString()),
+            new KeyValuePair<string, string>("Email:EnableSsl", enableSsl.ToString())));
+        using var serviceProvider = services.BuildServiceProvider();
+
+        var settings = serviceProvider.GetRequiredService<EmailSettings>();
+
+        Assert.Equal(expected, settings.SmtpSettings.SocketOptions);
+    }
+
     [Fact]
     public void AddMoongladeEmail_RegistersOutboxWorkerHostedService()
     {
@@ -93,6 +117,8 @@ public class ServiceCollectionExtensionsTests
 
             Assert.Equal(EmailCapabilityState.Available, host.Services.GetRequiredService<EmailCapabilityStatus>().State);
             Assert.Equal("notifications@example.com", options.EffectiveSmtpSenderAddress);
+            Assert.Equal("notifications@example.com", settings.FromAddress);
+            Assert.Equal("notifications@example.com", settings.SenderAddress);
             Assert.Equal("resend", settings.SmtpSettings.SmtpUserName);
             Assert.NotNull(host.Services.GetRequiredService<IEmailDispatcher>());
         }

@@ -52,6 +52,8 @@ Important configuration areas:
 | `ViewCount` | Crawler user-agent filtering and deduplication window. | Optional | Affects analytics/view-count behavior. |
 | `.env.example` / `POSTGRES_PASSWORD` | Docker Compose PostgreSQL password override. | Local/deployment-dependent | Use a strong secret value outside committed files. |
 
+SMTP delivery uses `Edi.TemplateEmail.Smtp` with explicit `FromAddress` and `SenderAddress` set to the effective SMTP sender address. Map `Email:EnableSsl` and the port to `SmtpSettings.SocketOptions`: port 465 uses `SslOnConnect`; other ports use `StartTls` when enabled and `Auto` otherwise. The test email template displays this effective security mode.
+
 ## Main Business Logic
 
 ### Blog Content

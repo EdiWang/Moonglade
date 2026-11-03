@@ -1,9 +1,8 @@
 using Edi.TemplateEmail;
-using Edi.TemplateEmail.Smtp;
-using MailKit.Security;
-using Microsoft.Extensions.Logging.Abstractions;
-using Microsoft.Extensions.Options;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using MimeKit;
+using Moonglade.Configuration;
 using Moonglade.Email.Core;
 using System.Net;
 using System.Net.Sockets;
@@ -13,20 +12,6 @@ namespace Moonglade.Email.Tests.Delivery;
 
 public class SmtpEmailSenderTests
 {
-    [Theory]
-    [InlineData(465, true, SecureSocketOptions.SslOnConnect)]
-    [InlineData(465, false, SecureSocketOptions.SslOnConnect)]
-    [InlineData(587, true, SecureSocketOptions.StartTls)]
-    [InlineData(587, false, SecureSocketOptions.Auto)]
-    [InlineData(25, true, SecureSocketOptions.StartTls)]
-    [InlineData(25, false, SecureSocketOptions.Auto)]
-    [InlineData(2525, true, SecureSocketOptions.StartTls)]
-    [InlineData(2525, false, SecureSocketOptions.Auto)]
-    public void GetSocketOptions_SelectsTransportSecurity(int port, bool enableTls, SecureSocketOptions expected)
-    {
-        Assert.Equal(expected, SmtpEmailSender.GetSocketOptions(port, enableTls));
-    }
-
     [Theory]
     [InlineData("resend", "notifications@example.com", true)]
     [InlineData("resend", "notifications@example.com", false)]
@@ -43,22 +28,26 @@ public class SmtpEmailSenderTests
         using var listener = new TcpListener(IPAddress.Loopback, 0);
         listener.Start();
         var port = ((IPEndPoint)listener.LocalEndpoint).Port;
-        var settings = new EmailSettings
+        var configuration = new ConfigurationBuilder().AddInMemoryCollection(new Dictionary<string, string>
         {
-            EmailDisplayName = "Blog Sender",
-            SmtpSettings = new SmtpSettings("127.0.0.1", userName, "test-password", port)
+            ["Email:SmtpServer"] = "127.0.0.1",
+            ["Email:SmtpPort"] = port.ToString(),
+            ["Email:SmtpUserName"] = userName,
+            ["Email:SmtpPassword"] = "test-password",
+            ["Email:SmtpSenderAddress"] = senderAddress
+        }).Build();
+        var services = new ServiceCollection();
+        services.AddLogging();
+        services.AddSingleton<IBlogConfig>(new BlogConfig
+        {
+            NotificationSettings = new NotificationSettings
             {
-                EnableTls = false
+                EmailDisplayName = "Blog Sender"
             }
-        };
-        var sender = new SmtpEmailSender(
-            settings,
-            Options.Create(new EmailServiceOptions
-            {
-                SmtpUserName = userName,
-                SmtpSenderAddress = senderAddress
-            }),
-            NullLogger<SmtpEmailSender>.Instance);
+        });
+        services.AddMoongladeEmail(configuration);
+        using var serviceProvider = services.BuildServiceProvider();
+        var sender = serviceProvider.GetRequiredService<IEmailDispatcher>();
         var message = new CommonMailMessage
         {
             Subject = "SMTP sender test",

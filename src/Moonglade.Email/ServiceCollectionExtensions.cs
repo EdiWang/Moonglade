@@ -1,5 +1,6 @@
 using Edi.TemplateEmail;
 using Edi.TemplateEmail.Smtp;
+using MailKit.Security;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
@@ -43,9 +44,15 @@ public static class ServiceCollectionExtensions
             var blogConfig = sp.GetRequiredService<IBlogConfig>();
             var smtpSettings = new SmtpSettings(opts.SmtpServer, opts.SmtpUserName, opts.SmtpPassword, opts.SmtpPort)
             {
-                EnableTls = opts.EnableSsl
+                SocketOptions = opts.SmtpPort == 465 ? SecureSocketOptions.SslOnConnect :
+                    opts.EnableSsl ? SecureSocketOptions.StartTls : SecureSocketOptions.Auto
             };
-            var settings = new EmailSettings { SmtpSettings = smtpSettings };
+            var settings = new EmailSettings
+            {
+                FromAddress = opts.EffectiveSmtpSenderAddress,
+                SenderAddress = opts.EffectiveSmtpSenderAddress,
+                SmtpSettings = smtpSettings
+            };
             var senderDisplayName = blogConfig.NotificationSettings.EmailDisplayName;
             if (string.IsNullOrWhiteSpace(senderDisplayName))
             {
