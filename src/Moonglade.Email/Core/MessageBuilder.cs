@@ -26,7 +26,7 @@ public class MessageBuilder(IEmailHelper emailHelper)
             .Map(nameof(request.Email), request.Email)
             .Map(nameof(request.IpAddress), request.IpAddress)
             .Map(nameof(request.PostTitle), request.PostTitle)
-            .Map(nameof(request.CommentContent), request.CommentContent)
+            .Map(nameof(request.CommentContent), new TrustedHtml(request.CommentContent))
             .BuildMessage(toAddresses);
 
         return message;
@@ -35,7 +35,7 @@ public class MessageBuilder(IEmailHelper emailHelper)
     public CommonMailMessage BuildCommentReplyNotification(string[] toAddress, CommentReplyPayload request)
     {
         var message = emailHelper.ForType(MessageTypes.AdminReplyNotification)
-            .Map(nameof(request.ReplyContentHtml), request.ReplyContentHtml)
+            .Map(nameof(request.ReplyContentHtml), new TrustedHtml(request.ReplyContentHtml))
             .Map(nameof(request.PostLink), request.PostLink)
             .Map(nameof(request.Title), request.Title)
             .Map(nameof(request.CommentContent), request.CommentContent)
