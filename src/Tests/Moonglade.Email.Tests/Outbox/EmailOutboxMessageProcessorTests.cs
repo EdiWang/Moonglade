@@ -185,13 +185,14 @@ public class EmailOutboxMessageProcessorTests
         CapturingDispatcher dispatcher)
     {
         var emailHelper = new Mock<IEmailHelper>();
+        var emailBuilder = new Mock<IEmailBuilder>();
         emailHelper
             .Setup(h => h.ForType(It.IsAny<string>()))
-            .Returns(emailHelper.Object);
-        emailHelper
+            .Returns(emailBuilder.Object);
+        emailBuilder
             .Setup(h => h.Map(It.IsAny<string>(), It.IsAny<object>()))
-            .Returns(emailHelper.Object);
-        emailHelper
+            .Returns(emailBuilder.Object);
+        emailBuilder
             .Setup(h => h.BuildMessage(It.IsAny<string[]>(), It.IsAny<string[]>()))
             .Returns((string[] recipients, string[] _) => new CommonMailMessage
             {

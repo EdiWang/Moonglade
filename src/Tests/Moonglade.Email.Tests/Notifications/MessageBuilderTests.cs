@@ -9,17 +9,19 @@ namespace Moonglade.Email.Tests.Notifications;
 public class MessageBuilderTests
 {
     private readonly Mock<IEmailHelper> _mockEmailHelper;
+    private readonly Mock<IEmailBuilder> _mockEmailBuilder;
     private readonly MessageBuilder _sut;
 
     public MessageBuilderTests()
     {
         _mockEmailHelper = new Mock<IEmailHelper>();
+        _mockEmailBuilder = new Mock<IEmailBuilder>();
         _mockEmailHelper
             .Setup(h => h.ForType(It.IsAny<string>()))
-            .Returns(_mockEmailHelper.Object);
-        _mockEmailHelper
+            .Returns(_mockEmailBuilder.Object);
+        _mockEmailBuilder
             .Setup(h => h.Map(It.IsAny<string>(), It.IsAny<object>()))
-            .Returns(_mockEmailHelper.Object);
+            .Returns(_mockEmailBuilder.Object);
 
         _sut = new MessageBuilder(_mockEmailHelper.Object);
     }
@@ -34,7 +36,7 @@ public class MessageBuilderTests
         };
         var expectedMessage = new CommonMailMessage { Subject = "Test" };
 
-        _mockEmailHelper
+        _mockEmailBuilder
             .Setup(h => h.BuildMessage(It.IsAny<string[]>(), It.IsAny<string[]>()))
             .Returns(expectedMessage);
 
@@ -80,18 +82,18 @@ public class MessageBuilderTests
             CommentContent = "Great post"
         };
 
-        _mockEmailHelper
+        _mockEmailBuilder
             .Setup(h => h.BuildMessage(It.IsAny<string[]>(), It.IsAny<string[]>()))
             .Returns(new CommonMailMessage());
 
         _sut.BuildNewCommentNotification(toAddresses, payload);
 
         _mockEmailHelper.Verify(h => h.ForType(MessageTypes.NewCommentNotification), Times.Once);
-        _mockEmailHelper.Verify(h => h.Map(nameof(payload.Username), payload.Username), Times.Once);
-        _mockEmailHelper.Verify(h => h.Map(nameof(payload.Email), payload.Email), Times.Once);
-        _mockEmailHelper.Verify(h => h.Map(nameof(payload.IpAddress), payload.IpAddress), Times.Once);
-        _mockEmailHelper.Verify(h => h.Map(nameof(payload.PostTitle), payload.PostTitle), Times.Once);
-        _mockEmailHelper.Verify(h => h.Map(nameof(payload.CommentContent), payload.CommentContent), Times.Once);
+        _mockEmailBuilder.Verify(h => h.Map(nameof(payload.Username), payload.Username), Times.Once);
+        _mockEmailBuilder.Verify(h => h.Map(nameof(payload.Email), payload.Email), Times.Once);
+        _mockEmailBuilder.Verify(h => h.Map(nameof(payload.IpAddress), payload.IpAddress), Times.Once);
+        _mockEmailBuilder.Verify(h => h.Map(nameof(payload.PostTitle), payload.PostTitle), Times.Once);
+        _mockEmailBuilder.Verify(h => h.Map(nameof(payload.CommentContent), payload.CommentContent), Times.Once);
     }
 
     [Fact]
@@ -107,17 +109,17 @@ public class MessageBuilderTests
             PostLink = "https://example.com/posts/1"
         };
 
-        _mockEmailHelper
+        _mockEmailBuilder
             .Setup(h => h.BuildMessage(It.IsAny<string[]>(), It.IsAny<string[]>()))
             .Returns(new CommonMailMessage());
 
         _sut.BuildCommentReplyNotification(toAddresses, payload);
 
         _mockEmailHelper.Verify(h => h.ForType(MessageTypes.AdminReplyNotification), Times.Once);
-        _mockEmailHelper.Verify(h => h.Map(nameof(payload.ReplyContentHtml), payload.ReplyContentHtml), Times.Once);
-        _mockEmailHelper.Verify(h => h.Map(nameof(payload.PostLink), payload.PostLink), Times.Once);
-        _mockEmailHelper.Verify(h => h.Map(nameof(payload.Title), payload.Title), Times.Once);
-        _mockEmailHelper.Verify(h => h.Map(nameof(payload.CommentContent), payload.CommentContent), Times.Once);
+        _mockEmailBuilder.Verify(h => h.Map(nameof(payload.ReplyContentHtml), payload.ReplyContentHtml), Times.Once);
+        _mockEmailBuilder.Verify(h => h.Map(nameof(payload.PostLink), payload.PostLink), Times.Once);
+        _mockEmailBuilder.Verify(h => h.Map(nameof(payload.Title), payload.Title), Times.Once);
+        _mockEmailBuilder.Verify(h => h.Map(nameof(payload.CommentContent), payload.CommentContent), Times.Once);
     }
 
     [Fact]
@@ -133,17 +135,17 @@ public class MessageBuilderTests
             SourceTitle = "Another Blog"
         };
 
-        _mockEmailHelper
+        _mockEmailBuilder
             .Setup(h => h.BuildMessage(It.IsAny<string[]>(), It.IsAny<string[]>()))
             .Returns(new CommonMailMessage());
 
         _sut.BuildPingNotification(toAddresses, payload);
 
         _mockEmailHelper.Verify(h => h.ForType(MessageTypes.BeingPinged), Times.Once);
-        _mockEmailHelper.Verify(h => h.Map(nameof(payload.TargetPostTitle), payload.TargetPostTitle), Times.Once);
-        _mockEmailHelper.Verify(h => h.Map(nameof(payload.Domain), payload.Domain), Times.Once);
-        _mockEmailHelper.Verify(h => h.Map(nameof(payload.SourceIp), payload.SourceIp), Times.Once);
-        _mockEmailHelper.Verify(h => h.Map(nameof(payload.SourceUrl), payload.SourceUrl), Times.Once);
-        _mockEmailHelper.Verify(h => h.Map(nameof(payload.SourceTitle), payload.SourceTitle), Times.Once);
+        _mockEmailBuilder.Verify(h => h.Map(nameof(payload.TargetPostTitle), payload.TargetPostTitle), Times.Once);
+        _mockEmailBuilder.Verify(h => h.Map(nameof(payload.Domain), payload.Domain), Times.Once);
+        _mockEmailBuilder.Verify(h => h.Map(nameof(payload.SourceIp), payload.SourceIp), Times.Once);
+        _mockEmailBuilder.Verify(h => h.Map(nameof(payload.SourceUrl), payload.SourceUrl), Times.Once);
+        _mockEmailBuilder.Verify(h => h.Map(nameof(payload.SourceTitle), payload.SourceTitle), Times.Once);
     }
 }

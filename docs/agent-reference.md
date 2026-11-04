@@ -54,6 +54,8 @@ Important configuration areas:
 
 SMTP delivery uses `Edi.TemplateEmail.Smtp` with explicit `FromAddress` and `SenderAddress` set to the effective SMTP sender address. Map `Email:EnableSsl` and the port to `SmtpSettings.SocketOptions`: port 465 uses `SslOnConnect`; other ports use `StartTls` when enabled and `Auto` otherwise. The test email template displays this effective security mode.
 
+`Edi.TemplateEmail` and `Edi.TemplateEmail.Smtp` use version `2026.6.0`. The singleton `IEmailHelper` holds template configuration; each `ForType` call returns an independent `IEmailBuilder` that owns the mappings and builds one message. Keep builders local to each notification and mock `IEmailBuilder` separately from `IEmailHelper` in tests.
+
 ## Main Business Logic
 
 ### Blog Content
