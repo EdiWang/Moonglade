@@ -42,8 +42,7 @@ The linked sections retain the detailed project rules and must be followed when 
 - PostgreSQL table and column names use snake_case; SQL Server retains PascalCase. Keep C# names unchanged. Existing PostgreSQL databases require the [manual naming upgrade](docs/upgrade-postgresql-snake-case.md) after any required category integer ID upgrade.
 - Category IDs are database-generated `int` identities starting at 100 and incrementing by 1. Keep article IDs as GUIDs, category foreign keys and editor payloads as integers, and public category/feed URLs slug-based. See [the category upgrade guide](docs/upgrade-category-int-identity.md).
 - Database upgrades require administrators to run SQL scripts manually before starting the upgraded application. Do not add automatic schema/data migration or restore the removed cumulative migration scripts. Preserve fresh database creation and seeding.
-- Store all future database migration SQL scripts under the repository-root `database/` directory. Every script must be idempotent: repeated execution must leave the same intended schema and data without duplicate objects, duplicate rows, or repeated data transformations.
-- When a task changes the database schema or requires migrating existing persisted data, developers and AI agents must add or update the corresponding manual SQL scripts under `database/` for both PostgreSQL and SQL Server, alongside the application changes. Follow [database/README.md](database/README.md) and the [migration verification rules](docs/agent-reference.md#migration-verification).
+- Schema or persisted-data changes must include manual, idempotent SQL scripts under `database/` for both PostgreSQL and SQL Server. Follow [database/README.md](database/README.md) and the [migration verification rules](docs/agent-reference.md#migration-verification).
 - Application code, default configuration, and supported runtime behavior must remain cloud-platform-neutral. Do not add cloud SDKs, provider detection, vendor-specific settings, or image-storage providers to core projects to satisfy a deployment example. Vendor-specific guides are optional operational examples.
 - Preserve standard environment-variable configuration, OCI/Docker compatibility, and separate durable mounts for `/app/images` and `/app/images-origin`. The Docker image pre-creates both paths for the `app` user; Compose uses separate named volumes.
 - Preserve published URLs, protocol endpoints, HTTPS, forwarded-header handling, health semantics, authentication, security headers, and content moderation unless the task explicitly targets them.
@@ -52,15 +51,14 @@ The linked sections retain the detailed project rules and must be followed when 
 
 ## C# Conventions
 
-- The target framework is `net10.0`. Follow the existing C# style, including implicit usings, primary constructors, record request models, and feature-local files.
+- Target `net10.0` and use the latest applicable C# features while following nearby style, including implicit usings, primary constructors, record request models, and feature-local files.
 - The Email and SQL Server projects explicitly reference `System.Security.Cryptography.Pkcs` 10.0.13 to override vulnerable MimeKit/SqlClient transitive dependencies. Keep these references until their upstream dependencies resolve a patched version without overrides.
-- Use the latest applicable C# features while staying readable and consistent with nearby code.
 - Keep namespaces aligned with folders. Put new code in the project and feature folder that owns the behavior.
 - Use constructor injection. Do not introduce service locators or unnecessary static mutable state.
 - Startup services (`StartUpInitializer`, `ConfigInitializer`, `SiteIconBuilder`), `DatedGuidFileNameGenerator`, `ImageUploadValidator`, `CommentSubmissionGuard`, and `SyndicationDataSource` use concrete constructor injection with their existing DI lifetimes. Do not add interfaces or virtual methods solely to mock them in tests. Keep contracts with actual application boundaries, such as image storage, configuration, moderation, email, and external communication.
 - Use async APIs end to end and pass `CancellationToken` through command/query handlers and EF Core calls where available.
 - Use UTC for persisted or cross-boundary timestamps. Convert to user/client time only at the UI or boundary layer.
-- Prefer nullable-safe code and explicit validation for public inputs.
+- Prefer nullable-safe code.
 - Do not use C# anonymous object initializers (`new { ... }`) in C# source or test files. Razor files are excluded from this rule because route values, HTML attributes, and view component arguments commonly use anonymous objects there.
 - Use structured logging placeholders, for example `logger.LogInformation("Post updated with ID: {PostId}", post.Id);`.
 - Keep comments sparse and useful. Add comments only for non-obvious compatibility, security, localization, protocol, or business decisions.
@@ -69,10 +67,10 @@ The linked sections retain the detailed project rules and must be followed when 
 ## HTTP And Error Handling
 
 - Domain handlers should express business outcomes; controllers and pages should translate those outcomes into HTTP responses.
-- For new APIs, follow existing response styles: `Ok`, `NoContent`, `NotFound`, `Conflict`, `ValidationProblem`, or ProblemDetails-compatible responses.
+- For new APIs, follow existing response styles: `Ok`, `NoContent`, `NotFound`, `Conflict`, `ValidationProblem`, or ProblemDetails-compatible responses. Use ProblemDetails-compatible API failures where practical.
 - Avoid using ambiguous `null` for multiple failure reasons. For new complex behavior, prefer a lightweight result model that distinguishes not found, validation failure, conflict, forbidden, and success.
 - Validate public inputs explicitly. Reuse existing attributes such as `[NotEmpty]`, `[Range]`, and `[Required]` where appropriate.
-- Use ProblemDetails-compatible responses for API failures where practical, and preserve existing response shapes for public endpoints unless the task explicitly changes them.
+- Preserve existing public response shapes unless the task explicitly changes them.
 - Do not swallow exceptions from external services silently. Log enough context to diagnose the operation, target resource, and available correlation details.
 
 ## Language And Licenses
@@ -88,24 +86,11 @@ Run commands from the repository root. Follow `.editorconfig`: UTF-8, CRLF, fina
 
 ### Common Commands
 
-```powershell
-dotnet restore src/Moonglade.Web/Moonglade.Web.csproj
-dotnet build src/Moonglade.Web/Moonglade.Web.csproj
-dotnet test --project src/Tests/Moonglade.Features.Tests/Moonglade.Features.Tests.csproj
-dotnet test --project src/Tests/Moonglade.Web.Tests/Moonglade.Web.Tests.csproj
-dotnet test --project src/Tests/Moonglade.Setup.Tests/Moonglade.Setup.Tests.csproj
-```
-
-The test runner is Microsoft.Testing.Platform, selected in `global.json`; keep the `--project` form above. For local Docker deployment, see [README.md](README.md#quick-local-deployment-docker); starting containers is separate from building or testing.
+See [Build & Run](README.md#build--run) for restore/build/run commands and [Run Tests](src/Tests/README.md#run-tests) for Microsoft.Testing.Platform commands. Keep the `dotnet test --project` form for individual projects; `global.json` selects the runner. [Starting Docker containers](README.md#quick-local-deployment-docker) is separate from building or testing.
 
 ### Test Selection
 
-- Behavior changes should add or update tests in the matching test project, for example:
-  - Post/category/tag/comment/page behavior: `src/Tests/Moonglade.Features.Tests`
-  - Web controller/handler behavior: `src/Tests/Moonglade.Web.Tests`
-  - Middleware: `src/Tests/Moonglade.Web.Middleware.Tests`
-  - Auth/configuration/theme/syndication/webmention/image storage/moderation/email/indexnow/background/setup: the matching `Moonglade.*.Tests` project.
-- Tests use xUnit v3, Moq, and EF Core InMemory/Sqlite patterns.
+- Add or update behavior tests in the owning `Moonglade.*.Tests` project; see the [test layout](src/Tests/README.md#layout). Tests use xUnit v3, Moq, and EF Core InMemory/Sqlite patterns.
 - When following the existing async test style, use `TestContext.Current.CancellationToken`.
 - Prefer focused unit tests for command/query handlers, services, middleware, validators, and protocol generators. Use integration tests when behavior depends on EF/database setup or host-level wiring.
 - Prefer running the affected test project. For cross-module changes or startup registration changes, at least run the Web project build.
@@ -114,31 +99,15 @@ The test runner is Microsoft.Testing.Platform, selected in `global.json`; keep t
 
 ### Task Records
 
-For complex work, first split the request into small sub-tasks that can be implemented, checked, tested, committed, and rolled back independently. Make dependencies explicit, especially when a change crosses projects, affects data shape, changes public endpoints, or alters deployment behavior.
+For complex work, split the request into independently verifiable and reversible steps with explicit dependencies.
 
-Create a task record under `docs/tasks/` when the work:
+Task records are temporary recovery aids for complex, cross-module, multi-session, or high-risk work, or when explicitly requested. Keep enough context to resume or investigate mistakes: goal, scope, dependencies, progress, verification results, and unresolved issues.
 
-- Crosses multiple modules or services.
-- Requires multiple rounds of context to complete.
-- Is a high-risk refactor or migration.
-- Changes architecture, data models, protocol contracts, configuration, or deployment flow.
-- Is explicitly requested by the user as a retained task record.
-
-Use `docs/tasks/task-<short-task-name>.md` for task records unless a more specific project convention appears later. Keep the record updated while working so another agent can resume after context compression or interruption. At minimum, record the original goal, background, scope, task breakdown, execution order, dependencies, status, verification log, issues/resolutions, and follow-ups. A starter template lives at [docs/tasks/task-template.md](docs/tasks/task-template.md).
+Delete task records after the required tests and checks pass unless the user explicitly requests retention. Permanent documentation must not link to temporary records. Put confirmed, durable project knowledge in the appropriate long-lived documentation instead.
 
 ### Documentation Sync Rules
 
-After development, bug fixes, refactors, or configuration changes, check whether the change affects:
-
-- Project positioning or business workflows.
-- Runtime, build, test, or deployment steps.
-- Technology stack or dependencies.
-- Code architecture or module boundaries.
-- Environment variables or configuration keys.
-- Development conventions.
-- Reusable troubleshooting knowledge.
-
-If it does, update the appropriate long-lived docs, including `README.md`, `AGENTS.md`, and relevant files under `docs/`. If it does not, say in the final response that no documentation update was needed.
+After changes, update the appropriate long-lived docs (`README.md`, `AGENTS.md`, or `docs/`) when workflows, build/test/deployment steps, stack/dependencies, architecture, configuration, development conventions, or reusable troubleshooting knowledge are affected. Otherwise, state in the final response that no documentation update was needed.
 
 ### Troubleshooting / Lessons Learned
 

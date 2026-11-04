@@ -1,8 +1,6 @@
 # Moonglade Engineering Reference
 
-Task-specific guidance extracted from [AGENTS.md](../AGENTS.md). Follow the applicable constraints when working in an area. Read the sections linked by the root file for the current task; unrelated sections are not prerequisite reading. Paths shown in backticks are relative to the repository root.
-
-[README.md](../README.md) remains the deployment and configuration guide. Inspect the owning code and tests to confirm implementation details before editing; if they conflict with a stated project constraint, ask the user rather than silently changing the constraint.
+Task-specific guidance supplements [AGENTS.md](../AGENTS.md); read only the applicable sections. Paths in backticks are repository-relative. [README.md](../README.md) covers deployment/configuration. Confirm details in the owning code and tests; ask the user if implementation conflicts with a project constraint.
 
 ## Technology Stack
 
@@ -18,35 +16,34 @@ Task-specific guidance extracted from [AGENTS.md](../AGENTS.md). Follow the appl
 | Frontend | Server-rendered Razor, Bootstrap, Bootstrap Icons, Alpine.js, unified Moonglade.Editor for rich HTML post editing plus Markdown/CSS/HTML code-like modes, Tagify, Mermaid.js for Markdown diagrams on post reading pages, and project-local JavaScript modules under `src/Moonglade.Web/wwwroot/js/app`. |
 | Image storage | `IBlogImageStorage` with one filesystem implementation and separate public primary and private original-image roots. External storage mounts and CDN origins are operator-owned. |
 | External integrations | Webmention, IndexNow, site ownership verification files, email outbox delivery through SMTP, local content moderation, and Gravatar. |
-| Package management | NuGet package references in project files; no repository-level `Directory.Packages.props`, `NuGet.config`, or package lock file was found at the time this document was updated. |
+| Package management | NuGet references in project files. |
 | Build tools | .NET SDK CLI, Visual Studio, VS Code task `dotnet build ${workspaceFolder}/src/Moonglade.Web/Moonglade.Web.csproj`, Docker multi-stage build, and Docker Compose. |
-| Tests | xUnit v3, Moq, `Microsoft.NET.Test.Sdk`, `coverlet.collector`, EF Core InMemory/Sqlite patterns, and ASP.NET Core TestHost for Web tests. |
-| Formatting/linting | Minimal repository-level `.editorconfig` for UTF-8, CRLF, final newlines, trimmed trailing whitespace, 4-space C#/Razor/JS/JSON/YAML indentation, and tab-indented MSBuild XML. No dedicated analyzer config or lint task was found at the time this document was updated. Follow nearby style and avoid bulk formatting. |
+| Tests | See the [test guide](../src/Tests/README.md); Web tests also use ASP.NET Core TestHost. |
+| Formatting | Follow `.editorconfig` and [development conventions](../AGENTS.md#development-and-verification). |
 
 ## Configuration And Environment
 
-Primary application configuration is in `src/Moonglade.Web/appsettings.json`, with local overrides in `src/Moonglade.Web/appsettings.Development.json`. ASP.NET Core environment variable overrides use the standard double-underscore form, for example `ConnectionStrings__MoongladeDatabase`.
+Host configuration uses `src/Moonglade.Web/appsettings.json`, local Development overrides, and standard environment variables (`:` becomes `__`). See [README](../README.md) for configuration examples. Keep local overrides secret-safe as required by AGENTS.md.
 
-Important configuration areas:
+Additional keys and implementation constraints:
 
 | Key or section | Purpose | Required? | Notes |
 | --- | --- | --- | --- |
 | `ConnectionStrings:MoongladeDatabase` | Database connection string. | Yes | Do not document or commit production values. |
 | `ConnectionStrings:DatabaseProvider` | Selects `PostgreSql` (default) or `SqlServer`. | Yes | Keep provider names aligned with `AddMoongladeDatabase`. |
 | `Authentication:Provider` | Selects `Local` or `OpenIdConnect` authentication. | Yes | Exactly one provider is active for a deployment. |
-| `Authentication:OpenIdConnect` | Configures the single external OIDC provider. | Required for OIDC | Requires an HTTPS authority, client ID, externally supplied client secret, callback paths, scopes containing `openid`, name claim type, and an allowed-subject list. An empty list denies all admin access for safe bootstrap. |
+| `Authentication:OpenIdConnect` | Single external OIDC provider. | Required for OIDC | See [configuration and bootstrap](upgrade-generic-oidc-authentication.md); preserve validation and exact subject authorization. |
 | `Authentication:Totp:Issuer` | Display issuer for local-account authenticator app QR codes. | Optional | Defaults to `Moonglade`; the TOTP secret is stored in `LocalAccountSettings`. |
 | `Authentication:Totp:Required` | Requires local-account authenticator verification after password sign-in. | Optional | Defaults to `true`; `false` is honored only in the `Development` environment. |
 | `Authentication:LocalAccountRateLimit` | Fixed-window rate limiting for local password sign-in and TOTP verification attempts. | Optional | Defaults to enabled, 10 attempts per 1 minute, partitioned by client IP and account context. |
 | `CommentRateLimit` | Built-in comment submission rate limiting by client IP and post ID. | Optional | Uses a fixed window policy. |
 | `CommentSubmissionGuard` | Built-in comment honeypot and elapsed-time checks. | Optional | Rejects filled honeypot fields, too-fast submissions, and stale form timestamps. |
 | `Webmention` | Webmention options, including source rate limiting. | Optional | Preserve protocol endpoint behavior. |
-| `Email` | SMTP settings and database outbox worker options. | Optional | Email delivery supports SMTP only, with no provider selection; store real SMTP passwords and API keys outside source control. `Email:Enabled` defaults to `true`; setting it to `false` stops in-process delivery and built-in notification handlers from enqueueing. Existing outbox messages are retained. Delivery always uses the outbox; worker tuning remains under `Email:OutboxWorker`. |
-| `Email:SmtpSenderAddress` | Separates the SMTP sender address from the authentication username. | Optional | Sets the `From`/`Sender` headers and envelope sender; omitted, empty, or whitespace values fall back to `Email:SmtpUserName`. Supply a bare email address permitted by the SMTP service. Resend uses SMTP with username `resend`, an API key in `Email:SmtpPassword`, and a verified sender domain. |
+| `Email` | SMTP and database outbox options. | Optional | See [SMTP configuration, sender fallback, and availability](../README.md#email-notifications). Worker tuning remains under `Email:OutboxWorker`. |
 | `IndexNow` | API key, ping targets, and cooldown interval. | Optional | API key also maps the IndexNow verification file endpoint. |
 | `ForwardedHeaders` | Reverse proxy/client IP configuration. | Deployment-dependent | Required behind some proxies/load balancers. Only explicitly configured `KnownProxies` are trusted; an empty or invalid list retains ASP.NET Core's loopback-only defaults. |
 | `EnableCSP`, `CSPValue` | Optional Content Security Policy response header. | Optional | `X-Content-Type-Options: nosniff` is always emitted; CSP is emitted only when enabled and non-empty. |
-| `ImageStorage` | Configures filesystem image storage through `FileSystemPath`, `OriginalFileSystemPath`, and `CacheMinutes`. | Yes | Both paths must be absolute, writable, durable, distinct, and non-overlapping. Environment overrides are `ImageStorage__FileSystemPath` and `ImageStorage__OriginalFileSystemPath`. |
+| `ImageStorage` | Filesystem roots and metadata cache. | Yes | See [storage configuration and isolation](../README.md#image-storage). |
 | `PostCacheMinutes`, `PagesCacheMinutes`, `WidgetCacheMinutes` | Cache durations. | Optional | Revisit when changing rendering or invalidation paths. |
 | `CannonService:QueueCapacity` | Capacity for the in-process fire-and-forget background queue. | Optional | Defaults to `1000`; when full, new work is rejected and logged instead of running inline on the request path. |
 | `ViewCount` | Crawler user-agent filtering and deduplication window. | Optional | Affects analytics/view-count behavior. |
@@ -72,7 +69,7 @@ SMTP delivery uses `Edi.TemplateEmail.Smtp` with explicit `FromAddress` and `Sen
 
 - The public comment entry point is `Moonglade.Web.Controllers.CommentController`; comment creation is handled by `Moonglade.Features.Comment.CreateCommentCommand`.
 - Whether comments are enabled, require review, close after a number of days, or use word filtering comes from `IBlogConfig.CommentSettings`.
-- `CommentSettings.EnableMarkdownLinks` is managed at `/admin/settings/comment` and defaults to `false`. It controls comment/reply hyperlinks in public/admin rendering and newly generated email notifications. Disabled links retain their original syntax and URLs as plain text; post Markdown is unaffected. The former `CommentMarkdown:EnableLinks` application configuration key is no longer read or imported.
+- `CommentSettings.EnableMarkdownLinks` controls comment/reply rendering across public/admin views and newly generated email. Preserve the [documented behavior](../README.md#comment-markdown-links), including default-off links and protocol/rel validation.
 - Built-in comment creation is also protected by host-level `CommentRateLimit` settings that partition requests by client IP and post ID.
 - Built-in comment creation checks `CommentSubmissionGuard` honeypot and elapsed-time fields before dispatching the create command.
 - Content moderation is abstracted in `Moonglade.Moderation` and supports local keyword filtering. Do not put moderation behavior directly in controllers.
@@ -80,12 +77,11 @@ SMTP delivery uses `Edi.TemplateEmail.Smtp` with explicit `FromAddress` and `Sen
 
 ### Configuration
 
-- Application-level configuration lives in `src/Moonglade.Web/appsettings.json`, including database, authentication, comment rate limiting, comment submission guard settings, image storage, email, IndexNow, security headers, cache durations, and background task switches.
 - Runtime blog settings are managed by `Moonglade.Configuration.BlogConfig` and persisted in the `BlogConfiguration` table. When adding a blog setting, follow the `IBlogSettings<T>` pattern, provide a default value, and add its typed assignment to `BlogConfig.LoadFromConfig`. This is the single default-initialization list: loading returns the exact default JSON snapshots assigned to memory, and `ConfigInitializer` persists them without a separate provider list. The loader selects the manifest default for new versus existing installations; saved settings always take precedence. Also consider update commands.
 - Startup restores malformed, incompatible, or null ordinary settings to defaults in their existing rows; valid settings and timestamps are preserved. `AddDefaultConfigurationCommand` serves this startup initialization/repair path only. Invalid persisted `LocalAccountSettings` and `SystemManifestSettings` must stop initialization with an actionable key-only error, preserving credentials and migration history. Do not recover these protected settings with shipped defaults or log stored JSON.
 - Runtime settings writes use `UpdateConfigurationCommand.Create(settings)`; the two-setting overload saves related image/general settings together. The command captures detached JSON snapshots, validates every target row, saves them in one `SaveChangesAsync`, and only then replaces the singleton settings. Concurrent writes are serialized within the process. Missing rows and failed writes throw instead of returning an ignored success code. Callers must prepare new objects or detached copies rather than mutating objects from `IBlogConfig`; TOTP setup and avatar updates follow this rule. Unchanged persisted values retain their timestamps while still refreshing the runtime snapshot. Startup initialization remains separate.
 - `/admin/settings` is the main UI for blog settings. Do not hard-code administrator-configurable blog behavior in the Web layer.
-- The default post editor is stored in `ContentSettings.DefaultEditor` and managed at `/admin/settings/content` (HTML or Markdown, default HTML). It applies to new posts immediately; existing post content types are preserved. The former application-level `DefaultEditor` key and startup content-type backfill have been removed.
+- `ContentSettings.DefaultEditor` owns the [default post editor](../README.md#default-post-editor). Do not restore the removed host configuration key or historical content-type backfill.
 
 ### Authentication And Security
 
@@ -142,7 +138,6 @@ SMTP delivery uses `Edi.TemplateEmail.Smtp` with explicit `FromAddress` and `Sen
 - Commands mutate state and are usually named `CreateXCommand`, `UpdateXCommand`, or `DeleteXCommand`, with matching `*Handler` classes in the same or nearby files.
 - Queries read state and are usually named `GetXQuery`, `ListXQuery`, or `CountXQuery`.
 - Events trigger side effects such as email, Webmention, IndexNow, or background notifications.
-- Keep the Web layer thin: controllers and Razor Pages handle HTTP binding, authorization, status codes, and view data; business rules belong in the relevant class library command/query/service.
 
 ### EF Core
 
@@ -156,8 +151,7 @@ SMTP delivery uses `Edi.TemplateEmail.Smtp` with explicit `FromAddress` and `Sen
 - `Category.Id` and `PostCategory.CategoryId` are `int`; both supported provider contexts configure category identity generation from 100 with increment 1. Category creation and fresh seeding must leave the ID to the database. Administrative category APIs and post-editor DTOs use integers; public category and subscription URLs retain slugs. Existing GUID category databases require the [manual category upgrade](upgrade-category-int-identity.md).
 - Persisted `DateTime` properties whose names end in `Utc` use the shared UTC contract: SQL Server `datetime2(7)`, PostgreSQL `timestamp with time zone`, UTC materialization, and rejection of local or unspecified tracked writes. `PostViewDaily.ViewDateUtc` is a `DateOnly` stored as `date`.
 - Browser wall-clock values are accepted only by Web request DTOs. Convert them with the supplied IANA time zone before dispatching feature commands; feature models and persisted values must contain UTC timestamps only.
-- Existing databases are upgraded only by administrators running SQL scripts manually before starting a newer release. The automatic migration runner, `AutoDatabaseMigration` setting, and previous cumulative scripts have been removed. Preserve fresh database creation and seeding. Do not re-enable `Npgsql.EnableLegacyTimestampBehavior`.
-- All future migration SQL belongs under the repository-root `database/` directory and must be idempotent. Any task that changes schema or requires migrating existing data must include the corresponding scripts for both PostgreSQL and SQL Server. This applies to AI agents as well as human developers; follow [database/README.md](../database/README.md).
+- Follow the [manual migration rules](../database/README.md) for schema/data changes. Preserve fresh creation/seeding; do not restore automatic upgrades or enable `Npgsql.EnableLegacyTimestampBehavior`.
 
 ## Caching And Side Effects
 
@@ -186,17 +180,15 @@ Moonglade consumes Moonglade.Editor through the `Moonglade.Editor.StaticAssets` 
 
 ## Local Runtime
 
-The default local launch URL comes from `src/Moonglade.Web/Properties/launchSettings.json`: `https://localhost:10210`. The admin portal is `/admin`; the default local account is documented in the README. In non-Development environments, or whenever `Authentication:Totp:Required` is `true`, first local-account sign-in after deployment or upgrade requires authenticator app TOTP setup.
+Use [Build & Run](../README.md#build--run) for commands, launch URLs, and the default local account; URLs come from `src/Moonglade.Web/Properties/launchSettings.json`. The TOTP bypass applies only in Development when `Authentication:Totp:Required=false`.
 
 ## Migration Verification
 
 No automatic migration implementation, embedded migration SQL, or migration version-check tests remain. Startup tests cover existing databases with missing or older installation manifests and preserve stored content and manifest values. Startup does not check database version compatibility; administrators must complete required SQL upgrades before launching the new version.
 
-Run `Moonglade.Setup.Tests` when changing database mappings, initialization, or upgrade documentation. For future manual SQL scripts, check both SQL Server and PostgreSQL compatibility, UTC conversion, transactions, dependent keys/indexes, and backup-based rollback. In-memory tests alone do not establish relational migration correctness. Verify the available integration tests and their prerequisites before claiming a migration has been tested against either database.
+Run `Moonglade.Setup.Tests` when changing database mappings, initialization, or upgrade documentation. Follow [database verification and execution](../database/README.md#verification-and-execution), including representative pre-upgrade and repeat runs on both target providers. Review UTC conversion, transactions, dependent keys/indexes, and backup rollback. In-memory tests and source review do not prove relational correctness or idempotency; report unavailable database verification explicitly.
 
-Verify each new or changed script on its target database using a representative pre-upgrade database, then run it again against the upgraded database. Both runs must succeed, and the second run must preserve the resulting schema and data without duplicate objects, duplicate rows, or repeated transformations. If database verification is unavailable, report that limitation explicitly; source review or in-memory tests do not prove SQL idempotency.
-
-Category identity migration tests in `Moonglade.Setup.Tests` use opt-in disposable PostgreSQL and SQL Server containers. See the [category upgrade guide](upgrade-category-int-identity.md#automated-verification) for the Docker prerequisites and `MOONGLADE_TEST_CATEGORY_DATABASES` command; a normal test run skips these relational groups explicitly.
+Category identity and snake_case migration tests use opt-in disposable PostgreSQL and SQL Server containers. See the [category upgrade guide](upgrade-category-int-identity.md#automated-verification) for the Docker prerequisites and `MOONGLADE_TEST_CATEGORY_DATABASES` command; a normal test run skips these relational groups explicitly.
 
 The filesystem-only image-storage cutover is documented in [upgrade-filesystem-image-storage.md](upgrade-filesystem-image-storage.md).
 

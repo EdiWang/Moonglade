@@ -236,20 +236,14 @@ For the final cutover:
 
 ## 7. Application Verification
 
-Before restoring normal traffic:
+Complete the shared [image-storage verification checklist](upgrade-filesystem-image-storage.md#verification-checklist), including raster/SVG uploads, original-image privacy, permissions, persistence, byte ranges, and CDN behavior. For R2, also:
 
-- Confirm the container mounts the two expected rclone volumes at `/app/images` and `/app/images-origin`.
-- Upload a raster image and load its `/image/{filename}` URL.
-- Upload an SVG and confirm Moonglade's validation and sanitization still apply.
-- Enable original-image retention and confirm processed and original objects go to different buckets.
-- Confirm an original-image filename returns `404` through `/image/{filename}`.
-- Delete a test image and confirm the object is removed from the intended bucket.
-- Test an HTTP byte-range request for a processed image.
-- Recreate the application container and confirm images remain available.
-- Restart Docker and reboot the host during a planned maintenance window to confirm the plugin and volumes recover.
+- Confirm the container mounts the expected rclone volumes at `/app/images` and `/app/images-origin`, backed by separate buckets.
+- Delete a test image and confirm removal from the intended bucket.
+- Restart Docker and reboot the host during a planned maintenance window to confirm plugin and volume recovery.
 - Review Docker daemon and application logs for FUSE, I/O, and storage errors.
 
-Moonglade's `/health` endpoint is liveness-only, and `/health/ready` checks database readiness. Neither endpoint validates image storage. Keep an explicit image-storage smoke test in the deployment procedure.
+Neither health endpoint validates image storage; retain an explicit deployment storage smoke test.
 
 ## Rollback
 
