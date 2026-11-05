@@ -10,9 +10,9 @@ This file is the recovery record for the settings design review and reliability 
 4. Identify the next authorized batch and its dependencies. Ask the user before executing an unauthorized batch or resolving a pending business or architecture decision. Offer a recommendation and explain its effects.
 5. Update this file during work and at every batch boundary, including implementation completion, verification, commit, user acceptance, interruption, or newly discovered blockers. Do not leave the only recovery information in chat.
 
-Current authorization: execute B5 (the user explicitly requested reading this file and executing B5 on 2026-11-05), including implementation, verification, and tracker updates. The user separately confirmed creating an independent local commit after verification, without pushing or starting B6. B6, optional structural work, deployment, and production-data changes are not authorized.
+Current authorization: execute B6 (the user explicitly requested proceeding to B6 on 2026-11-05), including full regression, isolated acceptance checks, documentation review, and tracker updates. B5's separate commit authorization has been fulfilled; no new B6 commit or push is inferred. Optional structural work, deployment, and production-data changes remain unauthorized.
 
-Current next step: present the verified B5 local batch commit and await user acceptance / further instructions. B4 is commit `2a8f47078`; B5 is the commit containing the completion entry below, titled `fix(settings): preserve successful responses when audit logging fails`. Record its actual hash at the next tracker update. Do not begin B6 automatically.
+Current next step: present B6's completed technical verification and the uncommitted D23 startup-safety fix for final user acceptance. Final regression passed 1412/1412 with both disposable providers and no skips; Web build and isolated acceptance checks passed. B5 is commit `8da96cf82`. No B6 commit or push is authorized, and optional C1-C3 remain deferred.
 
 Retention: the user explicitly requested a repository recovery and progress file. Keep this file across batches and context compaction. Do not delete it merely because tests pass; ask before removing or archiving it. Permanent documentation must not depend on this task record.
 
@@ -27,7 +27,7 @@ Improve settings reliability through independently testable, committable, review
 - Preserve grouped JSON storage, existing setting keys and field names, supported providers, public URLs, authorization, antiforgery protection, and the current successful-save guarantees unless the user approves a specific change.
 - Keep deployment configuration separate from administrator-editable blog settings. Do not move SMTP credentials or other deployment secrets into ordinary settings.
 - Do not introduce dependencies, schema revisions, conflict UI, distributed synchronization, or a generic settings framework without a demonstrated need and explicit scope approval.
-- Current implementation scope is B5 only, preserving verified B1-B4 behavior except the approved settings-only audit-failure response change. No deployment is included in any batch below.
+- Current scope is B6 verification and acceptance of B1-B5, not optional redesign. Any necessary fixes must remain tied to the approved reliability contracts. No deployment is included in any batch below.
 
 Repository files must be English, except permitted localization resources and relevant test data. Follow `.editorconfig` (UTF-8, CRLF, final newline). Use the existing .NET stack and repository tools.
 
@@ -59,6 +59,7 @@ These decisions were explicitly supplied by the user in this conversation on 202
 | D20 | Wake scheduled publishing after settings save and recheck the enable flag before dispatch. | Disabling skips pending work not yet dispatched; enabling promptly rechecks. Already dispatched publication is not revoked. |
 | D21 | Include the full-feed-content source defect in B4. | Read actual post content when full feeds are enabled, abstracts when disabled; verify RSS/Atom and category feeds, including formatting/CDN behavior. |
 | D22 | Include the avatar-upload path in B5 because its internal handler can also update GeneralSettings. | Isolate only its post-save audit failure; preserve site-icon and unrelated audit behavior, and keep asset/file/settings failures visible. |
+| D23 | When initialization fails, log a clear error and terminate the process with a nonzero exit code; do not start business background services. | Remove the error-only host startup path. After correcting the underlying failure, administrators restart normally; a rolled-back new installation remains retryable. |
 
 Existing repository constraints protect invalid persisted `LocalAccountSettings` and `SystemManifestSettings`: startup fails rather than replacing them with shipped defaults. Ordinary-setting recovery does not override that protection. D5 additionally covers missing account rows and empty settings tables with existing business data.
 
@@ -123,8 +124,8 @@ Allowed statuses: `Not started`, `In progress`, `Blocked: <specific dependency>`
 | B2 | B1 accepted; affected defaults confirmed | Verified: D15 applied at persisted ordinary-settings loading | Configuration 60/60; Setup 120/120 including both providers; Web 273/273; Web build clean | `d51230912` | User authorized proceeding to B3 on 2026-11-05 |
 | B3 | B2 accepted; D16-D18 confirmed | Verified: shared validation and approved compatibility rules implemented | Configuration 124/124; Setup 127/127 including both providers; Web 281/281; Auth 48/48; Email 105/105; Web build clean | `fe32fd43f` | User authorized proceeding to B4 on 2026-11-05 |
 | B4 | B1-B3 accepted; D19-D21 confirmed | Verified: post-commit cache invalidation, activation hints, scheduler wake/recheck, full-feed source | Configuration 129/129; Web 297/297; Syndication 18/18; BackgroundServices 14/14; Auth 48/48; Email 106/106; Web build clean; isolated browser save/restart checks passed | `2a8f47078` | User authorized proceeding to B5 on 2026-11-05 |
-| B5 | B1 accepted; D7/D22 confirmed | Verified: opt-in settings/avatar post-save audit isolation with authentication contracts preserved | Web 331/331; Web build clean; diff/format checks passed | Batch commit containing this row; title `fix(settings): preserve successful responses when audit logging fails` | Awaiting user acceptance |
-| B6 | B1-B5 accepted | Not started; not authorized | Not run | None | Pending |
+| B5 | B1 accepted; D7/D22 confirmed | Verified: opt-in settings/avatar post-save audit isolation with authentication contracts preserved | Web 331/331; Web build clean; diff/format checks passed | `8da96cf82` | User authorized proceeding to B6 on 2026-11-05 |
+| B6 | B1-B5 accepted; D23 confirmed | Verified: full regression, isolated scenarios, and startup host-safety correction | 1412/1412, 0 skipped, both providers; Web build clean; host/browser and diff/format checks passed | Uncommitted; separate authorization required | Awaiting user acceptance |
 | C1-C3 | B6 accepted; separate design and authorization | Deferred | Not run | None | Not applicable |
 
 ### B0 - Confirm Behavior and Compatibility Matrices
@@ -564,3 +565,78 @@ Limits, commit, and handoff:
 - Commit: this entry is part of the B5 implementation commit titled `fix(settings): preserve successful responses when audit logging fails`. Record its actual hash at the next tracker update; do not amend merely to embed a commit's own hash.
 - User acceptance: pending. Present the local commit and evidence, then await user acceptance / further instructions. Do not push or begin B6 automatically.
 - Rollback: revert this batch commit if required. There is no migration to undo; reverting does not reverse settings, credentials, assets, or files already saved.
+
+### 2026-11-05 - B6 Started
+
+- Authorization: the user requested proceeding to B6. B5 is local commit `8da96cf82`; branch `master` and working tree were clean at entry. This authorizes verification and tracker updates, not a new commit, push, deployment, optional C1-C3, or production-data changes.
+- Full-solution regression will enable `MOONGLADE_TEST_CATEGORY_DATABASES=1` in its process so both disposable provider groups actually run, followed sequentially by Web build. Docker is available and the fixture's PostgreSQL 18 / SQL Server 2022 images are already local.
+- Acceptance will use only a uniquely named disposable database/container, isolated content root and image/original directories, and loopback host. Do not read or load the repository's Development override. Preserve real local databases, credentials, files, and existing services.
+- Scenario evidence will distinguish actual host/browser interactions from automated tests and earlier historical evidence. Recheck fresh/repeated startup, partial JSON, ordinary recovery, protected missing state, save/refresh/restart, caches, appearance, stale saves, avatar/CDN, credentials/authenticator, and audit outage. Final user acceptance stays pending even if every technical check passes.
+- Current next action: run full solution tests and prepare isolated acceptance resources; no B6 application changes or commit exist.
+
+### 2026-11-05 - B6 Regression Passed; Failed-Startup Host Defect Confirmed
+
+- Full solution after normal restore: 1408 passed, 0 failed, 0 skipped, including both disposable provider groups. The initial `--no-restore` attempt stopped at missing transitive assemblies in two previously unbuilt test projects; normal restore fixed the local assets without changing dependencies. Three existing nullable warnings in `CannonServiceTests.cs` remain. Web build passed with 0 warnings/errors.
+- Actual isolated PostgreSQL/Chrome checks passed for first install, partial JSON with missing feed count (20 in the UI while stored JSON/timestamp remain unchanged), ordinary whole-group recovery and no repeat repair on restart, stale-tab last-writer-wins, feed/category-feed body switching, canonical sitemap refresh, theme/CSS, avatar/CDN persistence, and real audit-table failure. Password change and authenticator reset succeeded through their actual dialogs during the audit outage; old credentials failed and the new synthetic credentials signed in. Actual settings-table failure returned HTTP 500 and retained old database/runtime feed values.
+- A new host-level safety defect was found: `Moonglade.Setup.WebApplicationExtensions.FailFast` starts the full host to expose a 500 error page after initialization fails. Hosted services therefore run against uninitialized default configuration. On the isolated missing-account database, a correctly mapped synthetic scheduled post was actually published while `/` still returned HTTP 500. The initializer-only tests did not cover this outer host boundary.
+- Stopped the isolated host immediately and restored the synthetic post's original fields; fingerprints confirmed all 18 mapped business tables match their pre-scenario contents. Only disposable data was used. Early scheduler probes used the wrong enum storage shape; the final reproduction used the provider's lowercase `scheduled` value and confirmed the actual write.
+- The user explicitly chose clear logging followed by nonzero process termination and no business workers, rather than retaining a 500 diagnostic host. Recorded D23. Implement only that safety correction and focused host-boundary regressions, then rerun the affected tests/full solution and remaining isolated startup checks. B6 is not yet verified or accepted.
+
+### 2026-11-05 - B6 Technical Verification Complete; User Acceptance Pending
+
+- Implemented D23 in `Moonglade.Setup.WebApplicationExtensions`: retain actionable Critical logging and throw for every unsuccessful initialization result before the application host starts. Removed the error-only `RunAsync` path and added explicit cancellation/unexpected-error diagnostics. Successful initialization still returns to `Program`, which owns pipeline construction, endpoint mapping, and host startup.
+- Added four host-boundary regression cases in `StartupApplicationTests`. Against the old implementation, the three failure cases failed and the normal-start case passed. After correction, all four passed. The failure theory covers existing content with empty settings, a missing account, and an invalid protected account; it asserts the exception/diagnostic, no hosted-service start, unchanged settings JSON/timestamps/runtime, and a preserved scheduled post. The success case verifies that initialization returns without starting workers and the caller can subsequently start the host.
+- No schema, setting defaults, provider mappings, authentication contracts, package versions, or startup-service injection boundaries changed. First-install transactions/retries remain covered by the existing provider tests.
+
+Final automated verification, after the startup correction:
+
+```powershell
+dotnet test --project src\Tests\Moonglade.Setup.Tests\Moonglade.Setup.Tests.csproj --no-restore --filter-class '*StartupApplicationTests'
+$env:MOONGLADE_TEST_CATEGORY_DATABASES = '1'
+dotnet test --solution src\Moonglade.slnx --no-restore
+dotnet build src\Moonglade.Web\Moonglade.Web.csproj --no-restore --verbosity quiet
+dotnet format whitespace src\Moonglade.slnx --include src\Moonglade.Setup\WebApplicationExtensions.cs src\Tests\Moonglade.Setup.Tests\StartupApplicationTests.cs --no-restore --verify-no-changes --verbosity quiet
+git diff --check
+```
+
+- Focused host-boundary tests: 4 passed, 0 failed, 0 skipped.
+- Final solution: 1412 passed, 0 failed, 0 skipped, exit 0. Both disposable PostgreSQL and SQL Server groups executed; the earlier 1408 result predates the new host tests and is not the final result.
+- Final Web build: 0 warnings, 0 errors. The earlier full restore/build exposed three pre-existing nullable warnings in `CannonServiceTests.cs`; they were not changed or claimed fixed, and the final incremental run did not re-emit them.
+- Focused formatting verification passed after normalizing the modified Setup file's inherited BOM to `.editorconfig` UTF-8. Changed text files have CRLF/final newlines; whitespace/diff review passed.
+
+Isolated scenario evidence:
+
+All actual host/browser rows used a unique PostgreSQL 18 container, isolated clean content/image directories, and a loopback HTTPS host. The committed base configuration was copied; the repository's Development override was not read or loaded. UI interactions used an isolated Chrome context. SQL fault fixtures and before/after fingerprints were confined to this disposable database. Implementation references: B1 `7f0394673`, B2 `d51230912`, B3 `fe32fd43f`, B4 `2a8f47078`, B5 `8da96cf82`; D23 is the current uncommitted B6 fix.
+
+| Scenario | Expected | Actual interaction and result | Implementation |
+| --- | --- | --- | --- |
+| Fresh installation | Seed once, initialize all settings, retain retry safety | Started compiled host on an empty disposable database: one post, one category, eleven settings. Provider tests also pass for both supported databases, installation failures, rollback/retry, and committed-install detection. | B1 |
+| Partial existing JSON | Fill absent fields in memory without rewriting valid saved JSON/time | Replaced feed JSON with a valid partial object, restarted, and opened Feed settings: missing count displayed as 20; saved JSON and old timestamp stayed byte-for-byte unchanged. | B2 |
+| Ordinary invalid group | Recover the whole group once, without repeated repair | Injected semantically invalid Content settings and restarted: whole-group defaults recovered. A second restart changed zero settings rows/timestamps and emitted no repeated repair warning. | B2/B3 |
+| Missing account with existing data | Stop before repairs, reseeding, host startup, or worker writes | Actual corrected process exited `-532462766` on Windows with Critical/restart diagnostics; no listener or worker-start logs. A correctly mapped due scheduled post matched its complete pre-start snapshot. Other settings matched the exact ten-row damaged snapshot, including the deliberately invalid feed row; no repair occurred. | B1/B3/D23 |
+| Empty settings with existing data | Fail safely without clearing content or restoring bootstrap credentials | Deleted only disposable settings and started the corrected host: same nonzero exit, no listener/workers; settings remained empty. Before and after this scenario all eighteen mapped business-table fingerprints matched the baseline. | B1/D23 |
+| Save/refresh/restart and recovery | Retain committed values and support restart after manual correction | Restored the eleven trusted disposable settings and restarted: readiness, public home, RSS, and Atom returned 200. All settings JSON/timestamps matched the restored snapshot, all eighteen business tables matched, and the selected theme loaded. | B1-B4/D23 |
+| Warm RSS/Atom/category feeds | Refresh metadata/body and preserve input validation | Warmed global/category RSS and Atom; actual UI saves switched between abstract and article body with one entry in each feed. General-save metadata refreshed; a negative feed count returned HTTP 400. | B3/B4 |
+| Warm sitemap | Refresh canonical URL after General save | Warmed sitemap, saved a different canonical base through the UI, and verified regenerated URLs instead of the old cached base. | B4 |
+| Appearance | Apply saved theme and CSS without restart | Selected Excel Green and edited custom CSS in the real editor: HTTP 204, custom CSS marker/ETag, and public/sign-in theme color `#165331`. Recovery restart retained the selected theme. | B4 |
+| Two stale tabs | Last successful save wins, not an implied merge/conflict policy | Loaded two General tabs, saved the first title, then saved the stale second model with another title; the second value survived refresh. | B1/B3 |
+| Avatar/CDN | Preserve file/settings response during audit-only failure | Uploaded a generated 300-by-300 PNG during a real activity-table failure: HTTP 200, image file and persisted CDN avatar URL verified. Image-settings save also returned 204. | B3-B5 |
+| Password change | Persist credentials and preserve current-session behavior | Actual password dialog returned 204 during the audit outage; current session stayed authenticated. The old synthetic credentials subsequently failed and the new synthetic credentials signed in. | B3/B5 |
+| Authenticator reset | Clear persisted TOTP state and sign out | Actual reset dialog succeeded during the audit outage and redirected to sign-in; persisted secret was cleared and the enabled flag was false. Three-scheme sign-out is additionally asserted by the Web tests. | B3/B5 |
+| Audit outage versus real save failure | Keep successful settings responses but expose actual persistence failures | A disposable activity-table trigger produced five Error records without inserting activity rows; General/Image saves returned 204, avatar returned 200, and account flows completed. A separate settings-table trigger made feed save return 500 with old runtime/database values retained. Both injected triggers/functions were removed. | B5 |
+| Restart-required routes | Saving alone does not remap routes; restart activates either direction | Disabled FOAF/sitemap: existing server routes stayed 200 until restart, then became 404. Saved re-enable and performed final successful recovery restart: both returned 200. No-store HTTP probes distinguished server state from browser-cached 200 responses. | B4 |
+
+Focused regression requirement coverage:
+
+| Requirement | Evidence |
+| --- | --- |
+| Failed initialization must not start the host or mutate scheduled content/settings | `InitStartUp_WhenInitializationFails_ThrowsWithoutStartingHostedServicesOrChangingData` (empty-settings, missing-account, invalid-account cases), plus actual nonzero-process/fingerprint checks above |
+| Successful initialization must leave host startup with the caller | `InitStartUp_WhenInitializationSucceeds_ReturnsBeforeCallerStartsTheHost`, plus restored-site readiness and endpoint checks above |
+
+Limits and handoff:
+
+- Host/browser acceptance used PostgreSQL; SQL Server's evidence is the final automated disposable-provider suite, not a separate browser run. Provider fault interceptors exercise database transactions/retries, not physical network loss or process termination during schema DDL.
+- In-process audit tests prove escaping mediator faults/cancellation and helper scope; actual database-trigger checks prove storage-outage UI behavior. No SMTP delivery, real external CDN transfer/purge, distributed/multi-replica guarantee, downstream cache eviction, or asset/file/settings atomicity is claimed.
+- Synthetic data only; no real blog database, credential change, deployment, push, optional redesign, or external service operation occurred. Browser tabs owned by this acceptance were closed, the attached host stopped, the unique database container removed, generated runtime credential state deleted, and the loopback port verified unbound.
+- Updated README, engineering reference, test guide, and B0 handoff. Retained this requested recovery tracker; it is not linked from permanent documentation.
+- B6 changes remain uncommitted because no separate commit was authorized. Review the working-tree diff and obtain final user acceptance; do not mark B6 Accepted or start C1-C3 automatically. A code revert would restore the unsafe diagnostic-host behavior; no database migration is involved.
