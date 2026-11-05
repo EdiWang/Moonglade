@@ -88,6 +88,26 @@ public class PostControllerTests
     }
 
     [Fact]
+    public async Task StateChange_WhenActivityDispatchFails_StillPropagatesFailure()
+    {
+        var commandMediator = new Mock<ICommandMediator>();
+        commandMediator.Setup(mediator => mediator.SendAsync(
+                It.IsAny<ICommand>(), It.IsAny<CommandMediationSettings>(), It.IsAny<CancellationToken>()))
+            .Returns(Task.CompletedTask);
+        var failure = new InvalidOperationException("Audit unavailable.");
+        commandMediator.Setup(mediator => mediator.SendAsync(
+                It.IsAny<CreateActivityLogCommand>(), It.IsAny<CommandMediationSettings>(), It.IsAny<CancellationToken>()))
+            .ThrowsAsync(failure);
+        var controller = CreateStateChangeController(commandMediator.Object);
+        var postId = Guid.NewGuid();
+
+        Assert.Same(failure, await Assert.ThrowsAsync<InvalidOperationException>(() => controller.Publish(postId)));
+
+        commandMediator.Verify(mediator => mediator.SendAsync(
+            It.Is<PublishPostCommand>(command => command.Id == postId), It.IsAny<CommandMediationSettings>(), It.IsAny<CancellationToken>()), Times.Once);
+    }
+
+    [Fact]
     public async Task GetMeta_IntegerCategoryIds_SerializesExactNumericIdsAndNames()
     {
         var queryMediator = new Mock<IQueryMediator>();

@@ -10,9 +10,9 @@ This file is the recovery record for the settings design review and reliability 
 4. Identify the next authorized batch and its dependencies. Ask the user before executing an unauthorized batch or resolving a pending business or architecture decision. Offer a recommendation and explain its effects.
 5. Update this file during work and at every batch boundary, including implementation completion, verification, commit, user acceptance, interruption, or newly discovered blockers. Do not leave the only recovery information in chat.
 
-Current authorization: execute B4 (the user explicitly requested "Execute B4" on 2026-11-05), including implementation, verification, a local batch commit, and tracker updates under the agreed workflow. B5-B6, optional structural work, deployment, and production-data changes are not authorized.
+Current authorization: execute B5 (the user explicitly requested reading this file and executing B5 on 2026-11-05), including implementation, verification, and tracker updates. The user separately confirmed creating an independent local commit after verification, without pushing or starting B6. B6, optional structural work, deployment, and production-data changes are not authorized.
 
-Current next step: present the verified B4 local batch commit and await user acceptance / further instructions. B3 is commit `fe32fd43f`; B4 is the commit containing the completion entry below, titled `fix(settings): invalidate affected caches after save`. Record its actual hash at the next tracker update. B5 and later batches must not start automatically. The isolated acceptance host/database have been stopped and removed.
+Current next step: present the verified B5 local batch commit and await user acceptance / further instructions. B4 is commit `2a8f47078`; B5 is the commit containing the completion entry below, titled `fix(settings): preserve successful responses when audit logging fails`. Record its actual hash at the next tracker update. Do not begin B6 automatically.
 
 Retention: the user explicitly requested a repository recovery and progress file. Keep this file across batches and context compaction. Do not delete it merely because tests pass; ask before removing or archiving it. Permanent documentation must not depend on this task record.
 
@@ -27,7 +27,7 @@ Improve settings reliability through independently testable, committable, review
 - Preserve grouped JSON storage, existing setting keys and field names, supported providers, public URLs, authorization, antiforgery protection, and the current successful-save guarantees unless the user approves a specific change.
 - Keep deployment configuration separate from administrator-editable blog settings. Do not move SMTP credentials or other deployment secrets into ordinary settings.
 - Do not introduce dependencies, schema revisions, conflict UI, distributed synchronization, or a generic settings framework without a demonstrated need and explicit scope approval.
-- Current implementation scope is B4 only, preserving verified B1-B3 behavior except explicitly approved activation changes. No deployment is included in any batch below.
+- Current implementation scope is B5 only, preserving verified B1-B4 behavior except the approved settings-only audit-failure response change. No deployment is included in any batch below.
 
 Repository files must be English, except permitted localization resources and relevant test data. Follow `.editorconfig` (UTF-8, CRLF, final newline). Use the existing .NET stack and repository tools.
 
@@ -58,6 +58,7 @@ These decisions were explicitly supplied by the user in this conversation on 202
 | D19 | FOAF/sitemap enable and disable, and notification sender display-name changes, take effect after application restart. | Preserve endpoint registration and email singleton lifetimes; clearly label restart requirements. |
 | D20 | Wake scheduled publishing after settings save and recheck the enable flag before dispatch. | Disabling skips pending work not yet dispatched; enabling promptly rechecks. Already dispatched publication is not revoked. |
 | D21 | Include the full-feed-content source defect in B4. | Read actual post content when full feeds are enabled, abstracts when disabled; verify RSS/Atom and category feeds, including formatting/CDN behavior. |
+| D22 | Include the avatar-upload path in B5 because its internal handler can also update GeneralSettings. | Isolate only its post-save audit failure; preserve site-icon and unrelated audit behavior, and keep asset/file/settings failures visible. |
 
 Existing repository constraints protect invalid persisted `LocalAccountSettings` and `SystemManifestSettings`: startup fails rather than replacing them with shipped defaults. Ordinary-setting recovery does not override that protection. D5 additionally covers missing account rows and empty settings tables with existing business data.
 
@@ -121,8 +122,8 @@ Allowed statuses: `Not started`, `In progress`, `Blocked: <specific dependency>`
 | B1 | B0 startup rules settled | Verified: startup safety and transactional installation implemented | Setup 107/107 including both providers; Configuration 45/45; Web 273/273; Web build clean | `7f0394673` | User authorized proceeding to B2 on 2026-11-05 |
 | B2 | B1 accepted; affected defaults confirmed | Verified: D15 applied at persisted ordinary-settings loading | Configuration 60/60; Setup 120/120 including both providers; Web 273/273; Web build clean | `d51230912` | User authorized proceeding to B3 on 2026-11-05 |
 | B3 | B2 accepted; D16-D18 confirmed | Verified: shared validation and approved compatibility rules implemented | Configuration 124/124; Setup 127/127 including both providers; Web 281/281; Auth 48/48; Email 105/105; Web build clean | `fe32fd43f` | User authorized proceeding to B4 on 2026-11-05 |
-| B4 | B1-B3 accepted; D19-D21 confirmed | Verified: post-commit cache invalidation, activation hints, scheduler wake/recheck, full-feed source | Configuration 129/129; Web 297/297; Syndication 18/18; BackgroundServices 14/14; Auth 48/48; Email 106/106; Web build clean; isolated browser save/restart checks passed | Batch commit containing this row; title `fix(settings): invalidate affected caches after save` | Awaiting user acceptance |
-| B5 | B1 accepted | Not started; not authorized | Not run | None | Pending |
+| B4 | B1-B3 accepted; D19-D21 confirmed | Verified: post-commit cache invalidation, activation hints, scheduler wake/recheck, full-feed source | Configuration 129/129; Web 297/297; Syndication 18/18; BackgroundServices 14/14; Auth 48/48; Email 106/106; Web build clean; isolated browser save/restart checks passed | `2a8f47078` | User authorized proceeding to B5 on 2026-11-05 |
+| B5 | B1 accepted; D7/D22 confirmed | Verified: opt-in settings/avatar post-save audit isolation with authentication contracts preserved | Web 331/331; Web build clean; diff/format checks passed | Batch commit containing this row; title `fix(settings): preserve successful responses when audit logging fails` | Awaiting user acceptance |
 | B6 | B1-B5 accepted | Not started; not authorized | Not run | None | Pending |
 | C1-C3 | B6 accepted; separate design and authorization | Deferred | Not run | None | Not applicable |
 
@@ -504,3 +505,62 @@ Limits, commit, and handoff:
 - Commit: this entry is part of the B4 implementation commit titled `fix(settings): invalidate affected caches after save`. Record its hash at the next tracker update; do not amend merely to embed a commit's own hash.
 - User acceptance: pending. Present the commit and evidence, then await acceptance / further instructions. Do not start B5-B6 automatically.
 - Rollback: revert this batch commit. No schema migration is involved; the code revert does not reverse later saved settings. All manual acceptance data was disposable and has been removed.
+
+### 2026-11-05 - B5 Started
+
+- Authorization: the user requested reading this tracker and executing B5, then explicitly selected an independent local commit after verification. Do not push or begin B6.
+- Baseline: branch `master`, commit `2a8f47078`, clean working tree. B1-B4 dependencies are complete; D7 defines the approved behavior.
+- Scope: `SettingsController` only for production behavior. Wrap just its post-save activity dispatch, covering shared saves, General, paired Image/General, local password changes, and authenticator reset. Keep persistence, validation, cache events, image operations, and sign-out outside the audit catch.
+- Current authentication contract: password changes do not sign out the current session; preserve that behavior. Authenticator reset signs out the main, setup, and two-factor schemes after persistence; an audit failure must not skip these calls.
+- The activity-log handler already catches its own persistence failures. B5 additionally isolates exceptions escaping audit dispatch or middleware, without changing `BlogControllerBase`, unrelated controllers, or the handler's existing semantics.
+- Verification plan: focused controller/HTTP fault injection using disposable SQLite settings and mock audit failures; assert actual persisted/runtime values, safe contextual Error logs, reset sign-outs, and visible non-audit failures. Run `Moonglade.Web.Tests`, Web build, and diff/format checks sequentially.
+- Update README, engineering-reference configuration rules, test coverage documentation, and this tracker with verified behavior. No schema, stored setting, dependency, UI, or localization change is planned.
+- Current state: implementation and tests not yet changed; no B5 commit exists. Next action: add the settings-local audit helper and regression cases.
+
+### 2026-11-05 - B5 Settings Checks Passed, Avatar Scope Confirmed
+
+- Implemented the settings-local helper and focused regressions. After correcting a test title to the existing 16-character limit and matching LiteBus's non-generic event dispatch, the before-fix run reproduced 17 audit-related failures (61 tests total). The same focused run passed 61/61 after the settings change, with no warnings.
+- The user explicitly approved including avatar uploads through `AssetsController`, because `SaveAssetToCdnHandler` can persist GeneralSettings during that operation. Recorded D22. Site-icon and other audit paths remain excluded.
+- Reuse an opt-in shared post-save audit helper without changing the existing base `LogActivityAsync` contract. Keep all asset handlers, storage operations, settings events, and sign-outs outside this catch. Authenticator setup has no activity-log dispatch and needs no B5 behavior change.
+- Next action: complete avatar fault coverage and the shared helper, then run the full Web suite and build. No B5 commit exists yet; B6 remains unauthorized.
+
+### 2026-11-05 - B5 Implementation and Verification Complete
+
+- Authorization: explicit B5 execution request, separate confirmation to create an independent local commit after verification, and explicit approval to include avatar uploads (D22). Baseline `2a8f47078` on `master`; the working tree was clean before B5. No push, B6 work, deployment, or production-data operation is authorized.
+- Added the opt-in `BlogControllerBase.LogActivityAfterSaveAsync`. Only activity-log dispatch is inside its catch; escaping audit exceptions, including cancellation, emit Error and preserve the existing successful response. The diagnostic includes the original exception, event type, operation, and trace identifier, without adding target names, metadata, settings JSON, or credential fields.
+- All four settings audit sites opt in: General, Image's paired settings save, authenticator reset, and the shared save helper used by ordinary settings/password changes. Avatar POST also opts in after `SaveAssetEvent` completes, including its internal CDN/GeneralSettings writer. The existing base `LogActivityAsync`, site-icon auditing, and unrelated controllers are unchanged.
+- Required authentication behavior is preserved: authenticator reset signs out the main, setup, and two-factor schemes despite an audit-only exception; password changes keep their existing session behavior. A real sign-out failure still escapes. Authenticator setup does not dispatch activity logs and needs no B5 change.
+- Validation, settings persistence, cache events, avatar asset persistence, image delete/insert, and sign-out stay outside the audit catch. Faults remain visible rather than producing fabricated success or an audit-only diagnostic. Genuine avatar failures can still leave already-completed file/asset effects; B5 does not add the deferred cross-resource transaction/rollback work.
+- Added 34 Web regression cases. Settings tests use the real SQLite update handler, paired-row state, synthetic credentials, mock audit failures, and explicit log assertions. Eight HTTP routes return 204 even when audit dispatch fails; image and account actions have direct controller/persistence coverage. Avatar tests compose real asset/configuration handlers with fake byte storage and cover both CDN modes, audit cancellation, save/storage/settings faults, and unchanged site-icon auditing. A post-controller test preserves unrelated audit propagation.
+- The corrected pre-fix settings run failed 17/61 cases exactly at the audit boundary; after the fix it passed 61/61. The expanded settings/avatar/post run passed 86/86. Initial test-only corrections respected the existing title limit, valid GeneralSettings defaults, and LiteBus's non-generic event dispatch. No production validation or exception assertion was weakened.
+- Inline behavior-gap and assertion reviews found no remaining in-scope actionable gaps. Results are static assertion reviews, not empirical mutation testing or coverage measurements. Test names use only fixed method names, routes, and Boolean case values.
+- Documentation: updated README saving behavior, engineering-reference opt-in boundaries, test coverage, B0 handoff, and this tracker. No schema, stored keys/fields, dependencies, UI/localization strings, authorization, antiforgery, URLs, or provider-specific behavior changed; no SQL upgrade script is required.
+
+Verification (repository root; builds run sequentially):
+
+| Check | Exact command / environment | Result |
+| --- | --- | --- |
+| Focused settings/avatar/post cases | `dotnet test --project src\Tests\Moonglade.Web.Tests\Moonglade.Web.Tests.csproj --no-restore -- --filter-class "*SettingsControllerTests" --filter-class "*SettingsValidationHttpTests" --filter-class "*PostControllerTests" --filter-class "*AssetsControllerTests"` | 86 passed, 0 failed, 0 skipped; exit 0. |
+| Complete Web project | `dotnet test --project src\Tests\Moonglade.Web.Tests\Moonglade.Web.Tests.csproj --no-restore` | 331 passed, 0 failed, 0 skipped; exit 0. No warnings emitted. |
+| Web build | `dotnet build src\Moonglade.Web\Moonglade.Web.csproj --no-restore` | Passed, 0 warnings, 0 errors; exit 0. |
+| Diff / formatting | `git diff --check`; staged whitespace and UTF-8/CRLF/final-newline checks on batch files | Passed. Existing BOMs retained. |
+
+Acceptance evidence:
+
+| Requirement | Evidence |
+| --- | --- |
+| Settings audit-only failures preserve actual saved/runtime values and Error context | `SettingsSave_WhenAuditFails_PreservesCommittedValuesAndReturnsSuccess`; `SettingsSave_WhenAuditDispatchFails_ReturnsNoContentOverHttp`. |
+| Image/general writes and uploaded avatar remain saved after audit failure | `Image_WhenAuditFails_PreservesPairedSettingsAndUploadedAvatar`. |
+| Password credentials/session behavior and authenticator reset sign-outs remain correct | `Password_WhenAuditFails_PreservesNewCredentialsAndExistingSession`; `ResetTotp_WhenAuditFails_PreservesResetAndSignsOutAllSchemes`. |
+| Actual validation, database, cache, file, and sign-out failures are not hidden | `AccountSave_WhenPersistenceFails_PreservesCredentialsWithoutAuditingOrSignOut`; `Content_WhenValidationFails_DoesNotSaveOrAudit`; `Content_WhenCacheInvalidationFails_PropagatesFailureWithoutAuditing`; `Image_WhenStorageFails_PropagatesFailureWithoutSavingOrAuditing`; `ResetTotp_WhenSignOutFails_PropagatesFailureEvenAfterAuditFailure`. |
+| Avatar uploads retain successful response, actual asset/CDN/settings values, and safe Error context | `Avatar_Post_WhenAuditFails_PreservesSavedAssetAndCdnSettings` covers both CDN modes and both ordinary/canceled auditing. |
+| Avatar event/asset/file/settings faults stay visible | `Avatar_Post_WhenSaveEventFails_PropagatesFailureWithoutAuditing`; `Avatar_Post_WhenAssetPersistenceFails_PropagatesFailureWithoutCdnOrAuditing`; `Avatar_Post_WhenStorageFails_PropagatesFailureWithoutSavingSettingsOrAuditing`; `Avatar_Post_WhenSettingsPersistenceFails_PropagatesFailureWithoutAuditing`. |
+| Excluded audit behavior is unchanged | `UpdateSiteIcon_WhenAuditFails_StillPropagatesFailureAfterSavingAssetAndRegeneratingIcons`; `StateChange_WhenActivityDispatchFails_StillPropagatesFailure`. |
+
+Limits, commit, and handoff:
+
+- Tests use disposable in-process SQLite and fake image storage, not real provider databases, SMTP, or a production blog. The avatar fixture explicitly composes handlers; it does not prove runtime LiteBus ordering or filesystem storage. No browser/deployment/provider-container scenario was needed for this audit-boundary change; full-solution/manual regression remains B6.
+- The activity-log handler still handles its own persistence errors under its existing contract. This opt-in boundary additionally covers exceptions escaping mediator dispatch. Audit entries are not retried or guaranteed durable by B5; Error logging is the approved failure signal.
+- Commit: this entry is part of the B5 implementation commit titled `fix(settings): preserve successful responses when audit logging fails`. Record its actual hash at the next tracker update; do not amend merely to embed a commit's own hash.
+- User acceptance: pending. Present the local commit and evidence, then await user acceptance / further instructions. Do not push or begin B6 automatically.
+- Rollback: revert this batch commit if required. There is no migration to undo; reverting does not reverse settings, credentials, assets, or files already saved.

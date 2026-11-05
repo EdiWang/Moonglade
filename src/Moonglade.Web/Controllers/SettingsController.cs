@@ -27,7 +27,7 @@ public class SettingsController(
         model.AvatarUrl = blogConfig.GeneralSettings.AvatarUrl;
 
         await CommandMediator.SendAsync(UpdateConfigurationCommand.Create(model), HttpContext.RequestAborted);
-        await LogActivityAsync(EventType.SettingsGeneralUpdated, "Update General Settings", "General Settings",
+        await LogActivityAfterSaveAsync(logger, EventType.SettingsGeneralUpdated, "Update General Settings", "General Settings",
             ActivityLogMetaData.Create(
                 ("SiteTitle", model.SiteTitle),
                 ("LogoText", model.LogoText)));
@@ -136,7 +136,7 @@ public class SettingsController(
             ? UpdateConfigurationCommand.Create(model, generalSettings)
             : UpdateConfigurationCommand.Create(model);
         await CommandMediator.SendAsync(command, HttpContext.RequestAborted);
-        await LogActivityAsync(EventType.SettingsImageUpdated, "Update Image Settings", "Image Settings",
+        await LogActivityAfterSaveAsync(logger, EventType.SettingsImageUpdated, "Update Image Settings", "Image Settings",
             ActivityLogMetaData.Create(
                 ("EnableCDNRedirect", model.EnableCDNRedirect),
                 ("IsWatermarkEnabled", model.IsWatermarkEnabled)));
@@ -242,7 +242,7 @@ public class SettingsController(
         };
 
         await CommandMediator.SendAsync(UpdateConfigurationCommand.Create(newSettings), HttpContext.RequestAborted);
-        await LogActivityAsync(
+        await LogActivityAfterSaveAsync(logger,
             EventType.SettingsAuthenticatorReset,
             "Reset Local Account Authenticator",
             account.Username,
@@ -263,7 +263,7 @@ public class SettingsController(
         object metadata = null) where T : IBlogSettings<T>
     {
         await CommandMediator.SendAsync(UpdateConfigurationCommand.Create(settings), HttpContext.RequestAborted);
-        await LogActivityAsync(eventType, operation, targetName, metadata);
+        await LogActivityAfterSaveAsync(logger, eventType, operation, targetName, metadata);
         return NoContent();
     }
 

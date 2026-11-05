@@ -105,6 +105,8 @@ Article saves, publication changes (including scheduled publishing), recycle-bin
 
 Settings become active only after a successful database save; related CDN/avatar settings are saved together. Updates are serialized within one process; other instances must reload or synchronize separately. See the [configuration write contract](docs/agent-reference.md#configuration).
 
+If settings or an avatar have been saved but activity-log recording fails, the request retains its successful response and the failure is recorded at Error level. Authenticator reset still signs out the local-account sessions. Validation, settings persistence, cache invalidation, image storage, and sign-out failures are not treated as audit-only failures; they remain visible to the caller. This does not make avatar asset, image file, and settings writes one transaction.
+
 Successful changes invalidate affected server caches in the current process, including settings saved by internal avatar/CDN writers. Feed and theme caches use separate generations so an older request cannot refill the active cache after a change; settings changes do not flush unrelated article caches. Full-content RSS/Atom feeds use the article body, including Markdown formatting and configured CDN image URLs; summary feeds use the abstract.
 
 | Setting | When the change takes effect |

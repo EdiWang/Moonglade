@@ -26,7 +26,7 @@ using Moonglade.Web.Tests.TestSupport;
 
 namespace Moonglade.Web.Tests.Controllers;
 
-public class SettingsControllerTests
+public partial class SettingsControllerTests
 {
     [Theory]
     [InlineData(false)]
@@ -476,7 +476,8 @@ public class SettingsControllerTests
         Mock<IAuthenticationService> authenticationService,
         string username = "admin",
         IEventMediator? eventMediator = null,
-        EmailCapabilityStatus? emailCapabilityStatus = null)
+        EmailCapabilityStatus? emailCapabilityStatus = null,
+        ILogger<SettingsController>? logger = null)
     {
         commandMediator.Initialize(blogConfig);
         var serviceCollection = new ServiceCollection();
@@ -496,7 +497,7 @@ public class SettingsControllerTests
 
         var controller = new SettingsController(
             blogConfig,
-            Mock.Of<ILogger<SettingsController>>(),
+            logger ?? Mock.Of<ILogger<SettingsController>>(),
             eventMediator ?? Mock.Of<IEventMediator>(),
             emailCapabilityStatus ?? CreateEmailCapabilityStatus(EmailCapabilityState.Available),
             queryMediator,

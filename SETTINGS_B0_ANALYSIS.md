@@ -179,4 +179,4 @@ Evidence collected: source/model annotations, request handlers, all 11 group def
 
 No application tests, browser session, real database connection, SMTP send, seeding, cleanup, or destructive operation was run for B0. The matrices establish source observations and proposed acceptance cases, not runtime proof. Existing earlier test counts remain historical only.
 
-Handoff update: B1 is `7f0394673`, B2 is `d51230912`, B3 is `fe32fd43f`, and the user explicitly authorized B4 and resolved its choices as D19-D21. Follow current B4 verification/commit/acceptance status in `SETTINGS_RELIABILITY_PLAN.md`. B5 and later batches are not authorized. Earlier source matrices remain the historical B0 baseline.
+Handoff update: B1 is `7f0394673`, B2 is `d51230912`, B3 is `fe32fd43f`, and B4 is `2a8f47078`. The user authorized B5 and explicitly included avatar-upload audit isolation as D22, without changing site-icon or other audit contracts. Follow current B5 verification/commit/acceptance status in `SETTINGS_RELIABILITY_PLAN.md`; B6 and optional structural work remain unauthorized. Earlier source matrices remain the historical B0 baseline.

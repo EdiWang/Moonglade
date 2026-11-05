@@ -104,6 +104,41 @@ public class SettingsValidationHttpTests
         return config;
     }
 
+    [Theory]
+    [InlineData("general")]
+    [InlineData("content")]
+    [InlineData("comment")]
+    [InlineData("notification")]
+    [InlineData("subscription")]
+    [InlineData("advanced")]
+    [InlineData("appearance")]
+    [InlineData("custom-menu")]
+    public async Task SettingsSave_WhenAuditDispatchFails_ReturnsNoContentOverHttp(string route)
+    {
+        using var store = new ConfigurationCommandRecorder { ActivityLogFailure = new InvalidOperationException("Audit unavailable.") };
+        var config = Defaults();
+        await using var app = await CreateApp(store, config);
+        using var client = app.GetTestClient();
+        object model = route switch
+        {
+            "general" => GeneralSettings.DefaultValue,
+            "content" => ContentSettings.DefaultValue,
+            "comment" => CommentSettings.DefaultValue,
+            "notification" => NotificationSettings.DefaultValue,
+            "subscription" => FeedSettings.DefaultValue,
+            "advanced" => AdvancedSettings.DefaultValue,
+            "appearance" => AppearanceSettings.DefaultValue,
+            "custom-menu" => new CustomMenuSettingsJsonModel { IsEnabled = false },
+            _ => throw new ArgumentOutOfRangeException(nameof(route))
+        };
+
+        using var response = await client.PostAsJsonAsync($"/api/settings/{route}", model, TestContext.Current.CancellationToken);
+
+        Assert.Equal(HttpStatusCode.NoContent, response.StatusCode);
+        Assert.Empty(await response.Content.ReadAsStringAsync(TestContext.Current.CancellationToken));
+        Assert.Single(store.Commands.OfType<Moonglade.ActivityLog.CreateActivityLogCommand>());
+    }
+
     private static async Task<WebApplication> CreateApp(ConfigurationCommandRecorder store, BlogConfig config)
     {
         store.Initialize(config);

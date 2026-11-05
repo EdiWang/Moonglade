@@ -5,6 +5,7 @@ using LiteBus.Messaging.Abstractions;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging.Abstractions;
+using Moonglade.ActivityLog;
 using Moonglade.Configuration;
 using Moonglade.Data;
 using Moonglade.Data.Entities;
@@ -19,6 +20,8 @@ internal sealed class ConfigurationCommandRecorder : ICommandMediator, IDisposab
     public List<ICommand> Commands { get; } = [];
     public BlogDbContext Db { get; }
     public IBlogConfig Config => _config;
+    public Exception? ActivityLogFailure { get; set; }
+    public IEventMediator EventMediator { get; } = Mock.Of<IEventMediator>();
 
     public ConfigurationCommandRecorder()
     {
@@ -56,8 +59,12 @@ internal sealed class ConfigurationCommandRecorder : ICommandMediator, IDisposab
         Commands.Add(command);
         if (command is UpdateConfigurationCommand update)
         {
-            await new UpdateConfigurationCommandHandler(Db, _config, Mock.Of<IEventMediator>(), NullLogger<UpdateConfigurationCommandHandler>.Instance)
+            await new UpdateConfigurationCommandHandler(Db, _config, EventMediator, NullLogger<UpdateConfigurationCommandHandler>.Instance)
                 .HandleAsync(update, cancellationToken);
+        }
+        else if (command is CreateActivityLogCommand && ActivityLogFailure is not null)
+        {
+            throw ActivityLogFailure;
         }
     }
 

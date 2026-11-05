@@ -21,7 +21,7 @@ using Moonglade.Web.Tests.TestSupport;
 namespace Moonglade.Web.Tests.Controllers;
 
 [Collection("Site icon cache")]
-public class AssetsControllerTests : IDisposable
+public partial class AssetsControllerTests : IDisposable
 {
     private readonly string _testTempDirectory = Path.Combine(Path.GetTempPath(), "moonglade-assets-tests", Guid.NewGuid().ToString("N"));
     private readonly Dictionary<string, string?> _originalTempVariables = new[] { "TEMP", "TMP", "TMPDIR" }
@@ -302,15 +302,17 @@ public class AssetsControllerTests : IDisposable
     private AssetsController CreateController(
         string? username = null,
         IPAddress? remoteIpAddress = null,
-        string? userAgent = null)
+        string? userAgent = null,
+        ICommandMediator? commandMediator = null,
+        ILogger<AssetsController>? logger = null)
     {
         var controller = new AssetsController(
             _eventMediator.Object,
             _queryMediator.Object,
             _environment.Object,
-            Mock.Of<ILogger<AssetsController>>(),
+            logger ?? Mock.Of<ILogger<AssetsController>>(),
             new SiteIconBuilder(Mock.Of<ILogger<SiteIconBuilder>>(), _queryMediator.Object, _environment.Object),
-            _commandMediator);
+            commandMediator ?? _commandMediator);
 
         var httpContext = new DefaultHttpContext();
 
