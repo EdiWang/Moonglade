@@ -3,10 +3,10 @@
 ## Status and Reading Guide
 
 - Date: 2026-11-05, Asia/Taipei.
-- Original B0 authorization covered analysis and task records only. The user subsequently authorized B1; consult `SETTINGS_RELIABILITY_PLAN.md` for current implementation authority and progress.
+- Original B0 authorization covered analysis and task records only. The user subsequently authorized B1 and B2 and confirmed D15's ordinary absent-field defaults; consult `SETTINGS_RELIABILITY_PLAN.md` for current implementation authority and progress.
 - Source baseline reviewed: `f6407bd24978458af6f09c6b9cb4a22a667096e1`.
 - Progress and authority: read `SETTINGS_RELIABILITY_PLAN.md` first. Confirmed user answers override recommendations below. Pending answers are not approval.
-- Deliverable status: B0 inventory and startup decisions are complete; the user authorized proceeding to B1. Source observations below describe the recorded pre-B1 baseline. B0 itself did not exercise destructive paths, real databases, or external email services; subsequent B1 disposable-provider results are recorded in the tracker.
+- Deliverable status: B0 inventory and startup decisions are complete; the user authorized proceeding to B1 and then B2. Source observations below describe the recorded pre-B1 baseline. B0 itself did not exercise destructive paths, real databases, or external email services; subsequent batch results are recorded in the tracker.
 
 Notation: **Current** describes source behavior, **Confirmed** describes a user decision, and **Proposed** requires approval where it changes behavior. This is a task record, not shipped operational guidance.
 
@@ -92,7 +92,7 @@ These are the differences found between a missing group (uses `DefaultValue`) an
 | Account: Username, PasswordHash, PasswordSalt | null | Shipped bootstrap credentials | Never solve this protected-state difference by defaulting old missing credential fields. Define supported protected shapes in Q4. |
 | Manifest: VersionString, InstallTimeUtc | null, minimum DateTime | Unknown/current version and current UTC time, according to install context | Do not manufacture historical values for an existing partial manifest without an approved rule. The confirmed missing-row reconstruction rule does not automatically authorize rewriting partial rows. |
 
-Proposed Q2 policy for ordinary groups: use the existing whole-group defaults for genuinely absent fields, preserve every explicit value, and do not rewrite valid stored JSON merely to normalize representation. The behavioral rows above require user confirmation before B2. Account/manifest handling is separate.
+Q2 was explicitly confirmed during B2 as D15: use the existing whole-group defaults for genuinely absent ordinary fields, preserve every explicit value (including false/zero/null/empty arrays), and do not rewrite valid stored JSON merely to normalize representation. The user accepted the ordinary behavioral changes listed above. The table remains a record of the pre-B2 differences; account/manifest handling is separate and protected-shape validation remains Q4.
 
 ## 5. Current Validation and Proposed Gates
 
@@ -163,10 +163,10 @@ B1 requires Setup tests, relevant Configuration tests, Web build, and actual rel
 
 ## 8. B0 Questions, Evidence, and Handoff
 
-| Question | Status as recorded during B0 |
+| Question | Status, including subsequent user decisions |
 | --- | --- |
 | Q1: missing manifest with valid other settings/account | Answered: reconstruct it without touching business data and log Warning; version unknown and time means reconstruction. |
-| Q2: ordinary absent-field default alignment | Pending; complete divergence inventory is in section 4. Does not block B1. |
+| Q2: ordinary absent-field default alignment | Resolved during B2 as D15: absent ordinary fields use whole-group defaults; explicit values are retained; protected state is excluded. |
 | Q3: new semantic constraints | Pending; preserve established semantics until approved. Does not block B1. |
 | Q4: minimum/legacy protected shapes | Pending; malformed/null protection remains. Broader semantic checks belong to B3. |
 | Q5: activation classifications | Observed in section 6; EmailDisplayName and scheduler behavior need explicit B4 choices. Does not block B1. |
@@ -179,4 +179,4 @@ Evidence collected: source/model annotations, request handlers, all 11 group def
 
 No application tests, browser session, real database connection, SMTP send, seeding, cleanup, or destructive operation was run for B0. The matrices establish source observations and proposed acceptance cases, not runtime proof. Existing earlier test counts remain historical only.
 
-Handoff update: the user explicitly authorized B1 after resolving its startup decisions. Follow the current batch status and evidence in `SETTINGS_RELIABILITY_PLAN.md`. Q2-Q5 remain open for later batches; B1 authorization does not settle those choices or authorize B2.
+Handoff update: B1 was committed as `7f0394673`; the user then explicitly authorized B2 and resolved Q2 as D15. Follow the current batch status and evidence in `SETTINGS_RELIABILITY_PLAN.md`. Q3-Q5 remain open for their later batches; B2 does not authorize those changes.

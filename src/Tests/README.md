@@ -31,6 +31,8 @@ Startup tests use EF Core InMemory to verify settings initialization and preserv
 
 Startup safety tests exercise each mapped application set as the only existing data and verify that a missing account prevents any repair or reseeding. The opt-in `StartupInstallationDatabaseTests` use the same disposable PostgreSQL and SQL Server fixture as the migration tests, enabled with `MOONGLADE_TEST_CATEGORY_DATABASES=1`. They cover empty/new schemas, repeated startup, transaction rollback at seed/default writes, cancellation, provider retries, lost commit acknowledgment, state-query failures, and preservation of posts/comments when settings or accounts are missing. These fault scenarios must never run against a real blog database. Normal runs explicitly skip this provider group.
 
+Settings-default tests cover all ordinary groups, absent versus explicit values, case-insensitive/duplicate saved fields, protected-state exclusion, and independent default menu collections. Setup tests verify that loading valid partial JSON twice preserves the original JSON and timestamps without writes or repair warnings; the opt-in provider group verifies the same persistence contract on both supported databases. Corrupt-group tests assert a single repair Warning without logging the stored payload.
+
 Manual upgrade tests for category IDs and PostgreSQL naming use opt-in disposable database containers. See [Migration Verification](../../docs/agent-reference.md#migration-verification) for prerequisites and limits; ordinary runs explicitly skip those relational groups.
 
 ## Run Tests

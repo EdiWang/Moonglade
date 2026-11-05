@@ -2,11 +2,14 @@ using LiteBus.Commands.Abstractions;
 using LiteBus.Messaging.Abstractions;
 using LiteBus.Queries.Abstractions;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 using Moonglade.Configuration;
 using Moonglade.Data;
 using Moonglade.Data.Entities;
+using Moonglade.Setup.Tests.TestSupport;
 using Moq;
+using System.Reflection;
 
 namespace Moonglade.Setup.Tests;
 
@@ -38,6 +41,8 @@ public sealed class ConfigInitializerTests
     [InlineData("null")]
     [InlineData("[]")]
     [InlineData("{\"feedItemCount\":\"invalid\"}")]
+    [InlineData(null)]
+    [InlineData("{\"feedItemCount\":\"private-marker\"}")]
     public async Task Initialize_InvalidPersistedSetting_RepairsOnlyThatRowAndPreservesValidSettings(string invalidJson)
     {
         var ct = TestContext.Current.CancellationToken;
@@ -59,7 +64,8 @@ public sealed class ConfigInitializerTests
         queryMediator.Setup(m => m.QueryAsync(It.IsAny<ListConfigurationsQuery>(), It.IsAny<QueryMediationSettings>(), ct))
             .Returns(async () => (IDictionary<string, string>)await db.BlogConfiguration.AsNoTracking()
                 .ToDictionaryAsync(row => row.CfgKey, row => row.CfgValue, ct));
-        var defaultsHandler = new AddDefaultConfigurationCommandHandler(db, NullLogger<AddDefaultConfigurationCommandHandler>.Instance);
+        var repairLogger = new RecordingLogger<AddDefaultConfigurationCommandHandler>();
+        var defaultsHandler = new AddDefaultConfigurationCommandHandler(db, repairLogger);
         var commands = new Mock<ICommandMediator>();
         commands.Setup(m => m.SendAsync(It.IsAny<AddDefaultConfigurationCommand>(), It.IsAny<CommandMediationSettings>(), ct))
             .Returns((ICommand<OperationCode> command, CommandMediationSettings _, CancellationToken token) =>
@@ -83,6 +89,57 @@ public sealed class ConfigInitializerTests
         }
         await initializer.Initialize(isNew: false, ct);
         commands.Verify(m => m.SendAsync(It.IsAny<AddDefaultConfigurationCommand>(), It.IsAny<CommandMediationSettings>(), ct), Times.Once);
+        Assert.Single(repairLogger.Entries, entry => entry.Level == LogLevel.Warning
+            && entry.Message.Contains(nameof(FeedSettings)));
+        Assert.DoesNotContain(repairLogger.Entries, entry => entry.Message.Contains("private-marker"));
+    }
+
+    [Theory]
+    [InlineData(nameof(GeneralSettings))]
+    [InlineData(nameof(ContentSettings))]
+    [InlineData(nameof(CommentSettings))]
+    [InlineData(nameof(NotificationSettings))]
+    [InlineData(nameof(FeedSettings))]
+    [InlineData(nameof(ImageSettings))]
+    [InlineData(nameof(AppearanceSettings))]
+    [InlineData(nameof(AdvancedSettings))]
+    [InlineData(nameof(CustomMenuSettings))]
+    public async Task Initialize_PartialOrdinaryGroup_LoadsDefaultsWithoutRewritingJsonOrTimestamp(string name)
+    {
+        var ct = TestContext.Current.CancellationToken;
+        await using var db = new BlogDbContext(new DbContextOptionsBuilder<BlogDbContext>()
+            .UseInMemoryDatabase(Guid.NewGuid().ToString()).Options);
+        var saved = new BlogConfig().LoadFromConfig(new Dictionary<string, string>(), isNew: true).ToDictionary();
+        saved[name] = """ { "futureField": { "value": "preserved" } } """;
+        var timestamp = DateTime.UtcNow.AddDays(-1);
+        db.BlogConfiguration.AddRange(saved.Select(pair => new BlogConfigurationEntity
+        {
+            CfgKey = pair.Key, CfgValue = pair.Value, LastModifiedTimeUtc = timestamp
+        }));
+        await db.SaveChangesAsync(ct);
+        var queries = new Mock<IQueryMediator>();
+        queries.Setup(m => m.QueryAsync(It.IsAny<ListConfigurationsQuery>(), It.IsAny<QueryMediationSettings>(), ct))
+            .Returns(async () => (IDictionary<string, string>)await db.BlogConfiguration.AsNoTracking()
+                .ToDictionaryAsync(row => row.CfgKey, row => row.CfgValue, ct));
+        var commands = new Mock<ICommandMediator>(MockBehavior.Strict);
+        var config = new BlogConfig();
+        var logger = new RecordingLogger<ConfigInitializer>();
+        var initializer = new ConfigInitializer(queries.Object, commands.Object, config, logger);
+        var property = typeof(IBlogConfig).GetProperty(name)!;
+        var expected = property.PropertyType.GetProperty("DefaultValue", BindingFlags.Public | BindingFlags.Static)!.GetValue(null).ToJson();
+
+        await initializer.Initialize(isNew: false, ct);
+        await initializer.Initialize(isNew: false, ct);
+
+        Assert.Equal(expected, property.GetValue(config).ToJson());
+        db.ChangeTracker.Clear();
+        foreach (var row in await db.BlogConfiguration.ToListAsync(ct))
+        {
+            Assert.Equal(saved[row.CfgKey], row.CfgValue);
+            Assert.Equal(timestamp, row.LastModifiedTimeUtc);
+        }
+        Assert.DoesNotContain(logger.Entries, entry => entry.Level == LogLevel.Warning);
+        commands.VerifyNoOtherCalls();
     }
 
     [Fact]

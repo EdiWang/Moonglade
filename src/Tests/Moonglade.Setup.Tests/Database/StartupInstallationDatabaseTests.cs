@@ -210,6 +210,41 @@ public class StartupInstallationDatabaseTests(DisposableCategoryDatabases databa
                 .UseSqlServer(database.Connection, options => options.EnableRetryOnFailure(1, TimeSpan.Zero, null))
                 .AddInterceptors(interceptors).Options);
 
+    [DisposableDatabaseTheory]
+    [InlineData("PostgreSql")]
+    [InlineData("SqlServer")]
+    public async Task PartialOrdinarySettings_LoadDefaultsWithoutRewritingPersistedRows(string provider)
+    {
+        var ct = TestContext.Current.CancellationToken;
+        await using var database = await databases.CreateAsync(provider);
+        await using var db = CreateContext(database);
+        await db.Database.EnsureCreatedAsync(ct);
+        var values = new BlogConfig().LoadFromConfig(new Dictionary<string, string>(), isNew: true).ToDictionary();
+        var timestamp = DateTime.UtcNow.AddDays(-1);
+        db.BlogConfiguration.AddRange(values.Select(pair => new BlogConfigurationEntity
+        {
+            CfgKey = pair.Key,
+            CfgValue = pair.Key is nameof(LocalAccountSettings) or nameof(SystemManifestSettings) ? pair.Value : " { } ",
+            LastModifiedTimeUtc = timestamp
+        }));
+        await db.SaveChangesAsync(ct);
+        db.ChangeTracker.Clear();
+        var before = await db.BlogConfiguration.AsNoTracking().OrderBy(row => row.CfgKey).ToListAsync(ct);
+        using var harness = new StartupTestHarness(db);
+
+        Assert.Equal(InitStartUpResult.Success, await harness.Initializer.InitStartUpAsync(ct));
+        Assert.Equal(InitStartUpResult.Success, await harness.Initializer.InitStartUpAsync(ct));
+
+        var after = await db.BlogConfiguration.AsNoTracking().OrderBy(row => row.CfgKey).ToListAsync(ct);
+        Assert.Equal(before.Select(row => (row.CfgKey, row.CfgValue, row.LastModifiedTimeUtc)),
+            after.Select(row => (row.CfgKey, row.CfgValue, row.LastModifiedTimeUtc)));
+        Assert.Equal(FeedSettings.DefaultValue.FeedItemCount, harness.Config.FeedSettings.FeedItemCount);
+        Assert.True(harness.Config.CommentSettings.RequireCommentReview);
+        Assert.True(harness.Config.ImageSettings.IsWatermarkEnabled);
+        Assert.True(harness.Config.CustomMenuSettings.IsEnabled);
+        Assert.Equal("About", Assert.Single(harness.Config.CustomMenuSettings.Menus).Title);
+    }
+
     private static async Task AssertOneInstallationAsync(BlogDbContext db, CancellationToken ct)
     {
         db.ChangeTracker.Clear();

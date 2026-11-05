@@ -10,9 +10,9 @@ This file is the recovery record for the settings design review and reliability 
 4. Identify the next authorized batch and its dependencies. Ask the user before executing an unauthorized batch or resolving a pending business or architecture decision. Offer a recommendation and explain its effects.
 5. Update this file during work and at every batch boundary, including implementation completion, verification, commit, user acceptance, interruption, or newly discovered blockers. Do not leave the only recovery information in chat.
 
-Current authorization: execute B1 (the user explicitly requested "Execute B1" on 2026-11-05), including implementation, verification, a local batch commit, and tracker updates under the agreed batch workflow. This authorizes proceeding from B0's resolved startup rules. B2-B6, optional structural work, deployment, and production-data changes are not authorized.
+Current authorization: execute B2 (the user explicitly requested "Execute B2" on 2026-11-05), including implementation, verification, a local batch commit, and tracker updates under the agreed workflow. Q2 was explicitly resolved by D15. B3-B6, optional structural work, deployment, and production-data changes are not authorized.
 
-Current next step: user acceptance of B1. Implementation and verification are complete; the batch commit includes both previously untracked task records and the evidence below. Resolve its hash from the commit containing this entry and record it on the next tracker update. Do not begin B2 without user acceptance and authorization; Q2-Q5 remain open for later batches.
+Current next step: user acceptance of B2. Implementation and checks are complete; this record accompanies the batch commit titled `fix(configuration): unify settings defaults and recovery`. Resolve its hash from the commit containing this entry and record it on the next tracker update. Q3-Q5 remain open; do not begin B3 without the required decisions and user authorization.
 
 Retention: the user explicitly requested a repository recovery and progress file. Keep this file across batches and context compaction. Do not delete it merely because tests pass; ask before removing or archiving it. Permanent documentation must not depend on this task record.
 
@@ -27,7 +27,7 @@ Improve settings reliability through independently testable, committable, review
 - Preserve grouped JSON storage, existing setting keys and field names, supported providers, public URLs, authorization, antiforgery protection, and the current successful-save guarantees unless the user approves a specific change.
 - Keep deployment configuration separate from administrator-editable blog settings. Do not move SMTP credentials or other deployment secrets into ordinary settings.
 - Do not introduce dependencies, schema revisions, conflict UI, distributed synchronization, or a generic settings framework without a demonstrated need and explicit scope approval.
-- Current implementation scope is B1 only. No deployment is included in any batch below.
+- Current implementation scope is B2 only, preserving the verified B1 behavior. No deployment is included in any batch below.
 
 Repository files must be English, except permitted localization resources and relevant test data. Follow `.editorconfig` (UTF-8, CRLF, final newline). Use the existing .NET stack and repository tools.
 
@@ -51,6 +51,7 @@ These decisions were explicitly supplied by the user in this conversation on 202
 | D12 | Use a database transaction for first-install seed data and default settings; roll back pre-commit failures and retry. | Coordinate provider execution strategies, verify uncertain commit outcomes, and skip reseeding a completed installation. A persistent multi-step installer is not approved. |
 | D13 | A pre-existing supported schema with every application table empty may be initialized. | Check all mapped application sets; an empty settings table alone, a failed query, or a missing table does not prove emptiness. This also permits retry after a rolled-back new installation. |
 | D14 | Preserve older partial-install state that cannot be reliably identified; require manual confirmation and do not clear it automatically. | Guarantee safe retries for the new transactional installation path without guessing the provenance of legacy data. |
+| D15 | For ordinary persisted settings, completely absent fields use the current whole-group DefaultValue; explicit false, zero, null, and empty arrays remain unchanged. | User accepted the listed changes to missing-field moderation/Gravatar, feed count, watermark, menus, and site metadata. Exclude account/manifest state. Do not rewrite valid stored JSON solely to materialize defaults or change HTTP request binding defaults. |
 
 Existing repository constraints protect invalid persisted `LocalAccountSettings` and `SystemManifestSettings`: startup fails rather than replacing them with shipped defaults. Ordinary-setting recovery does not override that protection. D5 additionally covers missing account rows and empty settings tables with existing business data.
 
@@ -63,7 +64,7 @@ Do not silently resolve these while implementing. B0 must inventory actual value
 | ID | Open point | Evidence / recommendation | Blocks |
 | --- | --- | --- | --- |
 | Q1 (resolved: D10) | Missing installation manifest with other settings and account valid. | User confirmed reconstruction with Warning; unknown version and reconstruction time. Current compatibility fixture needs a valid account added under D5. | No longer blocks B1. |
-| Q2 | How should absent fields use defaults when property initializers and `DefaultValue` differ? | `CommentSettings.RequireCommentReview` and `EnableGravatar` illustrate the difference. List every divergence and its old-data effect; recommend a single approved source while preserving explicitly saved values. | B2's affected default choices. |
+| Q2 (resolved: D15) | How should absent fields use defaults when property initializers and `DefaultValue` differ? | User explicitly accepted whole-group defaults for absent ordinary fields and preservation of explicit values after seeing the behavioral changes. Protected state remains separate. | No longer blocks B2. |
 | Q3 | Which semantic validation rules should be added or tightened? | Feed count `0` currently means unlimited. Generated avatar URLs and form length limits must be reconciled. Do not invent bounds, required fields, or limits. Preserve existing valid semantics until confirmed otherwise. | Corresponding B3 validations. |
 | Q4 | Which historical account and manifest shapes remain valid? | JSON `{}` currently deserializes, while some historical manifest fields may be absent or null in existing tests. Distinguish unsupported empty objects from supported legacy shapes; account setup must still allow its legitimate intermediate state. | Corresponding protected-setting semantic checks in B3. |
 | Q5 | Which settings are immediate, cache-dependent, restart-dependent, or delayed by a background worker? | Inventory actual readers and existing behavior. Recommend retaining the established restart-dependent endpoints and documenting them; ask before reclassifying behavior. | B4's activation contract. |
@@ -111,8 +112,8 @@ Allowed statuses: `Not started`, `In progress`, `Blocked: <specific dependency>`
 | Batch | Dependencies | Implementation / preparation | Verification | Commit | User acceptance |
 | --- | --- | --- | --- | --- | --- |
 | B0 | None | Verified: source matrices and B1 startup decisions complete | Source inventory and document checks verified; no application tests | None; implementation commit not applicable | User authorized proceeding to B1 on 2026-11-05 |
-| B1 | B0 startup rules settled | Verified: startup safety and transactional installation implemented | Setup 107/107 including both providers; Configuration 45/45; Web 273/273; Web build clean | Batch commit containing this row; title `fix(setup): preserve existing data when settings are missing`; record hash at next update | Awaiting user acceptance |
-| B2 | B1 accepted; affected defaults confirmed | Not started; not authorized | Not run | None | Pending |
+| B1 | B0 startup rules settled | Verified: startup safety and transactional installation implemented | Setup 107/107 including both providers; Configuration 45/45; Web 273/273; Web build clean | `7f0394673` | User authorized proceeding to B2 on 2026-11-05 |
+| B2 | B1 accepted; affected defaults confirmed | Verified: D15 applied at persisted ordinary-settings loading | Configuration 60/60; Setup 120/120 including both providers; Web 273/273; Web build clean | Batch commit containing this row; title `fix(configuration): unify settings defaults and recovery`; record hash at next update | Awaiting user acceptance |
 | B3 | B2 accepted; affected validation rules confirmed | Not started; not authorized | Not run | None | Pending |
 | B4 | B1 accepted; activation contract confirmed | Not started; not authorized | Not run | None | Pending |
 | B5 | B1 accepted | Not started; not authorized | Not run | None | Pending |
@@ -352,3 +353,46 @@ Execution notes and limits:
 - Commit: this entry is included in the B1 implementation commit titled `fix(setup): preserve existing data when settings are missing`. Resolve the actual hash with `git log` and record it at the next tracker update; do not amend solely to embed a commit's own hash.
 - User acceptance: pending. Required checks passed, but this is not user acceptance. Next action: present the local commit and this evidence, then await acceptance / further instructions. Do not start B2.
 - Rollback: revert the batch code commit if needed; it does not alter existing database schema. Reverting code does not restore settings/data changed by any later operator action. Keep fault testing confined to disposable copies.
+
+### 2026-11-05 - B2 Started, Default Choice Pending
+
+- User explicitly authorized B2; recorded B1 commit `7f0394673` and authorization to proceed. Starting working tree was clean.
+- Q2 remains a real compatibility decision. Asked whether ordinary absent fields should use current whole-group defaults, while preserving explicit false/0/null/empty arrays and excluding account/manifest recovery. Explained effects on moderation, Gravatar, feed count, watermarking, menus, and site metadata. No answer has been inferred.
+- Continue independent caller/test/recovery inspection while waiting. Do not change request binding defaults, ordinary missing-field behavior, or protected-setting semantics before the needed answer.
+- B2 is in progress; no application edits, tests, or new commit yet.
+
+### 2026-11-05 - B2 Default Policy Confirmed
+
+- User accepted the recommended Q2 policy after the explicit compatibility-effects question. Recorded D15; default changes are no longer blocked.
+- Implementation will combine defaults with persisted ordinary JSON only when loading. Preserve duplicate-property/case-insensitive deserialization behavior, all explicit values, existing request-model initialization/validation, and protected account/manifest parsing.
+- Valid partial JSON stays unchanged in the database, including timestamps; missing/corrupt whole groups retain the existing persistence/recovery path and Warning behavior. No schema or JSON field-name change is planned.
+
+### 2026-11-05 - B2 Implementation and Verification Complete
+
+- Authorization: explicit B2 execution request plus D15 confirmation after the user reviewed the effects on omitted moderation/Gravatar, feed, watermark, menu, and metadata fields. B1 is commit `7f0394673`; B3 and later batches remain unauthorized.
+- Production change is limited to `src/Moonglade.Configuration/BlogConfig.cs` and `JsonExtensions.cs`. For ordinary object JSON, the loader inserts only absent top-level properties from the group's current `DefaultValue` before normal deserialization. Saved property names are compared case-insensitively; duplicate saved properties remain in their original order so existing last-value/error behavior is retained.
+- Explicit false, zero, null, and empty arrays remain explicit values, including values whose semantic validation is deferred to B3. Default collection objects are independently deserialized; loading one configuration cannot mutate another's default menu.
+- The shared `FromJson` methods, setting model constructors, HTTP request validation, stored keys, JSON field names, provider mappings, account/manifest parsing, and B1 transaction/rollback behavior are unchanged. No dependencies or migration scripts were added because no schema/data-format migration is required.
+- Valid partial JSON is not added to the initialization/repair list, rewritten, or timestamped. Whole-group missing/corrupt values retain existing initialization/recovery behavior. Tests assert a single repair Warning across two starts, without the stored payload in log messages.
+- Tests: added `PersistedSettingsDefaultsTests.cs` for all nine ordinary groups and edge cases; extended Setup initializer tests for every ordinary group, null/incompatible recovery, warning behavior, and two provider cases retaining partial JSON/timestamps across repeated startup.
+- Updated README and engineering-reference behavior, test coverage documentation, and the B0 decision/handoff record. Existing pre-B1 source observations in B0 remain a historical baseline, with Q2 now marked resolved.
+
+Verification (from repository root, sequential builds):
+
+| Check | Exact command / environment | Result |
+| --- | --- | --- |
+| Configuration | `dotnet test --project src/Tests/Moonglade.Configuration.Tests/Moonglade.Configuration.Tests.csproj --no-restore` | 60 passed, 0 failed, 0 skipped. |
+| Setup with both supported providers | Set `MOONGLADE_TEST_CATEGORY_DATABASES=1` for the command process; `dotnet test --project src/Tests/Moonglade.Setup.Tests/Moonglade.Setup.Tests.csproj --no-restore` | 120 passed, 0 failed, 0 skipped, including B1 installation rollback/retry regressions and both new partial-JSON provider cases. |
+| Web | `dotnet test --project src/Tests/Moonglade.Web.Tests/Moonglade.Web.Tests.csproj --no-restore` | 273 passed, 0 failed, 0 skipped. |
+| Web build | `dotnet build src/Moonglade.Web/Moonglade.Web.csproj --no-restore` | Passed, 0 warnings, 0 errors. |
+| Diff / formatting | `git diff --check`; staged whitespace and CRLF/final-newline checks on batch files | Passed. |
+
+Acceptance evidence and limits:
+
+- Every ordinary group loaded from `{}` matches its whole-group default and is not scheduled for a repair write. Explicit false/zero/null/empty arrays and case-insensitive names survive; duplicate known fields retain the previous deserializer's behavior, including incompatible earlier values causing ordinary-group recovery.
+- InMemory tests load all nine valid partial groups twice with strict no-write mediators and preserve the exact saved JSON (including whitespace/unknown fields) plus every timestamp. PostgreSQL and SQL Server tests independently load all ordinary groups from partial JSON and compare database-round-tripped rows before/after repeated startup.
+- Account/manifest partial-object tests prove B2 does not synthesize bootstrap credentials or installation history. Minimum valid protected shapes remain Q4 for B3, not a new B2 policy.
+- Both supported disposable providers were exercised. Test containers were removed by the fixture; no real blog database, external service, deployment, or browser session was used. Full-solution regression remains B6 scope.
+- Intentional compatibility effect: old JSON genuinely missing fields now uses the approved group defaults; a later code rollback restores the prior loading behavior. Actual automatic corrupt-group recovery writes cannot be undone merely by reverting code. Existing valid saved JSON is unchanged by B2 loading.
+- Commit: this entry is part of the B2 batch commit titled `fix(configuration): unify settings defaults and recovery`. Record the actual hash at the next tracker update; do not amend solely to embed its own hash.
+- User acceptance: pending. Next action: present the local commit and evidence, then await acceptance / instructions. Do not start B3 or choose Q3-Q5 rules automatically.

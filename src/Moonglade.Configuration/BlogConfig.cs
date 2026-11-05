@@ -61,12 +61,15 @@ public class BlogConfig : IBlogConfig
         void Assign<T>(Action<T> setter, Func<T> defaultProvider = null) where T : IBlogSettings<T>
         {
             var name = typeof(T).Name;
+            var isProtected = typeof(T) == typeof(LocalAccountSettings) || typeof(T) == typeof(SystemManifestSettings);
 
             if (config.TryGetValue(name, out var json))
             {
                 try
                 {
-                    var settings = json is null ? default : json.FromJson<T>();
+                    var settings = json is null ? default : isProtected
+                        ? json.FromJson<T>()
+                        : json.FromJsonWithDefaults(T.DefaultValue);
                     if (settings is not null)
                     {
                         setter(settings);
@@ -78,7 +81,7 @@ public class BlogConfig : IBlogConfig
                     // Fall through to use default value
                 }
 
-                if (typeof(T) == typeof(LocalAccountSettings) || typeof(T) == typeof(SystemManifestSettings))
+                if (isProtected)
                 {
                     throw new InvalidOperationException(
                         $"Stored configuration '{name}' is invalid. Restore a valid value before restarting.");
