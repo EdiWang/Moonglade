@@ -10,9 +10,9 @@ This file is the recovery record for the settings design review and reliability 
 4. Identify the next authorized batch and its dependencies. Ask the user before executing an unauthorized batch or resolving a pending business or architecture decision. Offer a recommendation and explain its effects.
 5. Update this file during work and at every batch boundary, including implementation completion, verification, commit, user acceptance, interruption, or newly discovered blockers. Do not leave the only recovery information in chat.
 
-Current authorization: execute B6 (the user explicitly requested proceeding to B6 on 2026-11-05), including full regression, isolated acceptance checks, documentation review, and tracker updates. B5's separate commit authorization has been fulfilled; no new B6 commit or push is inferred. Optional structural work, deployment, and production-data changes remain unauthorized.
+Current authorization: B7 design only. On 2026-11-06 the user requested reassessment of another AI's completed B5/B6 and selected planning C1-C3 structural changes, rather than a reliability-closeout batch. D24-D27 record the approved planning directions. Application implementation, new commits, push, deployment, production-data changes, and physical table migration are not authorized by this planning request.
 
-Current next step: present B6's completed technical verification and the uncommitted D23 startup-safety fix for final user acceptance. Final regression passed 1412/1412 with both disposable providers and no skips; Web build and isolated acceptance checks passed. B5 is commit `8da96cf82`. No B6 commit or push is authorized, and optional C1-C3 remain deferred.
+Current next step: review `SETTINGS_STRUCTURE_PLAN.md` with the user and obtain authorization for its first implementation batch before changing application code. B5 is `8da96cf82`, B6/D23 is already committed as `907ac2285`; earlier uncommitted descriptions are historical and superseded. Reassessment at that HEAD passed 1412/1412 tests with both disposable providers and no skips, plus a clean Web build. No blocking implementation defect was found in B5/B6. Final functional sign-off is not inferred from passing tests or permission to plan.
 
 Retention: the user explicitly requested a repository recovery and progress file. Keep this file across batches and context compaction. Do not delete it merely because tests pass; ask before removing or archiving it. Permanent documentation must not depend on this task record.
 
@@ -27,13 +27,13 @@ Improve settings reliability through independently testable, committable, review
 - Preserve grouped JSON storage, existing setting keys and field names, supported providers, public URLs, authorization, antiforgery protection, and the current successful-save guarantees unless the user approves a specific change.
 - Keep deployment configuration separate from administrator-editable blog settings. Do not move SMTP credentials or other deployment secrets into ordinary settings.
 - Do not introduce dependencies, schema revisions, conflict UI, distributed synchronization, or a generic settings framework without a demonstrated need and explicit scope approval.
-- Current scope is B6 verification and acceptance of B1-B5, not optional redesign. Any necessary fixes must remain tied to the approved reliability contracts. No deployment is included in any batch below.
+- Current scope is B7 assessment and structural planning for C1-C3; no structural implementation is authorized. Preserve the verified B1-B6 contracts. No deployment is included in any batch below.
 
 Repository files must be English, except permitted localization resources and relevant test data. Follow `.editorconfig` (UTF-8, CRLF, final newline). Use the existing .NET stack and repository tools.
 
 ## Confirmed User Decisions
 
-These decisions were explicitly supplied by the user in this conversation on 2026-11-05.
+These decisions were explicitly supplied by the user on 2026-11-05 and, for D24-D27, on 2026-11-06.
 
 | ID | Decision | Execution consequence |
 | --- | --- | --- |
@@ -60,6 +60,10 @@ These decisions were explicitly supplied by the user in this conversation on 202
 | D21 | Include the full-feed-content source defect in B4. | Read actual post content when full feeds are enabled, abstracts when disabled; verify RSS/Atom and category feeds, including formatting/CDN behavior. |
 | D22 | Include the avatar-upload path in B5 because its internal handler can also update GeneralSettings. | Isolate only its post-save audit failure; preserve site-icon and unrelated audit behavior, and keep asset/file/settings failures visible. |
 | D23 | When initialization fails, log a clear error and terminate the process with a nonzero exit code; do not start business background services. | Remove the error-only host startup path. After correcting the underlying failure, administrators restart normally; a rolled-back new installation remains retryable. |
+| D24 | B7 means planning C1-C3 structural changes after reassessing B5/B6; it is not an implementation or deployment instruction. | Keep code unchanged and prepare an executable, reviewable plan. Obtain separate authorization for each implementation batch. |
+| D25 | C2 separates account/installation responsibilities in code while retaining the existing table, setting keys, and JSON. | No physical table migration or historical credential rewrite. Any later physical separation needs another decision and both providers' manual scripts. |
+| D26 | C1 consistency covers a captured immutable snapshot within each business operation or page render, not an implicit freeze of the whole HTTP request. | Migrate related readers and render descendants together. A subsequent operation, including after a successful save in the same request, may capture the new version. |
+| D27 | C3 includes versioned avatar files, confirmed database commit before old-file cleanup, success plus Error on cleanup failure, and file retention on uncertain commit outcome. | Preserve usable resources and tolerate orphan files; avatar CDN URLs may change with each version. No filesystem/database atomicity or automatic orphan deletion is implied. |
 
 Existing repository constraints protect invalid persisted `LocalAccountSettings` and `SystemManifestSettings`: startup fails rather than replacing them with shipped defaults. Ordinary-setting recovery does not override that protection. D5 additionally covers missing account rows and empty settings tables with existing business data.
 
@@ -125,8 +129,9 @@ Allowed statuses: `Not started`, `In progress`, `Blocked: <specific dependency>`
 | B3 | B2 accepted; D16-D18 confirmed | Verified: shared validation and approved compatibility rules implemented | Configuration 124/124; Setup 127/127 including both providers; Web 281/281; Auth 48/48; Email 105/105; Web build clean | `fe32fd43f` | User authorized proceeding to B4 on 2026-11-05 |
 | B4 | B1-B3 accepted; D19-D21 confirmed | Verified: post-commit cache invalidation, activation hints, scheduler wake/recheck, full-feed source | Configuration 129/129; Web 297/297; Syndication 18/18; BackgroundServices 14/14; Auth 48/48; Email 106/106; Web build clean; isolated browser save/restart checks passed | `2a8f47078` | User authorized proceeding to B5 on 2026-11-05 |
 | B5 | B1 accepted; D7/D22 confirmed | Verified: opt-in settings/avatar post-save audit isolation with authentication contracts preserved | Web 331/331; Web build clean; diff/format checks passed | `8da96cf82` | User authorized proceeding to B6 on 2026-11-05 |
-| B6 | B1-B5 accepted; D23 confirmed | Verified: full regression, isolated scenarios, and startup host-safety correction | 1412/1412, 0 skipped, both providers; Web build clean; host/browser and diff/format checks passed | Uncommitted; separate authorization required | Awaiting user acceptance |
-| C1-C3 | B6 accepted; separate design and authorization | Deferred | Not run | None | Not applicable |
+| B6 | B1-B5 accepted; D23 confirmed | Verified: full regression, isolated scenarios, and startup host-safety correction | Reassessed 2026-11-06 at committed HEAD: 1412/1412, 0 skipped, both providers; Web build clean. Prior host/browser evidence retained as prior evidence. | `907ac2285` | Technical reassessment passed; user authorized B7 planning, without separately recorded final functional sign-off |
+| B7 | B5/B6 reassessment; D24-D27 confirmed | Structural plan prepared in `SETTINGS_STRUCTURE_PLAN.md`; no application changes | Current baseline regression and document checks; proposed structure not implemented/tested | No new commit authorized | Awaiting plan review / first-batch authorization |
+| C1-C3 | B7 plan review; separate implementation authorization | Design prepared under D25-D27; implementation not started | Future acceptance gates defined in structural plan | None | Not applicable to unimplemented work |
 
 ### B0 - Confirm Behavior and Compatibility Matrices
 
@@ -200,7 +205,7 @@ Suggested documentation commit, only if needed: `docs(settings): document recove
 
 ## Optional Follow-up Batches
 
-These are not part of authorized reliability implementation and require a separate proposal and user decision after B6.
+Design work for these optional structural changes is now authorized as B7 under D24-D27. Their implementation remains separately gated. See `SETTINGS_STRUCTURE_PLAN.md` for the proposed order, dependencies, compatibility rules, tests, and remaining design gates; the historical candidate scopes below are unchanged.
 
 | Batch | Candidate scope | Verification focus |
 | --- | --- | --- |
@@ -640,3 +645,16 @@ Limits and handoff:
 - Synthetic data only; no real blog database, credential change, deployment, push, optional redesign, or external service operation occurred. Browser tabs owned by this acceptance were closed, the attached host stopped, the unique database container removed, generated runtime credential state deleted, and the loopback port verified unbound.
 - Updated README, engineering reference, test guide, and B0 handoff. Retained this requested recovery tracker; it is not linked from permanent documentation.
 - B6 changes remain uncommitted because no separate commit was authorized. Review the working-tree diff and obtain final user acceptance; do not mark B6 Accepted or start C1-C3 automatically. A code revert would restore the unsafe diagnostic-host behavior; no database migration is involved.
+
+### 2026-11-06 - B5/B6 Reassessment And B7 Structural Plan Prepared
+
+- User requested assessment of another AI's B5/B6 work and conditional progression to B7. The original reliability plan had no B7; asked for scope rather than assigning one. The user selected C1-C3 structural planning and then confirmed D25-D27. Recorded D24-D27; structural application implementation remains unauthorized.
+- Initial working tree was clean at `907ac228573e151b3dfcc3f334a15d72959cc2e9` on `master`. B5 is `8da96cf82`; B6's D23 startup fix is already committed as `907ac2285`. Corrected the resume/status table and B0 handoff rather than treating the old uncommitted descriptions as current. Historical B6 execution notes remain as recorded at that time and are superseded by this entry.
+- Reviewed B5's helper/callers and failure tests: only activity dispatch is isolated after settings/avatar saves; storage/settings/cache/sign-out failures remain outside the catch; unrelated/site-icon audit behavior remains unchanged. Reviewed B6's initialization extension, actual Program ordering, host-boundary tests, and recorded isolated scenario evidence. No blocking implementation defect was found in that scope.
+- Independently reran the full solution at the committed HEAD: set `MOONGLADE_TEST_CATEGORY_DATABASES=1` in the command process and ran `dotnet test --solution src/Moonglade.slnx --no-restore`: 1412 passed, 0 failed, 0 skipped, exit 0, including PostgreSQL and SQL Server disposable-provider groups. Docker Desktop was initially stopped and was started hidden for this verification; fixture containers were removed, with none running afterward. Existing three nullable warnings in unchanged `CannonServiceTests.cs` remain.
+- Ran `dotnet build src/Moonglade.Web/Moonglade.Web.csproj --no-restore --verbosity quiet`: 0 warnings, 0 errors. Both prior commits passed `git show --check`. This is current technical verification; earlier B6 browser/host interactions were reviewed as recorded evidence and were not rerun in this assessment. No production database, SMTP send, real external CDN operation, deployment, or push occurred.
+- Added `SETTINGS_STRUCTURE_PLAN.md`: source findings, approved planning directions, alternatives, ownership/dependency constraints, proposed S0-S6 batches, acceptance/fault matrices, rollback limits, and implementation decision gates. Recommended order separates protected state before ordinary immutable snapshots, then migrates readers, consolidates avatar orchestration, adds file failure safety, and performs integrated acceptance. No physical table/key/JSON change is proposed for this round.
+- Important design constraints: immutable roots need immutable nested menus; per-operation/render consistency requires capturing and propagating one snapshot, not repeated property reads; account/manifest extraction must preserve eleven-row first-install atomicity and pre-repair protection. Avatar preparation must not delete active files; do not add an outer transaction around the existing settings command while it publishes runtime/cache state after an inner SaveChanges. Cleanup and uncertain-commit rules follow D27.
+- The source inventory found 40 production files explicitly referencing IBlogConfig and 33 Razor files referencing BlogConfig; these overlap and must not be summed as unique files. The two layouts' direct AvatarUrl mutation and the CDN handler's delete-before-upload behavior are current deferred structural risks, not regressions introduced by B5/B6.
+- B7 changes are planning documents only: this tracker, B0 handoff, and the new structural plan. No application, tests, provider scripts, dependency, or permanent workflow documentation changed. Existing runtime behavior and durable docs need no implementation update yet. Document scope, references, English content, CRLF/final newlines, and diff checks were verified.
+- Status: B7 plan prepared for user review, not structural implementation complete. Technical evidence supports entering design, but final user functional acceptance is not silently inferred. Next action: review the proposed plan, authorize S0 if desired, then resolve its concrete interface/model/ownership gates before later batches. No new local commit has been requested or created in this turn.
