@@ -12,6 +12,7 @@ using Moonglade.Features.Asset;
 namespace Moonglade.Web.Controllers;
 
 [Route("api/[controller]")]
+[SettingsValidation]
 public class SettingsController(
         IBlogConfig blogConfig,
         ILogger<SettingsController> logger,
@@ -146,22 +147,6 @@ public class SettingsController(
     [HttpPost("advanced")]
     public async Task<IActionResult> Advanced(AdvancedSettings model)
     {
-        if (!string.IsNullOrWhiteSpace(model.HeadScripts) &&
-            !ScriptTagValidator.IsValidScriptBlock(model.HeadScripts))
-        {
-            ModelState.AddModelError(nameof(AdvancedSettings.HeadScripts),
-                "Only <script>...</script> blocks are allowed.");
-            return ValidationProblem(ModelState);
-        }
-
-        if (!string.IsNullOrWhiteSpace(model.FootScripts) &&
-            !ScriptTagValidator.IsValidScriptBlock(model.FootScripts))
-        {
-            ModelState.AddModelError(nameof(AdvancedSettings.FootScripts),
-                "Only <script>...</script> blocks are allowed.");
-            return ValidationProblem(ModelState);
-        }
-
         return await UpdateSettingsAsync(model,
             EventType.SettingsAdvancedUpdated, "Update Advanced Settings", "Advanced Settings");
     }
@@ -170,12 +155,6 @@ public class SettingsController(
     [TypeFilter(typeof(ClearBlogCache), Arguments = [BlogCachePartition.General, "theme"])]
     public async Task<IActionResult> Appearance(AppearanceSettings model)
     {
-        if (model.EnableCustomCss && string.IsNullOrWhiteSpace(model.CssCode))
-        {
-            ModelState.AddModelError(nameof(AppearanceSettings.CssCode), "CSS Code is required");
-            return ValidationProblem(ModelState);
-        }
-
         return await UpdateSettingsAsync(model,
             EventType.SettingsAppearanceUpdated, "Update Appearance Settings", "Appearance Settings",
             ActivityLogMetaData.Create(
@@ -198,17 +177,11 @@ public class SettingsController(
         Menu[] menus;
         try
         {
-            menus = model.MenuJson.FromJson<Menu[]>();
+            menus = string.IsNullOrWhiteSpace(model.MenuJson) ? null : model.MenuJson.FromJson<Menu[]>();
         }
         catch (System.Text.Json.JsonException ex)
         {
             logger.LogWarning(ex, "Invalid JSON in custom menu settings");
-            ModelState.AddModelError(nameof(CustomMenuSettingsJsonModel.MenuJson), "Invalid JSON format for menus.");
-            return ValidationProblem(ModelState);
-        }
-
-        if (menus is null)
-        {
             ModelState.AddModelError(nameof(CustomMenuSettingsJsonModel.MenuJson), "Invalid JSON format for menus.");
             return ValidationProblem(ModelState);
         }

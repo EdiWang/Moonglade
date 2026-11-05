@@ -29,7 +29,9 @@ public class BlogConfigTests
     public void LoadFromConfig_CompleteStore_PreservesSavedSettingsAndManifest()
     {
         var persisted = new BlogConfig().LoadFromConfig(new Dictionary<string, string>()).ToDictionary();
-        persisted[nameof(GeneralSettings)] = new GeneralSettings { SiteTitle = "Saved title" }.ToJson();
+        var general = GeneralSettings.DefaultValue;
+        general.SiteTitle = "Saved title";
+        persisted[nameof(GeneralSettings)] = general.ToJson();
         persisted[nameof(ContentSettings)] = new ContentSettings { DefaultEditor = EditorChoice.Markdown }.ToJson();
         var manifest = new SystemManifestSettings
         {

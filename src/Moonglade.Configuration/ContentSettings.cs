@@ -15,6 +15,7 @@ public class ContentSettings : IBlogSettings<ContentSettings>
     public int PostListPageSize { get; set; } = 10;
 
     [Display(Name = "Post title alignment")]
+    [EnumDataType(typeof(PostTitleAlignment))]
     public PostTitleAlignment PostTitleAlignment { get; set; } = PostTitleAlignment.Left;
 
     [Display(Name = "Call-out section HTML code")]

@@ -29,12 +29,12 @@ public class PersistedSettingsDefaultsTests
     {
         var saved = new Dictionary<string, string>
         {
-            [nameof(GeneralSettings)] = """{"SITEtitle":"Saved title","ownerEmail":null,"hotTagAmount":0,"widgetsProfile":false}""",
+            [nameof(GeneralSettings)] = """{"SITEtitle":"Saved title","canonicalPrefix":null,"hotTagAmount":0,"widgetsProfile":false}""",
             [nameof(ContentSettings)] = """{"calloutSectionHtmlPitch":null,"postListPageSize":20}""",
             [nameof(CommentSettings)] = """{"requireCommentReview":false,"enableGravatar":false}""",
             [nameof(NotificationSettings)] = """{"emailDisplayName":null}""",
             [nameof(FeedSettings)] = """{"feedItemCount":0,"useFullContent":true}""",
-            [nameof(ImageSettings)] = """{"isWatermarkEnabled":false,"watermarkFontSize":0,"watermarkText":null}""",
+            [nameof(ImageSettings)] = """{"isWatermarkEnabled":false,"watermarkFontSize":8,"watermarkText":"Saved","watermarkColorA":0}""",
             [nameof(AppearanceSettings)] = """{"cssCode":null}""",
             [nameof(CustomMenuSettings)] = """{"isEnabled":false,"menus":[]}"""
         };
@@ -44,7 +44,7 @@ public class PersistedSettingsDefaultsTests
         var repairs = config.LoadFromConfig(saved);
 
         Assert.Equal("Saved title", config.GeneralSettings.SiteTitle);
-        Assert.Null(config.GeneralSettings.OwnerEmail);
+        Assert.Null(config.GeneralSettings.CanonicalPrefix);
         Assert.Equal(0, config.GeneralSettings.HotTagAmount);
         Assert.False(config.GeneralSettings.WidgetsProfile);
         Assert.Equal(GeneralSettings.DefaultValue.OwnerName, config.GeneralSettings.OwnerName);
@@ -56,8 +56,9 @@ public class PersistedSettingsDefaultsTests
         Assert.Equal(0, config.FeedSettings.FeedItemCount);
         Assert.True(config.FeedSettings.UseFullContent);
         Assert.False(config.ImageSettings.IsWatermarkEnabled);
-        Assert.Equal(0, config.ImageSettings.WatermarkFontSize);
-        Assert.Null(config.ImageSettings.WatermarkText);
+        Assert.Equal(8, config.ImageSettings.WatermarkFontSize);
+        Assert.Equal("Saved", config.ImageSettings.WatermarkText);
+        Assert.Equal(0, config.ImageSettings.WatermarkColorA);
         Assert.Null(config.AppearanceSettings.CssCode);
         Assert.False(config.CustomMenuSettings.IsEnabled);
         Assert.Empty(config.CustomMenuSettings.Menus);
@@ -78,24 +79,23 @@ public class PersistedSettingsDefaultsTests
         Assert.Equal(repaired, repairs.ContainsKey(nameof(FeedSettings)));
     }
 
-    [Fact]
-    public void Load_ProtectedPartialObjects_DoNotAcquireBootstrapDefaults()
+    [Theory]
+    [InlineData(nameof(LocalAccountSettings))]
+    [InlineData(nameof(SystemManifestSettings))]
+    public void Load_ProtectedPartialObjects_AreRejectedWithoutBootstrapDefaults(string name)
     {
         var config = new BlogConfig();
 
-        var repairs = config.LoadFromConfig(new Dictionary<string, string>
+        var exception = Assert.Throws<InvalidOperationException>(() => config.LoadFromConfig(new Dictionary<string, string>
         {
-            [nameof(LocalAccountSettings)] = "{}",
-            [nameof(SystemManifestSettings)] = "{}"
-        });
+            [nameof(LocalAccountSettings)] = name == nameof(LocalAccountSettings) ? "{}" : LocalAccountSettings.DefaultValue.ToJson(),
+            [nameof(SystemManifestSettings)] = name == nameof(SystemManifestSettings) ? "{}" : SystemManifestSettings.DefaultValue.ToJson()
+        }));
 
-        Assert.Null(config.LocalAccountSettings.Username);
-        Assert.Null(config.LocalAccountSettings.PasswordHash);
-        Assert.Null(config.LocalAccountSettings.PasswordSalt);
+        Assert.Contains(name, exception.Message);
+        if (name == nameof(LocalAccountSettings)) Assert.Null(config.LocalAccountSettings.PasswordHash);
         Assert.Null(config.SystemManifestSettings.VersionString);
         Assert.Equal(DateTime.MinValue, config.SystemManifestSettings.InstallTimeUtc);
-        Assert.DoesNotContain(nameof(LocalAccountSettings), repairs.Keys);
-        Assert.DoesNotContain(nameof(SystemManifestSettings), repairs.Keys);
     }
 
     [Fact]
@@ -105,11 +105,11 @@ public class PersistedSettingsDefaultsTests
 
         config.LoadFromConfig(new Dictionary<string, string>
         {
-            [nameof(CustomMenuSettings)] = """{"menus":null}"""
+            [nameof(CustomMenuSettings)] = """{"isEnabled":false,"menus":null}"""
         });
 
         Assert.Null(config.CustomMenuSettings.Menus);
-        Assert.True(config.CustomMenuSettings.IsEnabled);
+        Assert.False(config.CustomMenuSettings.IsEnabled);
     }
 
     [Fact]

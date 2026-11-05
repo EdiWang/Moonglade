@@ -1,13 +1,38 @@
-﻿namespace Moonglade.Configuration;
+﻿using System.ComponentModel.DataAnnotations;
+using OtpNet;
 
-public class LocalAccountSettings : IBlogSettings<LocalAccountSettings>
+namespace Moonglade.Configuration;
+
+public class LocalAccountSettings : IBlogSettings<LocalAccountSettings>, IValidatableObject
 {
+    [Required]
     public string Username { get; set; }
 
+    [Required]
     public string PasswordHash { get; set; }
+    [Required]
     public string PasswordSalt { get; set; }
     public string TotpSecret { get; set; } = string.Empty;
     public bool IsTotpEnabled { get; set; }
+
+    public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
+    {
+        if (IsTotpEnabled && string.IsNullOrWhiteSpace(TotpSecret))
+            yield return new("TOTP secret is required when enabled.", [nameof(TotpSecret)]);
+        if (!string.IsNullOrWhiteSpace(TotpSecret))
+        {
+            var valid = false;
+            try
+            {
+                valid = Base32Encoding.ToBytes(TotpSecret.Trim().Replace(" ", string.Empty).ToUpperInvariant()).Length > 0;
+            }
+            catch (ArgumentException)
+            {
+                // Invalid persisted secrets are reported without including their value.
+            }
+            if (!valid) yield return new("TOTP secret is not valid Base32.", [nameof(TotpSecret)]);
+        }
+    }
 
     public static LocalAccountSettings DefaultValue =>
         new()

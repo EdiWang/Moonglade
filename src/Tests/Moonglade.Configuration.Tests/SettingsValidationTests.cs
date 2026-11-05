@@ -1,0 +1,184 @@
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging.Abstractions;
+using Moonglade.Data;
+using Moonglade.Data.Entities;
+using System.ComponentModel.DataAnnotations;
+using System.Reflection;
+using System.Text.Json.Nodes;
+
+namespace Moonglade.Configuration.Tests;
+
+public class SettingsValidationTests
+{
+    public static TheoryData<string, string> InvalidOrdinarySettings => new()
+    {
+        { nameof(GeneralSettings), """{"siteTitle":null}""" },
+        { nameof(ContentSettings), """{"postListPageSize":0}""" },
+        { nameof(ContentSettings), """{"defaultEditor":999}""" },
+        { nameof(ContentSettings), """{"postTitleAlignment":999}""" },
+        { nameof(GeneralSettings), """{"sideBarOption":999}""" },
+        { nameof(CommentSettings), """{"commentProvider":999}""" },
+        { nameof(CommentSettings), """{"commentOrder":999}""" },
+        { nameof(CommentSettings), """{"wordFilterMode":999}""" },
+        { nameof(NotificationSettings), "{\"emailDisplayName\":\"" + new string('x', 65) + "\"}" },
+        { nameof(FeedSettings), """{"feedItemCount":-1}""" },
+        { nameof(ImageSettings), """{"isWatermarkEnabled":false,"watermarkFontSize":0}""" },
+        { nameof(AppearanceSettings), """{"enableCustomCss":true,"cssCode":""}""" },
+        { nameof(AdvancedSettings), """{"headScripts":"<p>invalid-marker</p>"}""" },
+        { nameof(CustomMenuSettings), """{"menus":[null]}""" },
+        { nameof(CustomMenuSettings), new CustomMenuSettings { Menus = Enumerable.Range(0, 6).Select(_ => new Menu { Title = "Valid" }).ToArray() }.ToJson() }
+    };
+
+    public static TheoryData<string, string> InvalidProtectedSettings => new()
+    {
+        { nameof(LocalAccountSettings), """{"username":null}""" },
+        { nameof(LocalAccountSettings), """{"passwordHash":""}""" },
+        { nameof(LocalAccountSettings), """{"passwordSalt":""}""" },
+        { nameof(LocalAccountSettings), """{"isTotpEnabled":true,"totpSecret":null}""" },
+        { nameof(LocalAccountSettings), """{"totpSecret":"invalid-marker!"}""" },
+        { nameof(SystemManifestSettings), """{"installTimeUtc":"0001-01-01T00:00:00Z"}""" },
+        { nameof(SystemManifestSettings), """{"installTimeUtc":"2024-01-01T00:00:00"}""" }
+    };
+
+    [Theory]
+    [MemberData(nameof(InvalidOrdinarySettings))]
+    public void Load_SemanticallyInvalidOrdinaryGroup_ReturnsWholeGroupDefaultsForRepair(string name, string patch)
+    {
+        var property = typeof(IBlogConfig).GetProperty(name)!;
+        var original = InvalidJson(property.PropertyType, patch);
+        var saved = new Dictionary<string, string> { [name] = original };
+        var config = new BlogConfig();
+
+        var repairs = config.LoadFromConfig(saved);
+
+        Assert.Equal(DefaultJson(property.PropertyType), repairs[name]);
+        Assert.Equal(repairs[name], property.GetValue(config).ToJson());
+        Assert.Equal(original, saved[name]);
+    }
+
+    [Theory]
+    [MemberData(nameof(InvalidOrdinarySettings))]
+    [MemberData(nameof(InvalidProtectedSettings))]
+    public async Task Write_InvalidGroup_ChangesNeitherStoreNorRuntime(string name, string patch)
+    {
+        var ct = TestContext.Current.CancellationToken;
+        await using var db = new BlogDbContext(new DbContextOptionsBuilder<BlogDbContext>()
+            .UseInMemoryDatabase(Guid.NewGuid().ToString()).Options);
+        var property = typeof(IBlogConfig).GetProperty(name)!;
+        var original = DefaultJson(property.PropertyType);
+        var timestamp = DateTime.UtcNow.AddDays(-1);
+        db.BlogConfiguration.Add(new BlogConfigurationEntity { CfgKey = name, CfgValue = original, LastModifiedTimeUtc = timestamp });
+        await db.SaveChangesAsync(ct);
+        var config = new BlogConfig();
+        config.LoadFromConfig(new Dictionary<string, string>(), true);
+        var runtime = property.GetValue(config);
+        var value = InvalidJson(property.PropertyType, patch).FromJson(property.PropertyType);
+        var factory = typeof(UpdateConfigurationCommand).GetMethods().Single(method => method.Name == nameof(UpdateConfigurationCommand.Create)
+            && method.GetGenericArguments().Length == 1).MakeGenericMethod(property.PropertyType);
+        var command = (UpdateConfigurationCommand)factory.Invoke(null, [value])!;
+
+        var exception = await Assert.ThrowsAsync<ValidationException>(() => new UpdateConfigurationCommandHandler(
+            db, config, NullLogger<UpdateConfigurationCommandHandler>.Instance).HandleAsync(command, ct));
+
+        Assert.DoesNotContain("invalid-marker", exception.Message);
+        Assert.Same(runtime, property.GetValue(config));
+        db.ChangeTracker.Clear();
+        var row = await db.BlogConfiguration.SingleAsync(ct);
+        Assert.Equal(original, row.CfgValue);
+        Assert.Equal(timestamp, row.LastModifiedTimeUtc);
+    }
+
+    [Theory]
+    [MemberData(nameof(InvalidProtectedSettings))]
+    public void Load_InvalidProtectedState_ThrowsKeyOnlyError(string name, string patch)
+    {
+        var type = typeof(IBlogConfig).GetProperty(name)!.PropertyType;
+
+        var exception = Assert.Throws<InvalidOperationException>(() => new BlogConfig().LoadFromConfig(
+            new Dictionary<string, string> { [name] = InvalidJson(type, patch) }));
+
+        Assert.Contains(name, exception.Message);
+        Assert.DoesNotContain("invalid-marker", exception.ToString());
+        Assert.Null(exception.InnerException);
+    }
+
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public void Account_ValidExistingAndSetupStates_AreAcceptedWithoutMutation(bool enabled)
+    {
+        var account = LocalAccountSettings.DefaultValue;
+        account.Username = "legacy.user@example.com";
+        account.IsTotpEnabled = enabled;
+        account.TotpSecret = " jbsw y3dpehpk3pxp ";
+        var original = account.ToJson();
+
+        Assert.True(Validator.TryValidateObject(account, new ValidationContext(account), null, true));
+        Assert.Equal(original, account.ToJson());
+    }
+
+    [Theory]
+    [InlineData(null)]
+    [InlineData("")]
+    [InlineData("historical-version")]
+    public void Manifest_UnknownOrHistoricalVersion_WithValidUtcTime_IsPreserved(string? version)
+    {
+        var manifest = new SystemManifestSettings { VersionString = version, InstallTimeUtc = DateTime.UtcNow.AddYears(-1) };
+        var config = new BlogConfig();
+
+        var repairs = config.LoadFromConfig(new Dictionary<string, string> { [nameof(SystemManifestSettings)] = manifest.ToJson() });
+
+        Assert.DoesNotContain(nameof(SystemManifestSettings), repairs.Keys);
+        Assert.Equal(manifest.ToJson(), config.SystemManifestSettings.ToJson());
+    }
+
+    [Fact]
+    public void ApprovedCompatibilityExceptions_AreValid()
+    {
+        var general = GeneralSettings.DefaultValue;
+        general.AvatarUrl = "https://cdn.example.com/" + new string('a', 300);
+        Assert.True(Validator.TryValidateObject(general, new ValidationContext(general), null, true));
+        var notification = new NotificationSettings { EmailDisplayName = null };
+        Assert.True(Validator.TryValidateObject(notification, new ValidationContext(notification), null, true));
+        var appearance = new AppearanceSettings { ThemeId = int.MaxValue };
+        Assert.True(Validator.TryValidateObject(appearance, new ValidationContext(appearance), null, true));
+        var feed = new FeedSettings { FeedItemCount = 0 };
+        Assert.True(Validator.TryValidateObject(feed, new ValidationContext(feed), null, true));
+        feed.FeedItemCount = int.MaxValue;
+        Assert.True(Validator.TryValidateObject(feed, new ValidationContext(feed), null, true));
+    }
+
+    [Theory]
+    [InlineData('a', 10240, true)]
+    [InlineData('a', 10241, false)]
+    [InlineData('\u754c', 3413, true)]
+    [InlineData('\u754c', 3414, false)]
+    public void CssLimit_UsesUtf8Bytes(char character, int count, bool valid)
+    {
+        var settings = new AppearanceSettings { EnableCustomCss = true, CssCode = new string(character, count) };
+        Assert.Equal(valid, Validator.TryValidateObject(settings, new ValidationContext(settings), null, true));
+    }
+
+    [Theory]
+    [InlineData("""{"isEnabled":false,"menus":null}""", true)]
+    [InlineData("""{"isEnabled":true,"menus":[]}""", true)]
+    [InlineData("""{"menus":[{"title":"Link","subMenus":[]}]}""", true)]
+    [InlineData("""{"menus":[{"title":"Link","subMenus":null}]}""", false)]
+    [InlineData("""{"menus":[{"title":"Link","subMenus":[null]}]}""", false)]
+    [InlineData("""{"menus":[{"title":"Link","subMenus":[{"title":"Sub","url":""}]}]}""", false)]
+    [InlineData("""{"menus":[{"title":"","subMenus":[]}]}""", false)]
+    public void MenuGraph_ValidatesNestedEntries(string patch, bool valid)
+    {
+        var settings = InvalidJson(typeof(CustomMenuSettings), patch).FromJson<CustomMenuSettings>();
+        Assert.Equal(valid, Validator.TryValidateObject(settings, new ValidationContext(settings), null, true));
+    }
+
+    private static string DefaultJson(Type type) => type.GetProperty("DefaultValue", BindingFlags.Public | BindingFlags.Static)!.GetValue(null).ToJson();
+
+    private static string InvalidJson(Type type, string patch)
+    {
+        var json = JsonNode.Parse(DefaultJson(type))!.AsObject();
+        foreach (var property in JsonNode.Parse(patch)!.AsObject()) json[property.Key] = property.Value?.DeepClone();
+        return json.ToJsonString();
+    }
+}

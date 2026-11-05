@@ -167,8 +167,8 @@ B1 requires Setup tests, relevant Configuration tests, Web build, and actual rel
 | --- | --- |
 | Q1: missing manifest with valid other settings/account | Answered: reconstruct it without touching business data and log Warning; version unknown and time means reconstruction. |
 | Q2: ordinary absent-field default alignment | Resolved during B2 as D15: absent ordinary fields use whole-group defaults; explicit values are retained; protected state is excluded. |
-| Q3: new semantic constraints | Pending; preserve established semantics until approved. Does not block B1. |
-| Q4: minimum/legacy protected shapes | Pending; malformed/null protection remains. Broader semantic checks belong to B3. |
+| Q3: new semantic constraints | Resolved during B3 as D16-D17: shared existing constraints plus the approved enum/feed/menu rules and compatibility exceptions; ordinary invalid state recovers the whole group. |
+| Q4: minimum/legacy protected shapes | Resolved during B3 as D18: nonblank credential fields, parseable TOTP with enabled-secret requirement and disabled setup support, non-minimum UTC manifest time, and arbitrary/empty version strings preserved. Invalid protected state stops before repairs. |
 | Q5: activation classifications | Observed in section 6; EmailDisplayName and scheduler behavior need explicit B4 choices. Does not block B1. |
 | S02: pre-existing wholly empty schema | Answered: initialization is allowed after all application tables are confirmed empty (D13). |
 | First-install dependency failure | Answered: installation must be idempotent and retryable after the dependency is fixed; console errors are sufficient for the failed attempt. |
@@ -179,4 +179,4 @@ Evidence collected: source/model annotations, request handlers, all 11 group def
 
 No application tests, browser session, real database connection, SMTP send, seeding, cleanup, or destructive operation was run for B0. The matrices establish source observations and proposed acceptance cases, not runtime proof. Existing earlier test counts remain historical only.
 
-Handoff update: B1 was committed as `7f0394673`; the user then explicitly authorized B2 and resolved Q2 as D15. Follow the current batch status and evidence in `SETTINGS_RELIABILITY_PLAN.md`. Q3-Q5 remain open for their later batches; B2 does not authorize those changes.
+Handoff update: B1 is commit `7f0394673`, B2 is `d51230912`, and the user explicitly authorized B3 and resolved Q3-Q4 as D16-D18. Follow current B3 verification/commit/acceptance status in `SETTINGS_RELIABILITY_PLAN.md`. Q5 remains open for B4; B4 and later batches are not authorized. Earlier source matrices remain the historical B0 baseline.

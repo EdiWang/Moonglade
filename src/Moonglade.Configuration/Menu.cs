@@ -1,7 +1,10 @@
-﻿namespace Moonglade.Configuration;
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace Moonglade.Configuration;
 
 public class Menu
 {
+    [Required]
     public string Title { get; set; }
 
     public string Url { get; set; }
@@ -12,5 +15,6 @@ public class Menu
 
     public bool IsOpenInNewTab { get; set; }
 
+    [Required]
     public List<SubMenu> SubMenus { get; set; } = [];
 }

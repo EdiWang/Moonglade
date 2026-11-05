@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.Logging.Abstractions;
 using Moonglade.Data;
 using Moonglade.Data.Entities;
+using System.ComponentModel.DataAnnotations;
 
 namespace Moonglade.Configuration.Tests;
 
@@ -12,10 +13,11 @@ public class UpdateConfigurationCommandTests
     public async Task Save_UpdatesDatabaseAndRuntimeFromDetachedSnapshot()
     {
         using var db = CreateDbContext();
-        var config = new BlogConfig { GeneralSettings = new GeneralSettings { SiteTitle = "Old" } };
+        var config = new BlogConfig { GeneralSettings = General("Old") };
         await SeedAsync(db, config.GeneralSettings);
         var original = config.GeneralSettings;
-        var model = new GeneralSettings { SiteTitle = "New", Description = "Description" };
+        var model = General("New");
+        model.Description = "Description";
         var command = UpdateConfigurationCommand.Create(model);
         model.SiteTitle = "Changed after dispatch";
 
@@ -33,7 +35,7 @@ public class UpdateConfigurationCommandTests
     public async Task UnchangedValue_PreservesTimestampAndRefreshesRuntime()
     {
         using var db = CreateDbContext();
-        var settings = new GeneralSettings { SiteTitle = "Persisted" };
+        var settings = General("Persisted");
         await SeedAsync(db, settings);
         var originalTime = (await db.BlogConfiguration.SingleAsync(TestContext.Current.CancellationToken)).LastModifiedTimeUtc;
         var config = new BlogConfig();
@@ -48,12 +50,14 @@ public class UpdateConfigurationCommandTests
     public async Task MissingPairedSetting_ChangesNeitherDatabaseNorRuntime()
     {
         using var db = CreateDbContext();
-        var config = new BlogConfig { GeneralSettings = new GeneralSettings { AvatarUrl = "old.png" } };
+        var config = new BlogConfig { GeneralSettings = General("Old") };
+        config.GeneralSettings.AvatarUrl = "old.png";
         await SeedAsync(db, config.GeneralSettings);
         var originalGeneral = config.GeneralSettings;
         var originalImage = config.ImageSettings;
-        var command = UpdateConfigurationCommand.Create(
-            new GeneralSettings { AvatarUrl = "new.png" }, new ImageSettings { EnableCDNRedirect = true });
+        var general = General("New");
+        general.AvatarUrl = "new.png";
+        var command = UpdateConfigurationCommand.Create(general, CdnImage());
 
         await Assert.ThrowsAsync<InvalidOperationException>(() => Handler(db, config)
             .HandleAsync(command, TestContext.Current.CancellationToken));
@@ -72,9 +76,9 @@ public class UpdateConfigurationCommandTests
         await SeedAsync(db, config.GeneralSettings);
         await SeedAsync(db, config.ImageSettings);
 
-        await Handler(db, config).HandleAsync(UpdateConfigurationCommand.Create(
-            new GeneralSettings { AvatarUrl = "https://cdn.example.com/avatar.png" },
-            new ImageSettings { EnableCDNRedirect = true, CDNEndpoint = "https://cdn.example.com" }),
+        var general = General("New");
+        general.AvatarUrl = "https://cdn.example.com/avatar.png";
+        await Handler(db, config).HandleAsync(UpdateConfigurationCommand.Create(general, CdnImage()),
             TestContext.Current.CancellationToken);
 
         Assert.True(config.ImageSettings.EnableCDNRedirect);
@@ -95,8 +99,12 @@ public class UpdateConfigurationCommandTests
         var original = config.LocalAccountSettings;
         interceptor.Fail = true;
 
+        var updated = LocalAccountSettings.DefaultValue;
+        updated.Username = "Changed";
+        updated.IsTotpEnabled = true;
+        updated.TotpSecret = "JBSWY3DPEHPK3PXP";
         await Assert.ThrowsAsync<DbUpdateException>(() => Handler(db, config).HandleAsync(
-            UpdateConfigurationCommand.Create(new LocalAccountSettings { Username = "Changed", IsTotpEnabled = true }),
+            UpdateConfigurationCommand.Create(updated),
             TestContext.Current.CancellationToken));
 
         Assert.Same(original, config.LocalAccountSettings);
@@ -113,7 +121,7 @@ public class UpdateConfigurationCommandTests
         var original = config.GeneralSettings;
         using var cancelled = new CancellationTokenSource();
         await cancelled.CancelAsync();
-        var command = UpdateConfigurationCommand.Create(new GeneralSettings { SiteTitle = "New" });
+        var command = UpdateConfigurationCommand.Create(General("New"));
 
         await Assert.ThrowsAnyAsync<OperationCanceledException>(() => Handler(db, config).HandleAsync(command, cancelled.Token));
 
@@ -134,10 +142,10 @@ public class UpdateConfigurationCommandTests
         await SeedAsync(firstDb, config.GeneralSettings);
         interceptor.Enabled = true;
         var first = Handler(firstDb, config).HandleAsync(UpdateConfigurationCommand.Create(
-            new GeneralSettings { SiteTitle = "First" }), TestContext.Current.CancellationToken);
-        await interceptor.Committed.Task.WaitAsync(TestContext.Current.CancellationToken);
+            General("First")), TestContext.Current.CancellationToken);
+        await interceptor.Committed.Task.WaitAsync(TimeSpan.FromSeconds(10), TestContext.Current.CancellationToken);
         var second = Handler(secondDb, config).HandleAsync(UpdateConfigurationCommand.Create(
-            new GeneralSettings { SiteTitle = "Second" }), TestContext.Current.CancellationToken);
+            General("Second")), TestContext.Current.CancellationToken);
         var secondWasBlocked = !second.IsCompleted;
         interceptor.Resume.SetResult();
 
@@ -160,7 +168,7 @@ public class UpdateConfigurationCommandTests
         interceptor.Enabled = true;
 
         await Handler(db, config).HandleAsync(UpdateConfigurationCommand.Create(
-            new GeneralSettings { SiteTitle = "Committed" }), cancellation.Token);
+            General("Committed")), cancellation.Token);
 
         Assert.True(cancellation.IsCancellationRequested);
         Assert.Equal("Committed", config.GeneralSettings.SiteTitle);
@@ -190,8 +198,47 @@ public class UpdateConfigurationCommandTests
         new DbContextOptionsBuilder<BlogDbContext>().UseInMemoryDatabase(Guid.NewGuid().ToString())
             .AddInterceptors(interceptors).Options);
 
+    [Fact]
+    public async Task InvalidPairedSetting_DoesNotChangeEitherRowOrRuntime()
+    {
+        var ct = TestContext.Current.CancellationToken;
+        using var db = CreateDbContext();
+        var config = new BlogConfig { GeneralSettings = General("Old"), ImageSettings = ImageSettings.DefaultValue };
+        await SeedAsync(db, config.GeneralSettings);
+        await SeedAsync(db, config.ImageSettings);
+        var originalGeneral = config.GeneralSettings;
+        var originalImage = config.ImageSettings;
+        var invalid = CdnImage();
+        invalid.CDNEndpoint = "http://invalid.example.com";
+
+        await Assert.ThrowsAsync<ValidationException>(() => Handler(db, config).HandleAsync(
+            UpdateConfigurationCommand.Create(General("New"), invalid), ct));
+
+        Assert.Same(originalGeneral, config.GeneralSettings);
+        Assert.Same(originalImage, config.ImageSettings);
+        db.ChangeTracker.Clear();
+        var rows = await db.BlogConfiguration.ToDictionaryAsync(row => row.CfgKey, ct);
+        Assert.Equal(originalGeneral.ToJson(), rows[nameof(GeneralSettings)].CfgValue);
+        Assert.Equal(originalImage.ToJson(), rows[nameof(ImageSettings)].CfgValue);
+    }
+
     private static UpdateConfigurationCommandHandler Handler(BlogDbContext db, IBlogConfig config) =>
         new(db, config, NullLogger<UpdateConfigurationCommandHandler>.Instance);
+
+    private static GeneralSettings General(string title)
+    {
+        var settings = GeneralSettings.DefaultValue;
+        settings.SiteTitle = title;
+        return settings;
+    }
+
+    private static ImageSettings CdnImage()
+    {
+        var settings = ImageSettings.DefaultValue;
+        settings.EnableCDNRedirect = true;
+        settings.CDNEndpoint = "https://cdn.example.com";
+        return settings;
+    }
 
     private static async Task SeedAsync<T>(BlogDbContext db, T settings) where T : IBlogSettings<T>
     {

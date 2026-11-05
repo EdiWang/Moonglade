@@ -33,6 +33,8 @@ Startup safety tests exercise each mapped application set as the only existing d
 
 Settings-default tests cover all ordinary groups, absent versus explicit values, case-insensitive/duplicate saved fields, protected-state exclusion, and independent default menu collections. Setup tests verify that loading valid partial JSON twice preserves the original JSON and timestamps without writes or repair warnings; the opt-in provider group verifies the same persistence contract on both supported databases. Corrupt-group tests assert a single repair Warning without logging the stored payload.
 
+Settings validation tests cover ordinary whole-group recovery, protected semantic failure before repairs, invalid direct/paired writes without persistence or runtime changes, nonmutating validation, nested menus, undefined enums, UTF-8 CSS boundaries, and approved legacy/setup states. Web TestHost tests exercise model validation and parsed-menu command failures as HTTP validation problems, alongside blank sender names and generated avatar compatibility. The opt-in provider group also verifies semantic recovery and protected failure preservation on both supported databases.
+
 Manual upgrade tests for category IDs and PostgreSQL naming use opt-in disposable database containers. See [Migration Verification](../../docs/agent-reference.md#migration-verification) for prerequisites and limits; ordinary runs explicitly skip those relational groups.
 
 ## Run Tests

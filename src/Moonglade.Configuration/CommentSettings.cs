@@ -6,9 +6,11 @@ namespace Moonglade.Configuration;
 public class CommentSettings : IBlogSettings<CommentSettings>
 {
     [Display(Name = "Comment provider")]
+    [EnumDataType(typeof(CommentProvider))]
     public CommentProvider CommentProvider { get; set; }
 
     [Display(Name = "Comments display order")]
+    [EnumDataType(typeof(CommentOrder))]
     public CommentOrder CommentOrder { get; set; }
 
     [Display(Name = "Third party comment html pitch")]
@@ -35,6 +37,7 @@ public class CommentSettings : IBlogSettings<CommentSettings>
     public bool EnableWordFilter { get; set; }
 
     [Display(Name = "Word filter mode")]
+    [EnumDataType(typeof(WordFilterMode))]
     public WordFilterMode WordFilterMode { get; set; }
 
     [Display(Name = "Word filter keywords")]

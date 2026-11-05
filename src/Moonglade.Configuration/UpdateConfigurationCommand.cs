@@ -3,6 +3,7 @@ using Microsoft.Extensions.Logging;
 using Moonglade.Data;
 using System.Collections.ObjectModel;
 using System.Reflection;
+using System.ComponentModel.DataAnnotations;
 
 namespace Moonglade.Configuration;
 
@@ -48,6 +49,7 @@ public class UpdateConfigurationCommandHandler(
                     ?? throw new InvalidOperationException($"Unknown blog setting '{name}'.");
                 var value = json.FromJson(property.PropertyType)
                     ?? throw new InvalidOperationException($"Blog setting '{name}' cannot be null.");
+                Validator.ValidateObject(value, new ValidationContext(value), true);
                 replacements.Add((property, value));
             }
 

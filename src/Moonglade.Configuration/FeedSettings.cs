@@ -6,6 +6,7 @@ namespace Moonglade.Configuration;
 public class FeedSettings : IBlogSettings<FeedSettings>
 {
     [Display(Name = "Feed items")]
+    [Range(0, int.MaxValue)]
     public int FeedItemCount { get; set; }
 
     [Display(Name = "Use full blog post content instead of abstract")]

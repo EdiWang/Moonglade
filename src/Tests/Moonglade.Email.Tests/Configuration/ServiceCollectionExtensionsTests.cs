@@ -52,24 +52,28 @@ public class ServiceCollectionExtensionsTests
                 descriptor.ImplementationType == typeof(EmailOutboxWorker));
     }
 
-    [Fact]
-    public void AddMoongladeEmail_EmailSettingsUsesBlogNotificationDisplayName()
+    [Theory]
+    [InlineData("Blog Sender", "Blog Sender")]
+    [InlineData(null, "Deployment Sender")]
+    [InlineData("", "Deployment Sender")]
+    [InlineData("   ", "Deployment Sender")]
+    public void AddMoongladeEmail_EmailSettingsUsesBlogNameOrDeploymentFallback(string blogName, string expected)
     {
         var services = new ServiceCollection();
         services.AddSingleton<IBlogConfig>(new BlogConfig
         {
             NotificationSettings = new NotificationSettings
             {
-                EmailDisplayName = "Blog Sender"
+                EmailDisplayName = blogName
             }
         });
         services.AddLogging();
-        services.AddMoongladeEmail(CreateConfiguration());
+        services.AddMoongladeEmail(CreateConfiguration(new KeyValuePair<string, string>("Email:SenderDisplayName", "Deployment Sender")));
         using var serviceProvider = services.BuildServiceProvider();
 
         var settings = serviceProvider.GetRequiredService<EmailSettings>();
 
-        Assert.Equal("Blog Sender", settings.EmailDisplayName);
+        Assert.Equal(expected, settings.EmailDisplayName);
     }
 
     [Fact]

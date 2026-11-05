@@ -308,11 +308,9 @@ public class SettingsControllerTests
             commandMediator,
             queryMediator.Object,
             new Mock<IAuthenticationService>());
-        var model = new ImageSettings
-        {
-            EnableCDNRedirect = true,
-            CDNEndpoint = "https://cdn.example.com/images"
-        };
+        var model = ImageSettings.DefaultValue;
+        model.EnableCDNRedirect = true;
+        model.CDNEndpoint = "https://cdn.example.com/images";
 
         var result = await controller.Image(model, imageStorage.Object);
 
@@ -351,9 +349,10 @@ public class SettingsControllerTests
     {
         var config = new BlogConfig
         {
-            GeneralSettings = new GeneralSettings { AvatarUrl = "/assets/avatar" },
+            GeneralSettings = GeneralSettings.DefaultValue,
             ImageSettings = ImageSettings.DefaultValue
         };
+        config.GeneralSettings.AvatarUrl = "/assets/avatar";
         var originalGeneral = config.GeneralSettings;
         var originalImage = config.ImageSettings;
         using var mediator = new ConfigurationCommandRecorder();
@@ -367,11 +366,10 @@ public class SettingsControllerTests
             "CREATE TRIGGER reject_image_settings BEFORE UPDATE ON BlogConfiguration WHEN OLD.CfgKey = 'ImageSettings' BEGIN SELECT RAISE(ABORT, 'Save rejected'); END;",
             TestContext.Current.CancellationToken);
 
-        await Assert.ThrowsAsync<DbUpdateException>(() => controller.Image(new ImageSettings
-        {
-            EnableCDNRedirect = true,
-            CDNEndpoint = "https://cdn.example.com"
-        }, storage.Object));
+        var updatedImage = ImageSettings.DefaultValue;
+        updatedImage.EnableCDNRedirect = true;
+        updatedImage.CDNEndpoint = "https://cdn.example.com";
+        await Assert.ThrowsAsync<DbUpdateException>(() => controller.Image(updatedImage, storage.Object));
 
         Assert.Same(originalGeneral, config.GeneralSettings);
         Assert.Same(originalImage, config.ImageSettings);

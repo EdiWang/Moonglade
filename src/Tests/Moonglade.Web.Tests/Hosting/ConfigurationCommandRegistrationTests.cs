@@ -28,10 +28,11 @@ public class ConfigurationCommandRegistrationTests
         });
         using var provider = services.BuildServiceProvider();
 
-        await provider.GetRequiredService<ICommandMediator>().SendAsync(UpdateConfigurationCommand.Create(
-            new GeneralSettings { SiteTitle = "Saved through LiteBus" }), TestContext.Current.CancellationToken);
+        var settings = GeneralSettings.DefaultValue;
+        settings.SiteTitle = "Saved via bus";
+        await provider.GetRequiredService<ICommandMediator>().SendAsync(UpdateConfigurationCommand.Create(settings), TestContext.Current.CancellationToken);
 
-        Assert.Equal("Saved through LiteBus", config.GeneralSettings.SiteTitle);
+        Assert.Equal("Saved via bus", config.GeneralSettings.SiteTitle);
         Assert.Equal(config.GeneralSettings.ToJson(), (await store.Db.BlogConfiguration.SingleAsync(
             p => p.CfgKey == nameof(GeneralSettings), TestContext.Current.CancellationToken)).CfgValue);
     }

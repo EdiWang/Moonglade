@@ -1,9 +1,10 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
+using Moonglade.Utils;
 
 namespace Moonglade.Configuration;
 
-public class AdvancedSettings : IBlogSettings<AdvancedSettings>
+public class AdvancedSettings : IBlogSettings<AdvancedSettings>, IValidatableObject
 {
     [Display(Name = "robots.txt")]
     [DataType(DataType.MultilineText)]
@@ -46,6 +47,14 @@ public class AdvancedSettings : IBlogSettings<AdvancedSettings>
 
     [Display(Name = "Enable JSON-LD BlogPosting")]
     public bool EnableJsonLdBlogPosting { get; set; } = true;
+
+    public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
+    {
+        if (!ScriptTagValidator.IsValidScriptBlock(HeadScripts))
+            yield return new("Only <script>...</script> blocks are allowed.", [nameof(HeadScripts)]);
+        if (!ScriptTagValidator.IsValidScriptBlock(FootScripts))
+            yield return new("Only <script>...</script> blocks are allowed.", [nameof(FootScripts)]);
+    }
 
     [JsonIgnore]
     public static AdvancedSettings DefaultValue => new();

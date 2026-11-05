@@ -46,8 +46,7 @@ public class ImageSettings : IBlogSettings<ImageSettings>, IValidatableObject
         {
             if (string.IsNullOrWhiteSpace(CDNEndpoint))
             {
-                EnableCDNRedirect = false;
-                yield return new($"{nameof(CDNEndpoint)} must be specified when {nameof(EnableCDNRedirect)} is enabled.");
+                yield return new($"{nameof(CDNEndpoint)} must be specified when {nameof(EnableCDNRedirect)} is enabled.", [nameof(CDNEndpoint)]);
             }
 
             // Validate endpoint Url to avoid security risks
@@ -58,7 +57,7 @@ public class ImageSettings : IBlogSettings<ImageSettings>, IValidatableObject
             var isValidEndpoint = endpoint.IsValidUrl(UrlExtension.UrlScheme.Https);
             if (!isValidEndpoint)
             {
-                yield return new("CDN Endpoint is not a valid HTTPS Url.");
+                yield return new("CDN Endpoint is not a valid HTTPS Url.", [nameof(CDNEndpoint)]);
             }
         }
     }

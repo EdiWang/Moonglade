@@ -53,6 +53,7 @@ public class GeneralSettings : IBlogSettings<GeneralSettings>
     public string Pronouns { get; set; }
 
     [Display(Name = "Side bar display")]
+    [EnumDataType(typeof(SideBarOption))]
     public SideBarOption SideBarOption { get; set; }
 
     [Display(Name = "Profile")]
@@ -69,7 +70,6 @@ public class GeneralSettings : IBlogSettings<GeneralSettings>
     [Display(Name = "Subscription buttons")]
     public bool WidgetsSubscriptionButtons { get; set; } = true;
 
-    [MaxLength(64)]
     public string AvatarUrl { get; set; }
 
     [Display(Name = "Use my Gravatar as profile picture")]

@@ -256,6 +256,52 @@ public class StartupInstallationDatabaseTests(DisposableCategoryDatabases databa
             row => row.CfgKey == nameof(LocalAccountSettings), ct)).CfgValue.FromJson<LocalAccountSettings>().Username));
     }
 
+    [DisposableDatabaseTheory]
+    [InlineData("PostgreSql", false)]
+    [InlineData("SqlServer", false)]
+    [InlineData("PostgreSql", true)]
+    [InlineData("SqlServer", true)]
+    public async Task SemanticInvalidity_RepairsOrdinaryGroupsButProtectedStateStopsAllRepairs(string provider, bool protectedInvalid)
+    {
+        var ct = TestContext.Current.CancellationToken;
+        await using var database = await databases.CreateAsync(provider);
+        await using var db = CreateContext(database);
+        using var installed = new StartupTestHarness(db);
+        Assert.Equal(InitStartUpResult.Success, await installed.Initializer.InitStartUpAsync(ct));
+        var feed = await db.BlogConfiguration.SingleAsync(row => row.CfgKey == nameof(FeedSettings), ct);
+        feed.CfgValue = """{"feedItemCount":-1,"useFullContent":true}""";
+        feed.LastModifiedTimeUtc = DateTime.UtcNow.AddDays(-1);
+        if (protectedInvalid)
+            (await db.BlogConfiguration.SingleAsync(row => row.CfgKey == nameof(LocalAccountSettings), ct)).CfgValue = "{}";
+        await db.SaveChangesAsync(ct);
+        db.ChangeTracker.Clear();
+        var before = await db.BlogConfiguration.AsNoTracking().OrderBy(row => row.CfgKey).ToListAsync(ct);
+        var postId = (await db.Post.AsNoTracking().SingleAsync(ct)).Id;
+        using var restarted = new StartupTestHarness(db);
+
+        Assert.Equal(protectedInvalid ? InitStartUpResult.FailedInitBlogConfig : InitStartUpResult.Success,
+            await restarted.Initializer.InitStartUpAsync(ct));
+
+        db.ChangeTracker.Clear();
+        var after = await db.BlogConfiguration.AsNoTracking().OrderBy(row => row.CfgKey).ToListAsync(ct);
+        foreach (var original in before)
+        {
+            var saved = after.Single(row => row.CfgKey == original.CfgKey);
+            if (!protectedInvalid && saved.CfgKey == nameof(FeedSettings))
+            {
+                Assert.Equal(FeedSettings.DefaultValue.ToJson(), saved.CfgValue);
+                Assert.True(saved.LastModifiedTimeUtc > original.LastModifiedTimeUtc);
+                Assert.False(restarted.Config.FeedSettings.UseFullContent);
+            }
+            else
+            {
+                Assert.Equal(original.CfgValue, saved.CfgValue);
+                Assert.Equal(original.LastModifiedTimeUtc, saved.LastModifiedTimeUtc);
+            }
+        }
+        Assert.Equal(postId, (await db.Post.SingleAsync(ct)).Id);
+    }
+
     private sealed class InstallationWriteFailure(int settingNumber, Exception failure) : SaveChangesInterceptor
     {
         public bool Triggered { get; private set; }

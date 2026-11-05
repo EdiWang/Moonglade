@@ -1,5 +1,6 @@
 ﻿
 using System.Text.Json;
+using System.ComponentModel.DataAnnotations;
 
 namespace Moonglade.Configuration;
 
@@ -70,7 +71,7 @@ public class BlogConfig : IBlogConfig
                     var settings = json is null ? default : isProtected
                         ? json.FromJson<T>()
                         : json.FromJsonWithDefaults(T.DefaultValue);
-                    if (settings is not null)
+                    if (settings is not null && Validator.TryValidateObject(settings, new ValidationContext(settings), null, true))
                     {
                         setter(settings);
                         return;

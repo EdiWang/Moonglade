@@ -14,7 +14,6 @@ public class NotificationSettings : IBlogSettings<NotificationSettings>
     [Display(Name = "Send email on new comment")]
     public bool SendEmailOnNewComment { get; set; }
 
-    [Required]
     [Display(Name = "Display name")]
     [MaxLength(64)]
     public string EmailDisplayName { get; set; }

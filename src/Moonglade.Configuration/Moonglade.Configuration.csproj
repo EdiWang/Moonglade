@@ -14,6 +14,9 @@
     <ItemGroup>
         <FrameworkReference Include="Microsoft.AspNetCore.App" />
     </ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="Otp.NET" Version="1.4.1" />
+	</ItemGroup>
     <ItemGroup>
         <ProjectReference Include="..\Moonglade.Data\Moonglade.Data.csproj" />
         <ProjectReference Include="..\Moonglade.Utils\Moonglade.Utils.csproj" />

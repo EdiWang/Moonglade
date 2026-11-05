@@ -16,14 +16,16 @@ namespace Moonglade.Setup.Tests;
 public sealed class ConfigInitializerTests
 {
     [Theory]
-    [InlineData(nameof(LocalAccountSettings))]
-    [InlineData(nameof(SystemManifestSettings))]
-    public async Task Initialize_InvalidAccountOrManifest_DoesNotPersistAnyDefaults(string key)
+    [InlineData(nameof(LocalAccountSettings), "null")]
+    [InlineData(nameof(SystemManifestSettings), "null")]
+    [InlineData(nameof(LocalAccountSettings), "{}")]
+    [InlineData(nameof(SystemManifestSettings), "{}")]
+    public async Task Initialize_InvalidAccountOrManifest_DoesNotPersistAnyDefaults(string key, string invalidJson)
     {
         var ct = TestContext.Current.CancellationToken;
         var persisted = new BlogConfig().LoadFromConfig(new Dictionary<string, string>(), isNew: true).ToDictionary();
         persisted[nameof(FeedSettings)] = "not-json";
-        persisted[key] = "null";
+        persisted[key] = invalidJson;
         var queryMediator = new Mock<IQueryMediator>();
         queryMediator.Setup(m => m.QueryAsync(It.IsAny<ListConfigurationsQuery>(), It.IsAny<QueryMediationSettings>(), ct))
             .ReturnsAsync(persisted);
@@ -33,7 +35,7 @@ public sealed class ConfigInitializerTests
         await Assert.ThrowsAsync<InvalidOperationException>(() => initializer.Initialize(isNew: false, ct));
 
         Assert.Empty(commands.Commands);
-        Assert.Equal("null", persisted[key]);
+        Assert.Equal(invalidJson, persisted[key]);
     }
 
     [Theory]
@@ -43,13 +45,16 @@ public sealed class ConfigInitializerTests
     [InlineData("{\"feedItemCount\":\"invalid\"}")]
     [InlineData(null)]
     [InlineData("{\"feedItemCount\":\"private-marker\"}")]
+    [InlineData("{\"feedItemCount\":-1,\"useFullContent\":true}")]
     public async Task Initialize_InvalidPersistedSetting_RepairsOnlyThatRowAndPreservesValidSettings(string invalidJson)
     {
         var ct = TestContext.Current.CancellationToken;
         var options = new DbContextOptionsBuilder<BlogDbContext>().UseInMemoryDatabase(Guid.NewGuid().ToString()).Options;
         await using var db = new BlogDbContext(options);
         var persisted = new BlogConfig().LoadFromConfig(new Dictionary<string, string>(), isNew: true).ToDictionary();
-        persisted[nameof(GeneralSettings)] = new GeneralSettings { SiteTitle = "Preserved title" }.ToJson();
+        var general = GeneralSettings.DefaultValue;
+        general.SiteTitle = "Preserved title";
+        persisted[nameof(GeneralSettings)] = general.ToJson();
         persisted[nameof(FeedSettings)] = invalidJson;
         var originalTimestamp = DateTime.UtcNow.AddDays(-1);
         db.BlogConfiguration.AddRange(persisted.Select(pair => new BlogConfigurationEntity
