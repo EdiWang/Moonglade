@@ -91,6 +91,7 @@ public sealed class ConfigInitializerTests
         var cancellationToken = TestContext.Current.CancellationToken;
         var persistedSettings = new Dictionary<string, string>
         {
+            [nameof(LocalAccountSettings)] = LocalAccountSettings.DefaultValue.ToJson(),
             [nameof(SystemManifestSettings)] = new SystemManifestSettings
             {
                 VersionString = "16.3.0",
@@ -115,7 +116,7 @@ public sealed class ConfigInitializerTests
         await initializer.Initialize(isNew: false, cancellationToken);
 
         Assert.Equal("16.3.0", blogConfig.SystemManifestSettings.VersionString);
-        Assert.Equal(10, commandMediator.Commands.Count);
+        Assert.Equal(9, commandMediator.Commands.Count);
         Assert.DoesNotContain(
             commandMediator.Commands.OfType<AddDefaultConfigurationCommand>(),
             command => command.CfgKey == nameof(SystemManifestSettings));
@@ -135,7 +136,10 @@ public sealed class ConfigInitializerTests
         var queryMediator = new Mock<IQueryMediator>();
         queryMediator.Setup(mediator => mediator.QueryAsync(
                 It.IsAny<ListConfigurationsQuery>(), It.IsAny<QueryMediationSettings>(), cancellationToken))
-            .ReturnsAsync(new Dictionary<string, string>());
+            .ReturnsAsync(isNew ? new Dictionary<string, string>() : new Dictionary<string, string>
+            {
+                [nameof(LocalAccountSettings)] = LocalAccountSettings.DefaultValue.ToJson()
+            });
         var commandMediator = new RecordingCommandMediator();
         var config = new BlogConfig();
         var initializer = new ConfigInitializer(queryMediator.Object, commandMediator, config, NullLogger<ConfigInitializer>.Instance);
@@ -143,7 +147,7 @@ public sealed class ConfigInitializerTests
         await initializer.Initialize(isNew, cancellationToken);
 
         var commands = commandMediator.Commands.OfType<AddDefaultConfigurationCommand>().ToArray();
-        Assert.Equal(typeof(IBlogConfig).GetProperties().Length, commands.Length);
+        Assert.Equal(typeof(IBlogConfig).GetProperties().Length - (isNew ? 0 : 1), commands.Length);
         var manifestCommand = Assert.Single(commands, command => command.CfgKey == nameof(SystemManifestSettings));
         Assert.Equal(config.SystemManifestSettings.ToJson(), manifestCommand.DefaultJson);
         Assert.Equal(

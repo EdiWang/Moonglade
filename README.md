@@ -107,6 +107,10 @@ Settings become active only after a successful database save; related CDN/avatar
 
 At startup, malformed ordinary settings JSON, incompatible JSON values, and null settings are restored to that setting's default in the existing database row. Missing settings are initialized, and valid settings retain their values and modification timestamps. Recovery warnings identify the configuration key without logging its JSON. Invalid `LocalAccountSettings` or `SystemManifestSettings` stop initialization with a restoration message to protect administrator credentials and installation/upgrade history; restore those values from a trusted database backup before restarting.
 
+First-install seeding is allowed only when every application table is empty, including when the current schema already exists. Seed data and all default settings are committed in one database transaction. If installation fails before commit, its data writes are rolled back; fix the dependency failure and restart to retry. A completed installation is not seeded again, including after a lost commit acknowledgment. Schema creation precedes this data transaction, and site-icon generation remains a separate, noncritical operation.
+
+An existing or partially populated database with no settings or a missing local-account row is preserved and cannot automatically receive a replacement default account. Startup reports the failure; restore from a trusted backup or resolve the incomplete installation manually before restarting. Moonglade does not automatically clear ambiguous data left by older installations. A missing installation manifest alone, with valid account settings, is reconstructed with a Warning: its version is unknown and its timestamp records reconstruction, not the original installation time.
+
 ### Authentication
 
 - By default: Local accounts with TOTP authenticator app verification (manage via `/admin/account`)

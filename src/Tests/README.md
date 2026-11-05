@@ -29,6 +29,8 @@ See [AGENTS.md](../../AGENTS.md#development-and-verification) for the repository
 
 Startup tests use EF Core InMemory to verify settings initialization and preservation of stored content, manifest JSON, and timestamps for existing databases with missing or older manifests. They do not prove relational schema compatibility.
 
+Startup safety tests exercise each mapped application set as the only existing data and verify that a missing account prevents any repair or reseeding. The opt-in `StartupInstallationDatabaseTests` use the same disposable PostgreSQL and SQL Server fixture as the migration tests, enabled with `MOONGLADE_TEST_CATEGORY_DATABASES=1`. They cover empty/new schemas, repeated startup, transaction rollback at seed/default writes, cancellation, provider retries, lost commit acknowledgment, state-query failures, and preservation of posts/comments when settings or accounts are missing. These fault scenarios must never run against a real blog database. Normal runs explicitly skip this provider group.
+
 Manual upgrade tests for category IDs and PostgreSQL naming use opt-in disposable database containers. See [Migration Verification](../../docs/agent-reference.md#migration-verification) for prerequisites and limits; ordinary runs explicitly skip those relational groups.
 
 ## Run Tests

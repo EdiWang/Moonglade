@@ -23,8 +23,8 @@ public class StartUpInitializer(
             if (result != InitStartUpResult.Success)
                 return result;
 
-            // Step 2: Check if database is new and seed if necessary
-            var isNewDatabase = await IsDatabaseNewAsync(cancellationToken);
+            // An empty settings table alone does not identify a new installation.
+            var isNewDatabase = await IsDatabaseEmptyAsync(cancellationToken);
             if (isNewDatabase)
             {
                 result = await SeedDatabaseAsync(cancellationToken);
@@ -32,8 +32,8 @@ public class StartUpInitializer(
                     return result;
             }
 
-            // Step 3: Load configuration and add missing defaults
-            result = await InitializeBlogConfigurationAsync(isNewDatabase, cancellationToken);
+            // Reload committed settings, or initialize missing groups on an existing installation.
+            result = await InitializeBlogConfigurationAsync(false, cancellationToken);
             if (result != InitStartUpResult.Success)
                 return result;
 
@@ -69,22 +69,27 @@ public class StartUpInitializer(
             cancellationToken);
     }
 
-    private async Task<bool> IsDatabaseNewAsync(CancellationToken cancellationToken)
+    private async Task<bool> IsDatabaseEmptyAsync(CancellationToken ct)
     {
-        try
-        {
-            logger.LogDebug("Checking if database is new...");
-            var hasConfiguration = await context.BlogConfiguration.AnyAsync(cancellationToken);
-            var isNew = !hasConfiguration;
-
-            logger.LogInformation("Database is {DatabaseState}", isNew ? "new" : "existing");
-            return isNew;
-        }
-        catch (Exception ex)
-        {
-            logger.LogError(ex, "Failed to determine if database is new, assuming existing");
-            return false;
-        }
+        return !await context.BlogConfiguration.AnyAsync(ct)
+            && !await context.Post.AnyAsync(ct)
+            && !await context.Category.AnyAsync(ct)
+            && !await context.Tag.AnyAsync(ct)
+            && !await context.Comment.AnyAsync(ct)
+            && !await context.CommentReply.AnyAsync(ct)
+            && !await context.PostCategory.AnyAsync(ct)
+            && !await context.PostTag.AnyAsync(ct)
+            && !await context.PostView.AnyAsync(ct)
+            && !await context.PostViewDaily.AnyAsync(ct)
+            && !await context.BlogPage.AnyAsync(ct)
+            && !await context.Mention.AnyAsync(ct)
+            && !await context.BlogTheme.AnyAsync(ct)
+            && !await context.StyleSheet.AnyAsync(ct)
+            && !await context.BlogAsset.AnyAsync(ct)
+            && !await context.Widget.AnyAsync(ct)
+            && !await context.ActivityLog.AnyAsync(ct)
+            && !await context.EmailOutboxMessage.AnyAsync(ct)
+            && !await context.SiteVerificationFile.AnyAsync(ct);
     }
 
     private async Task<InitStartUpResult> SeedDatabaseAsync(CancellationToken cancellationToken)
@@ -93,8 +98,37 @@ public class StartUpInitializer(
             "Seeding database",
             async () =>
             {
-                await context.ClearAllData();
-                await Seed.SeedAsync(context, logger);
+                IDictionary<string, string> installedSettings = null;
+                Guid installedPostId = default;
+                var strategy = context.Database.CreateExecutionStrategy();
+                await strategy.ExecuteAsync(async () =>
+                {
+                    context.ChangeTracker.Clear();
+                    if (installedSettings is not null)
+                    {
+                        // A lost commit acknowledgment must not duplicate a committed installation.
+                        var saved = await context.BlogConfiguration.AsNoTracking()
+                            .ToDictionaryAsync(row => row.CfgKey, row => row.CfgValue, cancellationToken);
+                        if (saved.Count == installedSettings.Count
+                            && installedSettings.All(pair => saved.TryGetValue(pair.Key, out var json) && json == pair.Value)
+                            && await context.Post.AnyAsync(post => post.Id == installedPostId, cancellationToken))
+                        {
+                            return;
+                        }
+                    }
+
+                    if (!await IsDatabaseEmptyAsync(cancellationToken))
+                    {
+                        throw new InvalidOperationException(
+                            "The database contains existing or incomplete installation data. Preserve it and restore from a trusted backup before restarting.");
+                    }
+
+                    await using var transaction = await context.Database.BeginTransactionAsync(cancellationToken);
+                    await Seed.SeedAsync(context, logger, cancellationToken);
+                    installedPostId = await context.Post.Select(post => post.Id).SingleAsync(cancellationToken);
+                    installedSettings = await blogConfigInitializer.InitializeStoreAsync(true, cancellationToken);
+                    await transaction.CommitAsync(cancellationToken);
+                });
             },
             InitStartUpResult.FailedSeedingDatabase,
             cancellationToken);

@@ -22,17 +22,36 @@ public class ConfigInitializer(
 {
     public async Task Initialize(bool isNew, CancellationToken cancellationToken = default)
     {
+        var config = await InitializeStoreAsync(isNew, cancellationToken);
+        blogConfig.LoadFromConfig(config, isNew);
+    }
+
+    internal async Task<IDictionary<string, string>> InitializeStoreAsync(bool isNew, CancellationToken cancellationToken = default)
+    {
         try
         {
             logger.LogInformation("Starting blog configuration initialization. IsNew: {IsNew}", isNew);
 
             var config = await queryMediator.QueryAsync(new ListConfigurationsQuery(), cancellationToken);
-            var defaultsToAdd = blogConfig.LoadFromConfig(config, isNew);
+            if (!isNew && !config.ContainsKey(nameof(LocalAccountSettings)))
+            {
+                throw new InvalidOperationException(
+                    "Stored configuration 'LocalAccountSettings' is missing. Restore a valid value before restarting.");
+            }
+
+            // Validate detached settings before any repair writes or runtime publication.
+            var defaultsToAdd = new BlogConfig().LoadFromConfig(config, isNew);
+            if (!isNew && defaultsToAdd.ContainsKey(nameof(SystemManifestSettings)))
+            {
+                logger.LogWarning(
+                    "Reconstructing missing configuration {Key}; version is unknown and InstallTimeUtc is the reconstruction time",
+                    nameof(SystemManifestSettings));
+            }
 
             if (defaultsToAdd.Count == 0)
             {
                 logger.LogInformation("No configuration keys to initialize");
-                return;
+                return config;
             }
 
             logger.LogInformation(
@@ -43,9 +62,11 @@ public class ConfigInitializer(
             foreach (var (key, defaultJson) in defaultsToAdd)
             {
                 await InitializeSettingAsync(key, defaultJson, cancellationToken);
+                config[key] = defaultJson;
             }
 
             logger.LogInformation("Blog configuration initialization completed successfully");
+            return config;
         }
         catch (Exception ex)
         {
@@ -58,7 +79,7 @@ public class ConfigInitializer(
     /// Initializes a specific configuration setting with its default value.
     /// </summary>
     /// <param name="key">The configuration key to initialize.</param>
-    /// <param name="defaultJson">The default settings already assigned to the runtime configuration.</param>
+    /// <param name="defaultJson">The validated default settings to persist before runtime publication.</param>
     /// <returns>A task representing the asynchronous setting initialization operation.</returns>
     /// <exception cref="Exception">
     /// Thrown when the setting initialization fails due to command execution issues.

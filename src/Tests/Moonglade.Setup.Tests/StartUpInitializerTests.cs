@@ -1,124 +1,141 @@
-using LiteBus.Commands.Abstractions;
-using LiteBus.Queries.Abstractions;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging.Abstractions;
+using Microsoft.Extensions.Logging;
 using Moonglade.Configuration;
 using Moonglade.Data;
 using Moonglade.Data.Entities;
-using Moq;
+using Moonglade.Setup.Tests.TestSupport;
 
 namespace Moonglade.Setup.Tests;
 
 [Collection("Startup site icon cache")]
-public class StartUpInitializerTests : IDisposable
+public class StartUpInitializerTests
 {
-    private readonly string _testTempDirectory = Path.Combine(Path.GetTempPath(), "moonglade-startup-tests", Guid.NewGuid().ToString("N"));
-    private readonly Dictionary<string, string> _originalTempVariables = new[] { "TEMP", "TMP", "TMPDIR" }
-        .ToDictionary(name => name, Environment.GetEnvironmentVariable);
-
-    public StartUpInitializerTests()
-    {
-        Directory.CreateDirectory(_testTempDirectory);
-        foreach (var name in _originalTempVariables.Keys)
-        {
-            Environment.SetEnvironmentVariable(name, _testTempDirectory);
-        }
-    }
-
     [Theory]
     [InlineData(null)]
     [InlineData("16.7.0")]
     public async Task InitStartUpAsync_ExistingDatabase_PreservesContentAndManifest(string manifestVersion)
     {
-        var cancellationToken = TestContext.Current.CancellationToken;
-        var options = new DbContextOptionsBuilder<BlogDbContext>()
-            .UseInMemoryDatabase(Guid.NewGuid().ToString())
-            .Options;
-        await using var context = new BlogDbContext(options);
-        context.BlogConfiguration.Add(new BlogConfigurationEntity
-        {
-            CfgKey = "ContentSettings",
-            CfgValue = "{}",
-            LastModifiedTimeUtc = DateTime.UtcNow
-        });
+        var ct = TestContext.Current.CancellationToken;
+        await using var db = CreateContext();
+        var originalTime = DateTime.UtcNow.AddDays(-1);
+        db.BlogConfiguration.AddRange(
+            new BlogConfigurationEntity { CfgKey = nameof(ContentSettings), CfgValue = "{}", LastModifiedTimeUtc = originalTime },
+            new BlogConfigurationEntity { CfgKey = nameof(LocalAccountSettings), CfgValue = LocalAccountSettings.DefaultValue.ToJson(), LastModifiedTimeUtc = originalTime });
         var manifest = new SystemManifestSettings
         {
             VersionString = manifestVersion,
             InstallTimeUtc = new DateTime(2026, 1, 1, 0, 0, 0, DateTimeKind.Utc)
         };
-        var manifestJson = manifest.ToJson();
         if (manifestVersion is not null)
-        {
-            context.BlogConfiguration.Add(new BlogConfigurationEntity
+            db.BlogConfiguration.Add(new BlogConfigurationEntity
             {
-                CfgKey = nameof(SystemManifestSettings),
-                CfgValue = manifestJson,
-                LastModifiedTimeUtc = manifest.InstallTimeUtc
+                CfgKey = nameof(SystemManifestSettings), CfgValue = manifest.ToJson(), LastModifiedTimeUtc = originalTime
             });
-        }
-        var post = new PostEntity
-        {
-            Id = Guid.NewGuid(),
-            Title = "Historical post",
-            ContentType = "",
-            CreateTimeUtc = DateTime.UtcNow
-        };
-        context.Post.Add(post);
-        await context.SaveChangesAsync(cancellationToken);
-        var queryMediator = new Mock<IQueryMediator>();
-        queryMediator
-            .Setup(mediator => mediator.QueryAsync(
-                It.IsAny<ListConfigurationsQuery>(), It.IsAny<QueryMediationSettings>(), cancellationToken))
-            .Returns(async () => (IDictionary<string, string>)await context.BlogConfiguration
-                .ToDictionaryAsync(row => row.CfgKey, row => row.CfgValue, cancellationToken));
-        var commandMediator = new Mock<ICommandMediator>();
-        var addDefaultHandler = new AddDefaultConfigurationCommandHandler(context, NullLogger<AddDefaultConfigurationCommandHandler>.Instance);
-        commandMediator
-            .Setup(mediator => mediator.SendAsync(
-                It.IsAny<AddDefaultConfigurationCommand>(), It.IsAny<CommandMediationSettings>(), cancellationToken))
-            .Returns((ICommand<OperationCode> command, CommandMediationSettings _, CancellationToken ct) =>
-                addDefaultHandler.HandleAsync((AddDefaultConfigurationCommand)command, ct));
-        var configInitializer = new ConfigInitializer(
-            queryMediator.Object, commandMediator.Object, new BlogConfig(), NullLogger<ConfigInitializer>.Instance);
-        var webEnvironment = new Mock<IWebHostEnvironment>();
-        webEnvironment.SetupGet(environment => environment.WebRootPath).Returns(Path.GetTempPath());
-        var siteIconBuilder = new SiteIconBuilder(
-            NullLogger<SiteIconBuilder>.Instance, queryMediator.Object, webEnvironment.Object);
-        var initializer = new StartUpInitializer(
-            NullLogger<StartUpInitializer>.Instance,
-            context,
-            configInitializer,
-            siteIconBuilder);
+        var post = new PostEntity { Id = Guid.NewGuid(), Title = "Historical post", ContentType = "", CreateTimeUtc = originalTime };
+        db.Post.Add(post);
+        await db.SaveChangesAsync(ct);
+        using var harness = new StartupTestHarness(db);
+        var before = DateTime.UtcNow;
 
-        var result = await initializer.InitStartUpAsync(cancellationToken);
+        Assert.Equal(InitStartUpResult.Success, await harness.Initializer.InitStartUpAsync(ct));
 
-        Assert.Equal(InitStartUpResult.Success, result);
-        context.ChangeTracker.Clear();
-        Assert.Empty((await context.Post.SingleAsync(cancellationToken)).ContentType);
-        Assert.Equal(11, await context.BlogConfiguration.CountAsync(cancellationToken));
+        db.ChangeTracker.Clear();
+        var savedPost = await db.Post.SingleAsync(ct);
+        Assert.Equal(post.Id, savedPost.Id);
+        Assert.Equal("Historical post", savedPost.Title);
+        Assert.Empty(savedPost.ContentType);
+        Assert.Equal(originalTime, savedPost.CreateTimeUtc);
+        var settings = await db.BlogConfiguration.OrderBy(row => row.CfgKey).ToListAsync(ct);
+        Assert.Equal(11, settings.Count);
+        Assert.Equal(originalTime, settings.Single(row => row.CfgKey == nameof(ContentSettings)).LastModifiedTimeUtc);
+        Assert.Equal(originalTime, settings.Single(row => row.CfgKey == nameof(LocalAccountSettings)).LastModifiedTimeUtc);
         if (manifestVersion is not null)
         {
-            var savedManifest = await context.BlogConfiguration.SingleAsync(
-                row => row.CfgKey == nameof(SystemManifestSettings), cancellationToken);
-            Assert.Equal(manifestJson, savedManifest.CfgValue);
-            Assert.Equal(manifest.InstallTimeUtc, savedManifest.LastModifiedTimeUtc);
+            Assert.Equal(manifest.ToJson(), harness.Config.SystemManifestSettings.ToJson());
+            Assert.DoesNotContain(harness.ConfigLogger.Entries, entry => entry.Level == LogLevel.Warning);
         }
-        queryMediator.Verify(mediator => mediator.QueryAsync(
-            It.IsAny<ListConfigurationsQuery>(), It.IsAny<QueryMediationSettings>(), cancellationToken), Times.Once);
+        else
+        {
+            Assert.Equal("0.0.0.0", harness.Config.SystemManifestSettings.VersionString);
+            Assert.InRange(harness.Config.SystemManifestSettings.InstallTimeUtc, before, DateTime.UtcNow);
+            Assert.Contains(harness.ConfigLogger.Entries, entry => entry.Level == LogLevel.Warning
+                && entry.Message.Contains(nameof(SystemManifestSettings)) && entry.Message.Contains("reconstruction"));
+        }
+        var snapshots = settings.Select(row => (row.CfgKey, row.CfgValue, row.LastModifiedTimeUtc)).ToArray();
+        Assert.Equal(InitStartUpResult.Success, await harness.Initializer.InitStartUpAsync(ct));
+        db.ChangeTracker.Clear();
+        var after = await db.BlogConfiguration.OrderBy(row => row.CfgKey).ToListAsync(ct);
+        Assert.Equal(snapshots, after.Select(row => (row.CfgKey, row.CfgValue, row.LastModifiedTimeUtc)).ToArray());
+        Assert.Single(await db.Post.ToListAsync(ct));
     }
 
-    public void Dispose()
+    public static IEnumerable<object[]> ApplicationEntityTypes => typeof(BlogDbContext).GetProperties()
+        .Where(property => property.PropertyType.IsGenericType
+            && property.PropertyType.GetGenericTypeDefinition() == typeof(DbSet<>))
+        .Select(property => new object[] { property.PropertyType.GetGenericArguments()[0] });
+
+    [Theory]
+    [MemberData(nameof(ApplicationEntityTypes))]
+    public async Task InitStartUpAsync_AnyExistingApplicationRowWithoutAccount_IsPreserved(Type entityType)
     {
-        foreach (var (name, value) in _originalTempVariables)
+        var ct = TestContext.Current.CancellationToken;
+        await using var db = CreateContext();
+        var entity = Activator.CreateInstance(entityType)!;
+        foreach (var property in entityType.GetProperties().Where(property => property.CanWrite))
         {
-            Environment.SetEnvironmentVariable(name, value);
+            if (property.PropertyType == typeof(string)) property.SetValue(entity, "Preserved");
+            if (property.PropertyType == typeof(Guid)) property.SetValue(entity, Guid.NewGuid());
+            if (property.PropertyType == typeof(int)) property.SetValue(entity, 100);
+            if (property.PropertyType == typeof(DateTime) || property.PropertyType == typeof(DateTime?))
+                property.SetValue(entity, DateTime.UtcNow.AddDays(-1));
         }
-        Directory.Delete(_testTempDirectory, recursive: true);
+        db.Add(entity);
+        await db.SaveChangesAsync(ct);
+        var entry = db.Entry(entity);
+        var keys = entry.Metadata.FindPrimaryKey()!.Properties.Select(property => entry.Property(property.Name).CurrentValue).ToArray();
+        var snapshot = entry.Properties.ToDictionary(property => property.Metadata.Name, property => property.CurrentValue);
+        db.ChangeTracker.Clear();
+        using var harness = new StartupTestHarness(db);
+        var originalRuntime = harness.Config.GeneralSettings;
+
+        Assert.Equal(InitStartUpResult.FailedInitBlogConfig, await harness.Initializer.InitStartUpAsync(ct));
+
+        db.ChangeTracker.Clear();
+        var retained = await db.FindAsync(entityType, keys, ct);
+        Assert.NotNull(retained);
+        Assert.Equal(snapshot, db.Entry(retained).Properties.ToDictionary(property => property.Metadata.Name, property => property.CurrentValue));
+        Assert.Same(originalRuntime, harness.Config.GeneralSettings);
+        Assert.False(await db.BlogConfiguration.AnyAsync(row => row.CfgKey == nameof(LocalAccountSettings), ct));
+        Assert.Contains(harness.ConfigLogger.Entries, log => log.Level == LogLevel.Error);
     }
+
+    [Theory]
+    [InlineData(nameof(LocalAccountSettings))]
+    [InlineData(nameof(SystemManifestSettings))]
+    public async Task InitStartUpAsync_InvalidProtectedSettings_PreventAllRepairsAndPublication(string key)
+    {
+        var ct = TestContext.Current.CancellationToken;
+        await using var db = CreateContext();
+        db.BlogConfiguration.AddRange(
+            new BlogConfigurationEntity { CfgKey = nameof(LocalAccountSettings), CfgValue = LocalAccountSettings.DefaultValue.ToJson() },
+            new BlogConfigurationEntity { CfgKey = nameof(SystemManifestSettings), CfgValue = SystemManifestSettings.DefaultValue.ToJson() },
+            new BlogConfigurationEntity { CfgKey = nameof(FeedSettings), CfgValue = "not-json" });
+        db.BlogConfiguration.Local.Single(row => row.CfgKey == key).CfgValue = "null";
+        await db.SaveChangesAsync(ct);
+        using var harness = new StartupTestHarness(db);
+        var original = harness.Config.GeneralSettings;
+
+        Assert.Equal(InitStartUpResult.FailedInitBlogConfig, await harness.Initializer.InitStartUpAsync(ct));
+
+        Assert.Same(original, harness.Config.GeneralSettings);
+        db.ChangeTracker.Clear();
+        Assert.Equal(3, await db.BlogConfiguration.CountAsync(ct));
+        Assert.Equal("not-json", (await db.BlogConfiguration.SingleAsync(row => row.CfgKey == nameof(FeedSettings), ct)).CfgValue);
+    }
+
+    private static BlogDbContext CreateContext() => new(new DbContextOptionsBuilder<BlogDbContext>()
+        .UseInMemoryDatabase(Guid.NewGuid().ToString()).Options);
 }
 
 [CollectionDefinition("Startup site icon cache", DisableParallelization = true)]
-public class StartupSiteIconCacheCollection
-{
-}
+public class StartupSiteIconCacheCollection;
