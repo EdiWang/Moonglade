@@ -27,7 +27,6 @@ public class SettingsController(
         model.AvatarUrl = blogConfig.GeneralSettings.AvatarUrl;
 
         await CommandMediator.SendAsync(UpdateConfigurationCommand.Create(model), HttpContext.RequestAborted);
-        AppDomain.CurrentDomain.SetData("CurrentThemeColor", null);
         await LogActivityAsync(EventType.SettingsGeneralUpdated, "Update General Settings", "General Settings",
             ActivityLogMetaData.Create(
                 ("SiteTitle", model.SiteTitle),
@@ -152,7 +151,6 @@ public class SettingsController(
     }
 
     [HttpPost("appearance")]
-    [TypeFilter(typeof(ClearBlogCache), Arguments = [BlogCachePartition.General, "theme"])]
     public async Task<IActionResult> Appearance(AppearanceSettings model)
     {
         return await UpdateSettingsAsync(model,

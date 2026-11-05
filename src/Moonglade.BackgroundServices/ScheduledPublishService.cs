@@ -25,9 +25,18 @@ public class ScheduledPublishService(
         {
             try
             {
+                var wakeToken = wakeUp.GetWakeToken();
+                using var linkedCts = CancellationTokenSource.CreateLinkedTokenSource(stoppingToken, wakeToken);
                 if (!blogConfig.AdvancedSettings.EnablePostScheduler)
                 {
-                    await Task.Delay(MaxWaitInterval, stoppingToken);
+                    logger.LogDebug("Scheduled publishing is disabled; waiting for configuration changes.");
+                    try
+                    {
+                        await Task.Delay(MaxWaitInterval, linkedCts.Token);
+                    }
+                    catch (OperationCanceledException) when (!stoppingToken.IsCancellationRequested)
+                    {
+                    }
                     continue;
                 }
 
@@ -52,9 +61,6 @@ public class ScheduledPublishService(
                     logger.LogInformation("No scheduled posts found, waiting for {MaxWaitInterval} before checking again.", MaxWaitInterval.TotalSeconds);
                 }
 
-                var wakeToken = wakeUp.GetWakeToken();
-                using var linkedCts = CancellationTokenSource.CreateLinkedTokenSource(stoppingToken, wakeToken);
-
                 if (delay > TimeSpan.Zero)
                 {
                     logger.LogInformation("Next scheduled publish in {Delay} seconds.", delay.TotalSeconds);
@@ -68,6 +74,7 @@ public class ScheduledPublishService(
                     }
                 }
 
+                if (linkedCts.IsCancellationRequested || !blogConfig.AdvancedSettings.EnablePostScheduler) continue;
                 await CheckAndPublishPostsAsync(stoppingToken);
             }
             catch (OperationCanceledException)

@@ -67,7 +67,7 @@ public class SubscriptionController(
 
         return await cache.GetOrCreateAsync(
             hasRoute ? categoryPartition.ToString() : BlogCachePartition.General.ToString(),
-            postCacheInvalidator.GetCacheKey(route ?? defaultCacheKey),
+            postCacheInvalidator.GetFeedCacheKey(route ?? defaultCacheKey),
             async () =>
             {
                 var xml = await queryMediator.QueryAsync(queryFactory(slug));

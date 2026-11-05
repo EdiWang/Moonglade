@@ -103,6 +103,7 @@
                         </div>
                         <div class="col">
                             <label asp-for="@settings.EmailDisplayName"></label>
+                            <div class="form-text">@SharedLocalizer["* Requires restarting application"]</div>
                         </div>
                         <div class="col-6">
                             <input asp-for="@settings.EmailDisplayName" class="form-control" maxlength="64" />

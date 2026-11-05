@@ -3,6 +3,7 @@
 @using System.Globalization
 @inject IConfiguration Configuration
 @inject ICacheAside Cache
+@inject ThemeCacheInvalidator ThemeCache
 
 @{
     if (string.IsNullOrEmpty(BlogConfig.GeneralSettings.AvatarUrl))
@@ -29,7 +30,7 @@
 
     bool clientPreferDarkMode = Helper.IsClientPreferDarkMode(Context);
 
-    var themeCss = await Cache.GetOrCreateAsync(BlogCachePartition.General.ToString(), "theme", async () =>
+    var themeCss = await Cache.GetOrCreateAsync(BlogCachePartition.General.ToString(), ThemeCache.CacheKey, async () =>
     {
         return await QueryMediator.QueryAsync(new GetSiteThemeStyleSheetQuery(BlogConfig.AppearanceSettings.ThemeId));
     }, TimeSpan.FromMinutes(20));

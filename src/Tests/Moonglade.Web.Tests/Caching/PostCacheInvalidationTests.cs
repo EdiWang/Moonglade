@@ -19,6 +19,8 @@ using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Moonglade.Configuration;
+using Moonglade.BackgroundServices;
+using Moonglade.Theme;
 using Moonglade.Data;
 using Moonglade.Data.Entities;
 using Moonglade.Features.Category;
@@ -33,7 +35,7 @@ using Moonglade.Web.Pages;
 
 namespace Moonglade.Web.Tests.Caching;
 
-public class PostCacheInvalidationTests
+public partial class PostCacheInvalidationTests
 {
     [Theory]
     [InlineData("create")]
@@ -207,7 +209,7 @@ public class PostCacheInvalidationTests
         await mediator.SendAsync(new AddViewCountCommand(environment.PostId), ct);
 
         Assert.Equal("0:probe", environment.Invalidator.GetCacheKey("probe"));
-        Assert.Equal("cached", environment.Cache.GetOrCreate("General", environment.Invalidator.GetCacheKey("rss"), () => "missing"));
+        Assert.Equal("cached", environment.Cache.GetOrCreate("General", environment.Invalidator.GetFeedCacheKey("rss"), () => "missing"));
     }
 
     [Fact]
@@ -259,7 +261,7 @@ public class PostCacheInvalidationTests
 
         Assert.NotEqual(oldKey, environment.Invalidator.SiteMapCacheKey);
         Assert.Equal("fresh", environment.Cache.GetOrCreate("General", oldKey, () => "fresh"));
-        Assert.Equal("cached", environment.Cache.GetOrCreate("General", environment.Invalidator.GetCacheKey("rss"), () => "missing"));
+        Assert.Equal("cached", environment.Cache.GetOrCreate("General", environment.Invalidator.GetFeedCacheKey("rss"), () => "missing"));
         Assert.Equal("cached", environment.Cache.GetOrCreate("Post", environment.Invalidator.GetCacheKey("old-post"), () => "missing"));
     }
 
@@ -275,7 +277,7 @@ public class PostCacheInvalidationTests
         using var environment = await TestEnvironment.CreateAsync();
         var started = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
         var finish = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
-        string CurrentKey() => key == "sitemap" ? environment.Invalidator.SiteMapCacheKey : environment.Invalidator.GetCacheKey(key);
+        string CurrentKey() => key == "sitemap" ? environment.Invalidator.SiteMapCacheKey : partition == "Post" ? environment.Invalidator.GetCacheKey(key) : environment.Invalidator.GetFeedCacheKey(key);
         var pending = environment.Cache.GetOrCreateAsync(partition, CurrentKey(), async () =>
         {
             started.SetResult();
@@ -294,7 +296,7 @@ public class PostCacheInvalidationTests
 
     private sealed class TestEnvironment(SqliteConnection connection, ServiceProvider services) : IDisposable
     {
-        public static readonly string[] UnrelatedKeys = ["theme", "avatar", "widgets", "site-verification:test.txt"];
+        public static readonly string[] UnrelatedKeys = ["0:theme", "avatar", "widgets", "site-verification:test.txt"];
         public ServiceProvider Services { get; } = services;
         public ICacheAside Cache => Services.GetRequiredService<ICacheAside>();
         public PostCacheInvalidator Invalidator => Services.GetRequiredService<PostCacheInvalidator>();
@@ -313,16 +315,11 @@ public class PostCacheInvalidationTests
             services.AddSingleton(TimeProvider.System);
             services.AddInMemoryCacheAside();
             services.AddSingleton<PostCacheInvalidator>();
+            services.AddSingleton<ThemeCacheInvalidator>();
+            services.AddSingleton<ScheduledPublishWakeUp>();
             services.AddSingleton<IBlogConfig>(new BlogConfig
             {
-                GeneralSettings = new GeneralSettings
-                {
-                    SiteTitle = "Test blog",
-                    Description = "Test",
-                    Copyright = "Test",
-                    DefaultLanguageCode = "en-us",
-                    OwnerEmail = "owner@example.com"
-                },
+                GeneralSettings = GeneralSettings.DefaultValue,
                 ContentSettings = new ContentSettings { EnableViewCount = false },
                 FeedSettings = new FeedSettings { FeedItemCount = 20 }
             });
@@ -333,11 +330,16 @@ public class PostCacheInvalidationTests
             services.AddLiteBus(bus =>
             {
                 bus.AddMessaging(_ => { });
-                bus.AddCommands(module => module.RegisterFromAssembly(typeof(CreatePostCommand).Assembly));
+                bus.AddCommands(module =>
+                {
+                    module.RegisterFromAssembly(typeof(CreatePostCommand).Assembly);
+                    module.RegisterFromAssembly(typeof(UpdateConfigurationCommand).Assembly);
+                });
                 bus.AddQueries(module =>
                 {
                     module.RegisterFromAssembly(typeof(GetPostBySlugQuery).Assembly);
                     module.RegisterFromAssembly(typeof(GetRssStringQuery).Assembly);
+                    module.RegisterFromAssembly(typeof(GetSiteThemeStyleSheetQuery).Assembly);
                 });
                 bus.AddEvents(module => module.RegisterFromAssembly(typeof(PostChangedEventHandler).Assembly));
             });
@@ -345,6 +347,14 @@ public class PostCacheInvalidationTests
             using var scope = environment.Services.CreateScope();
             var db = scope.ServiceProvider.GetRequiredService<BlogDbContext>();
             await db.Database.EnsureCreatedAsync(TestContext.Current.CancellationToken);
+            var config = environment.Services.GetRequiredService<IBlogConfig>();
+            foreach (var property in typeof(IBlogConfig).GetProperties())
+                db.BlogConfiguration.Add(new BlogConfigurationEntity
+                {
+                    CfgKey = property.Name,
+                    CfgValue = property.GetValue(config).ToJson(),
+                    LastModifiedTimeUtc = DateTime.UtcNow
+                });
             var post = CreatePost(environment.PostId, environment.PublishDateUtc);
             var category = new CategoryEntity { Id = environment.CategoryId, DisplayName = "Tech", Slug = "tech" };
             var tag = new TagEntity { DisplayName = "original", NormalizedName = "original" };
@@ -361,11 +371,11 @@ public class PostCacheInvalidationTests
             (string, string)[] keys =
             [
                 ("Post", Invalidator.GetCacheKey("old-post")),
-                ("General", Invalidator.GetCacheKey("rss")),
-                ("General", Invalidator.GetCacheKey("atom")),
+                ("General", Invalidator.GetFeedCacheKey("rss")),
+                ("General", Invalidator.GetFeedCacheKey("atom")),
                 ("General", Invalidator.SiteMapCacheKey),
-                ("RssCategory", Invalidator.GetCacheKey("tech")),
-                ("AtomCategory", Invalidator.GetCacheKey("tech"))
+                ("RssCategory", Invalidator.GetFeedCacheKey("tech")),
+                ("AtomCategory", Invalidator.GetFeedCacheKey("tech"))
             ];
             foreach (var (partition, key) in keys) Cache.GetOrCreate(partition, key, () => "cached");
             foreach (var key in UnrelatedKeys) Cache.GetOrCreate("General", key, () => "preserved");

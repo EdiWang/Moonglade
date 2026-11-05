@@ -1,4 +1,5 @@
 using LiteBus.Commands.Abstractions;
+using LiteBus.Events.Abstractions;
 using Microsoft.Extensions.Logging;
 using Moonglade.Data;
 using System.Collections.ObjectModel;
@@ -31,6 +32,7 @@ public record UpdateConfigurationCommand : ICommand
 public class UpdateConfigurationCommandHandler(
     BlogDbContext db,
     IBlogConfig blogConfig,
+    IEventMediator eventMediator,
     ILogger<UpdateConfigurationCommandHandler> logger) : ICommandHandler<UpdateConfigurationCommand>
 {
     // Keep concurrent commits and singleton replacements in the same order within this process.
@@ -65,6 +67,7 @@ public class UpdateConfigurationCommandHandler(
             }
 
             var utcNow = DateTime.UtcNow;
+            var changedNames = new List<string>();
             foreach (var (name, json) in request.Settings)
             {
                 var entity = entities[name];
@@ -72,6 +75,7 @@ public class UpdateConfigurationCommandHandler(
 
                 entity.CfgValue = json;
                 entity.LastModifiedTimeUtc = utcNow;
+                changedNames.Add(name);
             }
 
             await db.SaveChangesAsync(ct);
@@ -80,6 +84,10 @@ public class UpdateConfigurationCommandHandler(
             {
                 property.SetValue(blogConfig, value);
             }
+
+            // Commit and runtime publication must precede invalidation, even if the client disconnects.
+            if (changedNames.Count > 0)
+                await eventMediator.PublishAsync(new ConfigurationChangedEvent(changedNames.AsReadOnly()), CancellationToken.None);
 
             logger.LogInformation("Configuration updated successfully: {Names}", string.Join(", ", names));
         }

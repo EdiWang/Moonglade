@@ -10,9 +10,9 @@ This file is the recovery record for the settings design review and reliability 
 4. Identify the next authorized batch and its dependencies. Ask the user before executing an unauthorized batch or resolving a pending business or architecture decision. Offer a recommendation and explain its effects.
 5. Update this file during work and at every batch boundary, including implementation completion, verification, commit, user acceptance, interruption, or newly discovered blockers. Do not leave the only recovery information in chat.
 
-Current authorization: execute B3 (the user explicitly requested "Execute B3" on 2026-11-05), including implementation, verification, a local batch commit, and tracker updates under the agreed workflow. Q3-Q4 were explicitly resolved by D16-D18. B4-B6, optional structural work, deployment, and production-data changes are not authorized.
+Current authorization: execute B4 (the user explicitly requested "Execute B4" on 2026-11-05), including implementation, verification, a local batch commit, and tracker updates under the agreed workflow. B5-B6, optional structural work, deployment, and production-data changes are not authorized.
 
-Current next step: present the verified B3 local batch commit and await user acceptance / further instructions. B2 is commit `d51230912`; B3 is the commit containing the completion entry below, titled `fix(configuration): validate settings consistently`. Record its actual hash at the next tracker update. Q5 remains unresolved for B4; do not start B4 automatically.
+Current next step: present the verified B4 local batch commit and await user acceptance / further instructions. B3 is commit `fe32fd43f`; B4 is the commit containing the completion entry below, titled `fix(settings): invalidate affected caches after save`. Record its actual hash at the next tracker update. B5 and later batches must not start automatically. The isolated acceptance host/database have been stopped and removed.
 
 Retention: the user explicitly requested a repository recovery and progress file. Keep this file across batches and context compaction. Do not delete it merely because tests pass; ask before removing or archiving it. Permanent documentation must not depend on this task record.
 
@@ -27,7 +27,7 @@ Improve settings reliability through independently testable, committable, review
 - Preserve grouped JSON storage, existing setting keys and field names, supported providers, public URLs, authorization, antiforgery protection, and the current successful-save guarantees unless the user approves a specific change.
 - Keep deployment configuration separate from administrator-editable blog settings. Do not move SMTP credentials or other deployment secrets into ordinary settings.
 - Do not introduce dependencies, schema revisions, conflict UI, distributed synchronization, or a generic settings framework without a demonstrated need and explicit scope approval.
-- Current implementation scope is B3 only, preserving verified B1-B2 behavior except explicitly approved validation changes. No deployment is included in any batch below.
+- Current implementation scope is B4 only, preserving verified B1-B3 behavior except explicitly approved activation changes. No deployment is included in any batch below.
 
 Repository files must be English, except permitted localization resources and relevant test data. Follow `.editorconfig` (UTF-8, CRLF, final newline). Use the existing .NET stack and repository tools.
 
@@ -55,6 +55,9 @@ These decisions were explicitly supplied by the user in this conversation on 202
 | D16 | Reuse existing required/range/length/format and script/CSS conditional rules; reject undefined enums; feed count is nonnegative with 0 unlimited and no new upper cap. Menus have at most 5 entries, non-null entries/submenu lists, required titles and submenu URLs, and no extra limits; disabled menus may have a null array. | Reject invalid writes with validation errors. Invalid ordinary persisted groups recover whole-group defaults with Warning, even if that replaces other valid sibling fields. B2 preserves explicit values only when they pass approved B3 validation. |
 | D17 | Remove the generated AvatarUrl 64-character cap; allow blank notification display name and deployment fallback; preserve missing-theme fallback; custom CSS is limited to 10240 UTF-8 bytes. Keep existing watermark text/font constraints even when disabled. | Apply these compatibility exceptions consistently at HTTP, command, and persisted-loading boundaries. |
 | D18 | Account username/hash/salt must be nonblank; populated TOTP secrets must parse and enabled TOTP needs a secret; generated-but-not-enabled setup remains valid. Manifest requires non-minimum UTC time; old/empty version values are preserved. | Invalid protected state stops initialization without defaults or invented history. Do not apply new-account request username/password format restrictions to old stored credentials. |
+| D19 | FOAF/sitemap enable and disable, and notification sender display-name changes, take effect after application restart. | Preserve endpoint registration and email singleton lifetimes; clearly label restart requirements. |
+| D20 | Wake scheduled publishing after settings save and recheck the enable flag before dispatch. | Disabling skips pending work not yet dispatched; enabling promptly rechecks. Already dispatched publication is not revoked. |
+| D21 | Include the full-feed-content source defect in B4. | Read actual post content when full feeds are enabled, abstracts when disabled; verify RSS/Atom and category feeds, including formatting/CDN behavior. |
 
 Existing repository constraints protect invalid persisted `LocalAccountSettings` and `SystemManifestSettings`: startup fails rather than replacing them with shipped defaults. Ordinary-setting recovery does not override that protection. D5 additionally covers missing account rows and empty settings tables with existing business data.
 
@@ -70,7 +73,7 @@ Do not silently resolve these while implementing. B0 must inventory actual value
 | Q2 (resolved: D15) | How should absent fields use defaults when property initializers and `DefaultValue` differ? | User explicitly accepted whole-group defaults for absent ordinary fields and preservation of explicit values after seeing the behavioral changes. Protected state remains separate. | No longer blocks B2. |
 | Q3 (resolved: D16-D17) | Which semantic validation rules should be added or tightened? | User accepted the explicit baseline rules, whole-group recovery effects, and compatibility exceptions after reviewing them. | No longer blocks B3. |
 | Q4 (resolved: D18) | Which historical account and manifest shapes remain valid? | User accepted nonblank credential fields, parseable TOTP/setup states, and non-minimum UTC installation time with version values preserved. | No longer blocks B3. |
-| Q5 | Which settings are immediate, cache-dependent, restart-dependent, or delayed by a background worker? | Inventory actual readers and existing behavior. Recommend retaining the established restart-dependent endpoints and documenting them; ask before reclassifying behavior. | B4's activation contract. |
+| Q5 (resolved: D19-D20) | Which settings are immediate, cache-dependent, restart-dependent, or delayed by a background worker? | User accepted restart requirements for FOAF/sitemap/email name and wake/recheck behavior for the scheduler. Other settings retain next-operation semantics and downstream cache limits. | No longer blocks B4. |
 | Q6 (resolved: D13) | Should a pre-existing supported schema with every application table empty permit first-install initialization? | User confirmed yes. Verify all application sets before initialization; retain retry after transactional rollback. | No longer blocks B1. |
 | Q7 (resolved: D14) | Must older releases' abandoned partial installations recover automatically despite lacking reliable provenance? | User confirmed preservation for manual confirmation; no automatic clearing. Safe new-install retries remain required. | No longer blocks B1. |
 
@@ -117,8 +120,8 @@ Allowed statuses: `Not started`, `In progress`, `Blocked: <specific dependency>`
 | B0 | None | Verified: source matrices and B1 startup decisions complete | Source inventory and document checks verified; no application tests | None; implementation commit not applicable | User authorized proceeding to B1 on 2026-11-05 |
 | B1 | B0 startup rules settled | Verified: startup safety and transactional installation implemented | Setup 107/107 including both providers; Configuration 45/45; Web 273/273; Web build clean | `7f0394673` | User authorized proceeding to B2 on 2026-11-05 |
 | B2 | B1 accepted; affected defaults confirmed | Verified: D15 applied at persisted ordinary-settings loading | Configuration 60/60; Setup 120/120 including both providers; Web 273/273; Web build clean | `d51230912` | User authorized proceeding to B3 on 2026-11-05 |
-| B3 | B2 accepted; D16-D18 confirmed | Verified: shared validation and approved compatibility rules implemented | Configuration 124/124; Setup 127/127 including both providers; Web 281/281; Auth 48/48; Email 105/105; Web build clean | Batch commit containing this row; title `fix(configuration): validate settings consistently` | Awaiting user acceptance |
-| B4 | B1 accepted; activation contract confirmed | Not started; not authorized | Not run | None | Pending |
+| B3 | B2 accepted; D16-D18 confirmed | Verified: shared validation and approved compatibility rules implemented | Configuration 124/124; Setup 127/127 including both providers; Web 281/281; Auth 48/48; Email 105/105; Web build clean | `fe32fd43f` | User authorized proceeding to B4 on 2026-11-05 |
+| B4 | B1-B3 accepted; D19-D21 confirmed | Verified: post-commit cache invalidation, activation hints, scheduler wake/recheck, full-feed source | Configuration 129/129; Web 297/297; Syndication 18/18; BackgroundServices 14/14; Auth 48/48; Email 106/106; Web build clean; isolated browser save/restart checks passed | Batch commit containing this row; title `fix(settings): invalidate affected caches after save` | Awaiting user acceptance |
 | B5 | B1 accepted | Not started; not authorized | Not run | None | Pending |
 | B6 | B1-B5 accepted | Not started; not authorized | Not run | None | Pending |
 | C1-C3 | B6 accepted; separate design and authorization | Deferred | Not run | None | Not applicable |
@@ -449,3 +452,55 @@ Acceptance evidence and remaining limits:
 - Commit: this entry is part of the B3 batch commit titled `fix(configuration): validate settings consistently`; record its actual hash at the next tracker update rather than amending to embed its own hash.
 - User acceptance: pending. Present the local commit and verification evidence, then await acceptance / instructions. Do not start B4, resolve Q5, or alter audit/cache behavior automatically.
 - Rollback: revert this batch commit if required. There is no schema migration to undo. A code revert does not reconstruct values already changed by automatic recovery or later saves.
+
+### 2026-11-05 - B4 Implementation and Verification Complete
+
+- Authorization: explicit B4 execution request and explicit answers approving D19-D21. B3 is commit `fe32fd43f`; B5-B6 and optional structural work remain unauthorized.
+- Every changed settings save now publishes one `ConfigurationChangedEvent` after database persistence and runtime replacement, while still within the existing process write lock. Publication ignores request cancellation after commit. Invalid, missing-row, failed-save, pre-commit cancellation, and no-op writes do not publish. Internal avatar/CDN writers reach the same command boundary without controller-specific invalidation.
+- The Web event handler refreshes feed generations for General/Feed/Image settings, sitemap for General settings, theme CSS for Appearance settings, and wakes scheduled publishing for Advanced settings. Related Image/General writes refresh feeds once. Article caches are preserved by settings-only feed changes; ordinary post changes still invalidate posts, feeds, and sitemap together.
+- Added a separate feed generation to the existing `PostCacheInvalidator` and a small `ThemeCacheInvalidator`. Public/admin/sign-in/authenticator layouts all read versioned theme keys; older in-flight feed/theme factories can only populate obsolete generations. Theme create/delete invalidates only after successful commands, before activity logging. Removed the appearance action filter and the unused controller-only CurrentThemeColor reset.
+- D19: FOAF/sitemap route registration and email singleton lifetimes remain unchanged. Added missing restart hints for sitemap and email display name, retaining FOAF's hint. A shared settings note distinguishes subsequent operations and downstream cache retention; the scheduler hint explains that running publication is not canceled. New text is localized in all four supported non-English resource files.
+- D20: the scheduler captures its wake token before inspecting configuration, can be woken while disabled, and rechecks the enable flag/cancellation before dispatch. A settings wake restarts its timing query rather than blindly publishing. Already dispatched commands receive the host stopping token, not the settings wake token, and are not revoked by toggling the setting.
+- D21: full feeds select `PostContent` rather than formatting `ContentAbstract`; summary mode still selects the abstract. The flag used for selection is also used for formatting. HTML/Markdown formatting and CDN rewriting are preserved.
+- Updated command/DI and cache fixtures, including the real LiteBus registration test. The first expanded Web runs exposed a pre-existing image-test shutdown race: it stopped the background queue before asserting storage. The test now waits with a bounded completion signal for the actual original-image storage invocation before shutdown, retaining the byte/name assertion; no production queue semantics were changed.
+- Documentation: updated README activation/cache behavior, engineering-reference event and generation rules, test coverage, B0 Q5/handoff, and this record. No schema, stored key, JSON field, dependency version, endpoint URL, authentication policy, or antiforgery behavior changed. No SQL upgrade script is required.
+
+Verification (repository root; builds run sequentially):
+
+| Check | Exact command / environment | Result |
+| --- | --- | --- |
+| Configuration | `dotnet test --project src/Tests/Moonglade.Configuration.Tests/Moonglade.Configuration.Tests.csproj --no-restore` | 129 passed, 0 failed, 0 skipped. |
+| Web | `dotnet test --project src/Tests/Moonglade.Web.Tests/Moonglade.Web.Tests.csproj --no-restore` | 297 passed, 0 failed, 0 skipped. Final run includes updated feed-generation assertions and image-test synchronization. |
+| Syndication | `dotnet test --project src/Tests/Moonglade.Syndication.Tests/Moonglade.Syndication.Tests.csproj --no-restore` | 18 passed, 0 failed, 0 skipped. Includes distinct body/abstract and HTML/Markdown CDN cases. |
+| Background services | `dotnet test --project src/Tests/Moonglade.BackgroundServices.Tests/Moonglade.BackgroundServices.Tests.csproj --no-restore` | 14 passed, 0 failed, 0 skipped. Three existing nullable-dereference warnings in unchanged CannonServiceTests.cs remain; no new warnings from scheduler tests. |
+| Auth | `dotnet test --project src/Tests/Moonglade.Auth.Tests/Moonglade.Auth.Tests.csproj --no-restore` | 48 passed, 0 failed, 0 skipped. |
+| Email | `dotnet test --project src/Tests/Moonglade.Email.Tests/Moonglade.Email.Tests.csproj --no-restore` | 106 passed, 0 failed, 0 skipped. Confirms an already-resolved sender name changes only after services are recreated. |
+| Web build | `dotnet build src/Moonglade.Web/Moonglade.Web.csproj --no-restore` | Passed, 0 warnings, 0 errors. |
+| Localization / formatting | Parse all four resource XML files; verify each new activation key occurs once; `git diff --check`, staged whitespace and CRLF/final-newline checks | Passed. Existing BOMs retained. |
+
+Behavior evidence:
+
+- Warm RSS/Atom and both category variants refresh after feed-count/full-content saves. Real feeds contain one selected entry and the actual body marker. General/Image paired saves refresh metadata, author email, canonical sitemap URLs, and CDN image content without a second feed-generation advance.
+- Invalid/no-op/failure paths publish no event. Commit-time cancellation still publishes after persisted and runtime values agree, and Web integration verifies that active feed keys change even when the caller has been canceled. An internal SaveAssetToCdnHandler save also advances feed keys.
+- Appearance changes return new actual CSS; unrelated comment settings preserve theme/post/feed generations. Old in-flight feed/theme factories cannot refill the active generation. Theme command conflict/not-found paths preserve the theme generation.
+- Scheduler tests synchronize on actual waits and dispatches: disabling a waiting worker skips dispatch and keeps it running; enabling a disabled worker dispatches due work within a bounded test timeout instead of five minutes; disabling after dispatch does not cancel the command token and the worker returns to its disabled wait.
+
+Browser acceptance (Playwright CLI, real compiled host, disposable PostgreSQL 18):
+
+- Used HTTPS loopback port 11584, independent images/originals directories, and a clean temporary content root containing only the committed base configuration. Development's existing TOTP bypass was enabled only for this isolated host. The repository's local Development override was not loaded, read, or copied. SMTP was disabled. No real blog database or external service was used.
+- Signed in through the actual UI. Advanced settings displayed both restart hints and the scheduler explanation. Disabled FOAF/sitemap/scheduler, saved, observed the success toast, and refreshed to verify persisted off values. Both endpoints stayed HTTP 200 before restart and became HTTP 404 after restart.
+- Re-enabled all three through the UI and saved. FOAF/sitemap remained HTTP 404 until the next restart, then both returned HTTP 200. Their route-registration contract is verified in both directions.
+- Changed notification name to a synthetic acceptance value, saved, and refreshed. The value persisted and the restart hint remained visible. No email was sent; the Email DI test separately proves sender-name lifetime.
+- Changed Word Blue to Excel Green and enabled custom CSS using the actual editor. After saving and reloading, the admin computed accent changed from `#2A579A` to `#165331`; public and sign-in HTML also contained the new accent. `/custom.css` returned HTTP 200, a content ETag, and the saved synthetic CSS marker.
+- Warmed actual RSS and Atom while summary mode was active; neither contained the seeded article's body heading. Enabled full content and saved through the subscription page; both feeds then contained that body heading without restarting or waiting for cache expiry.
+- Inspected an Advanced-page screenshot: the shared note and field-specific hints fit the existing layout. Temporary browser artifacts are under `C:\Users\Edi\AppData\Local\Temp\moonglade-b4-0c9add94338342c09a1b29229de53d10` on this workstation; this path is optional evidence, not required for resuming work. The browser session and host were closed, the disposable container removed, the generated database credential state deleted, and no listener remained on the acceptance port.
+- Initial browser setup used a non-Development debug host and exposed unavailable debug static assets; the final acceptance used the isolated clean content root above and the real UI scripts. This was a local acceptance setup correction, not an application workaround or production change.
+
+Limits, commit, and handoff:
+
+- Total automated results: 612 passed. Full-solution regression remains B6. B4 did not rerun SQL Server containers because no schema/provider change was made; the new relational cache tests use SQLite and actual browser acceptance used PostgreSQL. B3's prior provider results remain historical evidence only.
+- No SMTP delivery, production operation, distributed synchronization, browser/CDN/feed-reader cache purge, historical image reprocessing, or cancellation of already dispatched publication was attempted. Invalidation remains local to one process. Mutable singleton/snapshot concerns remain optional C1, and asset/file transaction concerns remain optional C3.
+- Activity-log failure handling remains B5; this batch only ensures invalidation/wake occurs at successful persistence before later auditing. Do not infer B5 completion from the event boundary.
+- Commit: this entry is part of the B4 implementation commit titled `fix(settings): invalidate affected caches after save`. Record its hash at the next tracker update; do not amend merely to embed a commit's own hash.
+- User acceptance: pending. Present the commit and evidence, then await acceptance / further instructions. Do not start B5-B6 automatically.
+- Rollback: revert this batch commit. No schema migration is involved; the code revert does not reverse later saved settings. All manual acceptance data was disposable and has been removed.

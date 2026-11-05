@@ -105,6 +105,21 @@ Article saves, publication changes (including scheduled publishing), recycle-bin
 
 Settings become active only after a successful database save; related CDN/avatar settings are saved together. Updates are serialized within one process; other instances must reload or synchronize separately. See the [configuration write contract](docs/agent-reference.md#configuration).
 
+Successful changes invalidate affected server caches in the current process, including settings saved by internal avatar/CDN writers. Feed and theme caches use separate generations so an older request cannot refill the active cache after a change; settings changes do not flush unrelated article caches. Full-content RSS/Atom feeds use the article body, including Markdown formatting and configured CDN image URLs; summary feeds use the abstract.
+
+| Setting | When the change takes effect |
+| --- | --- |
+| Site information, feed count/full content, image CDN | Subsequent requests; affected RSS/Atom/category feeds and canonical sitemap outputs are refreshed after saving. |
+| Theme selection | Subsequent public, admin, and sign-in page renders. |
+| Custom CSS | The server reads the saved value; existing browser caching and ETag revalidation still apply. |
+| Watermarks and original-image retention | Future uploads; existing image files are not reprocessed. |
+| Notification switches | Future enqueue decisions; already queued email is retained. |
+| Notification sender display name | Application restart required, including when changing to/from the deployment fallback. |
+| FOAF and sitemap enable/disable | Application restart required in both directions. |
+| Scheduled publishing enable/disable | Saving wakes the worker and it rechecks before dispatching publication; publication already dispatched is not canceled. |
+
+Other rendering and operation settings apply to subsequent requests or operations. Server invalidation does not purge browser, CDN, proxy, or feed-reader caches; these can retain older responses under their existing cache rules.
+
 At startup, malformed ordinary settings JSON, incompatible JSON values, null settings, and semantically invalid settings are restored to that group's default in the existing database row. Recovery replaces the entire group, including its other valid fields. Missing settings are initialized, and valid settings retain their values and modification timestamps. Recovery warnings identify the configuration key without logging its JSON. Invalid `LocalAccountSettings` or `SystemManifestSettings` stop initialization before repair writes with a restoration message to protect administrator credentials and installation/upgrade history; restore those values from a trusted database backup before restarting.
 
 For ordinary settings, a field completely absent from saved JSON uses the group's current default when loaded. Explicitly saved `false`, `0`, `null`, and empty arrays are retained when they satisfy validation. Loading these defaults does not rewrite valid JSON or change its modification timestamp. Older partial settings can therefore acquire default comment review/Gravatar, watermarking, the About menu, or a 20-item feed limit when those fields were absent; an explicitly saved unlimited feed count of `0` stays unlimited. This rule does not fill missing credential or installation-history fields.

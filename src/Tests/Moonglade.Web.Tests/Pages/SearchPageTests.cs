@@ -160,6 +160,7 @@ public class SearchPageTests
             });
         builder.Services.AddSingleton<IBlogConfig>(CreateBlogConfig());
         builder.Services.AddSingleton(CreateCache().Object);
+        builder.Services.AddSingleton<ThemeCacheInvalidator>();
         builder.Services.AddSingleton(CreateQueryMediator(scenario).Object);
 
         var app = builder.Build();
@@ -205,7 +206,7 @@ public class SearchPageTests
         cache
             .Setup(x => x.GetOrCreateAsync(
                 BlogCachePartition.General.ToString(),
-                "theme",
+                "0:theme",
                 It.IsAny<Func<Task<string>>>(),
                 It.IsAny<TimeSpan>()))
             .Returns((string _, string _, Func<Task<string>> factory, TimeSpan _) =>

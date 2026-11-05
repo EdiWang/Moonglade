@@ -105,6 +105,30 @@ public class ServiceCollectionExtensionsTests
     }
 
     [Fact]
+    public void SenderDisplayName_ChangesOnlyWhenEmailServicesAreRecreated()
+    {
+        var config = new BlogConfig { NotificationSettings = new NotificationSettings { EmailDisplayName = "Before" } };
+        ServiceProvider BuildProvider()
+        {
+            var services = new ServiceCollection();
+            services.AddSingleton<IBlogConfig>(config);
+            services.AddLogging();
+            services.AddMoongladeEmail(CreateConfiguration());
+            return services.BuildServiceProvider();
+        }
+        using var running = BuildProvider();
+        var original = running.GetRequiredService<EmailSettings>();
+        Assert.Equal("Before", original.EmailDisplayName);
+
+        config.NotificationSettings = new NotificationSettings { EmailDisplayName = "After" };
+
+        Assert.Same(original, running.GetRequiredService<EmailSettings>());
+        Assert.Equal("Before", original.EmailDisplayName);
+        using var restarted = BuildProvider();
+        Assert.Equal("After", restarted.GetRequiredService<EmailSettings>().EmailDisplayName);
+    }
+
+    [Fact]
     public async Task AddMoongladeEmail_SeparateSmtpSenderStartsHostAndPreservesAuthenticationSettings()
     {
         var configuration = CreateConfiguration(

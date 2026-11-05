@@ -36,6 +36,7 @@ public static class ServiceCollectionExtensions
     {
         services.AddMoongladeLiteBus();
         services.AddSingleton<PostCacheInvalidator>();
+        services.AddSingleton<ThemeCacheInvalidator>();
         services.AddHttpClient();
         services.AddOptions().AddHttpContextAccessor();
         services.AddMoongladeLocalization();

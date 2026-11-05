@@ -53,12 +53,13 @@ public class SyndicationDataSource(
             query = query.Take(top.Value);
         }
 
+        var useFullContent = blogConfig.FeedSettings.UseFullContent;
         var list = await query.Select(p => new FeedEntry
         {
             Id = p.Id.ToString(),
             Title = p.Title,
             PubDateUtc = p.PubDateUtc.Value,
-            Description = p.ContentAbstract,
+            Description = useFullContent ? p.PostContent : p.ContentAbstract,
             Link = $"{_baseUrl}/post/{p.RouteLink}",
             Author = p.Author,
             LangCode = p.ContentLanguageCode,
@@ -68,7 +69,7 @@ public class SyndicationDataSource(
 
         // Workaround EF limitation
         // Man, this is super ugly
-        if (blogConfig.FeedSettings.UseFullContent && list.Count != 0)
+        if (useFullContent && list.Count != 0)
         {
             foreach (var simpleFeedItem in list)
             {

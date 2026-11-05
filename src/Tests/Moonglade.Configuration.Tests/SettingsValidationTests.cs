@@ -1,4 +1,6 @@
 using Microsoft.EntityFrameworkCore;
+using LiteBus.Events.Abstractions;
+using Moq;
 using Microsoft.Extensions.Logging.Abstractions;
 using Moonglade.Data;
 using Moonglade.Data.Entities;
@@ -78,7 +80,7 @@ public class SettingsValidationTests
         var command = (UpdateConfigurationCommand)factory.Invoke(null, [value])!;
 
         var exception = await Assert.ThrowsAsync<ValidationException>(() => new UpdateConfigurationCommandHandler(
-            db, config, NullLogger<UpdateConfigurationCommandHandler>.Instance).HandleAsync(command, ct));
+            db, config, Mock.Of<IEventMediator>(), NullLogger<UpdateConfigurationCommandHandler>.Instance).HandleAsync(command, ct));
 
         Assert.DoesNotContain("invalid-marker", exception.Message);
         Assert.Same(runtime, property.GetValue(config));

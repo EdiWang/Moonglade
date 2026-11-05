@@ -9,9 +9,11 @@ namespace Moonglade.Syndication.Tests;
 public class SyndicationDataSourceTests
 {
     [Theory]
-    [InlineData("html", "<p><img src=\"/image/photo.png\" alt=\"Photo\"></p>")]
-    [InlineData("markdown", "![Photo](/image/photo.png)")]
-    public async Task GetFeedDataAsync_WhenCdnIsEnabled_EmitsDirectCdnImageUrl(string contentType, string content)
+    [InlineData("html", "<p><img src=\"/image/photo.png\" alt=\"Photo\"></p>", true)]
+    [InlineData("markdown", "![Photo](/image/photo.png)", true)]
+    [InlineData("html", "<p><img src=\"/image/photo.png\" alt=\"Photo\"></p>", false)]
+    [InlineData("markdown", "![Photo](/image/photo.png)", false)]
+    public async Task GetFeedDataAsync_SelectsAbstractOrFormattedFullContentWithCdn(string contentType, string content, bool full)
     {
         var options = new DbContextOptionsBuilder<BlogDbContext>()
             .UseInMemoryDatabase(Guid.NewGuid().ToString())
@@ -24,7 +26,7 @@ public class SyndicationDataSourceTests
             Slug = "cdn-post",
             Author = "Author",
             PostContent = content,
-            ContentAbstract = content,
+            ContentAbstract = "Summary marker",
             ContentLanguageCode = "en-us",
             ContentType = contentType,
             CreateTimeUtc = new DateTime(2026, 8, 23, 0, 0, 0, DateTimeKind.Utc),
@@ -37,7 +39,7 @@ public class SyndicationDataSourceTests
 
         var blogConfig = new BlogConfig
         {
-            FeedSettings = new FeedSettings { UseFullContent = true },
+            FeedSettings = new FeedSettings { UseFullContent = full },
             ImageSettings = new ImageSettings
             {
                 EnableCDNRedirect = true,
@@ -55,6 +57,11 @@ public class SyndicationDataSourceTests
         var entries = await dataSource.GetFeedDataAsync();
 
         var entry = Assert.Single(entries);
+        if (!full)
+        {
+            Assert.Equal("Summary marker", entry.Description);
+            return;
+        }
         Assert.Contains("src=\"https://cdn.example.com/images/photo.png\"", entry.Description, StringComparison.Ordinal);
         Assert.DoesNotContain("src=\"/image/photo.png\"", entry.Description, StringComparison.Ordinal);
     }

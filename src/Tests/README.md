@@ -35,6 +35,8 @@ Settings-default tests cover all ordinary groups, absent versus explicit values,
 
 Settings validation tests cover ordinary whole-group recovery, protected semantic failure before repairs, invalid direct/paired writes without persistence or runtime changes, nonmutating validation, nested menus, undefined enums, UTF-8 CSS boundaries, and approved legacy/setup states. Web TestHost tests exercise model validation and parsed-menu command failures as HTTP validation problems, alongside blank sender names and generated avatar compatibility. The opt-in provider group also verifies semantic recovery and protected failure preservation on both supported databases.
 
+Settings cache tests in `PostCacheInvalidationTests.Settings.cs` warm real RSS/Atom/category feeds and sitemap before saving through LiteBus. They cover full-content/count changes, site metadata, paired CDN changes, internal avatar writes, theme generations, old in-flight factories, save failure, and cancellation after commit. Command tests assert change-event ordering and no event for rejected/no-op writes. Scheduled worker tests synchronize on actual waits/dispatches to verify disabling pending work, waking while disabled, and preserving already running publication. Browser acceptance should use a disposable database and isolated host configuration; verify restart-dependent toggles in both directions without touching a real blog.
+
 Manual upgrade tests for category IDs and PostgreSQL naming use opt-in disposable database containers. See [Migration Verification](../../docs/agent-reference.md#migration-verification) for prerequisites and limits; ordinary runs explicitly skip those relational groups.
 
 ## Run Tests

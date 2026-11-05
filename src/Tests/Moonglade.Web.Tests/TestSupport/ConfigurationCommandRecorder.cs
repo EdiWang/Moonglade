@@ -1,4 +1,6 @@
 using LiteBus.Commands.Abstractions;
+using LiteBus.Events.Abstractions;
+using Moq;
 using LiteBus.Messaging.Abstractions;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
@@ -54,7 +56,7 @@ internal sealed class ConfigurationCommandRecorder : ICommandMediator, IDisposab
         Commands.Add(command);
         if (command is UpdateConfigurationCommand update)
         {
-            await new UpdateConfigurationCommandHandler(Db, _config, NullLogger<UpdateConfigurationCommandHandler>.Instance)
+            await new UpdateConfigurationCommandHandler(Db, _config, Mock.Of<IEventMediator>(), NullLogger<UpdateConfigurationCommandHandler>.Instance)
                 .HandleAsync(update, cancellationToken);
         }
     }

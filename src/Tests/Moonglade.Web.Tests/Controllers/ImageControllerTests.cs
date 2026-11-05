@@ -325,6 +325,13 @@ public class ImageControllerTests
     [Fact]
     public async Task Image_Post_WhenWatermarkEnabledAndKeepOriginalEnabled_StoresOriginalImageInBackgroundQueue()
     {
+        var originalStored = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+        _imageStorage.Setup(x => x.InsertOriginalAsync(It.IsAny<string>(), It.IsAny<byte[]>()))
+            .Returns((string name, byte[] _) =>
+            {
+                originalStored.TrySetResult();
+                return Task.FromResult(name);
+            });
         var imageBytes = ValidSvgBytes();
         var primaryName = _fileNameGenerator.GetFileName("photo.svg");
         var originalName = _fileNameGenerator.GetFileName("photo.svg", "origin");
@@ -342,6 +349,7 @@ public class ImageControllerTests
         var file = CreateFormFile("photo.svg", imageBytes);
 
         await controller.Image(file);
+        await originalStored.Task.WaitAsync(TimeSpan.FromSeconds(10), TestContext.Current.CancellationToken);
         await StopCannonServiceAsync();
 
         _imageStorage.Verify(x => x.InsertOriginalAsync(originalName, It.Is<byte[]>(bytes =>

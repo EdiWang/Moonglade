@@ -1,4 +1,6 @@
 using Microsoft.EntityFrameworkCore;
+using LiteBus.Events.Abstractions;
+using Moq;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.Logging.Abstractions;
 using Moonglade.Data;
@@ -166,11 +168,21 @@ public class UpdateConfigurationCommandTests
         var config = new BlogConfig();
         await SeedAsync(db, config.GeneralSettings);
         interceptor.Enabled = true;
+        var events = new Mock<IEventMediator>();
+        events.Setup(m => m.PublishAsync(It.IsAny<IEvent>(), It.IsAny<EventMediationSettings>(), CancellationToken.None))
+            .Callback<IEvent, EventMediationSettings, CancellationToken>((message, _, _) =>
+            {
+                Assert.True(cancellation.IsCancellationRequested);
+                Assert.Equal("Committed", config.GeneralSettings.SiteTitle);
+                Assert.Equal(config.GeneralSettings.ToJson(), db.BlogConfiguration.Local.Single().CfgValue);
+                Assert.Equal([nameof(GeneralSettings)], ((ConfigurationChangedEvent)message).Names);
+            }).Returns(Task.CompletedTask);
 
-        await Handler(db, config).HandleAsync(UpdateConfigurationCommand.Create(
-            General("Committed")), cancellation.Token);
+        await new UpdateConfigurationCommandHandler(db, config, events.Object, NullLogger<UpdateConfigurationCommandHandler>.Instance)
+            .HandleAsync(UpdateConfigurationCommand.Create(General("Committed")), cancellation.Token);
 
         Assert.True(cancellation.IsCancellationRequested);
+        events.Verify(m => m.PublishAsync(It.IsAny<IEvent>(), It.IsAny<EventMediationSettings>(), CancellationToken.None), Times.Once);
         Assert.Equal("Committed", config.GeneralSettings.SiteTitle);
         Assert.Equal(config.GeneralSettings.ToJson(), (await db.BlogConfiguration.SingleAsync(TestContext.Current.CancellationToken)).CfgValue);
     }
@@ -198,6 +210,33 @@ public class UpdateConfigurationCommandTests
         new DbContextOptionsBuilder<BlogDbContext>().UseInMemoryDatabase(Guid.NewGuid().ToString())
             .AddInterceptors(interceptors).Options);
 
+    [Theory]
+    [InlineData("invalid")]
+    [InlineData("missing")]
+    [InlineData("failed-save")]
+    [InlineData("cancelled")]
+    [InlineData("unchanged")]
+    public async Task RejectedOrUnchangedWrite_DoesNotPublishChange(string scenario)
+    {
+        var interceptor = new FailingSaveInterceptor();
+        using var db = CreateDbContext(interceptor);
+        var config = new BlogConfig { GeneralSettings = General("Old") };
+        if (scenario != "missing") await SeedAsync(db, config.GeneralSettings);
+        interceptor.Fail = scenario == "failed-save";
+        using var cancellation = CancellationTokenSource.CreateLinkedTokenSource(TestContext.Current.CancellationToken);
+        if (scenario == "cancelled") await cancellation.CancelAsync();
+        var events = new Mock<IEventMediator>();
+        var handler = new UpdateConfigurationCommandHandler(db, config, events.Object, NullLogger<UpdateConfigurationCommandHandler>.Instance);
+        var settings = General(scenario == "unchanged" ? "Old" : "New");
+        if (scenario == "invalid") settings.SiteTitle = null;
+
+        var error = await Record.ExceptionAsync(() => handler.HandleAsync(UpdateConfigurationCommand.Create(settings), cancellation.Token));
+
+        if (scenario == "unchanged") Assert.Null(error);
+        else Assert.NotNull(error);
+        Assert.Empty(events.Invocations);
+    }
+
     [Fact]
     public async Task InvalidPairedSetting_DoesNotChangeEitherRowOrRuntime()
     {
@@ -223,7 +262,7 @@ public class UpdateConfigurationCommandTests
     }
 
     private static UpdateConfigurationCommandHandler Handler(BlogDbContext db, IBlogConfig config) =>
-        new(db, config, NullLogger<UpdateConfigurationCommandHandler>.Instance);
+        new(db, config, Mock.Of<IEventMediator>(), NullLogger<UpdateConfigurationCommandHandler>.Instance);
 
     private static GeneralSettings General(string title)
     {
