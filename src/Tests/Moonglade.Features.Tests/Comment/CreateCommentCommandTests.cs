@@ -21,14 +21,14 @@ public class CreateCommentCommandTests
     public async Task HandleAsync_PostDoesNotExist_ReturnsNullAndDoesNotCreateComment()
     {
         using var db = CreateDbContext();
-        var blogConfig = new BlogConfig
+        var blogConfig = new BlogConfig(new BlogSettingsSnapshot
         {
             CommentSettings = new CommentSettings
             {
                 CloseCommentAfterDays = 30,
                 RequireCommentReview = false
             }
-        };
+        });
         var logger = new Mock<ILogger<CreateCommentCommandHandler>>();
         var handler = new CreateCommentCommandHandler(blogConfig, logger.Object, db);
         var request = new CommentRequest
@@ -109,14 +109,14 @@ public class CreateCommentCommandTests
 
     private static CreateCommentCommandHandler CreateHandler(BlogDbContext db, bool requireCommentReview, int closeCommentAfterDays)
     {
-        var blogConfig = new BlogConfig
+        var blogConfig = new BlogConfig(new BlogSettingsSnapshot
         {
             CommentSettings = new CommentSettings
             {
                 CloseCommentAfterDays = closeCommentAfterDays,
                 RequireCommentReview = requireCommentReview
             }
-        };
+        });
         var logger = new Mock<ILogger<CreateCommentCommandHandler>>();
         return new CreateCommentCommandHandler(blogConfig, logger.Object, db);
     }

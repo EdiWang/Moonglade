@@ -31,7 +31,7 @@ public record UpdateConfigurationCommand : ICommand
 
 public class UpdateConfigurationCommandHandler(
     BlogDbContext db,
-    IBlogConfig blogConfig,
+    BlogConfig blogConfig,
     IEventMediator eventMediator,
     ConfigurationWriteGate gate,
     ILogger<UpdateConfigurationCommandHandler> logger) : ICommandHandler<UpdateConfigurationCommand>
@@ -45,13 +45,16 @@ public class UpdateConfigurationCommandHandler(
             var replacements = new List<(PropertyInfo Property, object Value)>();
             foreach (var (name, json) in request.Settings)
             {
-                var property = typeof(IBlogConfig).GetProperty(name)
+                var property = typeof(BlogSettingsSnapshot).GetProperty(name)
                     ?? throw new InvalidOperationException($"Unknown blog setting '{name}'.");
                 var value = json.FromJson(property.PropertyType)
                     ?? throw new InvalidOperationException($"Blog setting '{name}' cannot be null.");
                 Validator.ValidateObject(value, new ValidationContext(value), true);
                 replacements.Add((property, value));
             }
+
+            var candidate = blogConfig.Capture() with { };
+            foreach (var (property, value) in replacements) property.SetValue(candidate, value);
 
             var entities = await db.BlogConfiguration
                 .Where(p => names.Contains(p.CfgKey))
@@ -78,10 +81,7 @@ public class UpdateConfigurationCommandHandler(
 
             await db.SaveChangesAsync(ct);
 
-            foreach (var (property, value) in replacements)
-            {
-                property.SetValue(blogConfig, value);
-            }
+            blogConfig.Publish(candidate);
 
             // Commit and runtime publication must precede invalidation, even if the client disconnects.
             if (changedNames.Count > 0)

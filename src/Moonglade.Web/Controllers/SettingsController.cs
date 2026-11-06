@@ -1,13 +1,12 @@
+using System.Collections.Immutable;
 using Edi.PasswordGenerator;
 using LiteBus.Commands.Abstractions;
 using LiteBus.Events.Abstractions;
-using LiteBus.Queries.Abstractions;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Moonglade.ActivityLog;
 using Moonglade.Email;
 using Moonglade.Email.Core;
-using Moonglade.Features.Asset;
 
 namespace Moonglade.Web.Controllers;
 
@@ -18,14 +17,13 @@ public class SettingsController(
         ILogger<SettingsController> logger,
         IEventMediator eventMediator,
         EmailCapabilityStatus emailCapabilityStatus,
-        IQueryMediator queryMediator,
         ILocalAccountReader accounts,
         ICommandMediator commandMediator) : BlogControllerBase(commandMediator)
 {
     [HttpPost("general")]
     public async Task<IActionResult> General(GeneralSettings model)
     {
-        model.AvatarUrl = blogConfig.GeneralSettings.AvatarUrl;
+        model = model with { AvatarUrl = blogConfig.GeneralSettings.AvatarUrl };
 
         await CommandMediator.SendAsync(UpdateConfigurationCommand.Create(model), HttpContext.RequestAborted);
         await LogActivityAfterSaveAsync(logger, EventType.SettingsGeneralUpdated, "Update General Settings", "General Settings",
@@ -98,50 +96,13 @@ public class SettingsController(
     }
 
     [HttpPost("watermark")]
-    public async Task<IActionResult> Image(ImageSettings model, IBlogImageStorage imageStorage)
+    public async Task<IActionResult> Image(ImageSettings model)
     {
-        var generalSettings = blogConfig.GeneralSettings.ToJson().FromJson<GeneralSettings>();
-        var updateAvatar = false;
-
-        if (model.EnableCDNRedirect)
-        {
-            if (blogConfig.GeneralSettings.AvatarUrl != null
-            && !blogConfig.GeneralSettings.AvatarUrl.StartsWith(model.CDNEndpoint))
-            {
-                try
-                {
-                    var avatarData = await queryMediator.QueryAsync(new GetAssetQuery(AssetId.AvatarBase64));
-
-                    if (!string.IsNullOrWhiteSpace(avatarData))
-                    {
-                        var avatarBytes = Convert.FromBase64String(avatarData);
-                        var fileName = $"avatar-{AssetId.AvatarBase64:N}.png";
-                        fileName = await imageStorage.InsertAsync(fileName, avatarBytes);
-                        generalSettings.AvatarUrl = model.CDNEndpoint.CombineUrl(fileName);
-                        updateAvatar = true;
-                    }
-                }
-                catch (FormatException e)
-                {
-                    logger.LogError(e, "Error {Action}(), Invalid Base64 string", nameof(Image));
-                }
-            }
-        }
-        else
-        {
-            generalSettings.AvatarUrl = Url.Action("Avatar", "Assets");
-            updateAvatar = true;
-        }
-
-        var command = updateAvatar
-            ? UpdateConfigurationCommand.Create(model, generalSettings)
-            : UpdateConfigurationCommand.Create(model);
-        await CommandMediator.SendAsync(command, HttpContext.RequestAborted);
-        await LogActivityAfterSaveAsync(logger, EventType.SettingsImageUpdated, "Update Image Settings", "Image Settings",
+        return await UpdateSettingsAsync(model,
+            EventType.SettingsImageUpdated, "Update Image Settings", "Image Settings",
             ActivityLogMetaData.Create(
                 ("EnableCDNRedirect", model.EnableCDNRedirect),
                 ("IsWatermarkEnabled", model.IsWatermarkEnabled)));
-        return NoContent();
     }
 
     [HttpPost("advanced")]
@@ -173,10 +134,10 @@ public class SettingsController(
             return ValidationProblem(ModelState);
         }
 
-        Menu[] menus;
+        ImmutableList<Menu> menus;
         try
         {
-            menus = string.IsNullOrWhiteSpace(model.MenuJson) ? null : model.MenuJson.FromJson<Menu[]>();
+            menus = string.IsNullOrWhiteSpace(model.MenuJson) ? null : model.MenuJson.FromJson<ImmutableList<Menu>>();
         }
         catch (System.Text.Json.JsonException ex)
         {

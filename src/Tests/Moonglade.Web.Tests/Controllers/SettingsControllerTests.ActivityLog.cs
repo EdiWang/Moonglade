@@ -1,6 +1,5 @@
 using Edi.AspNetCore.Utils;
 using LiteBus.Events.Abstractions;
-using LiteBus.Queries.Abstractions;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Http;
@@ -10,8 +9,6 @@ using Microsoft.Extensions.Logging;
 using Moonglade.ActivityLog;
 using Moonglade.Auth;
 using Moonglade.Configuration;
-using Moonglade.Features.Asset;
-using Moonglade.ImageStorage;
 using Moonglade.Web.Controllers;
 using Moonglade.Web.Tests.TestSupport;
 using Moq;
@@ -28,15 +25,15 @@ public partial class SettingsControllerTests
     [InlineData(true, true)]
     public async Task SettingsSave_WhenAuditFails_PreservesCommittedValuesAndReturnsSuccess(bool general, bool canceledAudit)
     {
-        var config = new BlogConfig { GeneralSettings = GeneralSettings.DefaultValue };
+        var config = new BlogConfig(new BlogSettingsSnapshot { GeneralSettings = GeneralSettings.DefaultValue });
         var failure = CreateAuditFailure(canceledAudit);
         using var mediator = new ConfigurationCommandRecorder { ActivityLogFailure = failure };
         var logger = new Mock<ILogger<SettingsController>>();
-        var controller = CreateController(config, mediator, Mock.Of<IQueryMediator>(), new Mock<IAuthenticationService>(), logger: logger.Object);
+        var controller = CreateController(config, mediator, new Mock<IAuthenticationService>(), logger: logger.Object);
         var content = new ContentSettings { DefaultEditor = EditorChoice.Markdown };
         var site = GeneralSettings.DefaultValue;
-        site.SiteTitle = "Saved title";
-        site.AvatarUrl = config.GeneralSettings.AvatarUrl;
+        site = site with { SiteTitle = "Saved title" };
+        site = site with { AvatarUrl = config.GeneralSettings.AvatarUrl };
         var expectedJson = general ? site.ToJson() : content.ToJson();
         var key = general ? nameof(GeneralSettings) : nameof(ContentSettings);
 
@@ -54,34 +51,25 @@ public partial class SettingsControllerTests
     }
 
     [Fact]
-    public async Task Image_WhenAuditFails_PreservesPairedSettingsAndUploadedAvatar()
+    public async Task Image_WhenAuditFails_PreservesSavedImageSettingsAndUnchangedGeneral()
     {
-        var config = new BlogConfig { GeneralSettings = GeneralSettings.DefaultValue, ImageSettings = ImageSettings.DefaultValue };
-        config.GeneralSettings.AvatarUrl = "/assets/avatar";
+        var config = new BlogConfig(new BlogSettingsSnapshot
+        {
+            GeneralSettings = GeneralSettings.DefaultValue,
+            ImageSettings = ImageSettings.DefaultValue
+        });
+        var original = config.GeneralSettings;
         var failure = CreateAuditFailure();
         using var mediator = new ConfigurationCommandRecorder { ActivityLogFailure = failure };
-        var query = new Mock<IQueryMediator>();
-        query.Setup(p => p.QueryAsync(It.IsAny<GetAssetQuery>(), It.IsAny<QueryMediationSettings>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync(Convert.ToBase64String([1, 2, 3]));
-        var storage = new Mock<IBlogImageStorage>();
-        storage.Setup(p => p.InsertAsync(It.IsAny<string>(), It.IsAny<byte[]>())).ReturnsAsync("saved-avatar.png");
         var logger = new Mock<ILogger<SettingsController>>();
-        var controller = CreateController(config, mediator, query.Object, new Mock<IAuthenticationService>(), logger: logger.Object);
-        var image = ImageSettings.DefaultValue;
-        image.EnableCDNRedirect = true;
-        image.CDNEndpoint = "https://cdn.example.com/images";
+        var controller = CreateController(config, mediator, new Mock<IAuthenticationService>(), logger: logger.Object);
+        var image = ImageSettings.DefaultValue with { EnableCDNRedirect = true, CDNEndpoint = "https://cdn.example.com/images" };
 
-        var result = await controller.Image(image, storage.Object);
+        Assert.IsType<NoContentResult>(await controller.Image(image));
 
-        Assert.IsType<NoContentResult>(result);
-        Assert.Equal("https://cdn.example.com/images/saved-avatar.png", config.GeneralSettings.AvatarUrl);
-        Assert.Equal(image.ToJson(), config.ImageSettings.ToJson());
-        var storedGeneral = (await ReadStoredSettings(mediator, nameof(GeneralSettings))).FromJson<GeneralSettings>();
-        Assert.Equal("https://cdn.example.com/images/saved-avatar.png", storedGeneral.AvatarUrl);
-        Assert.Equal(config.GeneralSettings.SiteTitle, storedGeneral.SiteTitle);
+        Assert.Same(original, config.GeneralSettings);
+        Assert.Equal(original.ToJson(), await ReadStoredSettings(mediator, nameof(GeneralSettings)));
         Assert.Equal(image.ToJson(), await ReadStoredSettings(mediator, nameof(ImageSettings)));
-        storage.Verify(p => p.InsertAsync($"avatar-{AssetId.AvatarBase64:N}.png",
-            It.Is<byte[]>(bytes => bytes.SequenceEqual(new byte[] { 1, 2, 3 }))), Times.Once);
         AssertAuditFailure(logger, controller, failure, EventType.SettingsImageUpdated, image.CDNEndpoint);
     }
 
@@ -94,7 +82,7 @@ public partial class SettingsControllerTests
         using var mediator = new ConfigurationCommandRecorder { ActivityLogFailure = failure };
         var authentication = new Mock<IAuthenticationService>();
         var logger = new Mock<ILogger<SettingsController>>();
-        var controller = CreateController(config, mediator, Mock.Of<IQueryMediator>(), authentication, logger: logger.Object, account: original);
+        var controller = CreateController(config, mediator, authentication, logger: logger.Object, account: original);
         var request = new UpdateLocalAccountPasswordRequest
         {
             OldPassword = "Password1",
@@ -128,7 +116,7 @@ public partial class SettingsControllerTests
         using var mediator = new ConfigurationCommandRecorder { ActivityLogFailure = failure };
         var authentication = new Mock<IAuthenticationService>();
         var logger = new Mock<ILogger<SettingsController>>();
-        var controller = CreateController(config, mediator, Mock.Of<IQueryMediator>(), authentication, logger: logger.Object, account: original);
+        var controller = CreateController(config, mediator, authentication, logger: logger.Object, account: original);
         authentication.Setup(p => p.SignOutAsync(It.IsAny<HttpContext>(), It.IsAny<string>(), It.IsAny<AuthenticationProperties>()))
             .Callback(() => Assert.False(mediator.Accounts.Read().IsTotpEnabled))
             .Returns(Task.CompletedTask);
@@ -160,7 +148,7 @@ public partial class SettingsControllerTests
         using var mediator = new ConfigurationCommandRecorder { ActivityLogFailure = CreateAuditFailure() };
         var authentication = new Mock<IAuthenticationService>();
         var logger = new Mock<ILogger<SettingsController>>();
-        var controller = CreateController(config, mediator, Mock.Of<IQueryMediator>(), authentication, logger: logger.Object, account: account);
+        var controller = CreateController(config, mediator, authentication, logger: logger.Object, account: account);
         await mediator.Db.Database.ExecuteSqlRawAsync(
             "CREATE TRIGGER reject_settings BEFORE UPDATE ON BlogConfiguration BEGIN SELECT RAISE(ABORT, 'Save rejected'); END;",
             TestContext.Current.CancellationToken);
@@ -180,31 +168,27 @@ public partial class SettingsControllerTests
     }
 
     [Fact]
-    public async Task Image_WhenStorageFails_PropagatesFailureWithoutSavingOrAuditing()
+    public async Task Image_DoesNotWriteGeneralSettingsEvenWhenThoseWritesWouldFail()
     {
-        var config = new BlogConfig { GeneralSettings = GeneralSettings.DefaultValue, ImageSettings = ImageSettings.DefaultValue };
-        config.GeneralSettings.AvatarUrl = "/assets/avatar";
+        var config = new BlogConfig(new BlogSettingsSnapshot
+        {
+            GeneralSettings = GeneralSettings.DefaultValue,
+            ImageSettings = ImageSettings.DefaultValue
+        });
+        using var mediator = new ConfigurationCommandRecorder();
+        var controller = CreateController(config, mediator, new Mock<IAuthenticationService>());
         var originalGeneral = config.GeneralSettings;
-        var originalImage = config.ImageSettings;
-        using var mediator = new ConfigurationCommandRecorder { ActivityLogFailure = CreateAuditFailure() };
-        var query = new Mock<IQueryMediator>();
-        query.Setup(p => p.QueryAsync(It.IsAny<GetAssetQuery>(), It.IsAny<QueryMediationSettings>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync(Convert.ToBase64String([1, 2, 3]));
-        var failure = new IOException("Image storage unavailable.");
-        var storage = new Mock<IBlogImageStorage>();
-        storage.Setup(p => p.InsertAsync(It.IsAny<string>(), It.IsAny<byte[]>())).ThrowsAsync(failure);
-        var controller = CreateController(config, mediator, query.Object, new Mock<IAuthenticationService>());
-        var image = ImageSettings.DefaultValue;
-        image.EnableCDNRedirect = true;
-        image.CDNEndpoint = "https://cdn.example.com/images";
+        await mediator.Db.Database.ExecuteSqlRawAsync(
+            "CREATE TRIGGER reject_general BEFORE UPDATE ON BlogConfiguration WHEN OLD.CfgKey = 'GeneralSettings' BEGIN SELECT RAISE(ABORT, 'General save rejected'); END;",
+            TestContext.Current.CancellationToken);
+        var image = ImageSettings.DefaultValue with { EnableCDNRedirect = true, CDNEndpoint = "https://cdn.example.com/images" };
 
-        Assert.Same(failure, await Assert.ThrowsAsync<IOException>(() => controller.Image(image, storage.Object)));
+        Assert.IsType<NoContentResult>(await controller.Image(image));
 
-        Assert.Empty(mediator.Commands);
         Assert.Same(originalGeneral, config.GeneralSettings);
-        Assert.Same(originalImage, config.ImageSettings);
         Assert.Equal(originalGeneral.ToJson(), await ReadStoredSettings(mediator, nameof(GeneralSettings)));
-        Assert.Equal(originalImage.ToJson(), await ReadStoredSettings(mediator, nameof(ImageSettings)));
+        Assert.Equal(image.ToJson(), await ReadStoredSettings(mediator, nameof(ImageSettings)));
+        Assert.Single(mediator.Commands.OfType<CreateActivityLogCommand>());
     }
 
     [Fact]
@@ -213,7 +197,7 @@ public partial class SettingsControllerTests
         var config = new BlogConfig();
         var original = config.ContentSettings;
         using var mediator = new ConfigurationCommandRecorder { ActivityLogFailure = CreateAuditFailure() };
-        var controller = CreateController(config, mediator, Mock.Of<IQueryMediator>(), new Mock<IAuthenticationService>());
+        var controller = CreateController(config, mediator, new Mock<IAuthenticationService>());
 
         await Assert.ThrowsAsync<ValidationException>(() => controller.Content(new ContentSettings { PostListPageSize = 0 }));
 
@@ -231,7 +215,7 @@ public partial class SettingsControllerTests
         Mock.Get(mediator.EventMediator).Setup(p => p.PublishAsync(
                 It.IsAny<IEvent>(), It.IsAny<EventMediationSettings>(), It.IsAny<CancellationToken>()))
             .ThrowsAsync(failure);
-        var controller = CreateController(config, mediator, Mock.Of<IQueryMediator>(), new Mock<IAuthenticationService>());
+        var controller = CreateController(config, mediator, new Mock<IAuthenticationService>());
         var content = new ContentSettings { DefaultEditor = EditorChoice.Markdown };
 
         Assert.Same(failure, await Assert.ThrowsAsync<InvalidOperationException>(() => controller.Content(content)));
@@ -251,7 +235,7 @@ public partial class SettingsControllerTests
         var authentication = new Mock<IAuthenticationService>();
         authentication.Setup(p => p.SignOutAsync(It.IsAny<HttpContext>(), CookieAuthenticationDefaults.AuthenticationScheme, null))
             .ThrowsAsync(failure);
-        var controller = CreateController(config, mediator, Mock.Of<IQueryMediator>(), authentication, account: account);
+        var controller = CreateController(config, mediator, authentication, account: account);
 
         Assert.Same(failure, await Assert.ThrowsAsync<InvalidOperationException>(() =>
             controller.ResetLocalAccountTotp(new ResetLocalAccountTotpRequest { CurrentPassword = "Password1" })));

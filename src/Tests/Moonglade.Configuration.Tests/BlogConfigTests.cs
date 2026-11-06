@@ -34,7 +34,7 @@ public class BlogConfigTests
     {
         var persisted = new BlogConfig().LoadFromConfig(new Dictionary<string, string>()).ToDictionary();
         var general = GeneralSettings.DefaultValue;
-        general.SiteTitle = "Saved title";
+        general = general with { SiteTitle = "Saved title" };
         persisted[nameof(GeneralSettings)] = general.ToJson();
         persisted[nameof(ContentSettings)] = new ContentSettings { DefaultEditor = EditorChoice.Markdown }.ToJson();
         var config = new BlogConfig();

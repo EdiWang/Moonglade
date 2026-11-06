@@ -1,3 +1,4 @@
+using Microsoft.EntityFrameworkCore;
 using Edi.CacheAside.InMemory;
 using LiteBus.Commands.Abstractions;
 using LiteBus.Events.Abstractions;
@@ -12,7 +13,6 @@ using Microsoft.Extensions.Logging;
 using Moonglade.Auth;
 using Moonglade.Configuration;
 using Moonglade.Email.Core;
-using Moonglade.ImageStorage;
 using Moonglade.Web.Controllers;
 using Moonglade.Web.Tests.TestSupport;
 using Moq;
@@ -79,7 +79,7 @@ public class SettingsValidationHttpTests
         using var store = new ConfigurationCommandRecorder();
         var config = Defaults();
         var avatar = "https://cdn.example.com/" + new string('a', 300);
-        config.GeneralSettings.AvatarUrl = avatar;
+        config.Publish(config.Capture() with { GeneralSettings = config.GeneralSettings with { AvatarUrl = avatar } });
         await using var app = await CreateApp(store, config);
         using var client = app.GetTestClient();
         using var sender = await client.PostAsJsonAsync("/api/settings/notification", new NotificationSettings { EmailDisplayName = null },
@@ -105,11 +105,47 @@ public class SettingsValidationHttpTests
     }
 
     [Theory]
+    [InlineData(false, "[]")]
+    [InlineData(true, "[]")]
+    [InlineData(true, "[{\"title\":\"Parent\",\"url\":null,\"subMenus\":[{\"title\":\"Child\",\"url\":\"/child\",\"isOpenInNewTab\":true}]}]")]
+    public async Task MenuEnvelope_SavesImmutableGraphWithLegacyJsonAndRetainsPreviousSnapshot(bool enabled, string json)
+    {
+        using var store = new ConfigurationCommandRecorder();
+        var config = Defaults();
+        var retained = config.Capture();
+        var originalMenus = retained.CustomMenuSettings.ToJson();
+        await using var app = await CreateApp(store, config);
+        using var client = app.GetTestClient();
+
+        using var response = await client.PostAsJsonAsync("/api/settings/custom-menu",
+            new CustomMenuSettingsJsonModel { IsEnabled = enabled, MenuJson = json }, TestContext.Current.CancellationToken);
+
+        Assert.Equal(HttpStatusCode.NoContent, response.StatusCode);
+        var current = config.Capture();
+        Assert.NotSame(retained, current);
+        Assert.Equal(originalMenus, retained.CustomMenuSettings.ToJson());
+        using var actual = JsonDocument.Parse(current.CustomMenuSettings.ToJson());
+        using var submitted = JsonDocument.Parse(json);
+        Assert.Equal(enabled, actual.RootElement.GetProperty("isEnabled").GetBoolean());
+        Assert.Equal(submitted.RootElement.GetArrayLength(), actual.RootElement.GetProperty("menus").GetArrayLength());
+        Assert.Equal(current.CustomMenuSettings.ToJson(), (await store.Db.BlogConfiguration.AsNoTracking().SingleAsync(
+            row => row.CfgKey == nameof(CustomMenuSettings), TestContext.Current.CancellationToken)).CfgValue);
+        if (current.CustomMenuSettings.Menus.Count > 0)
+        {
+            Assert.Null(current.CustomMenuSettings.Menus[0].Url);
+            var child = Assert.Single(current.CustomMenuSettings.Menus[0].SubMenus);
+            Assert.Equal("/child", child.Url);
+            Assert.True(child.IsOpenInNewTab);
+        }
+    }
+
+    [Theory]
     [InlineData("general")]
     [InlineData("content")]
     [InlineData("comment")]
     [InlineData("notification")]
     [InlineData("subscription")]
+    [InlineData("watermark")]
     [InlineData("advanced")]
     [InlineData("appearance")]
     [InlineData("custom-menu")]
@@ -126,6 +162,7 @@ public class SettingsValidationHttpTests
             "comment" => CommentSettings.DefaultValue,
             "notification" => NotificationSettings.DefaultValue,
             "subscription" => FeedSettings.DefaultValue,
+            "watermark" => ImageSettings.DefaultValue,
             "advanced" => AdvancedSettings.DefaultValue,
             "appearance" => AppearanceSettings.DefaultValue,
             "custom-menu" => new CustomMenuSettingsJsonModel { IsEnabled = false },
@@ -150,7 +187,6 @@ public class SettingsValidationHttpTests
         builder.Services.AddSingleton<ICommandMediator>(store);
         builder.Services.AddSingleton(Mock.Of<IQueryMediator>());
         builder.Services.AddSingleton(Mock.Of<IEventMediator>());
-        builder.Services.AddSingleton(Mock.Of<IBlogImageStorage>());
         builder.Services.AddSingleton(new EmailCapabilityStatusEvaluator(new EmailServiceOptionsValidator(), new EmailOutboxWorkerOptionsValidator())
             .Evaluate(new EmailServiceOptions(), new EmailOutboxWorkerOptions()));
         builder.Services.AddInMemoryCacheAside();

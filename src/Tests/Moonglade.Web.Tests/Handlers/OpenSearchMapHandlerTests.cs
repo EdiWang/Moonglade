@@ -12,13 +12,13 @@ public class OpenSearchMapHandlerTests
     public async Task Handle_WhenOpenSearchIsDisabled_ReturnsNotFound()
     {
         var httpContext = new DefaultHttpContext();
-        var blogConfig = new BlogConfig
+        var blogConfig = new BlogConfig(new BlogSettingsSnapshot
         {
             AdvancedSettings = new AdvancedSettings
             {
                 EnableOpenSearch = false
             }
-        };
+        });
 
         await OpenSearchMapHandler.Handle(httpContext, blogConfig);
 
@@ -36,7 +36,7 @@ public class OpenSearchMapHandlerTests
         httpContext.Request.Host = new HostString("blog.example.com");
         httpContext.Response.Body = responseBody;
 
-        var blogConfig = new BlogConfig
+        var blogConfig = new BlogConfig(new BlogSettingsSnapshot
         {
             GeneralSettings = new GeneralSettings
             {
@@ -48,7 +48,7 @@ public class OpenSearchMapHandlerTests
             {
                 EnableOpenSearch = true
             }
-        };
+        });
 
         await OpenSearchMapHandler.Handle(httpContext, blogConfig);
 

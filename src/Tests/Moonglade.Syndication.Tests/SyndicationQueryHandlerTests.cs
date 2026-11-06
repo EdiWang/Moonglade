@@ -57,7 +57,7 @@ public class SyndicationQueryHandlerTests
     {
         using var db = await CreateFeedDatabaseAsync();
         var blogConfig = CreateBlogConfig();
-        blogConfig.GeneralSettings.OwnerEmail = "owner@example.com";
+        blogConfig.Publish(blogConfig.Capture() with { GeneralSettings = blogConfig.GeneralSettings with { OwnerEmail = "owner@example.com" } });
         var accessor = CreateHttpContextAccessor("https", "blog.example.com");
         var handler = new GetAtomStringQueryHandler(blogConfig, new SyndicationDataSource(blogConfig, accessor, db), accessor);
 
@@ -75,7 +75,7 @@ public class SyndicationQueryHandlerTests
 
     private static BlogConfig CreateBlogConfig()
     {
-        return new BlogConfig
+        return new BlogConfig(new BlogSettingsSnapshot
         {
             GeneralSettings = new GeneralSettings
             {
@@ -85,7 +85,7 @@ public class SyndicationQueryHandlerTests
                 DefaultLanguageCode = "en-us",
                 OwnerEmail = "test@example.com"
             }
-        };
+        });
     }
 
     private static IHttpContextAccessor CreateHttpContextAccessor(string scheme = "https", string host = "example.com")

@@ -8,7 +8,7 @@ public class ImageSettingsTests
     public void Validate_MissingCdnEndpoint_ReportsErrorsWithoutChangingInput()
     {
         var settings = ImageSettings.DefaultValue;
-        settings.EnableCDNRedirect = true;
+        settings = settings with { EnableCDNRedirect = true };
         var original = settings.ToJson();
         var errors = new List<ValidationResult>();
 

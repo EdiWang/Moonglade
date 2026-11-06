@@ -75,4 +75,4 @@ public sealed record ImmutableSubMenuProbe
     public bool IsOpenInNewTab { get; init; }
 }
 
-public sealed record SettingsSnapshotProbe(ImmutableFeedProbe Feed, ImmutableMenusProbe Menu, string? AvatarUrl = null);
+public sealed record SettingsSnapshotProbe(ImmutableFeedProbe Feed, ImmutableMenusProbe Menu);

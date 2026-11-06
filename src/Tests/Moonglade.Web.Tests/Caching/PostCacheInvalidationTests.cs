@@ -314,16 +314,17 @@ public partial class PostCacheInvalidationTests
             services.AddDbContext<BlogDbContext>(options => options.UseSqlite(connection).AddInterceptors(interceptors));
             services.AddSingleton(TimeProvider.System);
             services.AddInMemoryCacheAside();
+            services.AddSingleton<IBlogConfig>(sp => sp.GetRequiredService<BlogConfig>());
             services.AddSingleton<PostCacheInvalidator>();
             services.AddSingleton<ThemeCacheInvalidator>();
             services.AddSingleton<ScheduledPublishWakeUp>();
             services.AddSingleton<ConfigurationWriteGate>();
-            services.AddSingleton<IBlogConfig>(new BlogConfig
+            services.AddSingleton(new BlogConfig(new BlogSettingsSnapshot
             {
                 GeneralSettings = GeneralSettings.DefaultValue,
                 ContentSettings = new ContentSettings { EnableViewCount = false },
                 FeedSettings = new FeedSettings { FeedItemCount = 20 }
-            });
+            }));
             services.AddSingleton<IConfiguration>(new ConfigurationBuilder().AddInMemoryCollection(
                 new Dictionary<string, string?> { ["PostCacheMinutes"] = "60" }).Build());
             services.AddHttpContextAccessor();

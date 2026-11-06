@@ -69,7 +69,7 @@ public sealed class ConfigInitializerTests
         await using var db = new BlogDbContext(options);
         var persisted = StartupSettings.Defaults();
         var general = GeneralSettings.DefaultValue;
-        general.SiteTitle = "Preserved title";
+        general = general with { SiteTitle = "Preserved title" };
         persisted[nameof(GeneralSettings)] = general.ToJson();
         persisted[nameof(FeedSettings)] = invalidJson;
         var originalTimestamp = DateTime.UtcNow.AddDays(-1);

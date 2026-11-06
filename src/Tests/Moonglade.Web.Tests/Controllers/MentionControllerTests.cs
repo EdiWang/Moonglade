@@ -17,13 +17,13 @@ namespace Moonglade.Web.Tests.Controllers;
 
 public class MentionControllerTests
 {
-    private readonly BlogConfig _blogConfig = new()
+    private readonly BlogConfig _blogConfig = new(new BlogSettingsSnapshot
     {
         AdvancedSettings = new AdvancedSettings
         {
             EnableWebmention = true
         }
-    };
+    });
     private readonly Mock<IQueryMediator> _queryMediator = new();
     private readonly Mock<IEventMediator> _eventMediator = new();
     private readonly RecordingCommandMediator _commandMediator = new();
@@ -38,7 +38,7 @@ public class MentionControllerTests
     [Fact]
     public async Task ReceiveWebmention_WhenWebmentionDisabled_ReturnsForbid()
     {
-        _blogConfig.AdvancedSettings.EnableWebmention = false;
+        _blogConfig.Publish(_blogConfig.Capture() with { AdvancedSettings = _blogConfig.AdvancedSettings with { EnableWebmention = false } });
         var controller = CreateController();
 
         var result = await controller.ReceiveWebmention("https://example.com/source", "https://example.com/target");

@@ -20,7 +20,7 @@ public class CommitBoundaryProbeTests
         await connection.OpenAsync(ct);
         await using var db = Context(connection);
         await Seed(db);
-        var config = new BlogConfig { FeedSettings = FeedSettings.DefaultValue };
+        var config = new BlogConfig(new BlogSettingsSnapshot { FeedSettings = FeedSettings.DefaultValue });
         var events = new Mock<IEventMediator>();
         await using var outer = await db.Database.BeginTransactionAsync(ct);
 
@@ -48,7 +48,7 @@ public class CommitBoundaryProbeTests
         await Seed(db);
         if (failSave)
             await db.Database.ExecuteSqlRawAsync("CREATE TRIGGER reject_settings BEFORE UPDATE ON BlogConfiguration BEGIN SELECT RAISE(ABORT, 'Settings rejected'); END;", ct);
-        var config = new BlogConfig { FeedSettings = FeedSettings.DefaultValue };
+        var config = new BlogConfig(new BlogSettingsSnapshot { FeedSettings = FeedSettings.DefaultValue });
         var original = config.FeedSettings;
         var assetId = Guid.NewGuid();
         db.BlogAsset.Add(new BlogAssetEntity { Id = assetId, Base64Data = "AQID", LastModifiedTimeUtc = DateTime.UtcNow });
@@ -80,7 +80,7 @@ public class CommitBoundaryProbeTests
 
     private static BlogDbContext Context(SqliteConnection connection) => new(new DbContextOptionsBuilder<BlogDbContext>().UseSqlite(connection).Options);
 
-    private static UpdateConfigurationCommandHandler Handler(BlogDbContext db, IBlogConfig config, IEventMediator events) =>
+    private static UpdateConfigurationCommandHandler Handler(BlogDbContext db, BlogConfig config, IEventMediator events) =>
         new(db, config, events, new ConfigurationWriteGate(), NullLogger<UpdateConfigurationCommandHandler>.Instance);
 
     private static async Task Seed(BlogDbContext db)

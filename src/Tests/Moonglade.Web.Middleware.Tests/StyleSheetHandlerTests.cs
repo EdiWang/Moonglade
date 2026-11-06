@@ -14,7 +14,7 @@ public class StyleSheetHandlerTests
     private readonly Mock<IBlogConfig> _mockBlogConfig;
     private readonly Mock<IQueryMediator> _mockQueryMediator;
     private readonly Mock<ILogger> _mockLogger;
-    private readonly AppearanceSettings _appearanceSettings;
+    private AppearanceSettings _appearanceSettings;
     private readonly StyleSheetOptions _options;
 
     public StyleSheetHandlerTests()
@@ -24,7 +24,7 @@ public class StyleSheetHandlerTests
         _mockLogger = new Mock<ILogger>();
         _appearanceSettings = new AppearanceSettings();
         _options = new StyleSheetOptions { MaxContentLength = 65536, CacheMaxAge = 3600 };
-        _mockBlogConfig.Setup(x => x.AppearanceSettings).Returns(_appearanceSettings);
+        _mockBlogConfig.Setup(x => x.AppearanceSettings).Returns(() => _appearanceSettings);
     }
 
     #region Custom CSS Tests
@@ -33,7 +33,7 @@ public class StyleSheetHandlerTests
     public async Task HandleCustomCss_WhenCustomCssDisabled_ReturnsNotFound()
     {
         var context = CreateContext();
-        _appearanceSettings.EnableCustomCss = false;
+        _appearanceSettings = _appearanceSettings with { EnableCustomCss = false };
 
         await StyleSheetHandler.HandleCustomCssAsync(context, _mockBlogConfig.Object, _options, _mockLogger.Object);
 
@@ -46,8 +46,8 @@ public class StyleSheetHandlerTests
     public async Task HandleCustomCss_WhenCssCodeEmpty_ReturnsNotFound()
     {
         var context = CreateContext();
-        _appearanceSettings.EnableCustomCss = true;
-        _appearanceSettings.CssCode = "";
+        _appearanceSettings = _appearanceSettings with { EnableCustomCss = true };
+        _appearanceSettings = _appearanceSettings with { CssCode = "" };
 
         await StyleSheetHandler.HandleCustomCssAsync(context, _mockBlogConfig.Object, _options, _mockLogger.Object);
 
@@ -59,8 +59,8 @@ public class StyleSheetHandlerTests
     {
         var context = CreateContext();
         var cssCode = ".custom { color: red; }";
-        _appearanceSettings.EnableCustomCss = true;
-        _appearanceSettings.CssCode = cssCode;
+        _appearanceSettings = _appearanceSettings with { EnableCustomCss = true };
+        _appearanceSettings = _appearanceSettings with { CssCode = cssCode };
 
         await StyleSheetHandler.HandleCustomCssAsync(context, _mockBlogConfig.Object, _options, _mockLogger.Object);
 
@@ -74,8 +74,8 @@ public class StyleSheetHandlerTests
     public async Task HandleCustomCss_WhenValidCss_DoesNotSetLastModified()
     {
         var context = CreateContext();
-        _appearanceSettings.EnableCustomCss = true;
-        _appearanceSettings.CssCode = ".test { }";
+        _appearanceSettings = _appearanceSettings with { EnableCustomCss = true };
+        _appearanceSettings = _appearanceSettings with { CssCode = ".test { }" };
 
         await StyleSheetHandler.HandleCustomCssAsync(context, _mockBlogConfig.Object, _options, _mockLogger.Object);
 
@@ -86,8 +86,8 @@ public class StyleSheetHandlerTests
     public async Task HandleCustomCss_WhenValidCss_SetsCachingHeaders()
     {
         var context = CreateContext();
-        _appearanceSettings.EnableCustomCss = true;
-        _appearanceSettings.CssCode = ".test { color: green; }";
+        _appearanceSettings = _appearanceSettings with { EnableCustomCss = true };
+        _appearanceSettings = _appearanceSettings with { CssCode = ".test { color: green; }" };
 
         await StyleSheetHandler.HandleCustomCssAsync(context, _mockBlogConfig.Object, _options, _mockLogger.Object);
 
@@ -103,8 +103,8 @@ public class StyleSheetHandlerTests
     {
         var context = CreateContext();
         var cssCode = ".test { color: blue; }";
-        _appearanceSettings.EnableCustomCss = true;
-        _appearanceSettings.CssCode = cssCode;
+        _appearanceSettings = _appearanceSettings with { EnableCustomCss = true };
+        _appearanceSettings = _appearanceSettings with { CssCode = cssCode };
 
         var expectedETag = StyleSheetHandler.GenerateETag(cssCode);
         context.Request.Headers.IfNoneMatch = expectedETag;

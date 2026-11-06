@@ -16,7 +16,7 @@ namespace Moonglade.Web.Tests.TestSupport;
 internal sealed class ConfigurationCommandRecorder : ICommandMediator, IDisposable
 {
     private readonly SqliteConnection _connection = new("Data Source=:memory:");
-    private IBlogConfig _config = null!;
+    private BlogConfig _config = null!;
 
     public List<ICommand> Commands { get; } = [];
     public BlogDbContext Db { get; }
@@ -33,7 +33,7 @@ internal sealed class ConfigurationCommandRecorder : ICommandMediator, IDisposab
         Db.Database.EnsureCreated();
     }
 
-    public void Initialize(IBlogConfig config, LocalAccountSettings? account = null)
+    public void Initialize(BlogConfig config, LocalAccountSettings? account = null)
     {
         _config = config;
         account ??= LocalAccountSettings.DefaultValue;

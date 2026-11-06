@@ -1,6 +1,7 @@
 using LiteBus.Commands;
 using LiteBus.Commands.Abstractions;
 using LiteBus.Events;
+using LiteBus.Events.Abstractions;
 using Edi.CacheAside.InMemory;
 using Moonglade.BackgroundServices;
 using Moonglade.Web.Handlers;
@@ -10,6 +11,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Configuration;
 using Moonglade.Auth;
+using Moonglade.Features.Asset;
 using Moonglade.Configuration;
 using Moonglade.Web.Tests.TestSupport;
 
@@ -17,6 +19,32 @@ namespace Moonglade.Web.Tests.Hosting;
 
 public class ConfigurationCommandRegistrationTests
 {
+    [Fact]
+    public async Task AvatarEvent_WithActualHandlerDiscovery_SavesOnlyLocalAssetWithoutImageStorage()
+    {
+        using var store = new ConfigurationCommandRecorder();
+        var services = new ServiceCollection();
+        services.AddLogging();
+        services.AddSingleton(store.Db);
+        services.AddLiteBus(bus =>
+        {
+            bus.AddMessaging(_ => { });
+            bus.AddEvents(module =>
+            {
+                module.RegisterFromAssembly(typeof(SaveAssetEvent).Assembly);
+                module.RegisterFromAssembly(typeof(ConfigurationChangedEventHandler).Assembly);
+            });
+        });
+        using var provider = services.BuildServiceProvider();
+        var data = Convert.ToBase64String([1, 2, 3]);
+
+        await provider.GetRequiredService<IEventMediator>().PublishAsync(new SaveAssetEvent(AssetId.AvatarBase64, data),
+            TestContext.Current.CancellationToken);
+
+        Assert.Equal(data, (await store.Db.BlogAsset.SingleAsync(TestContext.Current.CancellationToken)).Base64Data);
+        Assert.False(await store.Db.BlogConfiguration.AnyAsync(TestContext.Current.CancellationToken));
+    }
+
     [Fact]
     public async Task AssemblyRegistration_ResolvesAndDispatchesConfigurationUpdate()
     {
@@ -28,7 +56,8 @@ public class ConfigurationCommandRegistrationTests
         services.AddSingleton(store.Db);
         services.AddBlogConfig();
         services.AddBlogAuthentication(new ConfigurationBuilder().Build());
-        services.AddSingleton<IBlogConfig>(config);
+        services.AddSingleton(config);
+        services.AddSingleton<IBlogConfig>(sp => sp.GetRequiredService<BlogConfig>());
         services.AddInMemoryCacheAside();
         services.AddSingleton<PostCacheInvalidator>();
         services.AddSingleton<ThemeCacheInvalidator>();
@@ -48,7 +77,7 @@ public class ConfigurationCommandRegistrationTests
         var previousFeedKey = feeds.GetFeedCacheKey("rss");
 
         var settings = GeneralSettings.DefaultValue;
-        settings.SiteTitle = "Saved via bus";
+        settings = settings with { SiteTitle = "Saved via bus" };
         await provider.GetRequiredService<ICommandMediator>().SendAsync(UpdateConfigurationCommand.Create(settings), TestContext.Current.CancellationToken);
 
         Assert.Equal("Saved via bus", config.GeneralSettings.SiteTitle);

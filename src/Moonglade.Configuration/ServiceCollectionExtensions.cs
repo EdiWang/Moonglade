@@ -7,7 +7,8 @@ public static class ServiceCollectionExtensions
 {
     public static IServiceCollection AddBlogConfig(this IServiceCollection services)
     {
-        services.AddSingleton<IBlogConfig, BlogConfig>();
+        services.AddSingleton<BlogConfig>();
+        services.AddSingleton<IBlogConfig>(sp => sp.GetRequiredService<BlogConfig>());
         services.TryAddSingleton<ConfigurationWriteGate>();
         return services;
     }

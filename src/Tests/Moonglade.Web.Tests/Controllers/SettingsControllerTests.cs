@@ -1,6 +1,5 @@
 using Edi.AspNetCore.Utils;
 using LiteBus.Events.Abstractions;
-using LiteBus.Queries.Abstractions;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Http;
@@ -15,8 +14,6 @@ using Moonglade.Auth;
 using Moonglade.Configuration;
 using Moonglade.Email;
 using Moonglade.Email.Core;
-using Moonglade.Features.Asset;
-using Moonglade.ImageStorage;
 using Moonglade.Web.Controllers;
 using Moq;
 using System.Net;
@@ -33,15 +30,14 @@ public partial class SettingsControllerTests
     [InlineData(true)]
     public async Task Comment_PersistsMarkdownLinksAndUpdatesRuntimeSettings(bool enableLinks)
     {
-        var blogConfig = new BlogConfig
+        var blogConfig = new BlogConfig(new BlogSettingsSnapshot
         {
             CommentSettings = new CommentSettings { EnableMarkdownLinks = !enableLinks }
-        };
+        });
         using var commandMediator = new ConfigurationCommandRecorder();
         var controller = CreateController(
             blogConfig,
             commandMediator,
-            Mock.Of<IQueryMediator>(),
             new Mock<IAuthenticationService>());
         var model = new CommentSettings { EnableMarkdownLinks = enableLinks };
 
@@ -64,7 +60,6 @@ public partial class SettingsControllerTests
         var controller = CreateController(
             blogConfig,
             commandMediator,
-            Mock.Of<IQueryMediator>(),
             new Mock<IAuthenticationService>());
         var model = new ContentSettings { DefaultEditor = editor };
 
@@ -113,7 +108,6 @@ public partial class SettingsControllerTests
         var controller = CreateController(
             CreateEmailEnabledBlogConfig(),
             new ConfigurationCommandRecorder(),
-            Mock.Of<IQueryMediator>(),
             new Mock<IAuthenticationService>(),
             eventMediator: eventMediator.Object,
             emailCapabilityStatus: CreateEmailCapabilityStatus(state));
@@ -138,11 +132,10 @@ public partial class SettingsControllerTests
     {
         var eventMediator = new Mock<IEventMediator>(MockBehavior.Strict);
         var blogConfig = CreateEmailEnabledBlogConfig();
-        blogConfig.NotificationSettings.EnableEmailSending = false;
+        blogConfig.Publish(blogConfig.Capture() with { NotificationSettings = blogConfig.NotificationSettings with { EnableEmailSending = false } });
         var controller = CreateController(
             blogConfig,
             new ConfigurationCommandRecorder(),
-            Mock.Of<IQueryMediator>(),
             new Mock<IAuthenticationService>(),
             eventMediator: eventMediator.Object,
             emailCapabilityStatus: CreateEmailCapabilityStatus(EmailCapabilityState.Available));
@@ -174,7 +167,6 @@ public partial class SettingsControllerTests
         var controller = CreateController(
             CreateEmailEnabledBlogConfig(),
             new ConfigurationCommandRecorder(),
-            Mock.Of<IQueryMediator>(),
             new Mock<IAuthenticationService>(),
             eventMediator: eventMediator.Object,
             emailCapabilityStatus: CreateEmailCapabilityStatus(EmailCapabilityState.Available));
@@ -204,7 +196,6 @@ public partial class SettingsControllerTests
         var controller = CreateController(
             CreateEmailEnabledBlogConfig(),
             new ConfigurationCommandRecorder(),
-            Mock.Of<IQueryMediator>(),
             new Mock<IAuthenticationService>(),
             eventMediator: eventMediator.Object,
             emailCapabilityStatus: CreateEmailCapabilityStatus(EmailCapabilityState.Available));
@@ -279,49 +270,32 @@ public partial class SettingsControllerTests
             Times.Never);
     }
 
-    [Fact]
-    public async Task Image_WhenCdnIsEnabled_MigratesAvatarToPrimaryStorageAndUsesDirectCdnUrl()
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public async Task Image_SavesOnlyImageSettingsWithoutChangingLegacyAvatar(bool enableCdn)
     {
-        var avatarBytes = new byte[] { 1, 2, 3, 4 };
-        var generalSettings = GeneralSettings.DefaultValue;
-        generalSettings.AvatarUrl = "/assets/avatar";
-        var blogConfig = new BlogConfig
+        var blogConfig = new BlogConfig(new BlogSettingsSnapshot
         {
-            GeneralSettings = generalSettings,
+            GeneralSettings = GeneralSettings.DefaultValue with { AvatarUrl = "https://legacy-cdn.example.com/avatar.png" },
             ImageSettings = ImageSettings.DefaultValue
-        };
-        using var commandMediator = new ConfigurationCommandRecorder();
-        var queryMediator = new Mock<IQueryMediator>();
-        queryMediator
-            .Setup(x => x.QueryAsync(
-                It.Is<GetAssetQuery>(query => query.AssetId == AssetId.AvatarBase64),
-                It.IsAny<QueryMediationSettings>(),
-                It.IsAny<CancellationToken>()))
-            .ReturnsAsync(Convert.ToBase64String(avatarBytes));
-        var imageStorage = new Mock<IBlogImageStorage>();
-        var expectedFileName = $"avatar-{AssetId.AvatarBase64:N}.png";
-        imageStorage
-            .Setup(x => x.InsertAsync(expectedFileName, It.IsAny<byte[]>()))
-            .ReturnsAsync("avatar-cdn.png");
-        var controller = CreateController(
-            blogConfig,
-            commandMediator,
-            queryMediator.Object,
-            new Mock<IAuthenticationService>());
-        var model = ImageSettings.DefaultValue;
-        model.EnableCDNRedirect = true;
-        model.CDNEndpoint = "https://cdn.example.com/images";
+        });
+        using var mediator = new ConfigurationCommandRecorder();
+        var controller = CreateController(blogConfig, mediator, new Mock<IAuthenticationService>());
+        var originalGeneral = blogConfig.GeneralSettings;
+        var originalRow = await mediator.Db.BlogConfiguration.AsNoTracking().SingleAsync(
+            row => row.CfgKey == nameof(GeneralSettings), TestContext.Current.CancellationToken);
+        var image = ImageSettings.DefaultValue with { EnableCDNRedirect = enableCdn, CDNEndpoint = "https://cdn.example.com/images" };
 
-        var result = await controller.Image(model, imageStorage.Object);
+        Assert.IsType<NoContentResult>(await controller.Image(image));
 
-        Assert.IsType<NoContentResult>(result);
-        imageStorage.Verify(x => x.InsertAsync(expectedFileName, It.Is<byte[]>(bytes => bytes.SequenceEqual(avatarBytes))), Times.Once);
-        imageStorage.Verify(x => x.InsertOriginalAsync(It.IsAny<string>(), It.IsAny<byte[]>()), Times.Never);
-        Assert.Equal("https://cdn.example.com/images/avatar-cdn.png", blogConfig.GeneralSettings.AvatarUrl);
-
-        var settingsUpdate = commandMediator.Single<UpdateConfigurationCommand>();
-        Assert.Contains(nameof(GeneralSettings), settingsUpdate.Settings.Keys);
-        Assert.Contains(nameof(ImageSettings), settingsUpdate.Settings.Keys);
+        Assert.Same(originalGeneral, blogConfig.GeneralSettings);
+        var saved = await mediator.Db.BlogConfiguration.AsNoTracking().SingleAsync(
+            row => row.CfgKey == nameof(GeneralSettings), TestContext.Current.CancellationToken);
+        Assert.Equal(originalRow.CfgValue, saved.CfgValue);
+        Assert.Equal(originalRow.LastModifiedTimeUtc, saved.LastModifiedTimeUtc);
+        Assert.Equal(image.ToJson(), blogConfig.ImageSettings.ToJson());
+        Assert.Equal(new[] { nameof(ImageSettings) }, mediator.Single<UpdateConfigurationCommand>().Settings.Keys);
     }
 
     [Fact]
@@ -330,7 +304,7 @@ public partial class SettingsControllerTests
         var config = new BlogConfig();
         var original = config.ContentSettings;
         using var mediator = new ConfigurationCommandRecorder();
-        var controller = CreateController(config, mediator, Mock.Of<IQueryMediator>(), new Mock<IAuthenticationService>());
+        var controller = CreateController(config, mediator, new Mock<IAuthenticationService>());
         await mediator.Db.Database.ExecuteSqlRawAsync(
             "CREATE TRIGGER reject_settings BEFORE UPDATE ON BlogConfiguration BEGIN SELECT RAISE(ABORT, 'Save rejected'); END;",
             TestContext.Current.CancellationToken);
@@ -345,39 +319,28 @@ public partial class SettingsControllerTests
     }
 
     [Fact]
-    public async Task Image_WhenOneSettingFails_RollsBackBothRowsAndPreservesRuntime()
+    public async Task Image_WhenPersistenceFails_PreservesBothImageAndGeneralSettings()
     {
-        var config = new BlogConfig
+        var config = new BlogConfig(new BlogSettingsSnapshot
         {
             GeneralSettings = GeneralSettings.DefaultValue,
             ImageSettings = ImageSettings.DefaultValue
-        };
-        config.GeneralSettings.AvatarUrl = "/assets/avatar";
-        var originalGeneral = config.GeneralSettings;
-        var originalImage = config.ImageSettings;
+        });
         using var mediator = new ConfigurationCommandRecorder();
-        var query = new Mock<IQueryMediator>();
-        query.Setup(p => p.QueryAsync(It.IsAny<GetAssetQuery>(), It.IsAny<QueryMediationSettings>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync(Convert.ToBase64String([1, 2, 3]));
-        var storage = new Mock<IBlogImageStorage>();
-        storage.Setup(p => p.InsertAsync(It.IsAny<string>(), It.IsAny<byte[]>())).ReturnsAsync("avatar.png");
-        var controller = CreateController(config, mediator, query.Object, new Mock<IAuthenticationService>());
+        var controller = CreateController(config, mediator, new Mock<IAuthenticationService>());
+        var original = config.Capture();
         await mediator.Db.Database.ExecuteSqlRawAsync(
-            "CREATE TRIGGER reject_image_settings BEFORE UPDATE ON BlogConfiguration WHEN OLD.CfgKey = 'ImageSettings' BEGIN SELECT RAISE(ABORT, 'Save rejected'); END;",
+            "CREATE TRIGGER reject_image_settings BEFORE UPDATE ON BlogConfiguration BEGIN SELECT RAISE(ABORT, 'Settings save rejected'); END;",
             TestContext.Current.CancellationToken);
+        var image = ImageSettings.DefaultValue with { EnableCDNRedirect = true, CDNEndpoint = "https://cdn.example.com" };
 
-        var updatedImage = ImageSettings.DefaultValue;
-        updatedImage.EnableCDNRedirect = true;
-        updatedImage.CDNEndpoint = "https://cdn.example.com";
-        await Assert.ThrowsAsync<DbUpdateException>(() => controller.Image(updatedImage, storage.Object));
+        await Assert.ThrowsAsync<DbUpdateException>(() => controller.Image(image));
 
-        Assert.Same(originalGeneral, config.GeneralSettings);
-        Assert.Same(originalImage, config.ImageSettings);
+        Assert.Same(original, config.Capture());
+        var rows = await mediator.Db.BlogConfiguration.AsNoTracking().ToDictionaryAsync(row => row.CfgKey, TestContext.Current.CancellationToken);
+        Assert.Equal(original.GeneralSettings.ToJson(), rows[nameof(GeneralSettings)].CfgValue);
+        Assert.Equal(original.ImageSettings.ToJson(), rows[nameof(ImageSettings)].CfgValue);
         Assert.Empty(mediator.Commands.OfType<CreateActivityLogCommand>());
-        mediator.Db.ChangeTracker.Clear();
-        var rows = await mediator.Db.BlogConfiguration.ToDictionaryAsync(p => p.CfgKey, TestContext.Current.CancellationToken);
-        Assert.Equal(originalGeneral.ToJson(), rows[nameof(GeneralSettings)].CfgValue);
-        Assert.Equal(originalImage.ToJson(), rows[nameof(ImageSettings)].CfgValue);
     }
 
     [Fact]
@@ -413,14 +376,14 @@ public partial class SettingsControllerTests
         };
     }
 
-    private static BlogConfig CreateEmailEnabledBlogConfig() => new()
+    private static BlogConfig CreateEmailEnabledBlogConfig() => new(new BlogSettingsSnapshot
     {
         NotificationSettings = new NotificationSettings
         {
             EnableEmailSending = true,
             EmailDisplayName = "Moonglade"
         }
-    };
+    });
 
     private static EmailCapabilityStatus CreateEmailCapabilityStatus(EmailCapabilityState state)
     {
@@ -464,7 +427,6 @@ public partial class SettingsControllerTests
         return CreateController(
             new BlogConfig(),
             commandMediator,
-            Mock.Of<IQueryMediator>(),
             authenticationService,
             account.Username, account: account);
     }
@@ -472,7 +434,6 @@ public partial class SettingsControllerTests
     private static SettingsController CreateController(
         BlogConfig blogConfig,
         ConfigurationCommandRecorder commandMediator,
-        IQueryMediator queryMediator,
         Mock<IAuthenticationService> authenticationService,
         string username = "admin",
         IEventMediator? eventMediator = null,
@@ -501,7 +462,6 @@ public partial class SettingsControllerTests
             logger ?? Mock.Of<ILogger<SettingsController>>(),
             eventMediator ?? Mock.Of<IEventMediator>(),
             emailCapabilityStatus ?? CreateEmailCapabilityStatus(EmailCapabilityState.Available),
-            queryMediator,
             commandMediator.Accounts,
             commandMediator);
 

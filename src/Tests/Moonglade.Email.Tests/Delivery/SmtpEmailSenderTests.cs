@@ -38,13 +38,13 @@ public class SmtpEmailSenderTests
         }).Build();
         var services = new ServiceCollection();
         services.AddLogging();
-        services.AddSingleton<IBlogConfig>(new BlogConfig
+        services.AddSingleton<IBlogConfig>(new BlogConfig(new BlogSettingsSnapshot
         {
             NotificationSettings = new NotificationSettings
             {
                 EmailDisplayName = "Blog Sender"
             }
-        });
+        }));
         services.AddMoongladeEmail(configuration);
         using var serviceProvider = services.BuildServiceProvider();
         var sender = serviceProvider.GetRequiredService<IEmailDispatcher>();

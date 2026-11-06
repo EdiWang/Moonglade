@@ -6,10 +6,7 @@
 @inject ThemeCacheInvalidator ThemeCache
 
 @{
-    if (string.IsNullOrEmpty(BlogConfig.GeneralSettings.AvatarUrl))
-    {
-        BlogConfig.GeneralSettings.AvatarUrl = Url.Action("Avatar", "Assets");
-    }
+    var avatarUrl = Url.Action("Avatar", "Assets");
 
     // Resolve culture
     // Post language > User set display language > System default language
@@ -195,7 +192,7 @@
                     }
                     else
                     {
-                        <img class="card-bkimg" alt="" aria-hidden="true" src="@BlogConfig.GeneralSettings.AvatarUrl" />
+                        <img class="card-bkimg" alt="" aria-hidden="true" src="@avatarUrl" />
                     }
                 </div>
                 <div class="blogger-intro-content">
@@ -210,7 +207,7 @@
                             }
                             else
                             {
-                                <img src="@BlogConfig.GeneralSettings.AvatarUrl"
+                                <img src="@avatarUrl"
                                      alt="@BlogConfig.GeneralSettings.OwnerName"
                                      class="rounded-circle blogger-head-pic" />
                             }

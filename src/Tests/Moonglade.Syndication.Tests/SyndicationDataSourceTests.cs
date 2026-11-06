@@ -37,7 +37,7 @@ public class SyndicationDataSourceTests
         });
         await db.SaveChangesAsync(TestContext.Current.CancellationToken);
 
-        var blogConfig = new BlogConfig
+        var blogConfig = new BlogConfig(new BlogSettingsSnapshot
         {
             FeedSettings = new FeedSettings { UseFullContent = full },
             ImageSettings = new ImageSettings
@@ -45,7 +45,7 @@ public class SyndicationDataSourceTests
                 EnableCDNRedirect = true,
                 CDNEndpoint = "https://cdn.example.com/images"
             }
-        };
+        });
         var httpContext = new DefaultHttpContext();
         httpContext.Request.Scheme = "https";
         httpContext.Request.Host = new HostString("blog.example.com");

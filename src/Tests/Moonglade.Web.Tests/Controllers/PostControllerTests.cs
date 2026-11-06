@@ -174,7 +174,7 @@ public class PostControllerTests
         var initialMeta = Assert.IsType<PostEditorMeta>(Assert.IsType<OkObjectResult>(initialResult).Value);
         Assert.Equal("html", initialMeta.EditorChoice);
 
-        blogConfig.ContentSettings = new ContentSettings { DefaultEditor = EditorChoice.Markdown };
+        blogConfig.Publish(blogConfig.Capture() with { ContentSettings = new ContentSettings { DefaultEditor = EditorChoice.Markdown } });
 
         var updatedResult = await controller.GetMeta(localizationOptions);
         var updatedMeta = Assert.IsType<PostEditorMeta>(Assert.IsType<OkObjectResult>(updatedResult).Value);

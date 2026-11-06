@@ -7,7 +7,6 @@ using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging.Abstractions;
 using Moonglade.Features.Asset;
-using Moonglade.ImageStorage;
 using Moq;
 using Moonglade.BackgroundServices;
 using Moonglade.Configuration;
@@ -80,12 +79,12 @@ public partial class PostCacheInvalidationTests
         Assert.Contains("/post/", sitemapBefore.ResponseContent);
         Assert.DoesNotContain("canonical.example.com", sitemapBefore.ResponseContent);
         var general = config.GeneralSettings.ToJson().FromJson<GeneralSettings>();
-        general.SiteTitle = "Updated blog";
-        general.OwnerEmail = "changed@example.com";
-        general.CanonicalPrefix = "https://canonical.example.com";
+        general = general with { SiteTitle = "Updated blog" };
+        general = general with { OwnerEmail = "changed@example.com" };
+        general = general with { CanonicalPrefix = "https://canonical.example.com" };
         var image = ImageSettings.DefaultValue;
-        image.EnableCDNRedirect = true;
-        image.CDNEndpoint = "https://cdn.example.com";
+        image = image with { EnableCDNRedirect = true };
+        image = image with { CDNEndpoint = "https://cdn.example.com" };
 
         using (var scope = environment.Services.CreateScope())
             await scope.ServiceProvider.GetRequiredService<ICommandMediator>()
@@ -181,27 +180,7 @@ public partial class PostCacheInvalidationTests
     private static int FeedCount(string xml, bool atom) => XDocument.Parse(xml).Descendants()
         .Count(element => element.Name.LocalName == (atom ? "entry" : "item"));
 
-    [Fact]
-    public async Task AvatarWriter_UsesTheSamePostCommitInvalidation()
-    {
-        using var environment = await TestEnvironment.CreateAsync();
-        var image = ImageSettings.DefaultValue;
-        image.EnableCDNRedirect = true;
-        image.CDNEndpoint = "https://cdn.example.com";
-        await SaveSetting(environment, image);
-        var key = environment.Invalidator.GetFeedCacheKey("rss");
-        var storage = new Mock<IBlogImageStorage>();
-        storage.Setup(m => m.InsertAsync(It.IsAny<string>(), It.IsAny<byte[]>())).ReturnsAsync("avatar.png");
-        using var scope = environment.Services.CreateScope();
-        var config = environment.Services.GetRequiredService<IBlogConfig>();
-        var handler = new SaveAssetToCdnHandler(NullLogger<SaveAssetToCdnHandler>.Instance, storage.Object, config,
-            scope.ServiceProvider.GetRequiredService<ICommandMediator>());
 
-        await handler.HandleAsync(new SaveAssetEvent(AssetId.AvatarBase64, Convert.ToBase64String([1, 2, 3])), TestContext.Current.CancellationToken);
-
-        Assert.StartsWith("https://cdn.example.com/avatar.png?", config.GeneralSettings.AvatarUrl);
-        Assert.NotEqual(key, environment.Invalidator.GetFeedCacheKey("rss"));
-    }
 
     [Fact]
     public async Task SettingsCancellationAfterCommit_StillInvalidates()

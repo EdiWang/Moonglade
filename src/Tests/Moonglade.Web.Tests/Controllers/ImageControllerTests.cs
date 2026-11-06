@@ -65,7 +65,7 @@ public class ImageControllerTests
         var primaryName = _fileNameGenerator.GetFileName("photo.svg");
         var originalName = _fileNameGenerator.GetFileName("photo.svg", "origin");
         var controller = CreateController(
-            new BlogConfig
+            new BlogConfig(new BlogSettingsSnapshot
             {
                 ImageSettings = new ImageSettings
                 {
@@ -74,7 +74,7 @@ public class ImageControllerTests
                     WatermarkFontSize = 20,
                     WatermarkText = "Moonglade"
                 }
-            },
+            }),
             imageStorage: storage);
 
         try
@@ -105,14 +105,14 @@ public class ImageControllerTests
     [InlineData("HEAD")]
     public async Task Image_WhenCdnRedirectIsEnabled_ReturnsPermanentRedirectWithoutReadingStorage(string httpMethod)
     {
-        var controller = CreateController(new BlogConfig
+        var controller = CreateController(new BlogConfig(new BlogSettingsSnapshot
         {
             ImageSettings = new ImageSettings
             {
                 EnableCDNRedirect = true,
                 CDNEndpoint = "https://cdn.example.com/images"
             }
-        });
+        }));
         controller.Request.Method = httpMethod;
 
         var result = await controller.Image("photo.png", TestContext.Current.CancellationToken);
@@ -281,7 +281,7 @@ public class ImageControllerTests
         var primaryName = _fileNameGenerator.GetFileName("photo.png");
         _imageStorage.Setup(x => x.InsertAsync(primaryName, It.IsAny<byte[]>())).ReturnsAsync("photo-cdn.png");
         var controller = CreateController(
-            new BlogConfig { ImageSettings = new ImageSettings { IsWatermarkEnabled = false } },
+            new BlogConfig(new BlogSettingsSnapshot { ImageSettings = new ImageSettings { IsWatermarkEnabled = false } }),
             username: "admin",
             remoteIpAddress: IPAddress.Parse("127.0.0.1"),
             userAgent: "unit-test-agent");
@@ -313,7 +313,7 @@ public class ImageControllerTests
     {
         var primaryName = _fileNameGenerator.GetFileName("photo.png");
         _imageStorage.Setup(x => x.InsertAsync(primaryName, It.IsAny<byte[]>())).ReturnsAsync(primaryName);
-        var controller = CreateController(new BlogConfig { ImageSettings = ImageSettings.DefaultValue });
+        var controller = CreateController(new BlogConfig(new BlogSettingsSnapshot { ImageSettings = ImageSettings.DefaultValue }));
         var file = CreateFormFile("photo.png", ValidPngBytes());
 
         await controller.Image(file, skipWatermark: true);
@@ -336,7 +336,7 @@ public class ImageControllerTests
         var primaryName = _fileNameGenerator.GetFileName("photo.svg");
         var originalName = _fileNameGenerator.GetFileName("photo.svg", "origin");
         _imageStorage.Setup(x => x.InsertAsync(primaryName, It.IsAny<byte[]>())).ReturnsAsync(primaryName);
-        var controller = CreateController(new BlogConfig
+        var controller = CreateController(new BlogConfig(new BlogSettingsSnapshot
         {
             ImageSettings = new ImageSettings
             {
@@ -345,7 +345,7 @@ public class ImageControllerTests
                 WatermarkFontSize = 20,
                 WatermarkText = "Moonglade"
             }
-        });
+        }));
         var file = CreateFormFile("photo.svg", imageBytes);
 
         await controller.Image(file);
@@ -365,10 +365,10 @@ public class ImageControllerTests
             .Setup(x => x.InsertAsync(primaryName, It.IsAny<byte[]>()))
             .Callback<string, byte[]>((_, bytes) => savedBytes = bytes)
             .ReturnsAsync(primaryName);
-        var controller = CreateController(new BlogConfig
+        var controller = CreateController(new BlogConfig(new BlogSettingsSnapshot
         {
             ImageSettings = new ImageSettings { IsWatermarkEnabled = false }
-        });
+        }));
         var file = CreateFormFile("payload.svg", MaliciousSvgBytes());
 
         var result = await controller.Image(file);
@@ -421,7 +421,7 @@ public class ImageControllerTests
         var controller = new ImageController(
             storage,
             Mock.Of<ILogger<ImageController>>(),
-            blogConfig ?? new BlogConfig { ImageSettings = new ImageSettings() },
+            blogConfig ?? new BlogConfig(new BlogSettingsSnapshot { ImageSettings = new ImageSettings() }),
             _cache,
             _fileNameGenerator,
             new ImageUploadValidator(),

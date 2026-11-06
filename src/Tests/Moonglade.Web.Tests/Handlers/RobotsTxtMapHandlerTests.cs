@@ -15,13 +15,13 @@ public class RobotsTxtMapHandlerTests
         httpContext.Response.Body = new MemoryStream();
         httpContext.RequestServices = new ServiceCollection().AddLogging().BuildServiceProvider();
 
-        var blogConfig = new BlogConfig
+        var blogConfig = new BlogConfig(new BlogSettingsSnapshot
         {
             AdvancedSettings = new AdvancedSettings
             {
                 RobotsTxtContent = string.Empty
             }
-        };
+        });
 
         var result = RobotsTxtMapHandler.Handle(httpContext, blogConfig);
 
@@ -41,13 +41,13 @@ public class RobotsTxtMapHandlerTests
         httpContext.Response.Body = responseBody;
         httpContext.RequestServices = new ServiceCollection().AddLogging().BuildServiceProvider();
 
-        var blogConfig = new BlogConfig
+        var blogConfig = new BlogConfig(new BlogSettingsSnapshot
         {
             AdvancedSettings = new AdvancedSettings
             {
                 RobotsTxtContent = robotsTxt
             }
-        };
+        });
 
         var result = RobotsTxtMapHandler.Handle(httpContext, blogConfig);
 

@@ -3,20 +3,20 @@ using System.Text.Json.Serialization;
 
 namespace Moonglade.Configuration;
 
-public class NotificationSettings : IBlogSettings<NotificationSettings>
+public sealed record NotificationSettings : IBlogSettings<NotificationSettings>
 {
     [Display(Name = "Enable email sending")]
-    public bool EnableEmailSending { get; set; }
+    public bool EnableEmailSending { get; init; }
 
     [Display(Name = "Send email on comment reply")]
-    public bool SendEmailOnCommentReply { get; set; }
+    public bool SendEmailOnCommentReply { get; init; }
 
     [Display(Name = "Send email on new comment")]
-    public bool SendEmailOnNewComment { get; set; }
+    public bool SendEmailOnNewComment { get; init; }
 
     [Display(Name = "Display name")]
     [MaxLength(64)]
-    public string EmailDisplayName { get; set; }
+    public string EmailDisplayName { get; init; }
 
     [JsonIgnore]
     public static NotificationSettings DefaultValue => new()

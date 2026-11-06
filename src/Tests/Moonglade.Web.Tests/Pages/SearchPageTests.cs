@@ -2,6 +2,7 @@ using Edi.CacheAside.InMemory;
 using LiteBus.Queries.Abstractions;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Mvc.Controllers;
+using Microsoft.AspNetCore.Mvc.ApplicationParts;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -13,9 +14,12 @@ using Moonglade.Features.Category;
 using Moonglade.Features.Post;
 using Moonglade.Features.Tag;
 using Moonglade.Theme;
+using Moonglade.Widgets;
+using Moonglade.Web.Controllers;
 using Moq;
 using System.Globalization;
 using System.Net;
+using System.Reflection;
 using System.Text.RegularExpressions;
 
 namespace Moonglade.Web.Tests.Pages;
@@ -120,7 +124,42 @@ public class SearchPageTests
         Assert.Equal(SearchPostSort.Oldest, query.Sort);
     }
 
-    private static async Task<WebApplication> CreateTestApp(SearchPageScenario scenario)
+    [Theory]
+    [InlineData(null, "")]
+    [InlineData("", "")]
+    [InlineData("https://cdn.example.com/avatar.png", "")]
+    [InlineData(null, "/blog")]
+    [InlineData("", "/blog")]
+    [InlineData("https://cdn.example.com/avatar.png", "/blog")]
+    public async Task PublicAndAdminAvatarRendering_AlwaysUsesLocalEndpointWithoutChangingLegacySettings(string? avatar, string pathBase)
+    {
+        var config = CreateBlogConfig();
+        config.Publish(config.Capture() with
+        {
+            GeneralSettings = config.GeneralSettings with
+            {
+                AvatarUrl = avatar,
+                WidgetsProfile = true,
+                SideBarOption = SideBarOption.Right
+            }
+        });
+        var retained = config.Capture();
+        using var app = await CreateTestApp(new SearchPageScenario(), config, pathBase);
+        using var client = app.GetTestClient();
+        var expected = $"{pathBase}/avatar";
+
+        foreach (var route in new[] { "/search?term=avatar", "/admin/settings/general" })
+        {
+            var html = await client.GetStringAsync(route, TestContext.Current.CancellationToken);
+
+            Assert.Contains($"src=\"{expected}\"", html);
+            if (!string.IsNullOrEmpty(avatar)) Assert.DoesNotContain($"src=\"{avatar}\"", html);
+            Assert.Same(retained, config.Capture());
+            Assert.Equal(avatar, config.Capture().GeneralSettings.AvatarUrl);
+        }
+    }
+
+    private static async Task<WebApplication> CreateTestApp(SearchPageScenario scenario, BlogConfig? config = null, string pathBase = "")
     {
         var webRoot = FindWebProjectRoot();
         var builder = WebApplication.CreateBuilder(new WebApplicationOptions
@@ -149,29 +188,32 @@ public class SearchPageTests
             options.SupportedCultures = cultures;
             options.SupportedUICultures = cultures;
         });
+        builder.Services.AddControllers();
         builder.Services.AddRazorPages()
             .ConfigureApplicationPartManager(manager =>
             {
-                var controllerFeatureProvider = manager.FeatureProviders.OfType<ControllerFeatureProvider>().SingleOrDefault();
-                if (controllerFeatureProvider is not null)
-                {
-                    manager.FeatureProviders.Remove(controllerFeatureProvider);
-                }
+                manager.FeatureProviders.Add(new AvatarControllerFeatureProvider());
             });
-        builder.Services.AddSingleton<IBlogConfig>(CreateBlogConfig());
+        builder.Services.AddSingleton<IBlogConfig>(config ?? CreateBlogConfig());
         builder.Services.AddSingleton(CreateCache().Object);
         builder.Services.AddSingleton<ThemeCacheInvalidator>();
         builder.Services.AddSingleton(CreateQueryMediator(scenario).Object);
 
         var app = builder.Build();
+        app.Use((context, next) =>
+        {
+            context.Request.PathBase = pathBase;
+            return next(context);
+        });
         app.UseRequestLocalization(app.Services.GetRequiredService<IOptions<RequestLocalizationOptions>>().Value);
         app.UseRouting();
         app.MapRazorPages();
+        app.MapControllers();
         await app.StartAsync(TestContext.Current.CancellationToken);
         return app;
     }
 
-    private static BlogConfig CreateBlogConfig() => new()
+    private static BlogConfig CreateBlogConfig() => new(new BlogSettingsSnapshot
     {
         GeneralSettings = new GeneralSettings
         {
@@ -198,11 +240,14 @@ public class SearchPageTests
         AppearanceSettings = new AppearanceSettings(),
         ImageSettings = new ImageSettings(),
         CustomMenuSettings = new CustomMenuSettings()
-    };
+    });
 
     private static Mock<ICacheAside> CreateCache()
     {
         var cache = new Mock<ICacheAside>();
+        cache.Setup(x => x.GetOrCreateAsync(BlogCachePartition.General.ToString(), "widgets",
+                It.IsAny<Func<Task<List<WidgetEntity>>>>(), It.IsAny<TimeSpan>()))
+            .Returns(async (string _, string _, Func<Task<List<WidgetEntity>>> factory, TimeSpan _) => (List<WidgetEntity>?)await factory());
         cache
             .Setup(x => x.GetOrCreateAsync(
                 BlogCachePartition.General.ToString(),
@@ -221,6 +266,8 @@ public class SearchPageTests
     private static Mock<IQueryMediator> CreateQueryMediator(SearchPageScenario scenario)
     {
         var queryMediator = new Mock<IQueryMediator>();
+        queryMediator.Setup(x => x.QueryAsync(It.IsAny<ListWidgetsQuery>(), It.IsAny<QueryMediationSettings>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync([]);
         queryMediator
             .Setup(x => x.QueryAsync(It.IsAny<GetSiteThemeStyleSheetQuery>(), It.IsAny<QueryMediationSettings>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(string.Empty);
@@ -255,6 +302,15 @@ public class SearchPageTests
             });
 
         return queryMediator;
+    }
+
+    private sealed class AvatarControllerFeatureProvider : IApplicationFeatureProvider<ControllerFeature>
+    {
+        public void PopulateFeature(IEnumerable<ApplicationPart> parts, ControllerFeature feature)
+        {
+            feature.Controllers.Clear();
+            feature.Controllers.Add(typeof(AssetsController).GetTypeInfo());
+        }
     }
 
     private static string FindWebProjectRoot()

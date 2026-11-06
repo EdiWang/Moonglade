@@ -92,13 +92,13 @@ public class PostManagementCommandTests
             })
             .Build();
 
-        var blogConfig = new BlogConfig
+        var blogConfig = new BlogConfig(new BlogSettingsSnapshot
         {
             AdvancedSettings = new AdvancedSettings
             {
                 EnableWebmention = false
             }
-        };
+        });
 
         return new SavePostCommandHandler(
             configuration,

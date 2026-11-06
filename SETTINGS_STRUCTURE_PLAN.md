@@ -6,10 +6,10 @@ This is a retained task plan, requested as a continuation of the settings review
 
 - Date: 2026-11-06, Asia/Taipei. Assessment baseline: `907ac228573e151b3dfcc3f334a15d72959cc2e9` on `master`, initially clean working tree.
 - B5 is `8da96cf82`; B6's startup-safety correction is already committed as `907ac2285`. The previous tracker's statements that B6 was uncommitted were stale, not missing implementation.
-- Current authorization: the user confirmed the Auth/Setup/Configuration responsibilities and Setup-to-Auth dependency and explicitly authorized S1 on 2026-11-06 (D29). S0 is committed as `90e302d45`; S1 began clean at `832060d97` with the unrelated TemplateEmail 2026.8.0 update preserved. S2-S6, a new commit, push, deployment, and production-data operations are not authorized.
-- D25: separate code responsibilities without changing the existing database table, keys, or JSON. D26: consistency within one captured business operation/render, not automatic request-wide freezing. D27: versioned avatar files; clean old files only after confirmed database commit; cleanup failure returns save success plus Error; uncertain commit retains files. D28 confirms existing ordinary types as init-only records with ImmutableList menus, adding mutable request DTOs only for demonstrated incompatibility.
+- Current authorization: on 2026-11-06 the user requested S2 after reviewing its scope and subsequently explicitly requested removing avatar CDN support and simplifying its code (D31). S1 is committed as `8db04575d`; S2 began clean at that commit. S3-S6, new commits, push, deployment, and production-data operations remain separately gated.
+- D25: separate code responsibilities without changing the existing database table, keys, or JSON. D26: consistency within one captured business operation/render, not automatic request-wide freezing. D27 originally proposed versioned avatar files; D31 supersedes that avatar-CDN scope by removing the feature. D28 confirms existing ordinary types as init-only records with ImmutableList menus, adding mutable request DTOs only for demonstrated incompatibility.
 - D29 confirms the S1 ownership/dependency direction below. Later snapshot and avatar workflow batches remain separately gated; planning recommendations do not authorize all of B7.
-- Current next action: complete S1 verification and present its acceptance evidence. Follow the latest execution entry in `SETTINGS_RELIABILITY_PLAN.md`; do not begin S2 automatically.
+- Current next action: present completed S2 and obtain acceptance / further instructions. D31 resolves S2-Q1 by removing uploaded-avatar CDN support entirely. Final solution: 1478 passed with both providers, no failures/skips; Web build clean. S3 is not authorized.
 - Keep this file and the reliability tracker across conversations. Permanent project documentation must not depend on these temporary task records.
 
 ## B5/B6 Assessment
@@ -75,7 +75,9 @@ Ownership confirmed in D29: Configuration owns ordinary preferences; Auth owns a
 - Preserve commit/runtime ordering and last-save-wins within each affected state domain. Do not replace the existing serialization guarantee with unrelated per-request locks or claim a cross-domain atomic read that is no longer provided. Any required shared write gate must have a justified lifetime and remain process-local.
 - Do not move SMTP/deployment secrets into this storage, rewrite credentials, create new default accounts on existing sites, or add schema migration. Physical separation remains a separate future proposal needing both providers' manual scripts and rollback/recovery decisions.
 
-### C3: Avatar/CDN Application Workflow And Failure Safety
+### C3: Avatar/CDN Application Workflow And Failure Safety (Superseded)
+
+D31 removes avatar CDN support during S2 instead of making its file workflow more elaborate. The following original proposal/fault matrix is retained as historical design context only. Do not implement versioned avatar files, compensation, or orphan cleanup from it. Uploaded avatars now use the existing database asset and local route. Any new remaining C3 scope requires a revised proposal and authorization.
 
 Recommended application composition remains in the existing Web workflow layer, alongside current orchestration. Lower-level asset persistence and `IBlogImageStorage` keep their ownership. Exact service/command names are proposals to finalize in S0; a new generic storage framework is not needed.
 
@@ -100,7 +102,7 @@ Important integration constraints:
 
 ## Proposed Implementation Batches
 
-S labels are sub-batches of this structural plan, not renamed historical B1-B6 batches. S0 is complete and S1 is authorized; S2-S6 implementation is not. Each batch includes focused tests, relevant long-lived documentation, a reviewed independent commit only when authorized, a tracker update, and user acceptance before its dependent batch.
+S labels are sub-batches of this structural plan, not renamed historical B1-B6 batches. S0/S1 are committed and S2 is authorized; S3-S6 implementation is not. Each batch includes focused tests, relevant long-lived documentation, a reviewed independent commit only when authorized, a tracker update, and user acceptance before its dependent batch.
 
 | Batch | Purpose / concrete scope | Dependency and verification | Acceptance / rollback |
 | --- | --- | --- | --- |
@@ -108,11 +110,11 @@ S labels are sub-batches of this structural plan, not renamed historical B1-B6 b
 | S1 - C2 protected-state boundaries | Move account/manifest readers and writers off the ordinary consumer contract; update account/password/TOTP and startup callers together; retain the eleven-row installation transaction and storage shape. Keep old key/type names where needed for compatibility. | S0 ownership graph approved. Auth, Configuration, Setup, Web; both real providers for install/repair ordering/retry; Web build. | Normal templates cannot access credentials; existing account/manifest JSON and timestamps round-trip; missing/invalid state stops before repairs/workers. Existing rows need no migration. Revert the whole boundary commit. |
 | S2 - C1 immutable values and publication | Implement immutable ordinary values/nested menus, narrow read access, and one root replacement after successful persistence. Convert writers to detached candidates; remove render-time avatar mutation using a display fallback. Temporary read-only group access may bridge S3, explicitly without claiming operation consistency. | S1 accepted. Configuration/Web/Middleware/Syndication and affected tests; barrier-based paired publication and retained-old-snapshot tests; failure/cancellation/event-order checks; Web build. | No published child can be mutated; a related General/Image save exposes all-old or all-new root state. Valid saved JSON is not bulk rewritten. Reverting code preserves storage compatibility. C1 is not complete until S3. |
 | S3 - C1 reader/render migration | Capture once per logical operation; propagate the same snapshot through each render's descendants; migrate the inventoried libraries/workers/views; remove temporary per-group recapture compatibility access. | S2 accepted. Paused render/feed/image operations across a concurrent save; next-operation refresh; public/admin/auth rendering, background loops, sender-name restart behavior, cache generations; full solution and Web build. | Related reads cannot combine generations; a new operation after save can see the new version, including in the same HTTP request. No request-wide freeze or stale lifetime capture. C1 complete after acceptance. Rollback must restore compatible readers and publication together if reverting S2 as well. |
-| S4 - C3 workflow consolidation | Put avatar upload and CDN/image-setting orchestration into one explicit owner; migrate both entry paths and eliminate the duplicate event workflow. Preserve HTTP, validation, audit, and site-icon behavior; prepare the actual commit boundary for S5. | S3 accepted. Real mediator wiring plus storage/asset/settings fault coverage, no double effects, successful-save cache ordering, account/audit regressions; Web build. | One owner/sequence and unchanged external response contracts. Do not claim new file failure safety before S5 or ship a regression to the S1-S3 guarantees. Revert the complete caller/orchestration commit. |
-| S5 - C3 versioned resource safety | Add unique candidate paths, confirmed-commit activation, reference-safe old-file cleanup, and D27's cleanup/uncertain-commit outcomes. | S4 accepted. Fault matrix below; both providers for any changed transaction coordination; filesystem fixture with separate public/original roots; concurrency barriers; Web build. | Prior resource remains usable on pre-commit failure; successful state survives cleanup/audit failure; uncertain outcomes retain potentially referenced files. No garbage collector or distributed transaction. Code revert alone cannot restore files already deleted by an operator. |
-| S6 - Structural regression and acceptance | Full solution with both providers, isolated real-host/browser scenarios, docs/diff checks, retained-record updates, and explicit remaining limits. | S1-S5 accepted. Repeat relevant B6 scenarios plus immutable/menu/render/account-boundary and avatar-failure cases; inspect actual URLs, bytes, settings, timestamps, and logs. | Present evidence and obtain final user acceptance. No automatic deployment. Keep physical storage migration and new cleanup policies out of this batch. |
+| S4 - Former C3 workflow consolidation | Superseded by D31: the avatar CDN handler and image-setting avatar migration were removed in S2. | No execution of the old plan. | Do not reintroduce the removed avatar/file/settings workflow. |
+| S5 - Former C3 versioned resources | Superseded by D31: avatars no longer create image-storage copies. | No execution of the old avatar file plan. | Existing copied files remain untouched; no automatic deletion or new cleanup policy. |
+| S6 - Structural regression and acceptance | Full solution with both providers, isolated real-host/browser scenarios, docs/diff checks, retained-record updates, and explicit remaining limits. | S1-S3 accepted; former S4/S5 avatar-CDN scope superseded. Repeat relevant B6 scenarios plus immutable/menu/render/account-boundary and local-avatar save/audit/cache cases; inspect actual URLs, bytes, settings, timestamps, and logs. | Present evidence and obtain final user acceptance. No automatic deployment. Keep physical storage migration and new cleanup policies out of this batch. |
 
-Recommended order is S0, S1, S2, S3, S4, S5, S6: separating protected state first avoids carrying credentials through a new ordinary snapshot API. This order is a proposal, not permission to execute all sub-batches. A stopped/failed batch blocks only its dependent work; do not leave required callers half-migrated across an accepted batch.
+Current remaining sequence is S2 acceptance, S3, then S6 acceptance work; former S4/S5 avatar-CDN implementation is superseded by D31. Each active batch still requires its own authorization. Any new C3 scope must be proposed separately.
 
 ## Required Acceptance Matrix
 
@@ -138,7 +140,7 @@ Recommended order is S0, S1, S2, S3, S4, S5, S6: separating protected state firs
 - Re-run `git status --short` and current references first. The baseline 1412 count is current assessment evidence, not a permanent expected count after adding tests.
 - Run focused owning suites per batch. Cross-module/startup registration changes require a Web build. Set `MOONGLADE_TEST_CATEGORY_DATABASES=1` only for disposable-provider checks; normal skipped-provider runs cannot prove relational safety.
 - Preserve B1-B6's group-level recovery, explicit restart settings, scheduler pre-dispatch checks, last-save-wins, audit Error behavior, and failed-startup nonzero exit. Do not silently redesign these while changing structure.
-- G1: fulfilled by entry into B7/S0. G2-M: D28 confirms existing init-only ordinary models and immutable menus. G2-O: D29 confirms Auth/Setup ownership and the Setup-to-Auth dependency, and authorizes S1. S2-S3 still require acceptance/authorization. G3: review S4/S5 commit/compensation and any new recovery/cleanup policy before implementation.
+- G1: fulfilled by entry into B7/S0. G2-M: D28 confirms existing init-only ordinary models and immutable menus. G2-O: D29 confirms Auth/Setup ownership and the Setup-to-Auth dependency, and authorizes S1. D30 authorizes S2 after scope review; S3 still requires acceptance/authorization. G3: review S4/S5 commit/compensation and any new recovery/cleanup policy before implementation.
 - Exact orphan retention, automatic retries/deletion, a durable recovery journal, physical account/manifest tables, distributed state, new credential/session rules, and source-file/type renames that change keys remain unapproved. Ask only when a concrete batch needs such a choice; keep independent work moving.
 - Update this file and the reliability tracker at each batch boundary with actual commits, commands/counts, skipped checks, faults found, rollback limits, and user acceptance. Passing technical checks is not user acceptance.
 
@@ -147,10 +149,12 @@ Recommended order is S0, S1, S2, S3, S4, S5, S6: separating protected state firs
 | Item | Status |
 | --- | --- |
 | B5/B6 code/test reassessment | Verified at `907ac2285`, 2026-11-06 |
-| User directions D24-D29 | Confirmed, including protected-state ownership and S1 authorization |
-| B7 structural plan | S0 complete; S1 authorized; dependent batches remain gated |
+| User directions D24-D31 | Confirmed, including S2 authorization and avatar CDN feature removal |
+| B7 structural plan | S0/S1 committed; S2 authorized and implemented; dependent batches remain gated |
 | S0 compatibility experiments | Committed as `90e302d45`; D28/D29 resolve model and ownership gates. Historical S0 results remain in its evidence report. |
-| S1 protected-state boundaries | Technical checks complete: full solution 1474 passed with both providers; Web build clean. User acceptance pending; see reliability tracker. |
-| S2-S6 implementation | Not started; requires separate authorization |
+| S1 protected-state boundaries | Committed as `8db04575d`; preserved by S2 regression. User subsequently authorized S2 after scope review. |
+| S2 immutable values/publication | Complete under D30/D31: 1478 tests passed with both providers; Web build clean. User acceptance pending. |
+| S3 and S6 implementation | Not started; requires separate authorization |
+| Former S4/S5 avatar CDN work | Superseded by D31; do not execute the historical proposal |
 | Physical table migration / production rollout | Not authorized |
-| New local commit | S1 changes are uncommitted; no new commit requested |
+| New local commit | S2 changes are uncommitted; no new commit requested |

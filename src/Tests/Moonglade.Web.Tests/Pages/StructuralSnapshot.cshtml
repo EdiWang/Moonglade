@@ -5,6 +5,6 @@
     var snapshot = Model.Snapshot;
 }
 root:@snapshot.Feed.FeedItemCount:@snapshot.Menu.Menus![0]!.Title
-avatar:@(string.IsNullOrEmpty(snapshot.AvatarUrl) ? Url.Action("Avatar", "Assets") : snapshot.AvatarUrl)
+avatar:@Url.Action("Avatar", "Assets")
 @await Html.PartialAsync("~/Views/StructuralProbe/_SnapshotPartial.cshtml", snapshot)
 @await Component.InvokeAsync("SnapshotProbe")

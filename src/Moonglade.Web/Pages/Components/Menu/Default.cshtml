@@ -1,7 +1,7 @@
 ﻿@using Moonglade.Utils
 @model CustomMenuSettings
 
-@if (Model.IsEnabled && Model.Menus.Length > 0)
+@if (Model.IsEnabled && Model.Menus.Count > 0)
 {
     foreach (var menuModel in Model.Menus.OrderBy(m => m.DisplayOrder))
     {

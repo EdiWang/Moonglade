@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.Collections.Immutable;
+using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 
 namespace Moonglade.Configuration;
@@ -12,12 +13,12 @@ public class CustomMenuSettingsJsonModel
     public string MenuJson { get; set; }
 }
 
-public class CustomMenuSettings : IBlogSettings<CustomMenuSettings>, IValidatableObject
+public sealed record CustomMenuSettings : IBlogSettings<CustomMenuSettings>, IValidatableObject
 {
-    public bool IsEnabled { get; set; }
+    public bool IsEnabled { get; init; }
 
     [MaxLength(5)]
-    public Menu[] Menus { get; set; } = [];
+    public ImmutableList<Menu> Menus { get; init; } = [];
 
     public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
     {
@@ -27,7 +28,7 @@ public class CustomMenuSettings : IBlogSettings<CustomMenuSettings>, IValidatabl
             yield break;
         }
 
-        for (var i = 0; i < Menus.Length; i++)
+        for (var i = 0; i < Menus.Count; i++)
         {
             var path = $"{nameof(Menus)}[{i}]";
             var menu = Menus[i];

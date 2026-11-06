@@ -101,8 +101,19 @@ public class PersistedSettingsDefaultsTests
         first.LoadFromConfig(saved);
         second.LoadFromConfig(saved);
 
-        first.CustomMenuSettings.Menus[0].Title = "Changed";
-        first.CustomMenuSettings.Menus[0].SubMenus.Add(new SubMenu { Title = "Added" });
+        var original = first.CustomMenuSettings;
+        var changedMenu = original.Menus[0] with
+        {
+            Title = "Changed",
+            SubMenus = original.Menus[0].SubMenus.Add(new SubMenu { Title = "Added", Url = "/added" })
+        };
+        first.Publish(first.Capture() with
+        {
+            CustomMenuSettings = original with { Menus = original.Menus.SetItem(0, changedMenu) }
+        });
+
+        Assert.Equal("About", original.Menus[0].Title);
+        Assert.Empty(original.Menus[0].SubMenus);
 
         Assert.Equal("About", second.CustomMenuSettings.Menus[0].Title);
         Assert.Empty(second.CustomMenuSettings.Menus[0].SubMenus);

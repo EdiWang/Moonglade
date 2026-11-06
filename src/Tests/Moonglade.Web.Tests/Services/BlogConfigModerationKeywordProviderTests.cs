@@ -9,13 +9,13 @@ public class BlogConfigModerationKeywordProviderTests
     public void GetKeywords_ReturnsCommentSettingsWordFilterKeywords()
     {
         // Arrange
-        var blogConfig = new BlogConfig
+        var blogConfig = new BlogConfig(new BlogSettingsSnapshot
         {
             CommentSettings = new CommentSettings
             {
                 WordFilterKeywords = "spam|scam"
             }
-        };
+        });
         var provider = new BlogConfigModerationKeywordProvider(blogConfig);
 
         // Act
@@ -29,13 +29,13 @@ public class BlogConfigModerationKeywordProviderTests
     public void GetKeywords_WhenSettingIsNull_ReturnsEmptyString()
     {
         // Arrange
-        var blogConfig = new BlogConfig
+        var blogConfig = new BlogConfig(new BlogSettingsSnapshot
         {
             CommentSettings = new CommentSettings
             {
                 WordFilterKeywords = null!
             }
-        };
+        });
         var provider = new BlogConfigModerationKeywordProvider(blogConfig);
 
         // Act

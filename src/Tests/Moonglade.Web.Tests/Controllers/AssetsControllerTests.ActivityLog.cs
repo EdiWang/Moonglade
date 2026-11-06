@@ -6,10 +6,8 @@ using Moonglade.ActivityLog;
 using Moonglade.Configuration;
 using Moonglade.Data.Entities;
 using Moonglade.Features.Asset;
-using Moonglade.ImageStorage;
 using Moonglade.Setup;
 using Moonglade.Web.Controllers;
-using Moonglade.Web.Handlers;
 using Moonglade.Web.Tests.TestSupport;
 using Moq;
 using SkiaSharp;
@@ -18,73 +16,50 @@ namespace Moonglade.Web.Tests.Controllers;
 
 public partial class AssetsControllerTests
 {
-    private const string AvatarFileName = "avatar-0922e4.png";
-    private const string OriginalAvatarUrl = "/assets/avatar";
+    private const string OriginalAvatarUrl = "https://legacy-cdn.example.com/avatar.png";
 
     [Theory]
     [InlineData(false, false)]
     [InlineData(false, true)]
     [InlineData(true, false)]
     [InlineData(true, true)]
-    public async Task Avatar_Post_WhenAuditFails_PreservesSavedAssetAndCdnSettings(bool enableCdn, bool canceledAudit)
+    public async Task Avatar_Post_WhenAuditFails_PreservesSavedLocalAssetWithoutChangingSettings(bool enableCdn, bool canceledAudit)
     {
         var config = CreateAvatarConfig(enableCdn);
+        var original = config.Capture();
         using var mediator = new ConfigurationCommandRecorder();
         mediator.Initialize(config);
         Exception failure = canceledAudit
             ? new OperationCanceledException("Audit dispatch canceled.")
             : new InvalidOperationException("Audit dispatch unavailable.");
         mediator.ActivityLogFailure = failure;
-        var files = new Dictionary<string, byte[]> { [AvatarFileName] = [1, 2, 3] };
-        var storage = CreateAvatarStorage(files);
-        ConfigureAssetHandlers(mediator, config, storage.Object);
+        ConfigureAssetHandler(mediator);
         var logger = new Mock<ILogger<AssetsController>>();
         var controller = CreateController("avatar-admin", commandMediator: mediator, logger: logger.Object);
         controller.HttpContext.TraceIdentifier = "avatar-audit-trace";
-        var bytes = CreatePngBytes(300, 300);
-        var base64 = Convert.ToBase64String(bytes);
+        var base64 = Convert.ToBase64String(CreatePngBytes(300, 300));
         mediator.Db.BlogAsset.Add(new BlogAssetEntity
         {
-            Id = AssetId.AvatarBase64,
-            Base64Data = Convert.ToBase64String([1, 2, 3]),
-            LastModifiedTimeUtc = DateTime.UtcNow
+            Id = AssetId.AvatarBase64, Base64Data = Convert.ToBase64String([1, 2, 3]), LastModifiedTimeUtc = DateTime.UtcNow
         });
         await mediator.Db.SaveChangesAsync(TestContext.Current.CancellationToken);
+        var rowsBefore = await mediator.Db.BlogConfiguration.AsNoTracking().OrderBy(row => row.CfgKey).ToListAsync(TestContext.Current.CancellationToken);
 
-        var result = await controller.Avatar(base64);
+        Assert.IsType<OkResult>(await controller.Avatar(base64));
 
-        Assert.IsType<OkResult>(result);
         Assert.Equal(base64, (await mediator.Db.BlogAsset.AsNoTracking().SingleAsync(
             p => p.Id == AssetId.AvatarBase64, TestContext.Current.CancellationToken)).Base64Data);
-        var saved = await ReadAvatarGeneralSettings(mediator);
-        Assert.Equal("Avatar test site", saved.SiteTitle);
-        Assert.Equal(saved.ToJson(), config.GeneralSettings.ToJson());
-        if (enableCdn)
-        {
-            Assert.Equal(bytes, Assert.Single(files).Value);
-            var url = new Uri(saved.AvatarUrl);
-            Assert.Equal($"https://cdn.example.com/images/{AvatarFileName}", url.GetLeftPart(UriPartial.Path));
-            Assert.InRange(int.Parse(url.Query[1..]), 100, 998);
-            storage.Verify(p => p.DeleteAsync(AvatarFileName), Times.Once);
-            storage.Verify(p => p.InsertAsync(AvatarFileName, It.Is<byte[]>(data => data.SequenceEqual(bytes))), Times.Once);
-            Assert.Collection(mediator.Commands,
-                command => Assert.IsType<UpdateConfigurationCommand>(command),
-                command => Assert.IsType<CreateActivityLogCommand>(command));
-        }
-        else
-        {
-            Assert.Equal(OriginalAvatarUrl, saved.AvatarUrl);
-            Assert.Equal(new byte[] { 1, 2, 3 }, files[AvatarFileName]);
-            storage.VerifyNoOtherCalls();
-            Assert.IsType<CreateActivityLogCommand>(Assert.Single(mediator.Commands));
-        }
-        var audit = mediator.Single<CreateActivityLogCommand>();
+        Assert.Same(original, config.Capture());
+        var rowsAfter = await mediator.Db.BlogConfiguration.AsNoTracking().OrderBy(row => row.CfgKey).ToListAsync(TestContext.Current.CancellationToken);
+        Assert.Equal(rowsBefore.Select(row => (row.CfgKey, row.CfgValue, row.LastModifiedTimeUtc)),
+            rowsAfter.Select(row => (row.CfgKey, row.CfgValue, row.LastModifiedTimeUtc)));
+        var audit = Assert.IsType<CreateActivityLogCommand>(Assert.Single(mediator.Commands));
         Assert.Equal(EventType.AvatarUpdated, audit.EventType);
         Assert.Equal("Update Avatar", audit.Operation);
         Assert.Equal("Avatar Image", audit.TargetName);
         Assert.Equal("avatar-admin", audit.ActorId);
         Assert.Null(audit.MetaData);
-        AssertAvatarAuditFailure(logger, controller, failure, base64, saved.AvatarUrl, saved.SiteTitle, audit.ActorId);
+        AssertAvatarAuditFailure(logger, controller, failure, base64, OriginalAvatarUrl, audit.ActorId);
     }
 
     [Theory]
@@ -110,13 +85,12 @@ public partial class AssetsControllerTests
     }
 
     [Fact]
-    public async Task Avatar_Post_WhenAssetPersistenceFails_PropagatesFailureWithoutCdnOrAuditing()
+    public async Task Avatar_Post_WhenAssetPersistenceFails_PropagatesFailureWithoutAuditing()
     {
         var config = CreateAvatarConfig();
         using var mediator = new ConfigurationCommandRecorder();
         mediator.Initialize(config);
-        var storage = new Mock<IBlogImageStorage>(MockBehavior.Strict);
-        ConfigureAssetHandlers(mediator, config, storage.Object);
+        ConfigureAssetHandler(mediator);
         var logger = new Mock<ILogger<AssetsController>>();
         var controller = CreateController(commandMediator: mediator, logger: logger.Object);
         await mediator.Db.Database.ExecuteSqlRawAsync(
@@ -128,75 +102,32 @@ public partial class AssetsControllerTests
         Assert.Empty(await mediator.Db.BlogAsset.AsNoTracking().ToListAsync(TestContext.Current.CancellationToken));
         Assert.Equal(OriginalAvatarUrl, (await ReadAvatarGeneralSettings(mediator)).AvatarUrl);
         Assert.Equal(OriginalAvatarUrl, config.GeneralSettings.AvatarUrl);
-        storage.VerifyNoOtherCalls();
         Assert.Empty(mediator.Commands);
         AssertNoAssetAuditError(logger);
     }
 
-    [Theory]
-    [InlineData(false)]
-    [InlineData(true)]
-    public async Task Avatar_Post_WhenStorageFails_PropagatesFailureWithoutSavingSettingsOrAuditing(bool failDelete)
-    {
-        var config = CreateAvatarConfig();
-        using var mediator = new ConfigurationCommandRecorder();
-        mediator.Initialize(config);
-        var originalGeneral = config.GeneralSettings;
-        var failure = new IOException("Avatar storage unavailable.");
-        var files = new Dictionary<string, byte[]> { [AvatarFileName] = [1, 2, 3] };
-        var storage = CreateAvatarStorage(files);
-        if (failDelete)
-            storage.Setup(p => p.DeleteAsync(AvatarFileName)).ThrowsAsync(failure);
-        else
-            storage.Setup(p => p.InsertAsync(AvatarFileName, It.IsAny<byte[]>())).ThrowsAsync(failure);
-        ConfigureAssetHandlers(mediator, config, storage.Object);
-        var logger = new Mock<ILogger<AssetsController>>();
-        var controller = CreateController(commandMediator: mediator, logger: logger.Object);
-        var base64 = Convert.ToBase64String(CreatePngBytes(300, 300));
 
-        Assert.Same(failure, await Assert.ThrowsAsync<IOException>(() => controller.Avatar(base64)));
-
-        Assert.Equal(base64, (await mediator.Db.BlogAsset.AsNoTracking().SingleAsync(
-            TestContext.Current.CancellationToken)).Base64Data);
-        Assert.Same(originalGeneral, config.GeneralSettings);
-        Assert.Equal(originalGeneral.ToJson(), (await ReadAvatarGeneralSettings(mediator)).ToJson());
-        Assert.Empty(mediator.Commands);
-        storage.Verify(p => p.DeleteAsync(AvatarFileName), Times.Once);
-        storage.Verify(p => p.InsertAsync(AvatarFileName, It.IsAny<byte[]>()), failDelete ? Times.Never : Times.Once);
-        if (failDelete)
-            Assert.Equal(new byte[] { 1, 2, 3 }, files[AvatarFileName]);
-        else
-            Assert.Empty(files);
-        AssertNoAssetAuditError(logger);
-    }
 
     [Fact]
-    public async Task Avatar_Post_WhenSettingsPersistenceFails_PropagatesFailureWithoutAuditing()
+    public async Task Avatar_Post_DoesNotWriteSettingsEvenWhenThoseWritesWouldFail()
     {
         var config = CreateAvatarConfig();
+        var original = config.Capture();
         using var mediator = new ConfigurationCommandRecorder();
         mediator.Initialize(config);
-        var originalGeneral = config.GeneralSettings;
-        var files = new Dictionary<string, byte[]>();
-        var storage = CreateAvatarStorage(files);
-        ConfigureAssetHandlers(mediator, config, storage.Object);
-        var logger = new Mock<ILogger<AssetsController>>();
-        var controller = CreateController(commandMediator: mediator, logger: logger.Object);
-        var bytes = CreatePngBytes(300, 300);
-        var base64 = Convert.ToBase64String(bytes);
+        ConfigureAssetHandler(mediator);
+        var controller = CreateController(commandMediator: mediator);
+        var base64 = Convert.ToBase64String(CreatePngBytes(300, 300));
         await mediator.Db.Database.ExecuteSqlRawAsync(
             "CREATE TRIGGER reject_avatar_settings BEFORE UPDATE ON BlogConfiguration BEGIN SELECT RAISE(ABORT, 'Settings save rejected'); END;",
             TestContext.Current.CancellationToken);
 
-        await Assert.ThrowsAsync<DbUpdateException>(() => controller.Avatar(base64));
+        Assert.IsType<OkResult>(await controller.Avatar(base64));
 
-        Assert.Equal(base64, (await mediator.Db.BlogAsset.AsNoTracking().SingleAsync(
-            TestContext.Current.CancellationToken)).Base64Data);
-        Assert.Equal(bytes, files[AvatarFileName]);
-        Assert.Same(originalGeneral, config.GeneralSettings);
-        Assert.Equal(originalGeneral.ToJson(), (await ReadAvatarGeneralSettings(mediator)).ToJson());
-        Assert.IsType<UpdateConfigurationCommand>(Assert.Single(mediator.Commands));
-        AssertNoAssetAuditError(logger);
+        Assert.Equal(base64, (await mediator.Db.BlogAsset.AsNoTracking().SingleAsync(TestContext.Current.CancellationToken)).Base64Data);
+        Assert.Same(original, config.Capture());
+        Assert.Equal(original.GeneralSettings.ToJson(), (await ReadAvatarGeneralSettings(mediator)).ToJson());
+        Assert.IsType<CreateActivityLogCommand>(Assert.Single(mediator.Commands));
     }
 
     [Fact]
@@ -207,8 +138,7 @@ public partial class AssetsControllerTests
         mediator.Initialize(config);
         var failure = new InvalidOperationException("Site icon audit unavailable.");
         mediator.ActivityLogFailure = failure;
-        var storage = new Mock<IBlogImageStorage>(MockBehavior.Strict);
-        ConfigureAssetHandlers(mediator, config, storage.Object);
+        ConfigureAssetHandler(mediator);
         var logger = new Mock<ILogger<AssetsController>>();
         var controller = CreateController(commandMediator: mediator, logger: logger.Object);
         var base64 = Convert.ToBase64String(CreatePngBytes(64, 64));
@@ -223,48 +153,28 @@ public partial class AssetsControllerTests
         Assert.Equal(SKColors.Blue, bitmap.GetPixel(16, 16));
         Assert.Equal(EventType.SiteIconUpdated, Assert.IsType<CreateActivityLogCommand>(Assert.Single(mediator.Commands)).EventType);
         Assert.Equal(OriginalAvatarUrl, (await ReadAvatarGeneralSettings(mediator)).AvatarUrl);
-        storage.VerifyNoOtherCalls();
         AssertNoAssetAuditError(logger);
     }
 
-    private void ConfigureAssetHandlers(ConfigurationCommandRecorder mediator, BlogConfig config, IBlogImageStorage storage)
+    private void ConfigureAssetHandler(ConfigurationCommandRecorder mediator)
     {
         var assetHandler = new SaveAssetEventHandler(mediator.Db);
-        var cdnHandler = new SaveAssetToCdnHandler(Mock.Of<ILogger<SaveAssetToCdnHandler>>(), storage, config, mediator);
         _eventMediator.Setup(p => p.PublishAsync(
                 It.IsAny<SaveAssetEvent>(), It.IsAny<EventMediationSettings>(), It.IsAny<CancellationToken>()))
-            .Returns(async (SaveAssetEvent request, EventMediationSettings? settings, CancellationToken cancellationToken) =>
-            {
-                await assetHandler.HandleAsync(request, cancellationToken);
-                await cdnHandler.HandleAsync(request, cancellationToken);
-            });
+            .Returns((SaveAssetEvent request, EventMediationSettings? settings, CancellationToken token) =>
+                assetHandler.HandleAsync(request, token));
     }
 
     private static BlogConfig CreateAvatarConfig(bool enableCdn = true)
     {
         var general = GeneralSettings.DefaultValue;
-        general.SiteTitle = "Avatar test site";
-        general.AvatarUrl = OriginalAvatarUrl;
-        return new BlogConfig
+        general = general with { SiteTitle = "Avatar test site" };
+        general = general with { AvatarUrl = OriginalAvatarUrl };
+        return new BlogConfig(new BlogSettingsSnapshot
         {
             GeneralSettings = general,
             ImageSettings = new ImageSettings { EnableCDNRedirect = enableCdn, CDNEndpoint = "https://cdn.example.com/images" }
-        };
-    }
-
-    private static Mock<IBlogImageStorage> CreateAvatarStorage(Dictionary<string, byte[]> files)
-    {
-        var storage = new Mock<IBlogImageStorage>();
-        storage.Setup(p => p.DeleteAsync(It.IsAny<string>()))
-            .Callback((string fileName) => files.Remove(fileName))
-            .Returns(Task.CompletedTask);
-        storage.Setup(p => p.InsertAsync(It.IsAny<string>(), It.IsAny<byte[]>()))
-            .ReturnsAsync((string fileName, byte[] bytes) =>
-            {
-                files[fileName] = bytes.ToArray();
-                return fileName;
-            });
-        return storage;
+        });
     }
 
     private static async Task<GeneralSettings> ReadAvatarGeneralSettings(ConfigurationCommandRecorder mediator) =>

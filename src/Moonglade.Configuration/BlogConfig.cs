@@ -11,48 +11,66 @@ public interface IBlogSettings<TSelf> where TSelf : IBlogSettings<TSelf>
 
 public interface IBlogConfig
 {
-    GeneralSettings GeneralSettings { get; set; }
-    ContentSettings ContentSettings { get; set; }
-    CommentSettings CommentSettings { get; set; }
-    NotificationSettings NotificationSettings { get; set; }
-    FeedSettings FeedSettings { get; set; }
-    ImageSettings ImageSettings { get; set; }
-    AdvancedSettings AdvancedSettings { get; set; }
-    AppearanceSettings AppearanceSettings { get; set; }
-    CustomMenuSettings CustomMenuSettings { get; set; }
+    GeneralSettings GeneralSettings { get; }
+    ContentSettings ContentSettings { get; }
+    CommentSettings CommentSettings { get; }
+    NotificationSettings NotificationSettings { get; }
+    FeedSettings FeedSettings { get; }
+    ImageSettings ImageSettings { get; }
+    AdvancedSettings AdvancedSettings { get; }
+    AppearanceSettings AppearanceSettings { get; }
+    CustomMenuSettings CustomMenuSettings { get; }
 
-    IReadOnlyDictionary<string, string> LoadFromConfig(IDictionary<string, string> config, bool isNew = false);
+    BlogSettingsSnapshot Capture();
 }
 
 public class BlogConfig : IBlogConfig
 {
-    public GeneralSettings GeneralSettings { get; set; } = new();
-    public ContentSettings ContentSettings { get; set; } = new();
-    public CommentSettings CommentSettings { get; set; } = new();
-    public NotificationSettings NotificationSettings { get; set; } = new();
-    public FeedSettings FeedSettings { get; set; } = new();
-    public ImageSettings ImageSettings { get; set; } = new();
-    public AdvancedSettings AdvancedSettings { get; set; } = new();
-    public AppearanceSettings AppearanceSettings { get; set; } = new();
-    public CustomMenuSettings CustomMenuSettings { get; set; } = new();
+    private BlogSettingsSnapshot _current = new();
+
+    public BlogConfig() { }
+
+    public BlogConfig(BlogSettingsSnapshot snapshot) => Publish(snapshot);
+
+    public BlogSettingsSnapshot Capture() => Volatile.Read(ref _current);
+
+    // shortcut: per-group readers can recapture; migrate related operations/renders in S3.
+    public GeneralSettings GeneralSettings => Capture().GeneralSettings;
+    public ContentSettings ContentSettings => Capture().ContentSettings;
+    public CommentSettings CommentSettings => Capture().CommentSettings;
+    public NotificationSettings NotificationSettings => Capture().NotificationSettings;
+    public FeedSettings FeedSettings => Capture().FeedSettings;
+    public ImageSettings ImageSettings => Capture().ImageSettings;
+    public AdvancedSettings AdvancedSettings => Capture().AdvancedSettings;
+    public AppearanceSettings AppearanceSettings => Capture().AppearanceSettings;
+    public CustomMenuSettings CustomMenuSettings => Capture().CustomMenuSettings;
+
+    public void Publish(BlogSettingsSnapshot snapshot)
+    {
+        ArgumentNullException.ThrowIfNull(snapshot);
+        Volatile.Write(ref _current, snapshot);
+    }
 
     public IReadOnlyDictionary<string, string> LoadFromConfig(IDictionary<string, string> config, bool isNew = false)
     {
         var defaultsToInit = new Dictionary<string, string>();
 
-        Assign<GeneralSettings>(v => GeneralSettings = v);
-        Assign<ContentSettings>(v => ContentSettings = v);
-        Assign<CommentSettings>(v => CommentSettings = v);
-        Assign<NotificationSettings>(v => NotificationSettings = v);
-        Assign<FeedSettings>(v => FeedSettings = v);
-        Assign<ImageSettings>(v => ImageSettings = v);
-        Assign<AdvancedSettings>(v => AdvancedSettings = v);
-        Assign<AppearanceSettings>(v => AppearanceSettings = v);
-        Assign<CustomMenuSettings>(v => CustomMenuSettings = v);
-
+        var snapshot = new BlogSettingsSnapshot
+        {
+            GeneralSettings = Read<GeneralSettings>(),
+            ContentSettings = Read<ContentSettings>(),
+            CommentSettings = Read<CommentSettings>(),
+            NotificationSettings = Read<NotificationSettings>(),
+            FeedSettings = Read<FeedSettings>(),
+            ImageSettings = Read<ImageSettings>(),
+            AdvancedSettings = Read<AdvancedSettings>(),
+            AppearanceSettings = Read<AppearanceSettings>(),
+            CustomMenuSettings = Read<CustomMenuSettings>(),
+        };
+        Publish(snapshot);
         return defaultsToInit;
 
-        void Assign<T>(Action<T> setter) where T : IBlogSettings<T>
+        T Read<T>() where T : IBlogSettings<T>
         {
             var name = typeof(T).Name;
 
@@ -63,8 +81,7 @@ public class BlogConfig : IBlogConfig
                     var settings = json is null ? default : json.FromJsonWithDefaults(T.DefaultValue);
                     if (settings is not null && Validator.TryValidateObject(settings, new ValidationContext(settings), null, true))
                     {
-                        setter(settings);
-                        return;
+                        return settings;
                     }
                 }
                 catch (JsonException)
@@ -75,7 +92,7 @@ public class BlogConfig : IBlogConfig
 
             var defaultValue = T.DefaultValue;
             defaultsToInit.Add(name, defaultValue.ToJson());
-            setter(defaultValue);
+            return defaultValue;
         }
     }
 }

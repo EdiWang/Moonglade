@@ -103,11 +103,11 @@ Article saves, publication changes (including scheduled publishing), recycle-bin
 
 ### Saving Blog Settings
 
-Settings become active only after a successful database save; related CDN/avatar settings are saved together. Updates are serialized within one process; other instances must reload or synchronize separately. See the [configuration write contract](docs/agent-reference.md#configuration).
+Settings become active only after a successful database save and publication of one immutable ordinary-settings snapshot; groups submitted together are persisted together. Updates are serialized within one process; other instances must reload or synchronize separately. See the [configuration write contract](docs/agent-reference.md#configuration).
 
-If settings or an avatar have been saved but activity-log recording fails, the request retains its successful response and the failure is recorded at Error level. Authenticator reset still signs out the local-account sessions. Validation, settings persistence, cache invalidation, image storage, and sign-out failures are not treated as audit-only failures; they remain visible to the caller. This does not make avatar asset, image file, and settings writes one transaction.
+If settings or an avatar have been saved but activity-log recording fails, the request retains its successful response and the failure is recorded at Error level. Authenticator reset still signs out the local-account sessions. Validation, settings persistence, cache invalidation, image storage, and sign-out failures are not treated as audit-only failures; they remain visible to the caller. Uploaded avatars are saved as database assets separately from ordinary settings.
 
-Successful changes invalidate affected server caches in the current process, including settings saved by internal avatar/CDN writers. Feed and theme caches use separate generations so an older request cannot refill the active cache after a change; settings changes do not flush unrelated article caches. Full-content RSS/Atom feeds use the article body, including Markdown formatting and configured CDN image URLs; summary feeds use the abstract.
+Successful changes invalidate affected server caches in the current process, including settings saved through the shared write command. Avatar uploads invalidate the local avatar cache without rewriting ordinary settings. Feed and theme caches use separate generations so an older request cannot refill the active cache after a change; settings changes do not flush unrelated article caches. Full-content RSS/Atom feeds use the article body, including Markdown formatting and configured CDN image URLs; summary feeds use the abstract.
 
 | Setting | When the change takes effect |
 | --- | --- |
@@ -238,6 +238,8 @@ Leave both paths empty only for development. The defaults are `<user-profile>/mo
 #### CDN Delivery
 
 CDN delivery remains configured in the admin image settings. When enabled, rendered posts and feeds use the configured CDN endpoint directly, and `/image/{filename}` redirects the browser to the CDN URL instead of proxying image bytes through Moonglade.
+
+Uploaded profile avatars always use `/avatar`, backed by the database asset or the bundled default image. Image CDN settings do not copy avatars to image storage or change their display URL. Legacy `AvatarUrl` settings are retained as inactive compatibility data; previously copied avatar files are not automatically deleted.
 
 The CDN origin must map a primary-root filename to the same root object key, serve the correct image `Content-Type`, and make a file visible only after its write is closed. CDN caching, invalidation, TLS, origin access, and any storage mount adapter are operator responsibilities. The private original root must not be attached to the CDN origin.
 

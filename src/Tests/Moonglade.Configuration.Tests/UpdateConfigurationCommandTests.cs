@@ -16,13 +16,13 @@ public class UpdateConfigurationCommandTests
     public async Task Save_UpdatesDatabaseAndRuntimeFromDetachedSnapshot()
     {
         using var db = CreateDbContext();
-        var config = new BlogConfig { GeneralSettings = General("Old") };
+        var config = new BlogConfig(new BlogSettingsSnapshot { GeneralSettings = General("Old") });
         await SeedAsync(db, config.GeneralSettings);
         var original = config.GeneralSettings;
         var model = General("New");
-        model.Description = "Description";
+        model = model with { Description = "Description" };
         var command = UpdateConfigurationCommand.Create(model);
-        model.SiteTitle = "Changed after dispatch";
+        model = model with { SiteTitle = "Changed after dispatch" };
 
         await Handler(db, config).HandleAsync(command, TestContext.Current.CancellationToken);
 
@@ -30,7 +30,7 @@ public class UpdateConfigurationCommandTests
         Assert.Equal("Old", original.SiteTitle);
         Assert.NotSame(model, config.GeneralSettings);
         Assert.Equal(config.GeneralSettings.ToJson(), (await db.BlogConfiguration.SingleAsync(TestContext.Current.CancellationToken)).CfgValue);
-        model.Description = "Changed after save";
+        model = model with { Description = "Changed after save" };
         Assert.Equal("Description", config.GeneralSettings.Description);
     }
 
@@ -53,13 +53,13 @@ public class UpdateConfigurationCommandTests
     public async Task MissingPairedSetting_ChangesNeitherDatabaseNorRuntime()
     {
         using var db = CreateDbContext();
-        var config = new BlogConfig { GeneralSettings = General("Old") };
-        config.GeneralSettings.AvatarUrl = "old.png";
+        var config = new BlogConfig(new BlogSettingsSnapshot { GeneralSettings = General("Old") });
+        config.Publish(config.Capture() with { GeneralSettings = config.GeneralSettings with { AvatarUrl = "old.png" } });
         await SeedAsync(db, config.GeneralSettings);
         var originalGeneral = config.GeneralSettings;
         var originalImage = config.ImageSettings;
         var general = General("New");
-        general.AvatarUrl = "new.png";
+        general = general with { AvatarUrl = "new.png" };
         var command = UpdateConfigurationCommand.Create(general, CdnImage());
 
         await Assert.ThrowsAsync<InvalidOperationException>(() => Handler(db, config)
@@ -80,7 +80,7 @@ public class UpdateConfigurationCommandTests
         await SeedAsync(db, config.ImageSettings);
 
         var general = General("New");
-        general.AvatarUrl = "https://cdn.example.com/avatar.png";
+        general = general with { AvatarUrl = "https://cdn.example.com/avatar.png" };
         await Handler(db, config).HandleAsync(UpdateConfigurationCommand.Create(general, CdnImage()),
             TestContext.Current.CancellationToken);
 
@@ -97,13 +97,13 @@ public class UpdateConfigurationCommandTests
     {
         var interceptor = new FailingSaveInterceptor();
         using var db = CreateDbContext(interceptor);
-        var config = new BlogConfig { GeneralSettings = General("Old") };
+        var config = new BlogConfig(new BlogSettingsSnapshot { GeneralSettings = General("Old") });
         await SeedAsync(db, config.GeneralSettings);
         var original = config.GeneralSettings;
         interceptor.Fail = true;
 
         var updated = General("Old");
-        updated.SiteTitle = "Changed";
+        updated = updated with { SiteTitle = "Changed" };
         await Assert.ThrowsAsync<DbUpdateException>(() => Handler(db, config).HandleAsync(
             UpdateConfigurationCommand.Create(updated),
             TestContext.Current.CancellationToken));
@@ -219,21 +219,89 @@ public class UpdateConfigurationCommandTests
     {
         var interceptor = new FailingSaveInterceptor();
         using var db = CreateDbContext(interceptor);
-        var config = new BlogConfig { GeneralSettings = General("Old") };
+        var config = new BlogConfig(new BlogSettingsSnapshot { GeneralSettings = General("Old") });
         if (scenario != "missing") await SeedAsync(db, config.GeneralSettings);
+        var originalSnapshot = config.Capture();
         interceptor.Fail = scenario == "failed-save";
         using var cancellation = CancellationTokenSource.CreateLinkedTokenSource(TestContext.Current.CancellationToken);
         if (scenario == "cancelled") await cancellation.CancelAsync();
         var events = new Mock<IEventMediator>();
         var handler = new UpdateConfigurationCommandHandler(db, config, events.Object, _gate, NullLogger<UpdateConfigurationCommandHandler>.Instance);
         var settings = General(scenario == "unchanged" ? "Old" : "New");
-        if (scenario == "invalid") settings.SiteTitle = null;
+        if (scenario == "invalid") settings = settings with { SiteTitle = null };
 
         var error = await Record.ExceptionAsync(() => handler.HandleAsync(UpdateConfigurationCommand.Create(settings), cancellation.Token));
 
-        if (scenario == "unchanged") Assert.Null(error);
-        else Assert.NotNull(error);
+        if (scenario == "unchanged")
+        {
+            Assert.Null(error);
+            Assert.NotSame(originalSnapshot, config.Capture());
+        }
+        else
+        {
+            Assert.NotNull(error);
+            Assert.Same(originalSnapshot, config.Capture());
+        }
         Assert.Empty(events.Invocations);
+    }
+
+    [Fact]
+    public async Task PairedPublicationAndQueuedUnrelatedSave_RetainOldSnapshotsAndLatestGroups()
+    {
+        var ct = TestContext.Current.CancellationToken;
+        var interceptor = new BlockingSaveInterceptor();
+        var options = new DbContextOptionsBuilder<BlogDbContext>().UseInMemoryDatabase(Guid.NewGuid().ToString())
+            .AddInterceptors(interceptor).Options;
+        using var firstDb = new BlogDbContext(options);
+        using var secondDb = new BlogDbContext(options);
+        var config = new BlogConfig(new BlogSettingsSnapshot
+        {
+            GeneralSettings = General("Old"),
+            ImageSettings = ImageSettings.DefaultValue,
+            FeedSettings = FeedSettings.DefaultValue
+        });
+        await SeedAsync(firstDb, config.GeneralSettings);
+        await SeedAsync(firstDb, config.ImageSettings);
+        await SeedAsync(firstDb, config.FeedSettings);
+        var retained = config.Capture();
+        var queuedCommand = UpdateConfigurationCommand.Create(retained.FeedSettings with { FeedItemCount = 7 });
+        var events = new Mock<IEventMediator>();
+        events.Setup(m => m.PublishAsync(It.IsAny<IEvent>(), It.IsAny<EventMediationSettings>(), CancellationToken.None))
+            .Callback(() =>
+            {
+                var published = config.Capture();
+                Assert.Equal("New", published.GeneralSettings.SiteTitle);
+                Assert.True(published.ImageSettings.EnableCDNRedirect);
+                Assert.Equal("https://cdn.example.com/avatar.png", published.GeneralSettings.AvatarUrl);
+            }).Returns(Task.CompletedTask);
+        interceptor.Enabled = true;
+        var firstSave = new UpdateConfigurationCommandHandler(firstDb, config, events.Object, _gate,
+            NullLogger<UpdateConfigurationCommandHandler>.Instance).HandleAsync(UpdateConfigurationCommand.Create(
+            General("New") with { AvatarUrl = "https://cdn.example.com/avatar.png" }, CdnImage()), ct);
+        await interceptor.Committed.Task.WaitAsync(TimeSpan.FromSeconds(10), ct);
+
+        Assert.Same(retained, config.Capture());
+        Assert.False(config.Capture().ImageSettings.EnableCDNRedirect);
+        var secondSave = Handler(secondDb, config).HandleAsync(queuedCommand, ct);
+        var secondWasBlocked = !secondSave.IsCompleted;
+        interceptor.Resume.SetResult();
+        await Task.WhenAll(firstSave, secondSave);
+
+        Assert.True(secondWasBlocked);
+        Assert.Single(events.Invocations);
+        var current = config.Capture();
+        Assert.NotSame(retained, current);
+        Assert.Equal("New", current.GeneralSettings.SiteTitle);
+        Assert.True(current.ImageSettings.EnableCDNRedirect);
+        Assert.Equal(7, current.FeedSettings.FeedItemCount);
+        Assert.Equal("Old", retained.GeneralSettings.SiteTitle);
+        Assert.False(retained.ImageSettings.EnableCDNRedirect);
+        Assert.Equal(20, retained.FeedSettings.FeedItemCount);
+        secondDb.ChangeTracker.Clear();
+        var rows = await secondDb.BlogConfiguration.ToDictionaryAsync(row => row.CfgKey, ct);
+        Assert.Equal(current.GeneralSettings.ToJson(), rows[nameof(GeneralSettings)].CfgValue);
+        Assert.Equal(current.ImageSettings.ToJson(), rows[nameof(ImageSettings)].CfgValue);
+        Assert.Equal(current.FeedSettings.ToJson(), rows[nameof(FeedSettings)].CfgValue);
     }
 
     [Fact]
@@ -241,13 +309,13 @@ public class UpdateConfigurationCommandTests
     {
         var ct = TestContext.Current.CancellationToken;
         using var db = CreateDbContext();
-        var config = new BlogConfig { GeneralSettings = General("Old"), ImageSettings = ImageSettings.DefaultValue };
+        var config = new BlogConfig(new BlogSettingsSnapshot { GeneralSettings = General("Old"), ImageSettings = ImageSettings.DefaultValue });
         await SeedAsync(db, config.GeneralSettings);
         await SeedAsync(db, config.ImageSettings);
         var originalGeneral = config.GeneralSettings;
         var originalImage = config.ImageSettings;
         var invalid = CdnImage();
-        invalid.CDNEndpoint = "http://invalid.example.com";
+        invalid = invalid with { CDNEndpoint = "http://invalid.example.com" };
 
         await Assert.ThrowsAsync<ValidationException>(() => Handler(db, config).HandleAsync(
             UpdateConfigurationCommand.Create(General("New"), invalid), ct));
@@ -260,21 +328,21 @@ public class UpdateConfigurationCommandTests
         Assert.Equal(originalImage.ToJson(), rows[nameof(ImageSettings)].CfgValue);
     }
 
-    private UpdateConfigurationCommandHandler Handler(BlogDbContext db, IBlogConfig config) =>
+    private UpdateConfigurationCommandHandler Handler(BlogDbContext db, BlogConfig config) =>
         new(db, config, Mock.Of<IEventMediator>(), _gate, NullLogger<UpdateConfigurationCommandHandler>.Instance);
 
     private static GeneralSettings General(string title)
     {
         var settings = GeneralSettings.DefaultValue;
-        settings.SiteTitle = title;
+        settings = settings with { SiteTitle = title };
         return settings;
     }
 
     private static ImageSettings CdnImage()
     {
         var settings = ImageSettings.DefaultValue;
-        settings.EnableCDNRedirect = true;
-        settings.CDNEndpoint = "https://cdn.example.com";
+        settings = settings with { EnableCDNRedirect = true };
+        settings = settings with { CDNEndpoint = "https://cdn.example.com" };
         return settings;
     }
 

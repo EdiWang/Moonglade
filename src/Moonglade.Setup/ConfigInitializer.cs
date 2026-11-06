@@ -18,7 +18,7 @@ namespace Moonglade.Setup;
 public class ConfigInitializer(
     IQueryMediator queryMediator,
     ICommandMediator commandMediator,
-    IBlogConfig blogConfig,
+    BlogConfig blogConfig,
     ILogger<ConfigInitializer> logger,
     LocalAccountState accounts)
 {

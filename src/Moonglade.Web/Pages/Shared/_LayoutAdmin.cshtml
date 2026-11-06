@@ -4,10 +4,7 @@
 @inject ThemeCacheInvalidator ThemeCache
 
 @{
-    if (string.IsNullOrEmpty(BlogConfig.GeneralSettings.AvatarUrl))
-    {
-        BlogConfig.GeneralSettings.AvatarUrl = Url.Action("Avatar", "Assets");
-    }
+    var avatarUrl = Url.Action("Avatar", "Assets");
 
     bool clientPreferDarkMode = Helper.IsClientPreferDarkMode(Context);
     bool hideAdminSidebar = ViewBag.HideAdminSidebar == true;
@@ -86,14 +83,14 @@
                 @if (AuthOptions.Value.Provider == AuthenticationProvider.Local)
                 {
                     <a asp-page="/Admin/LocalAccount">
-                        <img src="@BlogConfig.GeneralSettings.AvatarUrl" alt="@BlogConfig.GeneralSettings.OwnerName"
+                        <img src="@avatarUrl" alt="@BlogConfig.GeneralSettings.OwnerName"
                              class="rounded-circle admin-nav-head-pic me-1" />
                         <userinfo user="User" user-info-display="PreferName"></userinfo>
                     </a>
                 }
                 else
                 {
-                    <img src="@BlogConfig.GeneralSettings.AvatarUrl" alt="@BlogConfig.GeneralSettings.OwnerName"
+                    <img src="@avatarUrl" alt="@BlogConfig.GeneralSettings.OwnerName"
                          class="rounded-circle admin-nav-head-pic me-1" />
                     <userinfo user="User"></userinfo>
                 }

@@ -26,7 +26,7 @@ public class ScheduledPublishServiceTests
         try
         {
             await logger.Waiting.Task.WaitAsync(TimeSpan.FromSeconds(10), TestContext.Current.CancellationToken);
-            config.AdvancedSettings = new AdvancedSettings { EnablePostScheduler = false };
+            config.Publish(config.Capture() with { AdvancedSettings = new AdvancedSettings { EnablePostScheduler = false } });
             wakeUp.WakeUp();
             await logger.Disabled.Task.WaitAsync(TimeSpan.FromSeconds(10), TestContext.Current.CancellationToken);
             Assert.Empty(commands.Invocations);
@@ -41,7 +41,7 @@ public class ScheduledPublishServiceTests
     [Fact]
     public async Task EnableWhileDisabled_WakesAndPublishesDueWorkWithoutFiveMinuteDelay()
     {
-        var config = new BlogConfig { AdvancedSettings = new AdvancedSettings { EnablePostScheduler = false } };
+        var config = new BlogConfig(new BlogSettingsSnapshot { AdvancedSettings = new AdvancedSettings { EnablePostScheduler = false } });
         var queries = new Mock<IQueryMediator>();
         var calls = 0;
         queries.Setup(m => m.QueryAsync(It.IsAny<GetNextScheduledPostTimeQuery>(), It.IsAny<QueryMediationSettings>(), It.IsAny<CancellationToken>()))
@@ -62,7 +62,7 @@ public class ScheduledPublishServiceTests
         try
         {
             await logger.Disabled.Task.WaitAsync(TimeSpan.FromSeconds(10), TestContext.Current.CancellationToken);
-            config.AdvancedSettings = new AdvancedSettings { EnablePostScheduler = true };
+            config.Publish(config.Capture() with { AdvancedSettings = new AdvancedSettings { EnablePostScheduler = true } });
             wakeUp.WakeUp();
             await published.Task.WaitAsync(TimeSpan.FromSeconds(10), TestContext.Current.CancellationToken);
             Assert.False(worker.ExecuteTask!.IsCompleted);
@@ -100,7 +100,7 @@ public class ScheduledPublishServiceTests
         try
         {
             var token = await dispatched.Task.WaitAsync(TimeSpan.FromSeconds(10), TestContext.Current.CancellationToken);
-            config.AdvancedSettings = new AdvancedSettings { EnablePostScheduler = false };
+            config.Publish(config.Capture() with { AdvancedSettings = new AdvancedSettings { EnablePostScheduler = false } });
             wakeUp.WakeUp();
             Assert.False(token.IsCancellationRequested);
             finish.SetResult(1);

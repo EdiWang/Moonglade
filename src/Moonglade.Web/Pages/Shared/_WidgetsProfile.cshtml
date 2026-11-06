@@ -1,4 +1,8 @@
-﻿<section class="blog-info-desktop-lg text-light d-none d-lg-block h-card">
+﻿@{
+    var avatarUrl = Url.Action("Avatar", "Assets");
+}
+
+<section class="blog-info-desktop-lg text-light d-none d-lg-block h-card">
     <div class="card-background-container">
         @if (BlogConfig.GeneralSettings.UseGravatarAsProfilePicture)
         {
@@ -6,7 +10,7 @@
         }
         else
         {
-            <img class="card-bkimg" alt="" aria-hidden="true" src="@BlogConfig.GeneralSettings.AvatarUrl"/>
+            <img class="card-bkimg" alt="" aria-hidden="true" src="@avatarUrl"/>
         }
     </div>
     <div class="blog-info-photo-text text-center">
@@ -19,7 +23,7 @@
         }
         else
         {
-            <img src="@BlogConfig.GeneralSettings.AvatarUrl"
+            <img src="@avatarUrl"
                  alt="@BlogConfig.GeneralSettings.OwnerName"
                  class="rounded-circle blogger-head-pic u-photo"/>
         }

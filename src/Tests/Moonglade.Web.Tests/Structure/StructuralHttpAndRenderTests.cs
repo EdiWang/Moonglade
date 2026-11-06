@@ -78,18 +78,13 @@ public class StructuralHttpAndRenderTests
     }
 
     [Theory]
-    [InlineData(false, null)]
-    [InlineData(true, null)]
-    [InlineData(false, "")]
-    [InlineData(true, "")]
-    [InlineData(false, "https://cdn.example.com/avatar.png")]
-    [InlineData(true, "https://cdn.example.com/avatar.png")]
-    public async Task Render_CapturedSnapshotFlowsThroughPartialComponentAndLayoutAcrossConcurrentPublication(bool razorPage, string? avatar)
+    [InlineData(false)]
+    [InlineData(true)]
+    public async Task Render_CapturedSnapshotFlowsThroughPartialComponentAndLayoutAcrossConcurrentPublication(bool razorPage)
     {
         await using var app = await CreateApp();
         using var client = app.GetTestClient();
         var store = app.Services.GetRequiredService<SnapshotProbeStore>();
-        store.Publish(store.Capture() with { AvatarUrl = avatar });
         var original = store.Capture();
         var gate = app.Services.GetRequiredService<SnapshotRenderGate>();
         var route = razorPage ? "/s0/probe/page" : "/s0/probe/render";
@@ -115,9 +110,7 @@ public class StructuralHttpAndRenderTests
         }
         var first = await pending;
         foreach (var part in new[] { "root", "partial", "component", "layout" }) Assert.Contains($"{part}:20:About", first);
-        Assert.Contains($"avatar:{(string.IsNullOrEmpty(avatar) ? "/blog/avatar" : avatar)}", first);
-        Assert.Equal(avatar, original.AvatarUrl);
-        Assert.Equal(avatar, store.Capture().AvatarUrl);
+        Assert.Contains("avatar:/blog/avatar", first);
 
         var second = await client.GetStringAsync(route, TestContext.Current.CancellationToken);
         foreach (var part in new[] { "root", "partial", "component", "layout" }) Assert.Contains($"{part}:4:Changed", second);

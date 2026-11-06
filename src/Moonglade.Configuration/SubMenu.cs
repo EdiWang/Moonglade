@@ -2,13 +2,13 @@
 
 namespace Moonglade.Configuration;
 
-public record SubMenu
+public sealed record SubMenu
 {
     [Required]
-    public string Title { get; set; }
+    public string Title { get; init; }
 
     [Required]
-    public string Url { get; set; }
+    public string Url { get; init; }
 
-    public bool IsOpenInNewTab { get; set; }
+    public bool IsOpenInNewTab { get; init; }
 }

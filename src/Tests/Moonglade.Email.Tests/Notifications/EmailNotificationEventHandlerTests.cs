@@ -13,7 +13,7 @@ public class EmailNotificationEventHandlerTests
     public async Task CommentNotificationEventHandler_UsesConfiguredMarkdownLinks(bool? enableLinks)
     {
         var blogConfig = CreateBlogConfig();
-        blogConfig.CommentSettings.EnableMarkdownLinks = enableLinks ?? false;
+        blogConfig.Publish(blogConfig.Capture() with { CommentSettings = blogConfig.CommentSettings with { EnableMarkdownLinks = enableLinks ?? false } });
         var queue = new CapturingEmailNotificationQueue();
         var handler = new CommentNotificationEventHandler(queue, blogConfig, CreateAvailableStatus());
         const string markdown = "[example](https://example.com)";
@@ -60,7 +60,7 @@ public class EmailNotificationEventHandlerTests
     {
         var queue = new CapturingEmailNotificationQueue();
         var blogConfig = CreateBlogConfig();
-        blogConfig.NotificationSettings.EnableEmailSending = false;
+        blogConfig.Publish(blogConfig.Capture() with { NotificationSettings = blogConfig.NotificationSettings with { EnableEmailSending = false } });
         var handler = new CommentNotificationEventHandler(queue, blogConfig, CreateAvailableStatus());
 
         await handler.HandleAsync(
@@ -210,7 +210,7 @@ public class EmailNotificationEventHandlerTests
         Assert.Empty(queue.Notifications);
     }
 
-    private static BlogConfig CreateBlogConfig() => new()
+    private static BlogConfig CreateBlogConfig() => new(new BlogSettingsSnapshot
     {
         GeneralSettings = new GeneralSettings
         {
@@ -220,7 +220,7 @@ public class EmailNotificationEventHandlerTests
         {
             EnableEmailSending = true
         }
-    };
+    });
 
     private static EmailCapabilityStatus CreateAvailableStatus() => CreateStatus(
         new EmailServiceOptions

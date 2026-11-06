@@ -31,10 +31,10 @@ public class CommentManagementCommandTests
         db.Comment.Add(CreateCommentEntity(commentId, postId, isApproved: true));
         await db.SaveChangesAsync(TestContext.Current.CancellationToken);
 
-        var blogConfig = new BlogConfig
+        var blogConfig = new BlogConfig(new BlogSettingsSnapshot
         {
             CommentSettings = new CommentSettings { EnableMarkdownLinks = enableLinks }
-        };
+        });
         var handler = new ReplyCommentCommandHandler(Mock.Of<ILogger<ReplyCommentCommandHandler>>(), db, blogConfig);
 
         const string markdown = "**Thanks** [example](https://example.com)";

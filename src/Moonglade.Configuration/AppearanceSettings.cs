@@ -4,15 +4,15 @@ using System.Text;
 
 namespace Moonglade.Configuration;
 
-public class AppearanceSettings : IBlogSettings<AppearanceSettings>, IValidatableObject
+public sealed record AppearanceSettings : IBlogSettings<AppearanceSettings>, IValidatableObject
 {
-    public int ThemeId { get; set; } = 100;
+    public int ThemeId { get; init; } = 100;
 
     [Display(Name = "Enable Custom CSS")]
-    public bool EnableCustomCss { get; set; }
+    public bool EnableCustomCss { get; init; }
 
     [MaxLength(10240)]
-    public string CssCode { get; set; }
+    public string CssCode { get; init; }
 
     public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
     {

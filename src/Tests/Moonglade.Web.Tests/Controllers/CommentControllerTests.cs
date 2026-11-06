@@ -26,7 +26,7 @@ namespace Moonglade.Web.Tests.Controllers;
 
 public class CommentControllerTests
 {
-    private readonly BlogConfig _blogConfig = new()
+    private readonly BlogConfig _blogConfig = new(new BlogSettingsSnapshot
     {
         CommentSettings = new CommentSettings
         {
@@ -34,7 +34,7 @@ public class CommentControllerTests
             RequireCommentReview = false
         },
         NotificationSettings = new NotificationSettings()
-    };
+    });
     private readonly RecordingCommandMediator _commandMediator = new();
     private readonly Mock<IQueryMediator> _queryMediator = new();
     private readonly Mock<IEventMediator> _eventMediator = new();
@@ -61,7 +61,7 @@ public class CommentControllerTests
     [Fact]
     public async Task Create_WhenCommentsDisabled_ReturnsForbid()
     {
-        _blogConfig.CommentSettings.EnableComments = false;
+        _blogConfig.Publish(_blogConfig.Capture() with { CommentSettings = _blogConfig.CommentSettings with { EnableComments = false } });
         var controller = CreateController();
 
         var result = await controller.Create(Guid.NewGuid(), CreateCommentRequest());
@@ -101,8 +101,8 @@ public class CommentControllerTests
     [Fact]
     public async Task Create_WhenBlockFilterDetectsContent_ReturnsValidationProblem()
     {
-        _blogConfig.CommentSettings.EnableWordFilter = true;
-        _blogConfig.CommentSettings.WordFilterMode = WordFilterMode.Block;
+        _blogConfig.Publish(_blogConfig.Capture() with { CommentSettings = _blogConfig.CommentSettings with { EnableWordFilter = true } });
+        _blogConfig.Publish(_blogConfig.Capture() with { CommentSettings = _blogConfig.CommentSettings with { WordFilterMode = WordFilterMode.Block } });
         _moderator
             .Setup(x => x.Detect("reader", "Hello world"))
             .Returns(true);
@@ -132,9 +132,9 @@ public class CommentControllerTests
             CreateTimeUtc = DateTime.UtcNow,
             IsApproved = true
         };
-        _blogConfig.CommentSettings.EnableWordFilter = true;
-        _blogConfig.CommentSettings.WordFilterMode = WordFilterMode.Mask;
-        _blogConfig.CommentSettings.RequireCommentReview = false;
+        _blogConfig.Publish(_blogConfig.Capture() with { CommentSettings = _blogConfig.CommentSettings with { EnableWordFilter = true } });
+        _blogConfig.Publish(_blogConfig.Capture() with { CommentSettings = _blogConfig.CommentSettings with { WordFilterMode = WordFilterMode.Mask } });
+        _blogConfig.Publish(_blogConfig.Capture() with { CommentSettings = _blogConfig.CommentSettings with { RequireCommentReview = false } });
         _commandMediator.SetResult<CreateCommentCommand, CommentDetailedItem>(comment);
         _moderator.Setup(x => x.Mask("reader")).Returns("masked-reader");
         _moderator.Setup(x => x.Mask("Hello world")).Returns("masked-content");
@@ -184,7 +184,7 @@ public class CommentControllerTests
             CreateTimeUtc = DateTime.UtcNow,
             IsApproved = true
         };
-        _blogConfig.NotificationSettings.SendEmailOnNewComment = true;
+        _blogConfig.Publish(_blogConfig.Capture() with { NotificationSettings = _blogConfig.NotificationSettings with { SendEmailOnNewComment = true } });
         _commandMediator.SetResult<CreateCommentCommand, CommentDetailedItem>(comment);
         using var requestAbortedSource = new CancellationTokenSource();
         var controller = CreateController(
@@ -334,7 +334,7 @@ public class CommentControllerTests
             .Setup(x => x.QueryAsync(It.IsAny<CountCommentsQuery>(), It.IsAny<QueryMediationSettings>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(12);
         var controller = CreateController();
-        _blogConfig.CommentSettings.EnableMarkdownLinks = enableLinks ?? false;
+        _blogConfig.Publish(_blogConfig.Capture() with { CommentSettings = _blogConfig.CommentSettings with { EnableMarkdownLinks = enableLinks ?? false } });
 
         var result = await controller.List(2, 10, filter);
 
@@ -427,7 +427,7 @@ public class CommentControllerTests
     [Fact]
     public async Task Reply_WhenCommentsDisabled_ReturnsForbid()
     {
-        _blogConfig.CommentSettings.EnableComments = false;
+        _blogConfig.Publish(_blogConfig.Capture() with { CommentSettings = _blogConfig.CommentSettings with { EnableComments = false } });
         var controller = CreateController();
 
         var result = await controller.Reply(Guid.NewGuid(), "Thanks");
@@ -494,7 +494,7 @@ public class CommentControllerTests
             ReplyTimeUtc = DateTime.UtcNow,
             RouteLink = "hello-post"
         };
-        _blogConfig.NotificationSettings.SendEmailOnCommentReply = true;
+        _blogConfig.Publish(_blogConfig.Capture() with { NotificationSettings = _blogConfig.NotificationSettings with { SendEmailOnCommentReply = true } });
         _commandMediator.SetResult<ReplyCommentCommand, CommentReply>(reply);
         using var requestAbortedSource = new CancellationTokenSource();
         var controller = CreateController(

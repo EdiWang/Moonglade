@@ -1,3 +1,4 @@
+using System.Collections.Immutable;
 using Microsoft.EntityFrameworkCore;
 using LiteBus.Events.Abstractions;
 using Moq;
@@ -28,7 +29,7 @@ public class SettingsValidationTests
         { nameof(AppearanceSettings), """{"enableCustomCss":true,"cssCode":""}""" },
         { nameof(AdvancedSettings), """{"headScripts":"<p>invalid-marker</p>"}""" },
         { nameof(CustomMenuSettings), """{"menus":[null]}""" },
-        { nameof(CustomMenuSettings), new CustomMenuSettings { Menus = Enumerable.Range(0, 6).Select(_ => new Menu { Title = "Valid" }).ToArray() }.ToJson() }
+        { nameof(CustomMenuSettings), new CustomMenuSettings { Menus = Enumerable.Range(0, 6).Select(_ => new Menu { Title = "Valid" }).ToImmutableList() }.ToJson() }
     };
 
     [Theory]
@@ -84,7 +85,7 @@ public class SettingsValidationTests
     public void ApprovedCompatibilityExceptions_AreValid()
     {
         var general = GeneralSettings.DefaultValue;
-        general.AvatarUrl = "https://cdn.example.com/" + new string('a', 300);
+        general = general with { AvatarUrl = "https://cdn.example.com/" + new string('a', 300) };
         Assert.True(Validator.TryValidateObject(general, new ValidationContext(general), null, true));
         var notification = new NotificationSettings { EmailDisplayName = null };
         Assert.True(Validator.TryValidateObject(notification, new ValidationContext(notification), null, true));
@@ -92,7 +93,7 @@ public class SettingsValidationTests
         Assert.True(Validator.TryValidateObject(appearance, new ValidationContext(appearance), null, true));
         var feed = new FeedSettings { FeedItemCount = 0 };
         Assert.True(Validator.TryValidateObject(feed, new ValidationContext(feed), null, true));
-        feed.FeedItemCount = int.MaxValue;
+        feed = feed with { FeedItemCount = int.MaxValue };
         Assert.True(Validator.TryValidateObject(feed, new ValidationContext(feed), null, true));
     }
 
