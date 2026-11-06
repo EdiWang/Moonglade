@@ -23,7 +23,8 @@ public class SettingsController(
     [HttpPost("general")]
     public async Task<IActionResult> General(GeneralSettings model)
     {
-        model = model with { AvatarUrl = blogConfig.GeneralSettings.AvatarUrl };
+        var settings = blogConfig.Capture();
+        model = model with { AvatarUrl = settings.GeneralSettings.AvatarUrl };
 
         await CommandMediator.SendAsync(UpdateConfigurationCommand.Create(model), HttpContext.RequestAborted);
         await LogActivityAfterSaveAsync(logger, EventType.SettingsGeneralUpdated, "Update General Settings", "General Settings",
@@ -60,12 +61,13 @@ public class SettingsController(
     [HttpPost("email/test")]
     public async Task<IActionResult> TestEmail()
     {
+        var settings = blogConfig.Capture();
         if (!emailCapabilityStatus.IsAvailable)
         {
             return CreateEmailCapabilityProblem();
         }
 
-        if (!blogConfig.NotificationSettings.EnableEmailSending)
+        if (!settings.NotificationSettings.EnableEmailSending)
         {
             return Problem(
                 detail: "Enable email sending in Notification settings before sending a test email.",
@@ -75,7 +77,7 @@ public class SettingsController(
 
         try
         {
-            await eventMediator.PublishAsync(new TestEmailEvent());
+            await eventMediator.PublishAsync(new TestEmailEvent { Snapshot = settings });
             return Ok(true);
         }
         catch (Exception e)
@@ -123,7 +125,7 @@ public class SettingsController(
     }
 
     [HttpGet("custom-menu")]
-    public async Task<IActionResult> CustomMenu() => Ok(blogConfig.CustomMenuSettings);
+    public async Task<IActionResult> CustomMenu() => Ok(blogConfig.Capture().CustomMenuSettings);
 
     [HttpPost("custom-menu")]
     public async Task<IActionResult> CustomMenu(CustomMenuSettingsJsonModel model)

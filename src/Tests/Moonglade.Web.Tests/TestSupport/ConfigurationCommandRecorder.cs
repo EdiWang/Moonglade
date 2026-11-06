@@ -44,12 +44,12 @@ internal sealed class ConfigurationCommandRecorder : ICommandMediator, IDisposab
             CfgValue = account.ToJson(),
             LastModifiedTimeUtc = DateTime.UtcNow
         });
-        foreach (var property in typeof(IBlogConfig).GetProperties())
+        foreach (var property in typeof(BlogSettingsSnapshot).GetProperties())
         {
             Db.BlogConfiguration.Add(new BlogConfigurationEntity
             {
                 CfgKey = property.Name,
-                CfgValue = property.GetValue(config).ToJson(),
+                CfgValue = property.GetValue(config.Capture()).ToJson(),
                 LastModifiedTimeUtc = DateTime.UtcNow
             });
         }

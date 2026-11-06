@@ -322,8 +322,10 @@ public class ImageControllerTests
         Assert.True(ActivityLogMetaDataAssert.Value<bool>(_commandMediator.Single<CreateActivityLogCommand>(), "SkipWatermark"));
     }
 
-    [Fact]
-    public async Task Image_Post_WhenWatermarkEnabledAndKeepOriginalEnabled_StoresOriginalImageInBackgroundQueue()
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public async Task Image_Post_WhenWatermarkEnabledAndKeepOriginalEnabled_StoresOriginalImageInBackgroundQueue(bool publishDuringStorage)
     {
         var originalStored = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
         _imageStorage.Setup(x => x.InsertOriginalAsync(It.IsAny<string>(), It.IsAny<byte[]>()))
@@ -336,7 +338,7 @@ public class ImageControllerTests
         var primaryName = _fileNameGenerator.GetFileName("photo.svg");
         var originalName = _fileNameGenerator.GetFileName("photo.svg", "origin");
         _imageStorage.Setup(x => x.InsertAsync(primaryName, It.IsAny<byte[]>())).ReturnsAsync(primaryName);
-        var controller = CreateController(new BlogConfig(new BlogSettingsSnapshot
+        var config = new BlogConfig(new BlogSettingsSnapshot
         {
             ImageSettings = new ImageSettings
             {
@@ -345,7 +347,13 @@ public class ImageControllerTests
                 WatermarkFontSize = 20,
                 WatermarkText = "Moonglade"
             }
-        }));
+        });
+        _imageStorage.Setup(x => x.InsertAsync(primaryName, It.IsAny<byte[]>()))
+            .Callback(() =>
+            {
+                if (publishDuringStorage) config.Publish(config.Capture() with { ImageSettings = new ImageSettings { IsWatermarkEnabled = false } });
+            }).ReturnsAsync(primaryName);
+        var controller = CreateController(config);
         var file = CreateFormFile("photo.svg", imageBytes);
 
         await controller.Image(file);

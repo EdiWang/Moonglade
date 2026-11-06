@@ -6,6 +6,8 @@ public class ThemeCacheInvalidator(ICacheAside cache)
 
     public string CacheKey => $"{Volatile.Read(ref _version)}:theme";
 
+    public string GetCacheKey(int themeId) => $"{CacheKey}:{themeId}";
+
     public void Invalidate()
     {
         var previousVersion = Interlocked.Increment(ref _version) - 1;

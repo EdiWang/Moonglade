@@ -16,7 +16,7 @@ public class BlogSettingsSnapshotTests
 
         Assert.Same(owner, reader);
         Assert.Same(owner.Capture(), reader.Capture());
-        Assert.All(typeof(IBlogConfig).GetProperties(), property => Assert.Null(property.SetMethod));
+        Assert.Empty(typeof(IBlogConfig).GetProperties());
         Assert.DoesNotContain(typeof(IBlogConfig).GetMethods(), method => method.Name is "Publish" or "LoadFromConfig");
         Assert.Equal(9, typeof(BlogSettingsSnapshot).GetProperties().Length);
         Assert.DoesNotContain(typeof(BlogSettingsSnapshot).GetProperties(), property => property.Name is "LocalAccountSettings" or "SystemManifestSettings");

@@ -21,7 +21,8 @@ public class FoafMapHandler
         IQueryMediator queryMediator,
         LinkGenerator linkGenerator)
     {
-        var general = blogConfig.GeneralSettings ?? throw new InvalidOperationException("GeneralSettings is null.");
+        var settings = blogConfig.Capture();
+        var general = settings.GeneralSettings ?? throw new InvalidOperationException("GeneralSettings is null.");
 
         try
         {

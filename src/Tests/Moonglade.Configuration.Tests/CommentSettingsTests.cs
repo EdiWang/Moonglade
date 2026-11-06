@@ -18,9 +18,9 @@ public class CommentSettingsTests
             [nameof(CommentSettings)] = """{"enableComments":false,"requireCommentReview":true}"""
         });
 
-        Assert.False(config.CommentSettings.EnableMarkdownLinks);
-        Assert.False(config.CommentSettings.EnableComments);
-        Assert.True(config.CommentSettings.RequireCommentReview);
+        Assert.False(config.Capture().CommentSettings.EnableMarkdownLinks);
+        Assert.False(config.Capture().CommentSettings.EnableComments);
+        Assert.True(config.Capture().CommentSettings.RequireCommentReview);
     }
 
     [Theory]

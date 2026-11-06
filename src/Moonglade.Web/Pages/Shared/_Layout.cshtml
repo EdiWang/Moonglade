@@ -1,4 +1,7 @@
-﻿@using Moonglade.Utils
+﻿@{
+    var snapshot = ViewData.CaptureSettings(SettingsReader);
+}
+@using Moonglade.Utils
 @using Microsoft.AspNetCore.Localization
 @using System.Globalization
 @inject IConfiguration Configuration
@@ -10,7 +13,7 @@
 
     // Resolve culture
     // Post language > User set display language > System default language
-    var langCode = BlogConfig.GeneralSettings.DefaultLanguageCode;
+    var langCode = snapshot.GeneralSettings.DefaultLanguageCode;
     if (ViewBag.PostLangCode != null)
     {
         langCode = ViewBag.PostLangCode;
@@ -27,23 +30,23 @@
 
     bool clientPreferDarkMode = Helper.IsClientPreferDarkMode(Context);
 
-    var themeCss = await Cache.GetOrCreateAsync(BlogCachePartition.General.ToString(), ThemeCache.CacheKey, async () =>
+    var themeCss = await Cache.GetOrCreateAsync(BlogCachePartition.General.ToString(), ThemeCache.GetCacheKey(snapshot.AppearanceSettings.ThemeId), async () =>
     {
-        return await QueryMediator.QueryAsync(new GetSiteThemeStyleSheetQuery(BlogConfig.AppearanceSettings.ThemeId));
+        return await QueryMediator.QueryAsync(new GetSiteThemeStyleSheetQuery(snapshot.AppearanceSettings.ThemeId));
     }, TimeSpan.FromMinutes(20));
 }
 <!DOCTYPE html>
 <html lang="@langCode" data-bs-theme="@(clientPreferDarkMode ? "dark" : null)">
-<head profile=@(BlogConfig.GeneralSettings.UseDublinCoreMetaData ? "http://dublincore.org/documents/dcq-html/" : null)>
+<head profile=@(snapshot.GeneralSettings.UseDublinCoreMetaData ? "http://dublincore.org/documents/dcq-html/" : null)>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    @if (BlogConfig.GeneralSettings.UseDublinCoreMetaData)
+    @if (snapshot.GeneralSettings.UseDublinCoreMetaData)
     {
         <link rel="schema.DC" href="http://purl.org/dc/elements/1.1/" />
         <link rel="schema.DCTERMS" href="http://purl.org/dc/terms/" />
     }
 
-    <meta name="keywords" content="@(ViewBag.Keywords ?? Html.Raw(BlogConfig.GeneralSettings.MetaKeyword))" />
+    <meta name="keywords" content="@(ViewBag.Keywords ?? Html.Raw(snapshot.GeneralSettings.MetaKeyword))" />
 
     @await RenderSectionAsync("meta", false)
     @if (IsSectionDefined("opengraph"))
@@ -55,30 +58,30 @@
         <partial name="_OpenGraph" />
     }
 
-    <metadesc description="@(ViewBag.MetaDescription ?? BlogConfig.GeneralSettings.Description)" />
+    <metadesc description="@(ViewBag.MetaDescription ?? snapshot.GeneralSettings.Description)" />
 
     <title>
-        @(ViewBag.TitlePrefix)@(null == ViewBag.TitlePrefix ? string.Empty : " - ")@BlogConfig.GeneralSettings.SiteTitle
+        @(ViewBag.TitlePrefix)@(null == ViewBag.TitlePrefix ? string.Empty : " - ")@snapshot.GeneralSettings.SiteTitle
     </title>
 
-    @if (BlogConfig.ImageSettings.EnableCDNRedirect &&
-        !string.IsNullOrWhiteSpace(BlogConfig.ImageSettings.CDNEndpoint))
+    @if (snapshot.ImageSettings.EnableCDNRedirect &&
+        !string.IsNullOrWhiteSpace(snapshot.ImageSettings.CDNEndpoint))
     {
-        <link rel="dns-prefetch" href="@UrlHelper.GetDNSPrefetchUrl(BlogConfig.ImageSettings.CDNEndpoint)" />
+        <link rel="dns-prefetch" href="@UrlHelper.GetDNSPrefetchUrl(snapshot.ImageSettings.CDNEndpoint)" />
     }
 
-    @if (!string.IsNullOrWhiteSpace(BlogConfig.GeneralSettings.CanonicalPrefix))
+    @if (!string.IsNullOrWhiteSpace(snapshot.GeneralSettings.CanonicalPrefix))
     {
-        <link rel="canonical" href="@(UrlHelper.ResolveCanonicalUrl(BlogConfig.GeneralSettings.CanonicalPrefix, Context.Request.Path))" />
+        <link rel="canonical" href="@(UrlHelper.ResolveCanonicalUrl(snapshot.GeneralSettings.CanonicalPrefix, Context.Request.Path))" />
     }
 
-    <link rel="start" title="@BlogConfig.GeneralSettings.SiteTitle" href="~/" />
-    <link type="application/rss+xml" rel="alternate" title="@BlogConfig.GeneralSettings.SiteTitle" href="@Url.Action("Rss", "Subscription")" />
-    @if (BlogConfig.AdvancedSettings.EnableOpenSearch)
+    <link rel="start" title="@snapshot.GeneralSettings.SiteTitle" href="~/" />
+    <link type="application/rss+xml" rel="alternate" title="@snapshot.GeneralSettings.SiteTitle" href="@Url.Action("Rss", "Subscription")" />
+    @if (snapshot.AdvancedSettings.EnableOpenSearch)
     {
-        <link type="application/opensearchdescription+xml" rel="search" title="@BlogConfig.GeneralSettings.SiteTitle" href="/opensearch" />
+        <link type="application/opensearchdescription+xml" rel="search" title="@snapshot.GeneralSettings.SiteTitle" href="/opensearch" />
     }
-    @if (BlogConfig.AdvancedSettings.EnableFoaf)
+    @if (snapshot.AdvancedSettings.EnableFoaf)
     {
         <link type="application/rdf+xml" rel="meta" title="FOAF" href="/foaf.xml" />
     }
@@ -94,7 +97,7 @@
         themeCss = themeCss.Replace("</style", string.Empty, StringComparison.OrdinalIgnoreCase);
         <style>@Html.Raw(themeCss)</style>
     }
-    @if (BlogConfig.AppearanceSettings.EnableCustomCss)
+    @if (snapshot.AppearanceSettings.EnableCustomCss)
     {
         <link href="~/custom.css" rel="stylesheet" />
     }
@@ -105,16 +108,16 @@
         </script>
     </environment>
 
-    @if (!string.IsNullOrWhiteSpace(BlogConfig.AdvancedSettings.HeadScripts))
+    @if (!string.IsNullOrWhiteSpace(snapshot.AdvancedSettings.HeadScripts))
     {
-        @Html.Raw(BlogConfig.AdvancedSettings.HeadScripts)
+        @Html.Raw(snapshot.AdvancedSettings.HeadScripts)
     }
 </head>
 <body class="@ViewBag.BodyClass">
-    @if (BlogConfig.ContentSettings.ShowCalloutSection)
+    @if (snapshot.ContentSettings.ShowCalloutSection)
     {
         <section class="call-out">
-            @Html.Raw(BlogConfig.ContentSettings.CalloutSectionHtmlPitch)
+            @Html.Raw(snapshot.ContentSettings.CalloutSectionHtmlPitch)
         </section>
     }
 
@@ -124,7 +127,7 @@
                 <div class="animbrand">
                     <h1 role="heading" class="moonglade-logo-heading">
                         <a class="moonglade-logo font-sairas navbar-brand animate" href="/">
-                            @BlogConfig.GeneralSettings.LogoText
+                            @snapshot.GeneralSettings.LogoText
                         </a>
                     </h1>
                 </div>
@@ -186,9 +189,9 @@
         {
             <section class="profile-mobile d-block d-sm-none d-print-none">
                 <div class="card-background-container">
-                    @if (BlogConfig.GeneralSettings.UseGravatarAsProfilePicture)
+                    @if (snapshot.GeneralSettings.UseGravatarAsProfilePicture)
                     {
-                        <gravatar class="card-bkimg" email="@BlogConfig.GeneralSettings.OwnerEmail" size="256" />
+                        <gravatar class="card-bkimg" email="@snapshot.GeneralSettings.OwnerEmail" size="256" />
                     }
                     else
                     {
@@ -198,23 +201,23 @@
                 <div class="blogger-intro-content">
                     <div class="row">
                         <div class="col-3">
-                            @if (BlogConfig.GeneralSettings.UseGravatarAsProfilePicture)
+                            @if (snapshot.GeneralSettings.UseGravatarAsProfilePicture)
                             {
                                 <gravatar class="rounded-circle blogger-head-pic"
                                           size="256"
-                                          alt="@BlogConfig.GeneralSettings.OwnerName"
-                                          email="@BlogConfig.GeneralSettings.OwnerEmail" />
+                                          alt="@snapshot.GeneralSettings.OwnerName"
+                                          email="@snapshot.GeneralSettings.OwnerEmail" />
                             }
                             else
                             {
                                 <img src="@avatarUrl"
-                                     alt="@BlogConfig.GeneralSettings.OwnerName"
+                                     alt="@snapshot.GeneralSettings.OwnerName"
                                      class="rounded-circle blogger-head-pic" />
                             }
                         </div>
                         <div class="col-9 position-relative">
                             <h4 class="text-center w-100 position-absolute top-50 start-50 translate-middle">
-                                @BlogConfig.GeneralSettings.Description
+                                @snapshot.GeneralSettings.Description
                             </h4>
                         </div>
                     </div>
@@ -222,7 +225,7 @@
             </section>
             <div class="container-xl mt-4 mb-5">
                 <div class="d-flex gap-4">
-                    @if (BlogConfig.GeneralSettings.SideBarOption == SideBarOption.Left)
+                    @if (snapshot.GeneralSettings.SideBarOption == SideBarOption.Left)
                     {
                         <partial name="_Aside" />
                     }
@@ -231,7 +234,7 @@
                         @RenderBody()
                     </main>
 
-                    @if (BlogConfig.GeneralSettings.SideBarOption == SideBarOption.Right)
+                    @if (snapshot.GeneralSettings.SideBarOption == SideBarOption.Right)
                     {
                         <partial name="_Aside" />
                     }
@@ -249,9 +252,9 @@
 
     @await RenderSectionAsync("scripts", false)
 
-    @if (!string.IsNullOrWhiteSpace(BlogConfig.AdvancedSettings.FootScripts))
+    @if (!string.IsNullOrWhiteSpace(snapshot.AdvancedSettings.FootScripts))
     {
-        @Html.Raw(BlogConfig.AdvancedSettings.FootScripts)
+        @Html.Raw(snapshot.AdvancedSettings.FootScripts)
     }
 </body>
 </html>

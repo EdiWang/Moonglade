@@ -39,7 +39,7 @@ public sealed class ConfigInitializerTests
             .ReturnsAsync(persisted);
         var commands = new RecordingCommandMediator();
         var config = new BlogConfig();
-        var originalGeneral = config.GeneralSettings;
+        var originalGeneral = config.Capture().GeneralSettings;
         var accounts = new LocalAccountState();
         accounts.Publish(LocalAccountSettings.DefaultValue);
         var originalAccount = accounts.Read().ToJson();
@@ -49,7 +49,7 @@ public sealed class ConfigInitializerTests
 
         Assert.Empty(commands.Commands);
         Assert.Equal(invalidJson, persisted[key]);
-        Assert.Same(originalGeneral, config.GeneralSettings);
+        Assert.Same(originalGeneral, config.Capture().GeneralSettings);
         Assert.Equal(originalAccount, accounts.Read().ToJson());
         Assert.DoesNotContain("private-marker", exception.ToString());
     }
@@ -101,7 +101,7 @@ public sealed class ConfigInitializerTests
         Assert.Equal(11, saved.Count);
         var repaired = Assert.Single(saved, row => row.CfgKey == nameof(FeedSettings));
         Assert.Equal(FeedSettings.DefaultValue.ToJson(), repaired.CfgValue);
-        Assert.Equal(config.FeedSettings.ToJson(), repaired.CfgValue);
+        Assert.Equal(config.Capture().FeedSettings.ToJson(), repaired.CfgValue);
         Assert.True(repaired.LastModifiedTimeUtc > originalTimestamp);
         foreach (var row in saved.Where(row => row.CfgKey != nameof(FeedSettings)))
         {
@@ -146,13 +146,13 @@ public sealed class ConfigInitializerTests
         var config = new BlogConfig();
         var logger = new RecordingLogger<ConfigInitializer>();
         var initializer = new ConfigInitializer(queries.Object, commands.Object, config, logger, new LocalAccountState());
-        var property = typeof(IBlogConfig).GetProperty(name)!;
+        var property = typeof(BlogSettingsSnapshot).GetProperty(name)!;
         var expected = property.PropertyType.GetProperty("DefaultValue", BindingFlags.Public | BindingFlags.Static)!.GetValue(null).ToJson();
 
         await initializer.Initialize(isNew: false, ct);
         await initializer.Initialize(isNew: false, ct);
 
-        Assert.Equal(expected, property.GetValue(config).ToJson());
+        Assert.Equal(expected, property.GetValue(config.Capture()).ToJson());
         db.ChangeTracker.Clear();
         foreach (var row in await db.BlogConfiguration.ToListAsync(ct))
         {
@@ -200,7 +200,7 @@ public sealed class ConfigInitializerTests
             command => command.CfgKey == nameof(SystemManifestSettings));
         foreach (var command in commandMediator.Commands.OfType<AddDefaultConfigurationCommand>())
         {
-            var runtimeValue = typeof(IBlogConfig).GetProperty(command.CfgKey)!.GetValue(blogConfig);
+            var runtimeValue = typeof(BlogSettingsSnapshot).GetProperty(command.CfgKey)!.GetValue(blogConfig.Capture());
             Assert.Equal(runtimeValue.ToJson(), command.DefaultJson);
         }
     }
@@ -225,7 +225,7 @@ public sealed class ConfigInitializerTests
         await initializer.Initialize(isNew, cancellationToken);
 
         var commands = commandMediator.Commands.OfType<AddDefaultConfigurationCommand>().ToArray();
-        Assert.Equal(typeof(IBlogConfig).GetProperties().Length + 2 - (isNew ? 0 : 1), commands.Length);
+        Assert.Equal(typeof(BlogSettingsSnapshot).GetProperties().Length + 2 - (isNew ? 0 : 1), commands.Length);
         var manifestCommand = Assert.Single(commands, command => command.CfgKey == nameof(SystemManifestSettings));
         var savedManifest = SystemManifestSettings.ParseStored(manifestCommand.DefaultJson);
         Assert.Equal(DateTimeKind.Utc, savedManifest.InstallTimeUtc.Kind);

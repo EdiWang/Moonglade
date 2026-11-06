@@ -80,9 +80,9 @@ public class ConfigurationCommandRegistrationTests
         settings = settings with { SiteTitle = "Saved via bus" };
         await provider.GetRequiredService<ICommandMediator>().SendAsync(UpdateConfigurationCommand.Create(settings), TestContext.Current.CancellationToken);
 
-        Assert.Equal("Saved via bus", config.GeneralSettings.SiteTitle);
+        Assert.Equal("Saved via bus", config.Capture().GeneralSettings.SiteTitle);
         Assert.NotEqual(previousFeedKey, feeds.GetFeedCacheKey("rss"));
-        Assert.Equal(config.GeneralSettings.ToJson(), (await store.Db.BlogConfiguration.SingleAsync(
+        Assert.Equal(config.Capture().GeneralSettings.ToJson(), (await store.Db.BlogConfiguration.SingleAsync(
             p => p.CfgKey == nameof(GeneralSettings), TestContext.Current.CancellationToken)).CfgValue);
 
         var gate = Assert.Single(provider.GetServices<ConfigurationWriteGate>());

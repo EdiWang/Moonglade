@@ -34,6 +34,7 @@ public class ImageController(
     [HttpHead(@"{filename:regex((?!-)([[a-z0-9-]]+)\.(png|jpg|jpeg|gif|bmp|webp|svg))}")]
     public async Task<IActionResult> Image([MaxLength(256)] string filename, CancellationToken cancellationToken = default)
     {
+        var settings = blogConfig.Capture();
         var invalidChars = Path.GetInvalidFileNameChars();
         if (filename.IndexOfAny(invalidChars) >= 0)
         {
@@ -41,9 +42,9 @@ public class ImageController(
         }
 
         // Fallback method for legacy "/image/..." references (e.g. from third party websites)
-        if (blogConfig.ImageSettings.EnableCDNRedirect)
+        if (settings.ImageSettings.EnableCDNRedirect)
         {
-            var imageUrl = blogConfig.ImageSettings.CDNEndpoint.CombineUrl(filename);
+            var imageUrl = settings.ImageSettings.CDNEndpoint.CombineUrl(filename);
             return RedirectPermanent(imageUrl);
         }
 
@@ -72,6 +73,7 @@ public class ImageController(
     [HttpPost]
     public async Task<IActionResult> Image([Required] IFormFile file, [FromQuery] bool skipWatermark = false)
     {
+        var settings = blogConfig.Capture();
         if (file.Length <= 0)
         {
             return BadRequest("Image file is empty.");
@@ -106,10 +108,10 @@ public class ImageController(
         }
 
         await using var validatedStream = new MemoryStream(uploadValidation.ImageBytes);
-        var watermarkedStream = AddWatermarkIfNeeded(validatedStream, uploadValidation.Extension, skipWatermark);
+        var watermarkedStream = AddWatermarkIfNeeded(validatedStream, uploadValidation.Extension, skipWatermark, settings.ImageSettings);
         var finalName = await imageStorage.InsertAsync(primaryFileName, watermarkedStream ?? uploadValidation.ImageBytes);
 
-        if (ShouldKeepOriginal(skipWatermark))
+        if (ShouldKeepOriginal(skipWatermark, settings.ImageSettings))
         {
             StoreOriginalImageAsync(originalFileName, uploadValidation.ImageBytes);
         }
@@ -129,9 +131,9 @@ public class ImageController(
         return Ok(new ImageUploadResponse(imageUrl, imageUrl));
     }
 
-    private byte[] AddWatermarkIfNeeded(MemoryStream stream, string ext, bool skipWatermark)
+    private byte[] AddWatermarkIfNeeded(MemoryStream stream, string ext, bool skipWatermark, ImageSettings imageSettings)
     {
-        if (!blogConfig.ImageSettings.IsWatermarkEnabled || skipWatermark) return null;
+        if (!imageSettings.IsWatermarkEnabled || skipWatermark) return null;
 
         if (ext.Equals(".gif", StringComparison.OrdinalIgnoreCase) ||
             ext.Equals(".svg", StringComparison.OrdinalIgnoreCase))
@@ -140,19 +142,19 @@ public class ImageController(
             return null;
         }
 
-        using var watermarker = new ImageWatermarker(stream, blogConfig.ImageSettings.WatermarkSkipPixel);
+        using var watermarker = new ImageWatermarker(stream, imageSettings.WatermarkSkipPixel);
         return watermarker.AddWatermark(
-            blogConfig.ImageSettings.WatermarkText,
-            new SKColor(128, 128, 128, (byte)blogConfig.ImageSettings.WatermarkColorA),
+            imageSettings.WatermarkText,
+            new SKColor(128, 128, 128, (byte)imageSettings.WatermarkColorA),
             WatermarkPosition.BottomRight,
             15,
-            blogConfig.ImageSettings.WatermarkFontSize)?.ToArray();
+            imageSettings.WatermarkFontSize)?.ToArray();
     }
 
-    private bool ShouldKeepOriginal(bool skipWatermark)
+    private static bool ShouldKeepOriginal(bool skipWatermark, ImageSettings imageSettings)
     {
-        return blogConfig.ImageSettings.IsWatermarkEnabled &&
-               (blogConfig.ImageSettings.KeepOriginImage || !skipWatermark);
+        return imageSettings.IsWatermarkEnabled &&
+               (imageSettings.KeepOriginImage || !skipWatermark);
     }
 
     private void StoreOriginalImageAsync(string fileName, byte[] originalImageData)

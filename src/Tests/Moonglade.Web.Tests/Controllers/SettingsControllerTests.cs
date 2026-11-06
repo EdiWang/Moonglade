@@ -44,7 +44,7 @@ public partial class SettingsControllerTests
         var result = await controller.Comment(model);
 
         Assert.IsType<NoContentResult>(result);
-        Assert.Equal(enableLinks, blogConfig.CommentSettings.EnableMarkdownLinks);
+        Assert.Equal(enableLinks, blogConfig.Capture().CommentSettings.EnableMarkdownLinks);
         var update = commandMediator.Single<UpdateConfigurationCommand>();
         Assert.Equal(enableLinks, update.Settings[nameof(CommentSettings)].FromJson<CommentSettings>().EnableMarkdownLinks);
         Assert.Equal(EventType.SettingsCommentUpdated, commandMediator.Single<CreateActivityLogCommand>().EventType);
@@ -66,7 +66,7 @@ public partial class SettingsControllerTests
         var result = await controller.Content(model);
 
         Assert.IsType<NoContentResult>(result);
-        Assert.Equal(editor, blogConfig.ContentSettings.DefaultEditor);
+        Assert.Equal(editor, blogConfig.Capture().ContentSettings.DefaultEditor);
         var update = commandMediator.Single<UpdateConfigurationCommand>();
         Assert.Equal(editor, update.Settings[nameof(ContentSettings)].FromJson<ContentSettings>().DefaultEditor);
         Assert.Equal(EventType.SettingsContentUpdated, commandMediator.Single<CreateActivityLogCommand>().EventType);
@@ -132,7 +132,7 @@ public partial class SettingsControllerTests
     {
         var eventMediator = new Mock<IEventMediator>(MockBehavior.Strict);
         var blogConfig = CreateEmailEnabledBlogConfig();
-        blogConfig.Publish(blogConfig.Capture() with { NotificationSettings = blogConfig.NotificationSettings with { EnableEmailSending = false } });
+        blogConfig.Publish(blogConfig.Capture() with { NotificationSettings = blogConfig.Capture().NotificationSettings with { EnableEmailSending = false } });
         var controller = CreateController(
             blogConfig,
             new ConfigurationCommandRecorder(),
@@ -282,19 +282,19 @@ public partial class SettingsControllerTests
         });
         using var mediator = new ConfigurationCommandRecorder();
         var controller = CreateController(blogConfig, mediator, new Mock<IAuthenticationService>());
-        var originalGeneral = blogConfig.GeneralSettings;
+        var originalGeneral = blogConfig.Capture().GeneralSettings;
         var originalRow = await mediator.Db.BlogConfiguration.AsNoTracking().SingleAsync(
             row => row.CfgKey == nameof(GeneralSettings), TestContext.Current.CancellationToken);
         var image = ImageSettings.DefaultValue with { EnableCDNRedirect = enableCdn, CDNEndpoint = "https://cdn.example.com/images" };
 
         Assert.IsType<NoContentResult>(await controller.Image(image));
 
-        Assert.Same(originalGeneral, blogConfig.GeneralSettings);
+        Assert.Same(originalGeneral, blogConfig.Capture().GeneralSettings);
         var saved = await mediator.Db.BlogConfiguration.AsNoTracking().SingleAsync(
             row => row.CfgKey == nameof(GeneralSettings), TestContext.Current.CancellationToken);
         Assert.Equal(originalRow.CfgValue, saved.CfgValue);
         Assert.Equal(originalRow.LastModifiedTimeUtc, saved.LastModifiedTimeUtc);
-        Assert.Equal(image.ToJson(), blogConfig.ImageSettings.ToJson());
+        Assert.Equal(image.ToJson(), blogConfig.Capture().ImageSettings.ToJson());
         Assert.Equal(new[] { nameof(ImageSettings) }, mediator.Single<UpdateConfigurationCommand>().Settings.Keys);
     }
 
@@ -302,7 +302,7 @@ public partial class SettingsControllerTests
     public async Task Content_WhenSaveFails_DoesNotChangeRuntimeOrLogSuccess()
     {
         var config = new BlogConfig();
-        var original = config.ContentSettings;
+        var original = config.Capture().ContentSettings;
         using var mediator = new ConfigurationCommandRecorder();
         var controller = CreateController(config, mediator, new Mock<IAuthenticationService>());
         await mediator.Db.Database.ExecuteSqlRawAsync(
@@ -311,7 +311,7 @@ public partial class SettingsControllerTests
 
         await Assert.ThrowsAsync<DbUpdateException>(() => controller.Content(new ContentSettings { DefaultEditor = EditorChoice.Markdown }));
 
-        Assert.Same(original, config.ContentSettings);
+        Assert.Same(original, config.Capture().ContentSettings);
         Assert.Empty(mediator.Commands.OfType<CreateActivityLogCommand>());
         mediator.Db.ChangeTracker.Clear();
         Assert.Equal(original.ToJson(), (await mediator.Db.BlogConfiguration.SingleAsync(

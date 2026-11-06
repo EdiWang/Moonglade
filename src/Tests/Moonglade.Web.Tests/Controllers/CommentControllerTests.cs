@@ -26,6 +26,34 @@ namespace Moonglade.Web.Tests.Controllers;
 
 public class CommentControllerTests
 {
+    [Fact]
+    public async Task Create_RetainsCapturedReviewAndNotificationPolicyAcrossDomainSave()
+    {
+        _blogConfig.Publish(_blogConfig.Capture() with
+        {
+            CommentSettings = _blogConfig.Capture().CommentSettings with { RequireCommentReview = false },
+            NotificationSettings = new NotificationSettings { SendEmailOnNewComment = true }
+        });
+        var original = _blogConfig.Capture();
+        _commandMediator.SetResult<CreateCommentCommand, CommentDetailedItem>(new CommentDetailedItem
+        {
+            Id = Guid.NewGuid(), Username = "Reader", Email = "reader@example.com", CommentContent = "Content", PostTitle = "Post"
+        });
+        _commandMediator.BeforeResult = _ => _blogConfig.Publish(original with
+        {
+            CommentSettings = original.CommentSettings with { RequireCommentReview = true },
+            NotificationSettings = new NotificationSettings { SendEmailOnNewComment = false }
+        });
+        var controller = CreateController();
+
+        var result = Assert.IsType<OkObjectResult>(await controller.Create(Guid.NewGuid(), CreateCommentRequest()));
+
+        Assert.False((bool)result.Value!.GetType().GetProperty(nameof(CommentSettings.RequireCommentReview))!.GetValue(result.Value)!);
+        Assert.Same(original, _commandMediator.Single<CreateCommentCommand>().Snapshot);
+        var sent = Assert.Single(_eventMediator.Invocations, call => call.Arguments[0] is CommentEvent);
+        Assert.Same(original, Assert.IsType<CommentEvent>(sent.Arguments[0]).Snapshot);
+    }
+
     private readonly BlogConfig _blogConfig = new(new BlogSettingsSnapshot
     {
         CommentSettings = new CommentSettings
@@ -61,7 +89,7 @@ public class CommentControllerTests
     [Fact]
     public async Task Create_WhenCommentsDisabled_ReturnsForbid()
     {
-        _blogConfig.Publish(_blogConfig.Capture() with { CommentSettings = _blogConfig.CommentSettings with { EnableComments = false } });
+        _blogConfig.Publish(_blogConfig.Capture() with { CommentSettings = _blogConfig.Capture().CommentSettings with { EnableComments = false } });
         var controller = CreateController();
 
         var result = await controller.Create(Guid.NewGuid(), CreateCommentRequest());
@@ -101,10 +129,10 @@ public class CommentControllerTests
     [Fact]
     public async Task Create_WhenBlockFilterDetectsContent_ReturnsValidationProblem()
     {
-        _blogConfig.Publish(_blogConfig.Capture() with { CommentSettings = _blogConfig.CommentSettings with { EnableWordFilter = true } });
-        _blogConfig.Publish(_blogConfig.Capture() with { CommentSettings = _blogConfig.CommentSettings with { WordFilterMode = WordFilterMode.Block } });
+        _blogConfig.Publish(_blogConfig.Capture() with { CommentSettings = _blogConfig.Capture().CommentSettings with { EnableWordFilter = true } });
+        _blogConfig.Publish(_blogConfig.Capture() with { CommentSettings = _blogConfig.Capture().CommentSettings with { WordFilterMode = WordFilterMode.Block } });
         _moderator
-            .Setup(x => x.Detect("reader", "Hello world"))
+            .Setup(x => x.Detect(It.Is<string[]>(items => items.SequenceEqual(new[] { "reader", "Hello world" })), It.IsAny<string>()))
             .Returns(true);
         var controller = CreateController();
 
@@ -132,12 +160,12 @@ public class CommentControllerTests
             CreateTimeUtc = DateTime.UtcNow,
             IsApproved = true
         };
-        _blogConfig.Publish(_blogConfig.Capture() with { CommentSettings = _blogConfig.CommentSettings with { EnableWordFilter = true } });
-        _blogConfig.Publish(_blogConfig.Capture() with { CommentSettings = _blogConfig.CommentSettings with { WordFilterMode = WordFilterMode.Mask } });
-        _blogConfig.Publish(_blogConfig.Capture() with { CommentSettings = _blogConfig.CommentSettings with { RequireCommentReview = false } });
+        _blogConfig.Publish(_blogConfig.Capture() with { CommentSettings = _blogConfig.Capture().CommentSettings with { EnableWordFilter = true } });
+        _blogConfig.Publish(_blogConfig.Capture() with { CommentSettings = _blogConfig.Capture().CommentSettings with { WordFilterMode = WordFilterMode.Mask } });
+        _blogConfig.Publish(_blogConfig.Capture() with { CommentSettings = _blogConfig.Capture().CommentSettings with { RequireCommentReview = false } });
         _commandMediator.SetResult<CreateCommentCommand, CommentDetailedItem>(comment);
-        _moderator.Setup(x => x.Mask("reader")).Returns("masked-reader");
-        _moderator.Setup(x => x.Mask("Hello world")).Returns("masked-content");
+        _moderator.Setup(x => x.Mask("reader", It.IsAny<string>())).Returns("masked-reader");
+        _moderator.Setup(x => x.Mask("Hello world", It.IsAny<string>())).Returns("masked-content");
         var controller = CreateController(remoteIpAddress: IPAddress.Parse("127.0.0.1"), userAgent: "unit-test-agent");
 
         var result = await controller.Create(postId, request);
@@ -184,7 +212,7 @@ public class CommentControllerTests
             CreateTimeUtc = DateTime.UtcNow,
             IsApproved = true
         };
-        _blogConfig.Publish(_blogConfig.Capture() with { NotificationSettings = _blogConfig.NotificationSettings with { SendEmailOnNewComment = true } });
+        _blogConfig.Publish(_blogConfig.Capture() with { NotificationSettings = _blogConfig.Capture().NotificationSettings with { SendEmailOnNewComment = true } });
         _commandMediator.SetResult<CreateCommentCommand, CommentDetailedItem>(comment);
         using var requestAbortedSource = new CancellationTokenSource();
         var controller = CreateController(
@@ -334,7 +362,7 @@ public class CommentControllerTests
             .Setup(x => x.QueryAsync(It.IsAny<CountCommentsQuery>(), It.IsAny<QueryMediationSettings>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(12);
         var controller = CreateController();
-        _blogConfig.Publish(_blogConfig.Capture() with { CommentSettings = _blogConfig.CommentSettings with { EnableMarkdownLinks = enableLinks ?? false } });
+        _blogConfig.Publish(_blogConfig.Capture() with { CommentSettings = _blogConfig.Capture().CommentSettings with { EnableMarkdownLinks = enableLinks ?? false } });
 
         var result = await controller.List(2, 10, filter);
 
@@ -427,7 +455,7 @@ public class CommentControllerTests
     [Fact]
     public async Task Reply_WhenCommentsDisabled_ReturnsForbid()
     {
-        _blogConfig.Publish(_blogConfig.Capture() with { CommentSettings = _blogConfig.CommentSettings with { EnableComments = false } });
+        _blogConfig.Publish(_blogConfig.Capture() with { CommentSettings = _blogConfig.Capture().CommentSettings with { EnableComments = false } });
         var controller = CreateController();
 
         var result = await controller.Reply(Guid.NewGuid(), "Thanks");
@@ -494,7 +522,7 @@ public class CommentControllerTests
             ReplyTimeUtc = DateTime.UtcNow,
             RouteLink = "hello-post"
         };
-        _blogConfig.Publish(_blogConfig.Capture() with { NotificationSettings = _blogConfig.NotificationSettings with { SendEmailOnCommentReply = true } });
+        _blogConfig.Publish(_blogConfig.Capture() with { NotificationSettings = _blogConfig.Capture().NotificationSettings with { SendEmailOnCommentReply = true } });
         _commandMediator.SetResult<ReplyCommentCommand, CommentReply>(reply);
         using var requestAbortedSource = new CancellationTokenSource();
         var controller = CreateController(
@@ -591,6 +619,7 @@ public class CommentControllerTests
         private readonly Dictionary<Type, Exception> _exceptions = [];
 
         public List<ICommand> Commands { get; } = [];
+        public Action<ICommand>? BeforeResult { get; set; }
 
         public Task<MediationResult> TrySendAsync(ICommand command, CommandMediationSettings? settings, CancellationToken cancellationToken) =>
             throw new NotSupportedException();
@@ -625,6 +654,7 @@ public class CommentControllerTests
                 throw exception;
             }
 
+            BeforeResult?.Invoke(command);
             return Task.FromResult((TCommandResult)_results[command.GetType()]);
         }
 

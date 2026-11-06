@@ -138,6 +138,7 @@ public static class ServiceCollectionExtensions
             {
                 options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute());
                 options.Filters.Add<ProblemDetailsResultFilter>();
+                options.Filters.Add<BlogSettingsFilter>();
             })
             .AddJsonOptions(options => options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()));
 

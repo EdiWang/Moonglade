@@ -126,12 +126,13 @@ public class PostController(
     [HttpGet("meta")]
     public async Task<IActionResult> GetMeta([FromServices] IOptions<RequestLocalizationOptions> locOptions)
     {
+        var settings = blogConfig.Capture();
         var cats = await queryMediator.QueryAsync(new ListCategoriesQuery());
 
         var response = new PostEditorMeta
         {
-            EditorChoice = blogConfig.ContentSettings.DefaultEditor.ToString().ToLowerInvariant(),
-            DefaultAuthor = blogConfig.GeneralSettings.OwnerName,
+            EditorChoice = settings.ContentSettings.DefaultEditor.ToString().ToLowerInvariant(),
+            DefaultAuthor = settings.GeneralSettings.OwnerName,
             Categories = cats.Select(c => new CategoryBrief
             {
                 Id = c.Id,

@@ -20,8 +20,8 @@ public class ContentSettingsTests
             [nameof(ContentSettings)] = """{"postListPageSize":20}"""
         });
 
-        Assert.Equal(EditorChoice.Html, config.ContentSettings.DefaultEditor);
-        Assert.Equal(20, config.ContentSettings.PostListPageSize);
+        Assert.Equal(EditorChoice.Html, config.Capture().ContentSettings.DefaultEditor);
+        Assert.Equal(20, config.Capture().ContentSettings.PostListPageSize);
     }
 
     [Theory]

@@ -26,8 +26,9 @@ public class ScheduledPublishService(
             try
             {
                 var wakeToken = wakeUp.GetWakeToken();
+                var settings = blogConfig.Capture();
                 using var linkedCts = CancellationTokenSource.CreateLinkedTokenSource(stoppingToken, wakeToken);
-                if (!blogConfig.AdvancedSettings.EnablePostScheduler)
+                if (!settings.AdvancedSettings.EnablePostScheduler)
                 {
                     logger.LogDebug("Scheduled publishing is disabled; waiting for configuration changes.");
                     try
@@ -74,7 +75,7 @@ public class ScheduledPublishService(
                     }
                 }
 
-                if (linkedCts.IsCancellationRequested || !blogConfig.AdvancedSettings.EnablePostScheduler) continue;
+                if (linkedCts.IsCancellationRequested || !blogConfig.Capture().AdvancedSettings.EnablePostScheduler) continue;
                 await CheckAndPublishPostsAsync(stoppingToken);
             }
             catch (OperationCanceledException)

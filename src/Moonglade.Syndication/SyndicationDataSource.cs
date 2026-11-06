@@ -14,30 +14,31 @@ public class SyndicationDataSource(
 {
     private readonly string _baseUrl = $"{httpContextAccessor.HttpContext!.Request.Scheme}://{httpContextAccessor.HttpContext.Request.Host}";
 
-    public async Task<List<FeedEntry>> GetFeedDataAsync(string catSlug = null)
+    public async Task<List<FeedEntry>> GetFeedDataAsync(string catSlug = null, BlogSettingsSnapshot snapshot = null, CancellationToken ct = default)
     {
+        var settings = snapshot ?? blogConfig.Capture();
         List<FeedEntry> itemCollection;
         if (!string.IsNullOrWhiteSpace(catSlug))
         {
-            var cat = await db.Category.AsNoTracking().FirstOrDefaultAsync(c => c.Slug == catSlug);
+            var cat = await db.Category.AsNoTracking().FirstOrDefaultAsync(c => c.Slug == catSlug, ct);
             if (cat is null) return null;
 
-            itemCollection = await GetFeedEntriesAsync(cat.Id);
+            itemCollection = await GetFeedEntriesAsync(settings, cat.Id, ct);
         }
         else
         {
-            itemCollection = await GetFeedEntriesAsync();
+            itemCollection = await GetFeedEntriesAsync(settings, null, ct);
         }
 
         return itemCollection;
     }
 
-    private async Task<List<FeedEntry>> GetFeedEntriesAsync(int? catId = null)
+    private async Task<List<FeedEntry>> GetFeedEntriesAsync(BlogSettingsSnapshot settings, int? catId, CancellationToken ct)
     {
         int? top = null;
-        if (blogConfig.FeedSettings.FeedItemCount != 0)
+        if (settings.FeedSettings.FeedItemCount != 0)
         {
-            top = blogConfig.FeedSettings.FeedItemCount;
+            top = settings.FeedSettings.FeedItemCount;
         }
 
         IQueryable<PostEntity> query = db.Post.AsNoTracking()
@@ -53,7 +54,7 @@ public class SyndicationDataSource(
             query = query.Take(top.Value);
         }
 
-        var useFullContent = blogConfig.FeedSettings.UseFullContent;
+        var useFullContent = settings.FeedSettings.UseFullContent;
         var list = await query.Select(p => new FeedEntry
         {
             Id = p.Id.ToString(),
@@ -65,7 +66,7 @@ public class SyndicationDataSource(
             LangCode = p.ContentLanguageCode,
             Categories = p.PostCategory.Select(pc => pc.Category.DisplayName).ToArray(),
             ContentType = p.ContentType
-        }).ToListAsync();
+        }).ToListAsync(ct);
 
         // Workaround EF limitation
         // Man, this is super ugly
@@ -73,14 +74,14 @@ public class SyndicationDataSource(
         {
             foreach (var simpleFeedItem in list)
             {
-                simpleFeedItem.Description = FormatPostContent(simpleFeedItem.Description, simpleFeedItem.ContentType);
+                simpleFeedItem.Description = FormatPostContent(simpleFeedItem.Description, simpleFeedItem.ContentType, settings.ImageSettings);
             }
         }
 
         return list;
     }
 
-    private string FormatPostContent(string rawContent, string contentType)
+    private static string FormatPostContent(string rawContent, string contentType, ImageSettings settings)
     {
         var effectiveType = string.IsNullOrEmpty(contentType) ? "html" : contentType;
 
@@ -88,9 +89,9 @@ public class SyndicationDataSource(
             ContentProcessor.MarkdownToContent(rawContent, ContentProcessor.MarkdownConvertType.Html, false) :
             rawContent;
 
-        if (blogConfig.ImageSettings.EnableCDNRedirect)
+        if (settings.EnableCDNRedirect)
         {
-            htmlContent = htmlContent.ReplaceCDNEndpointToImgTags(blogConfig.ImageSettings.CDNEndpoint);
+            htmlContent = htmlContent.ReplaceCDNEndpointToImgTags(settings.CDNEndpoint);
         }
 
         return htmlContent;

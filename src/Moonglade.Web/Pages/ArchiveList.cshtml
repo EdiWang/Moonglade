@@ -38,6 +38,7 @@
 
     public async Task<IActionResult> OnGetAsync(int year, int? month)
     {
+        var snapshot = ViewData.CaptureSettings(SettingsReader);
         // Validate year range more appropriately
         var currentYear = DateTime.UtcNow.Year;
         if (year < 2000 || year > currentYear)

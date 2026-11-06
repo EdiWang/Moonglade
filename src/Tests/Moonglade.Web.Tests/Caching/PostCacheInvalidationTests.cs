@@ -350,11 +350,11 @@ public partial class PostCacheInvalidationTests
             var db = scope.ServiceProvider.GetRequiredService<BlogDbContext>();
             await db.Database.EnsureCreatedAsync(TestContext.Current.CancellationToken);
             var config = environment.Services.GetRequiredService<IBlogConfig>();
-            foreach (var property in typeof(IBlogConfig).GetProperties())
+            foreach (var property in typeof(BlogSettingsSnapshot).GetProperties())
                 db.BlogConfiguration.Add(new BlogConfigurationEntity
                 {
                     CfgKey = property.Name,
-                    CfgValue = property.GetValue(config).ToJson(),
+                    CfgValue = property.GetValue(config.Capture()).ToJson(),
                     LastModifiedTimeUtc = DateTime.UtcNow
                 });
             var post = CreatePost(environment.PostId, environment.PublishDateUtc);

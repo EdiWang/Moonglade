@@ -6,10 +6,10 @@ This is a retained task plan, requested as a continuation of the settings review
 
 - Date: 2026-11-06, Asia/Taipei. Assessment baseline: `907ac228573e151b3dfcc3f334a15d72959cc2e9` on `master`, initially clean working tree.
 - B5 is `8da96cf82`; B6's startup-safety correction is already committed as `907ac2285`. The previous tracker's statements that B6 was uncommitted were stale, not missing implementation.
-- Current authorization: on 2026-11-06 the user requested S2 after reviewing its scope and subsequently explicitly requested removing avatar CDN support and simplifying its code (D31). S1 is committed as `8db04575d`; S2 began clean at that commit. S3-S6, new commits, push, deployment, and production-data operations remain separately gated.
+- Current authorization: the user explicitly authorized S3 after its operation/render consistency scope was explained. S2 is committed as `aa38e96f7`; S3 began with a clean tree at that commit. S6, commits, push, deployment, and production-data changes remain separately gated. Avatar CDN work stays superseded by D31.
 - D25: separate code responsibilities without changing the existing database table, keys, or JSON. D26: consistency within one captured business operation/render, not automatic request-wide freezing. D27 originally proposed versioned avatar files; D31 supersedes that avatar-CDN scope by removing the feature. D28 confirms existing ordinary types as init-only records with ImmutableList menus, adding mutable request DTOs only for demonstrated incompatibility.
 - D29 confirms the S1 ownership/dependency direction below. Later snapshot and avatar workflow batches remain separately gated; planning recommendations do not authorize all of B7.
-- Current next action: present completed S2 and obtain acceptance / further instructions. D31 resolves S2-Q1 by removing uploaded-avatar CDN support entirely. Final solution: 1478 passed with both providers, no failures/skips; Web build clean. S3 is not authorized.
+- Current next action: present completed S3 and obtain acceptance / further instructions. Full solution: 1492 passed with both disposable providers, no failures/skips; Web build clean. S6 is not authorized.
 - Keep this file and the reliability tracker across conversations. Permanent project documentation must not depend on these temporary task records.
 
 ## B5/B6 Assessment
@@ -114,7 +114,7 @@ S labels are sub-batches of this structural plan, not renamed historical B1-B6 b
 | S5 - Former C3 versioned resources | Superseded by D31: avatars no longer create image-storage copies. | No execution of the old avatar file plan. | Existing copied files remain untouched; no automatic deletion or new cleanup policy. |
 | S6 - Structural regression and acceptance | Full solution with both providers, isolated real-host/browser scenarios, docs/diff checks, retained-record updates, and explicit remaining limits. | S1-S3 accepted; former S4/S5 avatar-CDN scope superseded. Repeat relevant B6 scenarios plus immutable/menu/render/account-boundary and local-avatar save/audit/cache cases; inspect actual URLs, bytes, settings, timestamps, and logs. | Present evidence and obtain final user acceptance. No automatic deployment. Keep physical storage migration and new cleanup policies out of this batch. |
 
-Current remaining sequence is S2 acceptance, S3, then S6 acceptance work; former S4/S5 avatar-CDN implementation is superseded by D31. Each active batch still requires its own authorization. Any new C3 scope must be proposed separately.
+Current remaining sequence is S3 acceptance, then separately authorized S6 acceptance work; former S4/S5 avatar-CDN implementation is superseded by D31. Each active batch still requires its own authorization. Any new C3 scope must be proposed separately.
 
 ## Required Acceptance Matrix
 
@@ -149,12 +149,13 @@ Current remaining sequence is S2 acceptance, S3, then S6 acceptance work; former
 | Item | Status |
 | --- | --- |
 | B5/B6 code/test reassessment | Verified at `907ac2285`, 2026-11-06 |
-| User directions D24-D31 | Confirmed, including S2 authorization and avatar CDN feature removal |
+| User directions D24-D32 | Confirmed, including S3 operation/render migration authorization |
 | B7 structural plan | S0/S1 committed; S2 authorized and implemented; dependent batches remain gated |
 | S0 compatibility experiments | Committed as `90e302d45`; D28/D29 resolve model and ownership gates. Historical S0 results remain in its evidence report. |
 | S1 protected-state boundaries | Committed as `8db04575d`; preserved by S2 regression. User subsequently authorized S2 after scope review. |
-| S2 immutable values/publication | Complete under D30/D31: 1478 tests passed with both providers; Web build clean. User acceptance pending. |
-| S3 and S6 implementation | Not started; requires separate authorization |
+| S2 immutable values/publication | Committed as `aa38e96f7`, including D31 avatar-CDN removal; preserved by S3 regression |
+| S3 operation/render migration | Technical checks complete: 1492 passed with both providers; Web build clean. User acceptance pending. |
+| S6 acceptance work | Not started; requires separate authorization |
 | Former S4/S5 avatar CDN work | Superseded by D31; do not execute the historical proposal |
 | Physical table migration / production rollout | Not authorized |
-| New local commit | S2 changes are uncommitted; no new commit requested |
+| New local commit | S3 changes are uncommitted; no new commit requested |

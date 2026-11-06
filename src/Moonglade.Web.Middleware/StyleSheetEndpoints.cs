@@ -19,14 +19,15 @@ public class StyleSheetHandler
         StyleSheetOptions options,
         ILogger logger)
     {
-        if (!blogConfig.AppearanceSettings.EnableCustomCss)
+        var settings = blogConfig.Capture();
+        if (!settings.AppearanceSettings.EnableCustomCss)
         {
             logger.LogDebug("Custom CSS is disabled");
             await WriteNotFoundAsync(context);
             return;
         }
 
-        var cssCode = blogConfig.AppearanceSettings.CssCode;
+        var cssCode = settings.AppearanceSettings.CssCode;
 
         if (string.IsNullOrWhiteSpace(cssCode))
         {

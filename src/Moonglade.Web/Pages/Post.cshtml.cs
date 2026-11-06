@@ -1,3 +1,4 @@
+using Moonglade.Web.Rendering;
 using LiteBus.Commands.Abstractions;
 using LiteBus.Queries.Abstractions;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -18,10 +19,11 @@ public class PostModel(
 
     public PostViewEntity PostView { get; set; }
 
-    public bool IsViewCountEnabled => blogConfig.ContentSettings.EnableViewCount;
+    public bool IsViewCountEnabled => ViewData.CaptureSettings(blogConfig).ContentSettings.EnableViewCount;
 
     public async Task<IActionResult> OnGetAsync(int year, int month, int day, string slug)
     {
+        ViewData.CaptureSettings(blogConfig);
         if (year > DateTime.UtcNow.Year || string.IsNullOrWhiteSpace(slug)) return NotFound();
 
         var routeLink = $"{year}/{month}/{day}/{slug}".ToLower();

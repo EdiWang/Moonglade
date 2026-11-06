@@ -1,13 +1,15 @@
-﻿namespace Moonglade.Web.ViewComponents;
+﻿using Moonglade.Web.Rendering;
+
+namespace Moonglade.Web.ViewComponents;
 
 public class MenuViewComponent(IBlogConfig blogConfig, ILogger<MenuViewComponent> logger) : ViewComponent
 {
     public IViewComponentResult Invoke()
     {
+        var settings = ViewData.CaptureSettings(blogConfig);
         try
         {
-            var settings = blogConfig.CustomMenuSettings;
-            return View(settings);
+            return View(settings.CustomMenuSettings);
         }
         catch (Exception e)
         {

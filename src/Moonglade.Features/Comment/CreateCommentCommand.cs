@@ -1,3 +1,4 @@
+using System.Text.Json.Serialization;
 using LiteBus.Commands.Abstractions;
 using Microsoft.Extensions.Logging;
 using Moonglade.Configuration;
@@ -9,7 +10,11 @@ public record CreateCommentCommand(
     Guid PostId,
     CommentRequest Payload,
     string IpAddress
-) : ICommand<CommentDetailedItem>;
+) : ICommand<CommentDetailedItem>
+{
+    [JsonIgnore]
+    public BlogSettingsSnapshot Snapshot { get; init; }
+}
 
 public class CreateCommentCommandHandler(
     IBlogConfig blogConfig,
@@ -19,6 +24,7 @@ public class CreateCommentCommandHandler(
 {
     public async Task<CommentDetailedItem> HandleAsync(CreateCommentCommand request, CancellationToken ct)
     {
+        var settings = request.Snapshot ?? blogConfig.Capture();
         // Validate input
         if (request.Payload == null)
         {
@@ -39,10 +45,10 @@ public class CreateCommentCommandHandler(
         }
 
         // Check if comments are closed
-        if (blogConfig.CommentSettings.CloseCommentAfterDays > 0)
+        if (settings.CommentSettings.CloseCommentAfterDays > 0)
         {
             var daysSincePublished = (DateTime.UtcNow.Date - postInfo.PubDateUtc.GetValueOrDefault()).Days;
-            if (daysSincePublished > blogConfig.CommentSettings.CloseCommentAfterDays)
+            if (daysSincePublished > settings.CommentSettings.CloseCommentAfterDays)
             {
                 logger.LogInformation("Comments are closed for post {PostId} after {Days} days.", request.PostId, daysSincePublished);
                 return null;
@@ -59,7 +65,7 @@ public class CreateCommentCommandHandler(
             CreateTimeUtc = DateTime.UtcNow,
             Email = request.Payload.Email,
             IPAddress = request.IpAddress,
-            IsApproved = !blogConfig.CommentSettings.RequireCommentReview
+            IsApproved = !settings.CommentSettings.RequireCommentReview
         };
 
         await db.Comment.AddAsync(comment, ct);

@@ -1,9 +1,12 @@
 ﻿@page "/admin/settings/advanced"
+@{
+    var snapshot = ViewData.CaptureSettings(SettingsReader);
+}
 @inject IConfiguration Configuration
 
 @Html.AntiForgeryToken()
 @{
-    var settings = BlogConfig.AdvancedSettings;
+    var settings = snapshot.AdvancedSettings;
 }
 @section scripts {
     <script type="module" src="~/js/app/admin.settings.content.mjs"></script>

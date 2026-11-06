@@ -101,7 +101,7 @@ public partial class AssetsControllerTests
 
         Assert.Empty(await mediator.Db.BlogAsset.AsNoTracking().ToListAsync(TestContext.Current.CancellationToken));
         Assert.Equal(OriginalAvatarUrl, (await ReadAvatarGeneralSettings(mediator)).AvatarUrl);
-        Assert.Equal(OriginalAvatarUrl, config.GeneralSettings.AvatarUrl);
+        Assert.Equal(OriginalAvatarUrl, config.Capture().GeneralSettings.AvatarUrl);
         Assert.Empty(mediator.Commands);
         AssertNoAssetAuditError(logger);
     }

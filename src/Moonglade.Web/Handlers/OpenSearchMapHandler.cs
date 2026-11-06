@@ -13,14 +13,15 @@ public class OpenSearchMapHandler
 
     public static async Task Handle(HttpContext httpContext, IBlogConfig blogConfig)
     {
-        if (!blogConfig.AdvancedSettings.EnableOpenSearch)
+        var settings = blogConfig.Capture();
+        if (!settings.AdvancedSettings.EnableOpenSearch)
         {
             httpContext.Response.StatusCode = StatusCodes.Status404NotFound;
             return;
         }
 
-        var hasCanonicalPrefix = !string.IsNullOrWhiteSpace(blogConfig.GeneralSettings.CanonicalPrefix);
-        var siteRootUrl = UrlHelper.ResolveRootUrl(httpContext, blogConfig.GeneralSettings.CanonicalPrefix, hasCanonicalPrefix);
+        var hasCanonicalPrefix = !string.IsNullOrWhiteSpace(settings.GeneralSettings.CanonicalPrefix);
+        var siteRootUrl = UrlHelper.ResolveRootUrl(httpContext, settings.GeneralSettings.CanonicalPrefix, hasCanonicalPrefix);
         var baseUrl = siteRootUrl.TrimEnd('/');
 
         await using var ms = new MemoryStream();
@@ -30,8 +31,8 @@ public class OpenSearchMapHandler
             await writer.WriteStartDocumentAsync();
             await writer.WriteStartElementAsync(null, "OpenSearchDescription", Xmlns);
 
-            await writer.WriteElementStringAsync(null, "ShortName", null, blogConfig.GeneralSettings.SiteTitle);
-            await writer.WriteElementStringAsync(null, "Description", null, blogConfig.GeneralSettings.Description);
+            await writer.WriteElementStringAsync(null, "ShortName", null, settings.GeneralSettings.SiteTitle);
+            await writer.WriteElementStringAsync(null, "Description", null, settings.GeneralSettings.Description);
 
             await writer.WriteStartElementAsync(null, "Image", null);
             await writer.WriteAttributeStringAsync(null, "height", null, "16");

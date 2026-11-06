@@ -1,3 +1,6 @@
+using System.Security.Cryptography;
+using System.Text;
+
 namespace Moonglade.Web;
 
 public class PostCacheInvalidator(ICacheAside cache)
@@ -8,6 +11,14 @@ public class PostCacheInvalidator(ICacheAside cache)
 
     public string GetCacheKey(string key) => $"{Volatile.Read(ref _version)}:{key}";
     public string GetFeedCacheKey(string key) => $"{Volatile.Read(ref _feedVersion)}:{key}";
+    public string GetFeedCacheKey(string key, BlogSettingsSnapshot settings) =>
+        $"{GetFeedCacheKey(key)}:{Fingerprint(settings.GeneralSettings.ToJson() + settings.FeedSettings.ToJson() + settings.ImageSettings.ToJson())}";
+
+    public string GetSiteMapCacheKey(BlogSettingsSnapshot settings) =>
+        $"{SiteMapCacheKey}:{Fingerprint(settings.GeneralSettings.ToJson())}";
+
+    private static string Fingerprint(string value) => Convert.ToHexString(SHA256.HashData(Encoding.UTF8.GetBytes(value)));
+
     public string SiteMapCacheKey => $"{Volatile.Read(ref _siteMapVersion)}:sitemap";
 
     public void Invalidate()

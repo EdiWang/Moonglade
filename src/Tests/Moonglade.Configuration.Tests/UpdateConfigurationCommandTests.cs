@@ -17,8 +17,8 @@ public class UpdateConfigurationCommandTests
     {
         using var db = CreateDbContext();
         var config = new BlogConfig(new BlogSettingsSnapshot { GeneralSettings = General("Old") });
-        await SeedAsync(db, config.GeneralSettings);
-        var original = config.GeneralSettings;
+        await SeedAsync(db, config.Capture().GeneralSettings);
+        var original = config.Capture().GeneralSettings;
         var model = General("New");
         model = model with { Description = "Description" };
         var command = UpdateConfigurationCommand.Create(model);
@@ -26,12 +26,12 @@ public class UpdateConfigurationCommandTests
 
         await Handler(db, config).HandleAsync(command, TestContext.Current.CancellationToken);
 
-        Assert.Equal("New", config.GeneralSettings.SiteTitle);
+        Assert.Equal("New", config.Capture().GeneralSettings.SiteTitle);
         Assert.Equal("Old", original.SiteTitle);
-        Assert.NotSame(model, config.GeneralSettings);
-        Assert.Equal(config.GeneralSettings.ToJson(), (await db.BlogConfiguration.SingleAsync(TestContext.Current.CancellationToken)).CfgValue);
+        Assert.NotSame(model, config.Capture().GeneralSettings);
+        Assert.Equal(config.Capture().GeneralSettings.ToJson(), (await db.BlogConfiguration.SingleAsync(TestContext.Current.CancellationToken)).CfgValue);
         model = model with { Description = "Changed after save" };
-        Assert.Equal("Description", config.GeneralSettings.Description);
+        Assert.Equal("Description", config.Capture().GeneralSettings.Description);
     }
 
     [Fact]
@@ -46,7 +46,7 @@ public class UpdateConfigurationCommandTests
         await Handler(db, config).HandleAsync(UpdateConfigurationCommand.Create(settings), TestContext.Current.CancellationToken);
 
         Assert.Equal(originalTime, (await db.BlogConfiguration.SingleAsync(TestContext.Current.CancellationToken)).LastModifiedTimeUtc);
-        Assert.Equal("Persisted", config.GeneralSettings.SiteTitle);
+        Assert.Equal("Persisted", config.Capture().GeneralSettings.SiteTitle);
     }
 
     [Fact]
@@ -54,10 +54,10 @@ public class UpdateConfigurationCommandTests
     {
         using var db = CreateDbContext();
         var config = new BlogConfig(new BlogSettingsSnapshot { GeneralSettings = General("Old") });
-        config.Publish(config.Capture() with { GeneralSettings = config.GeneralSettings with { AvatarUrl = "old.png" } });
-        await SeedAsync(db, config.GeneralSettings);
-        var originalGeneral = config.GeneralSettings;
-        var originalImage = config.ImageSettings;
+        config.Publish(config.Capture() with { GeneralSettings = config.Capture().GeneralSettings with { AvatarUrl = "old.png" } });
+        await SeedAsync(db, config.Capture().GeneralSettings);
+        var originalGeneral = config.Capture().GeneralSettings;
+        var originalImage = config.Capture().ImageSettings;
         var general = General("New");
         general = general with { AvatarUrl = "new.png" };
         var command = UpdateConfigurationCommand.Create(general, CdnImage());
@@ -65,8 +65,8 @@ public class UpdateConfigurationCommandTests
         await Assert.ThrowsAsync<InvalidOperationException>(() => Handler(db, config)
             .HandleAsync(command, TestContext.Current.CancellationToken));
 
-        Assert.Same(originalGeneral, config.GeneralSettings);
-        Assert.Same(originalImage, config.ImageSettings);
+        Assert.Same(originalGeneral, config.Capture().GeneralSettings);
+        Assert.Same(originalImage, config.Capture().ImageSettings);
         Assert.Equal(originalGeneral.ToJson(), (await db.BlogConfiguration.SingleAsync(TestContext.Current.CancellationToken)).CfgValue);
         Assert.False(db.ChangeTracker.HasChanges());
     }
@@ -76,19 +76,19 @@ public class UpdateConfigurationCommandTests
     {
         using var db = CreateDbContext();
         var config = new BlogConfig();
-        await SeedAsync(db, config.GeneralSettings);
-        await SeedAsync(db, config.ImageSettings);
+        await SeedAsync(db, config.Capture().GeneralSettings);
+        await SeedAsync(db, config.Capture().ImageSettings);
 
         var general = General("New");
         general = general with { AvatarUrl = "https://cdn.example.com/avatar.png" };
         await Handler(db, config).HandleAsync(UpdateConfigurationCommand.Create(general, CdnImage()),
             TestContext.Current.CancellationToken);
 
-        Assert.True(config.ImageSettings.EnableCDNRedirect);
-        Assert.Equal("https://cdn.example.com/avatar.png", config.GeneralSettings.AvatarUrl);
+        Assert.True(config.Capture().ImageSettings.EnableCDNRedirect);
+        Assert.Equal("https://cdn.example.com/avatar.png", config.Capture().GeneralSettings.AvatarUrl);
         var rows = await db.BlogConfiguration.ToDictionaryAsync(p => p.CfgKey, TestContext.Current.CancellationToken);
-        Assert.Equal(config.GeneralSettings.ToJson(), rows[nameof(GeneralSettings)].CfgValue);
-        Assert.Equal(config.ImageSettings.ToJson(), rows[nameof(ImageSettings)].CfgValue);
+        Assert.Equal(config.Capture().GeneralSettings.ToJson(), rows[nameof(GeneralSettings)].CfgValue);
+        Assert.Equal(config.Capture().ImageSettings.ToJson(), rows[nameof(ImageSettings)].CfgValue);
         Assert.Equal(rows[nameof(GeneralSettings)].LastModifiedTimeUtc, rows[nameof(ImageSettings)].LastModifiedTimeUtc);
     }
 
@@ -98,8 +98,8 @@ public class UpdateConfigurationCommandTests
         var interceptor = new FailingSaveInterceptor();
         using var db = CreateDbContext(interceptor);
         var config = new BlogConfig(new BlogSettingsSnapshot { GeneralSettings = General("Old") });
-        await SeedAsync(db, config.GeneralSettings);
-        var original = config.GeneralSettings;
+        await SeedAsync(db, config.Capture().GeneralSettings);
+        var original = config.Capture().GeneralSettings;
         interceptor.Fail = true;
 
         var updated = General("Old");
@@ -108,7 +108,7 @@ public class UpdateConfigurationCommandTests
             UpdateConfigurationCommand.Create(updated),
             TestContext.Current.CancellationToken));
 
-        Assert.Same(original, config.GeneralSettings);
+        Assert.Same(original, config.Capture().GeneralSettings);
         db.ChangeTracker.Clear();
         Assert.Equal(original.ToJson(), (await db.BlogConfiguration.SingleAsync(TestContext.Current.CancellationToken)).CfgValue);
     }
@@ -118,17 +118,17 @@ public class UpdateConfigurationCommandTests
     {
         using var db = CreateDbContext();
         var config = new BlogConfig();
-        await SeedAsync(db, config.GeneralSettings);
-        var original = config.GeneralSettings;
+        await SeedAsync(db, config.Capture().GeneralSettings);
+        var original = config.Capture().GeneralSettings;
         using var cancelled = new CancellationTokenSource();
         await cancelled.CancelAsync();
         var command = UpdateConfigurationCommand.Create(General("New"));
 
         await Assert.ThrowsAnyAsync<OperationCanceledException>(() => Handler(db, config).HandleAsync(command, cancelled.Token));
 
-        Assert.Same(original, config.GeneralSettings);
+        Assert.Same(original, config.Capture().GeneralSettings);
         await Handler(db, config).HandleAsync(command, TestContext.Current.CancellationToken);
-        Assert.Equal("New", config.GeneralSettings.SiteTitle);
+        Assert.Equal("New", config.Capture().GeneralSettings.SiteTitle);
     }
 
     [Fact]
@@ -140,7 +140,7 @@ public class UpdateConfigurationCommandTests
         using var firstDb = new BlogDbContext(options);
         using var secondDb = new BlogDbContext(options);
         var config = new BlogConfig();
-        await SeedAsync(firstDb, config.GeneralSettings);
+        await SeedAsync(firstDb, config.Capture().GeneralSettings);
         interceptor.Enabled = true;
         var first = Handler(firstDb, config).HandleAsync(UpdateConfigurationCommand.Create(
             General("First")), TestContext.Current.CancellationToken);
@@ -153,9 +153,9 @@ public class UpdateConfigurationCommandTests
         await Task.WhenAll(first, second);
 
         Assert.True(secondWasBlocked);
-        Assert.Equal("Second", config.GeneralSettings.SiteTitle);
+        Assert.Equal("Second", config.Capture().GeneralSettings.SiteTitle);
         secondDb.ChangeTracker.Clear();
-        Assert.Equal(config.GeneralSettings.ToJson(), (await secondDb.BlogConfiguration.SingleAsync(TestContext.Current.CancellationToken)).CfgValue);
+        Assert.Equal(config.Capture().GeneralSettings.ToJson(), (await secondDb.BlogConfiguration.SingleAsync(TestContext.Current.CancellationToken)).CfgValue);
     }
 
     [Fact]
@@ -165,15 +165,15 @@ public class UpdateConfigurationCommandTests
         var interceptor = new CancellingSaveInterceptor(cancellation);
         using var db = CreateDbContext(interceptor);
         var config = new BlogConfig();
-        await SeedAsync(db, config.GeneralSettings);
+        await SeedAsync(db, config.Capture().GeneralSettings);
         interceptor.Enabled = true;
         var events = new Mock<IEventMediator>();
         events.Setup(m => m.PublishAsync(It.IsAny<IEvent>(), It.IsAny<EventMediationSettings>(), CancellationToken.None))
             .Callback<IEvent, EventMediationSettings, CancellationToken>((message, _, _) =>
             {
                 Assert.True(cancellation.IsCancellationRequested);
-                Assert.Equal("Committed", config.GeneralSettings.SiteTitle);
-                Assert.Equal(config.GeneralSettings.ToJson(), db.BlogConfiguration.Local.Single().CfgValue);
+                Assert.Equal("Committed", config.Capture().GeneralSettings.SiteTitle);
+                Assert.Equal(config.Capture().GeneralSettings.ToJson(), db.BlogConfiguration.Local.Single().CfgValue);
                 Assert.Equal([nameof(GeneralSettings)], ((ConfigurationChangedEvent)message).Names);
             }).Returns(Task.CompletedTask);
 
@@ -182,8 +182,8 @@ public class UpdateConfigurationCommandTests
 
         Assert.True(cancellation.IsCancellationRequested);
         events.Verify(m => m.PublishAsync(It.IsAny<IEvent>(), It.IsAny<EventMediationSettings>(), CancellationToken.None), Times.Once);
-        Assert.Equal("Committed", config.GeneralSettings.SiteTitle);
-        Assert.Equal(config.GeneralSettings.ToJson(), (await db.BlogConfiguration.SingleAsync(TestContext.Current.CancellationToken)).CfgValue);
+        Assert.Equal("Committed", config.Capture().GeneralSettings.SiteTitle);
+        Assert.Equal(config.Capture().GeneralSettings.ToJson(), (await db.BlogConfiguration.SingleAsync(TestContext.Current.CancellationToken)).CfgValue);
     }
 
     [Fact]
@@ -191,13 +191,13 @@ public class UpdateConfigurationCommandTests
     {
         using var db = CreateDbContext();
         var config = new BlogConfig();
-        await SeedAsync(db, config.GeneralSettings);
-        var original = config.GeneralSettings;
+        await SeedAsync(db, config.Capture().GeneralSettings);
+        var original = config.Capture().GeneralSettings;
 
         await Assert.ThrowsAsync<InvalidOperationException>(() => Handler(db, config).HandleAsync(
             UpdateConfigurationCommand.Create(new UnregisteredSettings()), TestContext.Current.CancellationToken));
 
-        Assert.Same(original, config.GeneralSettings);
+        Assert.Same(original, config.Capture().GeneralSettings);
         Assert.False(db.ChangeTracker.HasChanges());
     }
 
@@ -220,7 +220,7 @@ public class UpdateConfigurationCommandTests
         var interceptor = new FailingSaveInterceptor();
         using var db = CreateDbContext(interceptor);
         var config = new BlogConfig(new BlogSettingsSnapshot { GeneralSettings = General("Old") });
-        if (scenario != "missing") await SeedAsync(db, config.GeneralSettings);
+        if (scenario != "missing") await SeedAsync(db, config.Capture().GeneralSettings);
         var originalSnapshot = config.Capture();
         interceptor.Fail = scenario == "failed-save";
         using var cancellation = CancellationTokenSource.CreateLinkedTokenSource(TestContext.Current.CancellationToken);
@@ -260,9 +260,9 @@ public class UpdateConfigurationCommandTests
             ImageSettings = ImageSettings.DefaultValue,
             FeedSettings = FeedSettings.DefaultValue
         });
-        await SeedAsync(firstDb, config.GeneralSettings);
-        await SeedAsync(firstDb, config.ImageSettings);
-        await SeedAsync(firstDb, config.FeedSettings);
+        await SeedAsync(firstDb, config.Capture().GeneralSettings);
+        await SeedAsync(firstDb, config.Capture().ImageSettings);
+        await SeedAsync(firstDb, config.Capture().FeedSettings);
         var retained = config.Capture();
         var queuedCommand = UpdateConfigurationCommand.Create(retained.FeedSettings with { FeedItemCount = 7 });
         var events = new Mock<IEventMediator>();
@@ -310,18 +310,18 @@ public class UpdateConfigurationCommandTests
         var ct = TestContext.Current.CancellationToken;
         using var db = CreateDbContext();
         var config = new BlogConfig(new BlogSettingsSnapshot { GeneralSettings = General("Old"), ImageSettings = ImageSettings.DefaultValue });
-        await SeedAsync(db, config.GeneralSettings);
-        await SeedAsync(db, config.ImageSettings);
-        var originalGeneral = config.GeneralSettings;
-        var originalImage = config.ImageSettings;
+        await SeedAsync(db, config.Capture().GeneralSettings);
+        await SeedAsync(db, config.Capture().ImageSettings);
+        var originalGeneral = config.Capture().GeneralSettings;
+        var originalImage = config.Capture().ImageSettings;
         var invalid = CdnImage();
         invalid = invalid with { CDNEndpoint = "http://invalid.example.com" };
 
         await Assert.ThrowsAsync<ValidationException>(() => Handler(db, config).HandleAsync(
             UpdateConfigurationCommand.Create(General("New"), invalid), ct));
 
-        Assert.Same(originalGeneral, config.GeneralSettings);
-        Assert.Same(originalImage, config.ImageSettings);
+        Assert.Same(originalGeneral, config.Capture().GeneralSettings);
+        Assert.Same(originalImage, config.Capture().ImageSettings);
         db.ChangeTracker.Clear();
         var rows = await db.BlogConfiguration.ToDictionaryAsync(row => row.CfgKey, ct);
         Assert.Equal(originalGeneral.ToJson(), rows[nameof(GeneralSettings)].CfgValue);

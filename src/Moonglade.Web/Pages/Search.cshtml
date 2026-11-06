@@ -1,4 +1,7 @@
 @page "/search"
+@{
+    var snapshot = ViewData.CaptureSettings(SettingsReader);
+}
 @using Microsoft.AspNetCore.Builder
 @using Microsoft.AspNetCore.Mvc.TagHelpers
 @using Microsoft.Extensions.Options
@@ -167,6 +170,7 @@ else
         DateTime? startDate = null,
         DateTime? endDate = null)
     {
+        var snapshot = ViewData.CaptureSettings(SettingsReader);
         if (string.IsNullOrWhiteSpace(term)) return RedirectToPage("Index");
 
         SearchTerm = term.Trim();
@@ -182,7 +186,7 @@ else
         Tags = await QueryMediator.QueryAsync(new ListTagsQuery());
 
         var pageNumber = Math.Max(1, p);
-        var pageSize = BlogConfig.ContentSettings.PostListPageSize;
+        var pageSize = snapshot.ContentSettings.PostListPageSize;
         var result = await QueryMediator.QueryAsync(new SearchPostQuery(
             SearchTerm,
             pageSize,
@@ -217,7 +221,8 @@ else
 
     private IEnumerable<int> GetPageNumbers()
     {
-        var maxPages = BlogConfig.ContentSettings.MaximumPageNumbersToDisplay;
+        var snapshot = ViewData.CaptureSettings(SettingsReader);
+        var maxPages = snapshot.ContentSettings.MaximumPageNumbersToDisplay;
         var firstPage = Math.Max(1, Posts.PageNumber - maxPages / 2);
         var lastPage = Math.Min(Posts.PageCount, firstPage + maxPages - 1);
 

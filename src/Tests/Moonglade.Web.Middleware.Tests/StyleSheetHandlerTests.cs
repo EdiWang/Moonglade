@@ -24,7 +24,7 @@ public class StyleSheetHandlerTests
         _mockLogger = new Mock<ILogger>();
         _appearanceSettings = new AppearanceSettings();
         _options = new StyleSheetOptions { MaxContentLength = 65536, CacheMaxAge = 3600 };
-        _mockBlogConfig.Setup(x => x.AppearanceSettings).Returns(() => _appearanceSettings);
+        _mockBlogConfig.Setup(x => x.Capture()).Returns(() => new BlogSettingsSnapshot { AppearanceSettings = _appearanceSettings });
     }
 
     #region Custom CSS Tests

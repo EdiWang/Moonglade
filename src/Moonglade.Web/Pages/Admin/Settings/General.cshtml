@@ -1,4 +1,7 @@
 ﻿@page "/admin/settings/general"
+@{
+    var snapshot = ViewData.CaptureSettings(SettingsReader);
+}
 @inject IOptions<RequestLocalizationOptions> LocOptions
 
 @{
@@ -147,12 +150,12 @@
                                 <i class="bi bi-globe settings-entry-icon"></i>
                             </div>
                             <div class="col">
-                                <label asp-for="@BlogConfig.GeneralSettings.UseDublinCoreMetaData" class="form-check-label"></label>
+                                <label asp-for="@snapshot.GeneralSettings.UseDublinCoreMetaData" class="form-check-label"></label>
                             </div>
                             <div class="col-md-5 text-end">
                                 <div class="form-check form-switch form-control-lg">
                                     <input type="hidden" name="UseDublinCoreMetaData" value="false">
-                                    <input type="checkbox" name="UseDublinCoreMetaData" value="true" class="form-check-input" @(BlogConfig.GeneralSettings.UseDublinCoreMetaData ? "checked" : null)>
+                                    <input type="checkbox" name="UseDublinCoreMetaData" value="true" class="form-check-input" @(snapshot.GeneralSettings.UseDublinCoreMetaData ? "checked" : null)>
                                 </div>
                             </div>
                         </div>
@@ -162,10 +165,10 @@
                                 <i class="bi-link settings-entry-icon"></i>
                             </div>
                             <div class="col">
-                                <label asp-for="@BlogConfig.GeneralSettings.DcLicenseUrl"></label>
+                                <label asp-for="@snapshot.GeneralSettings.DcLicenseUrl"></label>
                             </div>
                             <div class="col-md-5 text-end">
-                                <input asp-for="@BlogConfig.GeneralSettings.DcLicenseUrl" class="form-control" />
+                                <input asp-for="@snapshot.GeneralSettings.DcLicenseUrl" class="form-control" />
                             </div>
                         </div>
                     </div>
@@ -350,6 +353,7 @@
 
     public void OnGet()
     {
-        ViewModel = BlogConfig.GeneralSettings;
+        var snapshot = ViewData.CaptureSettings(SettingsReader);
+        ViewModel = snapshot.GeneralSettings;
     }
 }

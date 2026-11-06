@@ -36,7 +36,7 @@ public class SettingsValidationTests
     [MemberData(nameof(InvalidOrdinarySettings))]
     public void Load_SemanticallyInvalidOrdinaryGroup_ReturnsWholeGroupDefaultsForRepair(string name, string patch)
     {
-        var property = typeof(IBlogConfig).GetProperty(name)!;
+        var property = typeof(BlogSettingsSnapshot).GetProperty(name)!;
         var original = InvalidJson(property.PropertyType, patch);
         var saved = new Dictionary<string, string> { [name] = original };
         var config = new BlogConfig();
@@ -44,7 +44,7 @@ public class SettingsValidationTests
         var repairs = config.LoadFromConfig(saved);
 
         Assert.Equal(DefaultJson(property.PropertyType), repairs[name]);
-        Assert.Equal(repairs[name], property.GetValue(config).ToJson());
+        Assert.Equal(repairs[name], property.GetValue(config.Capture()).ToJson());
         Assert.Equal(original, saved[name]);
     }
 
@@ -55,14 +55,14 @@ public class SettingsValidationTests
         var ct = TestContext.Current.CancellationToken;
         await using var db = new BlogDbContext(new DbContextOptionsBuilder<BlogDbContext>()
             .UseInMemoryDatabase(Guid.NewGuid().ToString()).Options);
-        var property = typeof(IBlogConfig).GetProperty(name)!;
+        var property = typeof(BlogSettingsSnapshot).GetProperty(name)!;
         var original = DefaultJson(property.PropertyType);
         var timestamp = DateTime.UtcNow.AddDays(-1);
         db.BlogConfiguration.Add(new BlogConfigurationEntity { CfgKey = name, CfgValue = original, LastModifiedTimeUtc = timestamp });
         await db.SaveChangesAsync(ct);
         var config = new BlogConfig();
         config.LoadFromConfig(new Dictionary<string, string>(), true);
-        var runtime = property.GetValue(config);
+        var runtime = property.GetValue(config.Capture());
         var value = InvalidJson(property.PropertyType, patch).FromJson(property.PropertyType);
         var factory = typeof(UpdateConfigurationCommand).GetMethods().Single(method => method.Name == nameof(UpdateConfigurationCommand.Create)
             && method.GetGenericArguments().Length == 1).MakeGenericMethod(property.PropertyType);
@@ -72,7 +72,7 @@ public class SettingsValidationTests
             db, config, Mock.Of<IEventMediator>(), new ConfigurationWriteGate(), NullLogger<UpdateConfigurationCommandHandler>.Instance).HandleAsync(command, ct));
 
         Assert.DoesNotContain("invalid-marker", exception.Message);
-        Assert.Same(runtime, property.GetValue(config));
+        Assert.Same(runtime, property.GetValue(config.Capture()));
         db.ChangeTracker.Clear();
         var row = await db.BlogConfiguration.SingleAsync(ct);
         Assert.Equal(original, row.CfgValue);

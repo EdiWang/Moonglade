@@ -1,4 +1,7 @@
 ﻿@page "/admin/settings/subscription"
+@{
+    var snapshot = ViewData.CaptureSettings(SettingsReader);
+}
 @section scripts{
     <script type="module">
         import * as settings from '/js/app/admin.settings.mjs';
@@ -13,7 +16,7 @@
 </div>
 
 @{
-    var settings = BlogConfig.FeedSettings;
+    var settings = snapshot.FeedSettings;
 }
 
 @section admintoolbar{

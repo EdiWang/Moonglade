@@ -1,4 +1,7 @@
 ﻿@page "/admin/settings/comment"
+@{
+    var snapshot = ViewData.CaptureSettings(SettingsReader);
+}
 @section scripts {
     <script type="module" src="~/js/app/admin.settings.comment.mjs"></script>
 }
@@ -8,7 +11,7 @@
 </div>
 
 @{
-    var settings = BlogConfig.CommentSettings;
+    var settings = snapshot.CommentSettings;
 }
 
 @section admintoolbar {

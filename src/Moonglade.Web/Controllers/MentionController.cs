@@ -23,14 +23,15 @@ public class MentionController(
         [FromForm][Required] string source,
         [FromForm][Required] string target)
     {
-        if (!blogConfig.AdvancedSettings.EnableWebmention) return Forbid();
+        var settings = blogConfig.Capture();
+        if (!settings.AdvancedSettings.EnableWebmention) return Forbid();
 
         var ip = ClientIPHelper.GetClientIP(HttpContext);
         var response = await commandMediator.SendAsync(new ReceiveWebmentionCommand(source, target, ip));
 
         if (response.Status == WebmentionStatus.Success)
         {
-            await SendMentionEmailAction(response.MentionEntity);
+            await SendMentionEmailAction(response.MentionEntity, settings);
             return Ok("Webmention received and verified.");
         }
 
@@ -49,7 +50,7 @@ public class MentionController(
         _ => StatusCode(StatusCodes.Status500InternalServerError, "An unknown error occurred.")
     };
 
-    private async Task SendMentionEmailAction(MentionEntity mention)
+    private async Task SendMentionEmailAction(MentionEntity mention, BlogSettingsSnapshot settings)
     {
         try
         {
@@ -59,7 +60,7 @@ public class MentionController(
                     mention.Domain,
                     mention.SourceIp,
                     mention.SourceUrl,
-                    mention.SourceTitle),
+                    mention.SourceTitle) { Snapshot = settings },
                 cancellationToken: HttpContext.RequestAborted);
         }
         catch (Exception ex)

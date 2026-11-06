@@ -1,4 +1,7 @@
 ﻿@{
+    var snapshot = ViewData.CaptureSettings(SettingsReader);
+}
+@{
     var currentPage = ViewContext.RouteData.Values["Page"]?.ToString();
 }
 
@@ -41,7 +44,7 @@
                     </div>
                 </div>
             </a>
-            @if (BlogConfig.CommentSettings.CommentProvider == CommentProvider.BuiltIn)
+            @if (snapshot.CommentSettings.CommentProvider == CommentProvider.BuiltIn)
             {
                 <a asp-page="/Admin/Comments"
                    class="list-group-item list-group-item-action @(currentPage is "/Admin/Comments" ? "active" : null)" title="@SharedLocalizer["Manage comments link"]">

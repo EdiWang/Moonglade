@@ -1,11 +1,14 @@
+@{
+    var snapshot = ViewData.CaptureSettings(SettingsReader);
+}
 <div class="modal modal-lg fade"
      id="externalLinkModal"
      tabindex="-1"
      role="dialog"
      aria-labelledby="externalLinkModalLabel"
      aria-hidden="true"
-     data-warn-post-links="@BlogConfig.AdvancedSettings.WarnPostExternalLink.ToString().ToLowerInvariant()"
-     data-warn-comment-links="@BlogConfig.AdvancedSettings.WarnCommentExternalLink.ToString().ToLowerInvariant()">
+     data-warn-post-links="@snapshot.AdvancedSettings.WarnPostExternalLink.ToString().ToLowerInvariant()"
+     data-warn-comment-links="@snapshot.AdvancedSettings.WarnCommentExternalLink.ToString().ToLowerInvariant()">
     <div class="modal-dialog modal-externalLink" role="document">
         <div class="modal-content">
             <div class="modal-header">

@@ -1,4 +1,7 @@
 ﻿@page "/admin/settings/notification"
+@{
+    var snapshot = ViewData.CaptureSettings(SettingsReader);
+}
 @using Moonglade.Email.Core
 @using Moonglade.Web.Pages.Admin.Settings
 @inject EmailCapabilityStatus EmailCapabilityStatus
@@ -13,7 +16,7 @@
 </div>
 
 @{
-    var settings = BlogConfig.NotificationSettings;
+    var settings = snapshot.NotificationSettings;
     var pageState = EmailNotificationPageState.Create(
         EmailCapabilityStatus,
         EmailServiceOptions.Value,

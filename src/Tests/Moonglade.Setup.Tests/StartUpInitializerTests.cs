@@ -97,7 +97,7 @@ public class StartUpInitializerTests
         var snapshot = entry.Properties.ToDictionary(property => property.Metadata.Name, property => property.CurrentValue);
         db.ChangeTracker.Clear();
         using var harness = new StartupTestHarness(db);
-        var originalRuntime = harness.Config.GeneralSettings;
+        var originalRuntime = harness.Config.Capture().GeneralSettings;
 
         Assert.Equal(InitStartUpResult.FailedInitBlogConfig, await harness.Initializer.InitStartUpAsync(ct));
 
@@ -105,7 +105,7 @@ public class StartUpInitializerTests
         var retained = await db.FindAsync(entityType, keys, ct);
         Assert.NotNull(retained);
         Assert.Equal(snapshot, db.Entry(retained).Properties.ToDictionary(property => property.Metadata.Name, property => property.CurrentValue));
-        Assert.Same(originalRuntime, harness.Config.GeneralSettings);
+        Assert.Same(originalRuntime, harness.Config.Capture().GeneralSettings);
         Assert.False(await db.BlogConfiguration.AnyAsync(row => row.CfgKey == nameof(LocalAccountSettings), ct));
         Assert.Contains(harness.ConfigLogger.Entries, log => log.Level == LogLevel.Error);
     }
@@ -124,11 +124,11 @@ public class StartUpInitializerTests
         db.BlogConfiguration.Local.Single(row => row.CfgKey == key).CfgValue = "null";
         await db.SaveChangesAsync(ct);
         using var harness = new StartupTestHarness(db);
-        var original = harness.Config.GeneralSettings;
+        var original = harness.Config.Capture().GeneralSettings;
 
         Assert.Equal(InitStartUpResult.FailedInitBlogConfig, await harness.Initializer.InitStartUpAsync(ct));
 
-        Assert.Same(original, harness.Config.GeneralSettings);
+        Assert.Same(original, harness.Config.Capture().GeneralSettings);
         db.ChangeTracker.Clear();
         Assert.Equal(3, await db.BlogConfiguration.CountAsync(ct));
         Assert.Equal("not-json", (await db.BlogConfiguration.SingleAsync(row => row.CfgKey == nameof(FeedSettings), ct)).CfgValue);

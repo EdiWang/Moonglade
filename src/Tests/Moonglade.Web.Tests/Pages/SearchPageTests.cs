@@ -27,6 +27,51 @@ namespace Moonglade.Web.Tests.Pages;
 public class SearchPageTests
 {
     [Fact]
+    public async Task RenderAndComponents_RetainHandlerCaptureAcrossPublication_AndRefreshOnNextRender()
+    {
+        var ct = TestContext.Current.CancellationToken;
+        var scenario = new SearchPageScenario
+        {
+            Started = new(TaskCreationOptions.RunContinuationsAsynchronously),
+            Resume = new(TaskCreationOptions.RunContinuationsAsynchronously)
+        };
+        var config = CreateBlogConfig();
+        config.Publish(config.Capture() with
+        {
+            GeneralSettings = config.Capture().GeneralSettings with { SiteTitle = "Before" },
+            CustomMenuSettings = new CustomMenuSettings { IsEnabled = true, Menus = [new Menu { Title = "Old menu", Url = "/old" }] }
+        });
+        using var app = await CreateTestApp(scenario, config);
+        using var client = app.GetTestClient();
+        var pending = client.GetStringAsync("/search?term=settings", ct);
+        await scenario.Started.Task.WaitAsync(TimeSpan.FromSeconds(10), ct);
+        config.Publish(config.Capture() with
+        {
+            GeneralSettings = config.Capture().GeneralSettings with { SiteTitle = "After" },
+            ContentSettings = config.Capture().ContentSettings with { PostListPageSize = 7 },
+            AppearanceSettings = new AppearanceSettings { ThemeId = 200 },
+            CustomMenuSettings = new CustomMenuSettings { IsEnabled = true, Menus = [new Menu { Title = "New menu", Url = "/new" }] }
+        });
+        scenario.Resume.SetResult();
+        var first = await pending;
+
+        Assert.Contains("Before", first);
+        Assert.Contains("Old menu", first);
+        Assert.Contains("theme:100", first);
+        Assert.DoesNotContain("New menu", first);
+        Assert.Equal(2, scenario.SearchQueries[0].PageSize);
+
+        var next = await client.GetStringAsync("/search?term=settings", ct);
+
+        Assert.Contains("After", next);
+        Assert.Contains("New menu", next);
+        Assert.Contains("theme:200", next);
+        Assert.DoesNotContain("theme:100", next);
+        Assert.DoesNotContain("Old menu", next);
+        Assert.Equal(7, scenario.SearchQueries[1].PageSize);
+    }
+
+    [Fact]
     public async Task Search_RendersResultsAndPreservesQueryStringState()
     {
         var scenario = new SearchPageScenario
@@ -136,7 +181,7 @@ public class SearchPageTests
         var config = CreateBlogConfig();
         config.Publish(config.Capture() with
         {
-            GeneralSettings = config.GeneralSettings with
+            GeneralSettings = config.Capture().GeneralSettings with
             {
                 AvatarUrl = avatar,
                 WidgetsProfile = true,
@@ -188,14 +233,14 @@ public class SearchPageTests
             options.SupportedCultures = cultures;
             options.SupportedUICultures = cultures;
         });
-        builder.Services.AddControllers();
+        builder.Services.AddControllers(options => options.Filters.Add<Moonglade.Web.Filters.BlogSettingsFilter>());
         builder.Services.AddRazorPages()
             .ConfigureApplicationPartManager(manager =>
             {
                 manager.FeatureProviders.Add(new AvatarControllerFeatureProvider());
             });
         builder.Services.AddSingleton<IBlogConfig>(config ?? CreateBlogConfig());
-        builder.Services.AddSingleton(CreateCache().Object);
+        builder.Services.AddInMemoryCacheAside();
         builder.Services.AddSingleton<ThemeCacheInvalidator>();
         builder.Services.AddSingleton(CreateQueryMediator(scenario).Object);
 
@@ -242,27 +287,6 @@ public class SearchPageTests
         CustomMenuSettings = new CustomMenuSettings()
     });
 
-    private static Mock<ICacheAside> CreateCache()
-    {
-        var cache = new Mock<ICacheAside>();
-        cache.Setup(x => x.GetOrCreateAsync(BlogCachePartition.General.ToString(), "widgets",
-                It.IsAny<Func<Task<List<WidgetEntity>>>>(), It.IsAny<TimeSpan>()))
-            .Returns(async (string _, string _, Func<Task<List<WidgetEntity>>> factory, TimeSpan _) => (List<WidgetEntity>?)await factory());
-        cache
-            .Setup(x => x.GetOrCreateAsync(
-                BlogCachePartition.General.ToString(),
-                "0:theme",
-                It.IsAny<Func<Task<string>>>(),
-                It.IsAny<TimeSpan>()))
-            .Returns((string _, string _, Func<Task<string>> factory, TimeSpan _) =>
-            {
-                async Task<string?> GetValue() => await factory();
-                return GetValue();
-            });
-
-        return cache;
-    }
-
     private static Mock<IQueryMediator> CreateQueryMediator(SearchPageScenario scenario)
     {
         var queryMediator = new Mock<IQueryMediator>();
@@ -270,7 +294,7 @@ public class SearchPageTests
             .ReturnsAsync([]);
         queryMediator
             .Setup(x => x.QueryAsync(It.IsAny<GetSiteThemeStyleSheetQuery>(), It.IsAny<QueryMediationSettings>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync(string.Empty);
+            .ReturnsAsync((GetSiteThemeStyleSheetQuery query, QueryMediationSettings _, CancellationToken _) => $"/* theme:{query.Id} */");
         queryMediator
             .Setup(x => x.QueryAsync(It.IsAny<ListCategoriesQuery>(), It.IsAny<QueryMediationSettings>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(
@@ -295,10 +319,15 @@ public class SearchPageTests
             ]);
         queryMediator
             .Setup(x => x.QueryAsync(It.IsAny<SearchPostQuery>(), It.IsAny<QueryMediationSettings>(), It.IsAny<CancellationToken>()))
-            .Returns<SearchPostQuery, QueryMediationSettings, CancellationToken>((query, _, _) =>
+            .Returns<SearchPostQuery, QueryMediationSettings, CancellationToken>(async (query, _, _) =>
             {
                 scenario.SearchQueries.Add(query);
-                return Task.FromResult(scenario.Result);
+                if (scenario.Started is not null)
+                {
+                    scenario.Started.TrySetResult();
+                    await scenario.Resume!.Task.WaitAsync(TimeSpan.FromSeconds(10), TestContext.Current.CancellationToken);
+                }
+                return scenario.Result;
             });
 
         return queryMediator;
@@ -344,5 +373,7 @@ public class SearchPageTests
     {
         public SearchPostQueryResult Result { get; init; } = new([], 0);
         public List<SearchPostQuery> SearchQueries { get; } = [];
+        public TaskCompletionSource? Started { get; init; }
+        public TaskCompletionSource? Resume { get; init; }
     }
 }

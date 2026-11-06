@@ -20,6 +20,59 @@ namespace Moonglade.Web.Tests.Caching;
 
 public partial class PostCacheInvalidationTests
 {
+    [Fact]
+    public async Task SitemapCache_UsesCapturedCanonicalPrefixBeforePostCommitInvalidation()
+    {
+        using var environment = await TestEnvironment.CreateAsync();
+        using var scope = environment.Services.CreateScope();
+        var db = scope.ServiceProvider.GetRequiredService<BlogDbContext>();
+        var owner = environment.Services.GetRequiredService<BlogConfig>();
+        var http = new DefaultHttpContext();
+        http.Request.Scheme = "https";
+        http.Request.Host = new HostString("before.example.com");
+        owner.Publish(owner.Capture() with
+        {
+            GeneralSettings = owner.Capture().GeneralSettings with { CanonicalPrefix = "https://before.example.com" }
+        });
+        var first = Assert.IsType<ContentHttpResult>(await SiteMapMapHandler.Handle(http, owner, environment.Cache, environment.Invalidator, db));
+        var generation = environment.Invalidator.SiteMapCacheKey;
+
+        owner.Publish(owner.Capture() with
+        {
+            GeneralSettings = owner.Capture().GeneralSettings with { CanonicalPrefix = "https://after.example.com" }
+        });
+        var next = Assert.IsType<ContentHttpResult>(await SiteMapMapHandler.Handle(http, owner, environment.Cache, environment.Invalidator, db));
+
+        Assert.Equal(generation, environment.Invalidator.SiteMapCacheKey);
+        Assert.Contains("before.example.com", first.ResponseContent);
+        Assert.Contains("after.example.com", next.ResponseContent);
+        Assert.DoesNotContain("before.example.com", next.ResponseContent);
+    }
+
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public async Task FeedCache_UsesCapturedSettingsBeforePostCommitInvalidation(bool atom)
+    {
+        using var environment = await TestEnvironment.CreateAsync();
+        var before = await environment.ReadFeedAsync(atom, null);
+        Assert.Contains("Old abstract", before);
+        var owner = environment.Services.GetRequiredService<BlogConfig>();
+        var generation = environment.Invalidator.GetFeedCacheKey("rss");
+
+        owner.Publish(owner.Capture() with
+        {
+            GeneralSettings = owner.Capture().GeneralSettings with { SiteTitle = "New metadata" },
+            FeedSettings = new FeedSettings { UseFullContent = true }
+        });
+        var after = await environment.ReadFeedAsync(atom, null);
+
+        Assert.Equal(generation, environment.Invalidator.GetFeedCacheKey("rss"));
+        Assert.Contains("New metadata", after);
+        Assert.Contains("Old content", after);
+        Assert.DoesNotContain("Old abstract", after);
+    }
+
     [Theory]
     [InlineData(false, null)]
     [InlineData(true, null)]
@@ -78,7 +131,7 @@ public partial class PostCacheInvalidationTests
         var sitemapBefore = Assert.IsType<ContentHttpResult>(await SiteMapMapHandler.Handle(context, config, environment.Cache, environment.Invalidator, readDb));
         Assert.Contains("/post/", sitemapBefore.ResponseContent);
         Assert.DoesNotContain("canonical.example.com", sitemapBefore.ResponseContent);
-        var general = config.GeneralSettings.ToJson().FromJson<GeneralSettings>();
+        var general = config.Capture().GeneralSettings.ToJson().FromJson<GeneralSettings>();
         general = general with { SiteTitle = "Updated blog" };
         general = general with { OwnerEmail = "changed@example.com" };
         general = general with { CanonicalPrefix = "https://canonical.example.com" };
@@ -212,7 +265,7 @@ public partial class PostCacheInvalidationTests
         var config = environment.Services.GetRequiredService<IBlogConfig>();
         return Assert.IsType<string>(await environment.Cache.GetOrCreateAsync("General", environment.Services.GetRequiredService<ThemeCacheInvalidator>().CacheKey,
             () => scope.ServiceProvider.GetRequiredService<IQueryMediator>()
-                .QueryAsync(new GetSiteThemeStyleSheetQuery(config.AppearanceSettings.ThemeId), TestContext.Current.CancellationToken), TimeSpan.FromMinutes(20)));
+                .QueryAsync(new GetSiteThemeStyleSheetQuery(config.Capture().AppearanceSettings.ThemeId), TestContext.Current.CancellationToken), TimeSpan.FromMinutes(20)));
     }
 
     private sealed class SettingsSaveFailure : SaveChangesInterceptor

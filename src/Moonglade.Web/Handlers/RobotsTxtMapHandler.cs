@@ -6,7 +6,8 @@ public class RobotsTxtMapHandler
 
     public static IResult Handle(HttpContext httpContext, IBlogConfig blogConfig)
     {
-        var robotsTxtContent = blogConfig.AdvancedSettings?.RobotsTxtContent;
+        var settings = blogConfig.Capture();
+        var robotsTxtContent = settings.AdvancedSettings?.RobotsTxtContent;
 
         if (string.IsNullOrWhiteSpace(robotsTxtContent))
         {

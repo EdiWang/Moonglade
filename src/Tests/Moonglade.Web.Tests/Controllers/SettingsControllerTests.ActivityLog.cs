@@ -33,14 +33,14 @@ public partial class SettingsControllerTests
         var content = new ContentSettings { DefaultEditor = EditorChoice.Markdown };
         var site = GeneralSettings.DefaultValue;
         site = site with { SiteTitle = "Saved title" };
-        site = site with { AvatarUrl = config.GeneralSettings.AvatarUrl };
+        site = site with { AvatarUrl = config.Capture().GeneralSettings.AvatarUrl };
         var expectedJson = general ? site.ToJson() : content.ToJson();
         var key = general ? nameof(GeneralSettings) : nameof(ContentSettings);
 
         var result = general ? await controller.General(site) : await controller.Content(content);
 
         Assert.IsType<NoContentResult>(result);
-        Assert.Equal(expectedJson, general ? config.GeneralSettings.ToJson() : config.ContentSettings.ToJson());
+        Assert.Equal(expectedJson, general ? config.Capture().GeneralSettings.ToJson() : config.Capture().ContentSettings.ToJson());
         Assert.Equal(expectedJson, await ReadStoredSettings(mediator, key));
         Assert.Collection(mediator.Commands,
             command => Assert.IsType<UpdateConfigurationCommand>(command),
@@ -58,7 +58,7 @@ public partial class SettingsControllerTests
             GeneralSettings = GeneralSettings.DefaultValue,
             ImageSettings = ImageSettings.DefaultValue
         });
-        var original = config.GeneralSettings;
+        var original = config.Capture().GeneralSettings;
         var failure = CreateAuditFailure();
         using var mediator = new ConfigurationCommandRecorder { ActivityLogFailure = failure };
         var logger = new Mock<ILogger<SettingsController>>();
@@ -67,7 +67,7 @@ public partial class SettingsControllerTests
 
         Assert.IsType<NoContentResult>(await controller.Image(image));
 
-        Assert.Same(original, config.GeneralSettings);
+        Assert.Same(original, config.Capture().GeneralSettings);
         Assert.Equal(original.ToJson(), await ReadStoredSettings(mediator, nameof(GeneralSettings)));
         Assert.Equal(image.ToJson(), await ReadStoredSettings(mediator, nameof(ImageSettings)));
         AssertAuditFailure(logger, controller, failure, EventType.SettingsImageUpdated, image.CDNEndpoint);
@@ -177,7 +177,7 @@ public partial class SettingsControllerTests
         });
         using var mediator = new ConfigurationCommandRecorder();
         var controller = CreateController(config, mediator, new Mock<IAuthenticationService>());
-        var originalGeneral = config.GeneralSettings;
+        var originalGeneral = config.Capture().GeneralSettings;
         await mediator.Db.Database.ExecuteSqlRawAsync(
             "CREATE TRIGGER reject_general BEFORE UPDATE ON BlogConfiguration WHEN OLD.CfgKey = 'GeneralSettings' BEGIN SELECT RAISE(ABORT, 'General save rejected'); END;",
             TestContext.Current.CancellationToken);
@@ -185,7 +185,7 @@ public partial class SettingsControllerTests
 
         Assert.IsType<NoContentResult>(await controller.Image(image));
 
-        Assert.Same(originalGeneral, config.GeneralSettings);
+        Assert.Same(originalGeneral, config.Capture().GeneralSettings);
         Assert.Equal(originalGeneral.ToJson(), await ReadStoredSettings(mediator, nameof(GeneralSettings)));
         Assert.Equal(image.ToJson(), await ReadStoredSettings(mediator, nameof(ImageSettings)));
         Assert.Single(mediator.Commands.OfType<CreateActivityLogCommand>());
@@ -195,13 +195,13 @@ public partial class SettingsControllerTests
     public async Task Content_WhenValidationFails_DoesNotSaveOrAudit()
     {
         var config = new BlogConfig();
-        var original = config.ContentSettings;
+        var original = config.Capture().ContentSettings;
         using var mediator = new ConfigurationCommandRecorder { ActivityLogFailure = CreateAuditFailure() };
         var controller = CreateController(config, mediator, new Mock<IAuthenticationService>());
 
         await Assert.ThrowsAsync<ValidationException>(() => controller.Content(new ContentSettings { PostListPageSize = 0 }));
 
-        Assert.Same(original, config.ContentSettings);
+        Assert.Same(original, config.Capture().ContentSettings);
         Assert.Equal(original.ToJson(), await ReadStoredSettings(mediator, nameof(ContentSettings)));
         Assert.Empty(mediator.Commands.OfType<CreateActivityLogCommand>());
     }
@@ -220,7 +220,7 @@ public partial class SettingsControllerTests
 
         Assert.Same(failure, await Assert.ThrowsAsync<InvalidOperationException>(() => controller.Content(content)));
 
-        Assert.Equal(content.ToJson(), config.ContentSettings.ToJson());
+        Assert.Equal(content.ToJson(), config.Capture().ContentSettings.ToJson());
         Assert.Equal(content.ToJson(), await ReadStoredSettings(mediator, nameof(ContentSettings)));
         Assert.Empty(mediator.Commands.OfType<CreateActivityLogCommand>());
     }

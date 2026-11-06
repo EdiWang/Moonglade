@@ -1,4 +1,7 @@
-﻿@using Edi.AspNetCore.Utils
+﻿@{
+    var snapshot = ViewData.CaptureSettings(SettingsReader);
+}
+@using Edi.AspNetCore.Utils
 @using Microsoft.AspNetCore.Builder
 @using Moonglade.Utils
 
@@ -15,7 +18,7 @@
         <div class="row">
             <section id="footer-copyright" class="col-auto">
                 <div>
-                    @Html.Raw(Helper.FormatCopyright2Html(BlogConfig.GeneralSettings.Copyright))
+                    @Html.Raw(Helper.FormatCopyright2Html(snapshot.GeneralSettings.Copyright))
                 </div>
                 <small>
                     @SharedLocalizer["Powered by"] <a href="https://github.com/EdiWang/Moonglade" target="_blank">Moonglade</a> @VersionHelper.AppVersion

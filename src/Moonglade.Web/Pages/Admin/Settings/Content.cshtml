@@ -1,6 +1,9 @@
 ﻿@page "/admin/settings/content"
 @{
-    var settings = BlogConfig.ContentSettings;
+    var snapshot = ViewData.CaptureSettings(SettingsReader);
+}
+@{
+    var settings = snapshot.ContentSettings;
 }
 
 @section scripts {

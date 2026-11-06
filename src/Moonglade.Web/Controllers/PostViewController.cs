@@ -15,7 +15,8 @@ public class PostViewController(
     [HttpPost]
     public async Task<IActionResult> AddViewCount([FromBody] ViewRequest request)
     {
-        if (!blogConfig.ContentSettings.EnableViewCount) return NotFound();
+        var settings = blogConfig.Capture();
+        if (!settings.ContentSettings.EnableViewCount) return NotFound();
 
         var userAgent = Request.Headers.UserAgent.ToString();
         if (string.IsNullOrWhiteSpace(userAgent)) return NoContent();

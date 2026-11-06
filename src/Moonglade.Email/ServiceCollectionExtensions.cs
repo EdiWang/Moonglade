@@ -41,7 +41,7 @@ public static class ServiceCollectionExtensions
         services.AddSingleton(sp =>
         {
             var opts = sp.GetRequiredService<IOptions<EmailServiceOptions>>().Value;
-            var blogConfig = sp.GetRequiredService<IBlogConfig>();
+            var snapshot = sp.GetRequiredService<IBlogConfig>().Capture();
             var smtpSettings = new SmtpSettings(opts.SmtpServer, opts.SmtpUserName, opts.SmtpPassword, opts.SmtpPort)
             {
                 SocketOptions = opts.SmtpPort == 465 ? SecureSocketOptions.SslOnConnect :
@@ -53,7 +53,7 @@ public static class ServiceCollectionExtensions
                 SenderAddress = opts.EffectiveSmtpSenderAddress,
                 SmtpSettings = smtpSettings
             };
-            var senderDisplayName = blogConfig.NotificationSettings.EmailDisplayName;
+            var senderDisplayName = snapshot.NotificationSettings.EmailDisplayName;
             if (string.IsNullOrWhiteSpace(senderDisplayName))
             {
                 senderDisplayName = opts.SenderDisplayName;

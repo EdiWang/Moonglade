@@ -66,11 +66,11 @@ public class StartupInstallationDatabaseTests(DisposableCategoryDatabases databa
         await using (var failedDb = CreateContext(database, failure))
         {
             using var failed = new StartupTestHarness(failedDb);
-            var originalRuntime = failed.Config.GeneralSettings;
+            var originalRuntime = failed.Config.Capture().GeneralSettings;
             Assert.Equal(cancelled ? InitStartUpResult.FailedCancellation : InitStartUpResult.FailedSeedingDatabase,
                 await failed.Initializer.InitStartUpAsync(ct));
             Assert.True(failure.Triggered);
-            Assert.Same(originalRuntime, failed.Config.GeneralSettings);
+            Assert.Same(originalRuntime, failed.Config.Capture().GeneralSettings);
             Assert.Null(failed.Accounts.Read().Username);
         }
         await using var restartedDb = CreateContext(database);
@@ -113,17 +113,17 @@ public class StartupInstallationDatabaseTests(DisposableCategoryDatabases databa
         var failure = new LostCommitAcknowledgment();
         await using var db = CreateContext(database, failure);
         using var harness = new StartupTestHarness(db);
-        var originalRuntime = harness.Config.GeneralSettings;
+        var originalRuntime = harness.Config.Capture().GeneralSettings;
         failure.BeforeThrow = () =>
         {
-            Assert.Same(originalRuntime, harness.Config.GeneralSettings);
+            Assert.Same(originalRuntime, harness.Config.Capture().GeneralSettings);
             Assert.Null(harness.Accounts.Read().Username);
         };
 
         Assert.Equal(InitStartUpResult.Success, await harness.Initializer.InitStartUpAsync(ct));
 
         Assert.True(failure.Triggered);
-        Assert.NotSame(originalRuntime, harness.Config.GeneralSettings);
+        Assert.NotSame(originalRuntime, harness.Config.Capture().GeneralSettings);
         Assert.Equal(LocalAccountSettings.DefaultValue.ToJson(), harness.Accounts.Read().ToJson());
         await AssertOneInstallationAsync(db, ct);
     }
@@ -244,11 +244,11 @@ public class StartupInstallationDatabaseTests(DisposableCategoryDatabases databa
         var after = await db.BlogConfiguration.AsNoTracking().OrderBy(row => row.CfgKey).ToListAsync(ct);
         Assert.Equal(before.Select(row => (row.CfgKey, row.CfgValue, row.LastModifiedTimeUtc)),
             after.Select(row => (row.CfgKey, row.CfgValue, row.LastModifiedTimeUtc)));
-        Assert.Equal(FeedSettings.DefaultValue.FeedItemCount, harness.Config.FeedSettings.FeedItemCount);
-        Assert.True(harness.Config.CommentSettings.RequireCommentReview);
-        Assert.True(harness.Config.ImageSettings.IsWatermarkEnabled);
-        Assert.True(harness.Config.CustomMenuSettings.IsEnabled);
-        Assert.Equal("About", Assert.Single(harness.Config.CustomMenuSettings.Menus).Title);
+        Assert.Equal(FeedSettings.DefaultValue.FeedItemCount, harness.Config.Capture().FeedSettings.FeedItemCount);
+        Assert.True(harness.Config.Capture().CommentSettings.RequireCommentReview);
+        Assert.True(harness.Config.Capture().ImageSettings.IsWatermarkEnabled);
+        Assert.True(harness.Config.Capture().CustomMenuSettings.IsEnabled);
+        Assert.Equal("About", Assert.Single(harness.Config.Capture().CustomMenuSettings.Menus).Title);
     }
 
     private static async Task AssertOneInstallationAsync(BlogDbContext db, CancellationToken ct)
@@ -297,7 +297,7 @@ public class StartupInstallationDatabaseTests(DisposableCategoryDatabases databa
             {
                 Assert.Equal(FeedSettings.DefaultValue.ToJson(), saved.CfgValue);
                 Assert.True(saved.LastModifiedTimeUtc > original.LastModifiedTimeUtc);
-                Assert.False(restarted.Config.FeedSettings.UseFullContent);
+                Assert.False(restarted.Config.Capture().FeedSettings.UseFullContent);
             }
             else
             {

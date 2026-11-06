@@ -7,7 +7,8 @@
 - The S0 experiment itself did not change production application files or storage/authentication contracts. S1 subsequently moved protected production responsibilities (committed `8db04575d`) and S2 implements the ordinary immutable-model direction; see the live reliability tracker for current results. This report retains the historical S0 evidence.
 - Current state: S0 checks passed; D28 confirms the ordinary-model direction and D29 separately confirms Auth/Setup ownership and the dependency edge.
 - D31 subsequently removes avatar CDN support during S2; historical S4/S5 resource proposals below are superseded, not implementation instructions.
-- Next action: follow the current S2 handoff in `SETTINGS_RELIABILITY_PLAN.md`. Preserve this report and both plan trackers. S2-S6 remain separately gated.
+- S2 is now committed as `aa38e96f7`; S3 implements the operation/render propagation direction with actual snapshot/ViewData/query tests. Historical prototype counts below remain S0 evidence only.
+- Next action: follow the current S3 handoff in `SETTINGS_RELIABILITY_PLAN.md`. Preserve this report and both plan trackers. S2-S6 remain separately gated.
 
 ## Experimental Scope
 
@@ -105,6 +106,6 @@ Only ordinary-record conversion is approved by D28. Do not automatically turn cr
 | G2-O: Auth owns accounts, Setup owns manifest, Configuration owns ordinary preferences; Setup references Auth | Confirmed separately by the user in D29 |
 | S0 acceptance / S1 implementation | S1 committed as `8db04575d`; user subsequently reviewed and authorized S2 (D30). Later batch acceptance remains separate. |
 | S4/S5 exact workflow/commit/recovery protocol | Superseded by D31 avatar-CDN removal; do not implement the historical resource workflow |
-| Local commit / push / deployment | S0 committed as `90e302d45`; S2 commit and all push/deployment remain unrequested |
+| Local commit / push / deployment | S0 committed as `90e302d45`; S2 committed as `aa38e96f7`; S3 commit and all push/deployment remain unrequested |
 
 When evolving these test-only candidates, migrate useful compatibility/concurrency cases to the real implementation and remove redundant prototype code rather than maintaining two settings systems. The outer-transaction characterization must change when the production boundary becomes safe or explicitly rejects the composition. Retain this evidence record and the plan as requested.

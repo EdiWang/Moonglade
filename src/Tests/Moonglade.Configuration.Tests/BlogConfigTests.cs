@@ -5,7 +5,7 @@ public class BlogConfigTests
     [Fact]
     public void OrdinaryConsumerContract_ExcludesProtectedState()
     {
-        var properties = typeof(IBlogConfig).GetProperties();
+        var properties = typeof(BlogSettingsSnapshot).GetProperties();
 
         Assert.Equal(9, properties.Length);
         Assert.DoesNotContain(properties, property => property.Name is "LocalAccountSettings" or "SystemManifestSettings");
@@ -21,11 +21,11 @@ public class BlogConfigTests
 
         var defaults = config.LoadFromConfig(new Dictionary<string, string>(), isNew);
 
-        var properties = typeof(IBlogConfig).GetProperties();
+        var properties = typeof(BlogSettingsSnapshot).GetProperties();
         Assert.Equal(properties.Length, defaults.Count);
         foreach (var property in properties)
         {
-            Assert.Equal(property.GetValue(config).ToJson(), defaults[property.Name]);
+            Assert.Equal(property.GetValue(config.Capture()).ToJson(), defaults[property.Name]);
         }
     }
 
@@ -42,8 +42,8 @@ public class BlogConfigTests
         var defaults = config.LoadFromConfig(persisted, isNew: true);
 
         Assert.Empty(defaults);
-        Assert.Equal("Saved title", config.GeneralSettings.SiteTitle);
-        Assert.Equal(EditorChoice.Markdown, config.ContentSettings.DefaultEditor);
+        Assert.Equal("Saved title", config.Capture().GeneralSettings.SiteTitle);
+        Assert.Equal(EditorChoice.Markdown, config.Capture().ContentSettings.DefaultEditor);
     }
 
     [Theory]
@@ -65,9 +65,9 @@ public class BlogConfigTests
         });
 
         Assert.Equal(GeneralSettings.DefaultValue.ToJson(), defaults[nameof(GeneralSettings)]);
-        Assert.Equal(config.GeneralSettings.ToJson(), defaults[nameof(GeneralSettings)]);
+        Assert.Equal(config.Capture().GeneralSettings.ToJson(), defaults[nameof(GeneralSettings)]);
         Assert.DoesNotContain(nameof(ContentSettings), defaults.Keys);
-        Assert.Equal(20, config.ContentSettings.PostListPageSize);
+        Assert.Equal(20, config.Capture().ContentSettings.PostListPageSize);
     }
 
     [Fact]

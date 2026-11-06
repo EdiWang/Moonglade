@@ -28,12 +28,12 @@ public class CommitBoundaryProbeTests
 
         Assert.Same(outer, db.Database.CurrentTransaction);
         Assert.Single(events.Invocations);
-        Assert.Equal(1, config.FeedSettings.FeedItemCount);
+        Assert.Equal(1, config.Capture().FeedSettings.FeedItemCount);
         await outer.RollbackAsync(ct);
         db.ChangeTracker.Clear();
         var restored = (await db.BlogConfiguration.SingleAsync(ct)).CfgValue.FromJson<FeedSettings>();
         Assert.Equal(20, restored.FeedItemCount);
-        Assert.Equal(1, config.FeedSettings.FeedItemCount);
+        Assert.Equal(1, config.Capture().FeedSettings.FeedItemCount);
     }
 
     [Theory]
@@ -49,7 +49,7 @@ public class CommitBoundaryProbeTests
         if (failSave)
             await db.Database.ExecuteSqlRawAsync("CREATE TRIGGER reject_settings BEFORE UPDATE ON BlogConfiguration BEGIN SELECT RAISE(ABORT, 'Settings rejected'); END;", ct);
         var config = new BlogConfig(new BlogSettingsSnapshot { FeedSettings = FeedSettings.DefaultValue });
-        var original = config.FeedSettings;
+        var original = config.Capture().FeedSettings;
         var assetId = Guid.NewGuid();
         db.BlogAsset.Add(new BlogAssetEntity { Id = assetId, Base64Data = "AQID", LastModifiedTimeUtc = DateTime.UtcNow });
         var events = new Mock<IEventMediator>();
@@ -60,7 +60,7 @@ public class CommitBoundaryProbeTests
                 using var verification = Context(connection);
                 Assert.Equal("AQID", verification.BlogAsset.AsNoTracking().Single().Base64Data);
                 Assert.Equal(1, verification.BlogConfiguration.AsNoTracking().Single().CfgValue.FromJson<FeedSettings>().FeedItemCount);
-                Assert.Equal(1, config.FeedSettings.FeedItemCount);
+                Assert.Equal(1, config.Capture().FeedSettings.FeedItemCount);
             }).Returns(Task.CompletedTask);
         var command = UpdateConfigurationCommand.Create(new FeedSettings { FeedItemCount = 1 });
 
@@ -72,7 +72,7 @@ public class CommitBoundaryProbeTests
         Assert.Equal(failSave ? 20 : 1, (await db.BlogConfiguration.SingleAsync(ct)).CfgValue.FromJson<FeedSettings>().FeedItemCount);
         if (failSave)
         {
-            Assert.Same(original, config.FeedSettings);
+            Assert.Same(original, config.Capture().FeedSettings);
             Assert.Empty(events.Invocations);
         }
         else Assert.Single(events.Invocations);

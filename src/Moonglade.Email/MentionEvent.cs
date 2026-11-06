@@ -1,3 +1,4 @@
+using System.Text.Json.Serialization;
 using LiteBus.Events.Abstractions;
 using Moonglade.Configuration;
 using Moonglade.Email.Core;
@@ -10,7 +11,11 @@ public record MentionEvent(
     string Domain,
     string SourceIp,
     string SourceUrl,
-    string SourceTitle) : IEvent;
+    string SourceTitle) : IEvent
+{
+    [JsonIgnore]
+    public BlogSettingsSnapshot Snapshot { get; init; }
+}
 
 public class MentionNotificationHandler(
     IEmailNotificationQueue queue,
@@ -19,7 +24,8 @@ public class MentionNotificationHandler(
 {
     public async Task HandleAsync(MentionEvent notification, CancellationToken ct)
     {
-        if (!capabilityStatus.IsAvailable || !blogConfig.NotificationSettings.EnableEmailSending)
+        var settings = notification.Snapshot ?? blogConfig.Capture();
+        if (!capabilityStatus.IsAvailable || !settings.NotificationSettings.EnableEmailSending)
         {
             return;
         }
@@ -36,7 +42,7 @@ public class MentionNotificationHandler(
         await queue.EnqueueAsync(new EmailNotification
         {
             MessageType = MessageTypes.BeingPinged,
-            DistributionList = blogConfig.GeneralSettings.OwnerEmail,
+            DistributionList = settings.GeneralSettings.OwnerEmail,
             MessageBody = JsonSerializer.Serialize(payload, MoongladeJsonSerializerOptions.Default)
         }, ct);
     }

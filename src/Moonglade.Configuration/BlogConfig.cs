@@ -11,16 +11,6 @@ public interface IBlogSettings<TSelf> where TSelf : IBlogSettings<TSelf>
 
 public interface IBlogConfig
 {
-    GeneralSettings GeneralSettings { get; }
-    ContentSettings ContentSettings { get; }
-    CommentSettings CommentSettings { get; }
-    NotificationSettings NotificationSettings { get; }
-    FeedSettings FeedSettings { get; }
-    ImageSettings ImageSettings { get; }
-    AdvancedSettings AdvancedSettings { get; }
-    AppearanceSettings AppearanceSettings { get; }
-    CustomMenuSettings CustomMenuSettings { get; }
-
     BlogSettingsSnapshot Capture();
 }
 
@@ -33,17 +23,6 @@ public class BlogConfig : IBlogConfig
     public BlogConfig(BlogSettingsSnapshot snapshot) => Publish(snapshot);
 
     public BlogSettingsSnapshot Capture() => Volatile.Read(ref _current);
-
-    // shortcut: per-group readers can recapture; migrate related operations/renders in S3.
-    public GeneralSettings GeneralSettings => Capture().GeneralSettings;
-    public ContentSettings ContentSettings => Capture().ContentSettings;
-    public CommentSettings CommentSettings => Capture().CommentSettings;
-    public NotificationSettings NotificationSettings => Capture().NotificationSettings;
-    public FeedSettings FeedSettings => Capture().FeedSettings;
-    public ImageSettings ImageSettings => Capture().ImageSettings;
-    public AdvancedSettings AdvancedSettings => Capture().AdvancedSettings;
-    public AppearanceSettings AppearanceSettings => Capture().AppearanceSettings;
-    public CustomMenuSettings CustomMenuSettings => Capture().CustomMenuSettings;
 
     public void Publish(BlogSettingsSnapshot snapshot)
     {

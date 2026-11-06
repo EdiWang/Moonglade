@@ -1,4 +1,7 @@
 ﻿@page "/admin/post/scheduled"
+@{
+    var snapshot = ViewData.CaptureSettings(SettingsReader);
+}
 @inject IConfiguration Configuration
 
 @{
@@ -24,7 +27,7 @@
 
 @Html.AntiForgeryToken()
 
-@if (!BlogConfig.AdvancedSettings.EnablePostScheduler)
+@if (!snapshot.AdvancedSettings.EnablePostScheduler)
 {
     <div class="alert alert-warning mb-3">
         @SharedLocalizer["Post scheduler is disabled, pending posts will not be published automatically."]

@@ -54,7 +54,7 @@ public class SyndicationDataSourceTests
             new HttpContextAccessor { HttpContext = httpContext },
             db);
 
-        var entries = await dataSource.GetFeedDataAsync();
+        var entries = await dataSource.GetFeedDataAsync(ct: TestContext.Current.CancellationToken);
 
         var entry = Assert.Single(entries);
         if (!full)

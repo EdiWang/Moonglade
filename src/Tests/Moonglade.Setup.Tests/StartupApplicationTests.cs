@@ -51,7 +51,7 @@ public class StartupApplicationTests
         await db.SaveChangesAsync(ct);
         var originalRows = await db.BlogConfiguration.AsNoTracking().OrderBy(row => row.CfgKey).ToListAsync(ct);
         using var harness = new StartupTestHarness(db);
-        var originalRuntime = harness.Config.GeneralSettings;
+        var originalRuntime = harness.Config.Capture().GeneralSettings;
         var hosted = new Mock<IHostedService>();
         var logger = new RecordingLogger<StartupApplicationTests>();
         await using var app = BuildApplication(harness.Initializer, hosted.Object, logger);
@@ -67,7 +67,7 @@ public class StartupApplicationTests
         Assert.Contains("RESTART", exception.Message);
         hosted.Verify(service => service.StartAsync(It.IsAny<CancellationToken>()), Times.Never);
         Assert.False(app.Lifetime.ApplicationStarted.IsCancellationRequested);
-        Assert.Same(originalRuntime, harness.Config.GeneralSettings);
+        Assert.Same(originalRuntime, harness.Config.Capture().GeneralSettings);
         Assert.Contains(logger.Entries, entry => entry.Level == LogLevel.Critical && entry.Message == exception.Message);
         db.ChangeTracker.Clear();
         var saved = await db.Post.SingleAsync(ct);
@@ -106,7 +106,7 @@ public class StartupApplicationTests
         await app.InitStartUp().WaitAsync(TimeSpan.FromSeconds(10), ct);
 
         hosted.Verify(service => service.StartAsync(It.IsAny<CancellationToken>()), Times.Never);
-        Assert.Equal(settings[nameof(GeneralSettings)], harness.Config.GeneralSettings.ToJson());
+        Assert.Equal(settings[nameof(GeneralSettings)], harness.Config.Capture().GeneralSettings.ToJson());
         Assert.Equal(LocalAccountSettings.DefaultValue.ToJson(), harness.Accounts.Read().ToJson());
         Assert.DoesNotContain(logger.Entries, entry => entry.Level == LogLevel.Critical);
         db.ChangeTracker.Clear();

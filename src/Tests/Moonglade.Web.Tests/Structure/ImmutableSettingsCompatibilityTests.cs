@@ -20,7 +20,7 @@ public class ImmutableSettingsCompatibilityTests
 
         var candidate = LoadWithDefaults(json, defaults);
 
-        Assert.Equal(config.FeedSettings.ToJson(), candidate.ToJson());
+        Assert.Equal(config.Capture().FeedSettings.ToJson(), candidate.ToJson());
         Assert.Equal(candidate.ToJson(), candidate.ToJson().FromJson<ImmutableFeedProbe>().ToJson());
     }
 
@@ -38,7 +38,7 @@ public class ImmutableSettingsCompatibilityTests
         var candidate = LoadWithDefaults(json, defaults);
 
         Assert.True(Valid(candidate));
-        Assert.Equal(config.CustomMenuSettings.ToJson(), candidate.ToJson());
+        Assert.Equal(config.Capture().CustomMenuSettings.ToJson(), candidate.ToJson());
         Assert.Equal(candidate.ToJson(), candidate.ToJson().FromJson<ImmutableMenusProbe>().ToJson());
     }
 

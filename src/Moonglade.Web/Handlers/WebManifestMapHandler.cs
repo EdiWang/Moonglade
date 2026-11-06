@@ -8,11 +8,12 @@ public class WebManifestMapHandler
 
     public static IResult Handle(HttpContext httpContext, IBlogConfig blogConfig)
     {
+        var settings = blogConfig.Capture();
         var model = new ManifestModel
         {
-            ShortName = blogConfig.GeneralSettings.SiteTitle,
-            Name = blogConfig.GeneralSettings.SiteTitle,
-            Description = blogConfig.GeneralSettings.Description,
+            ShortName = settings.GeneralSettings.SiteTitle,
+            Name = settings.GeneralSettings.SiteTitle,
+            Description = settings.GeneralSettings.Description,
             StartUrl = "/",
             Icons =
             [

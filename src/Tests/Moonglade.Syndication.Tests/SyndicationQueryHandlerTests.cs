@@ -57,7 +57,7 @@ public class SyndicationQueryHandlerTests
     {
         using var db = await CreateFeedDatabaseAsync();
         var blogConfig = CreateBlogConfig();
-        blogConfig.Publish(blogConfig.Capture() with { GeneralSettings = blogConfig.GeneralSettings with { OwnerEmail = "owner@example.com" } });
+        blogConfig.Publish(blogConfig.Capture() with { GeneralSettings = blogConfig.Capture().GeneralSettings with { OwnerEmail = "owner@example.com" } });
         var accessor = CreateHttpContextAccessor("https", "blog.example.com");
         var handler = new GetAtomStringQueryHandler(blogConfig, new SyndicationDataSource(blogConfig, accessor, db), accessor);
 
