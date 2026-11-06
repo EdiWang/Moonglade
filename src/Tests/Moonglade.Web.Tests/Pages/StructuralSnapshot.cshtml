@@ -1,0 +1,10 @@
+@page "/s0/probe/page"
+@model SnapshotPageProbeModel
+@{
+    Layout = "~/Views/StructuralProbe/_SnapshotLayout.cshtml";
+    var snapshot = Model.Snapshot;
+}
+root:@snapshot.Feed.FeedItemCount:@snapshot.Menu.Menus![0]!.Title
+avatar:@(string.IsNullOrEmpty(snapshot.AvatarUrl) ? Url.Action("Avatar", "Assets") : snapshot.AvatarUrl)
+@await Html.PartialAsync("~/Views/StructuralProbe/_SnapshotPartial.cshtml", snapshot)
+@await Component.InvokeAsync("SnapshotProbe")

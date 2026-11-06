@@ -1,0 +1,5 @@
+@{
+    var snapshot = (SettingsSnapshotProbe)ViewData[SnapshotProbeStore.ViewDataKey]!;
+}
+layout:@snapshot.Feed.FeedItemCount:@snapshot.Menu.Menus![0]!.Title
+@RenderBody()

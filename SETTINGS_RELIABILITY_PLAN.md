@@ -10,9 +10,9 @@ This file is the recovery record for the settings design review and reliability 
 4. Identify the next authorized batch and its dependencies. Ask the user before executing an unauthorized batch or resolving a pending business or architecture decision. Offer a recommendation and explain its effects.
 5. Update this file during work and at every batch boundary, including implementation completion, verification, commit, user acceptance, interruption, or newly discovered blockers. Do not leave the only recovery information in chat.
 
-Current authorization: B7 design only. On 2026-11-06 the user requested reassessment of another AI's completed B5/B6 and selected planning C1-C3 structural changes, rather than a reliability-closeout batch. D24-D27 record the approved planning directions. Application implementation, new commits, push, deployment, production-data changes, and physical table migration are not authorized by this planning request.
+Current authorization: proceed into B7 with S0 test-only compatibility/boundary experiments and tracker updates, following the user's 2026-11-06 request to enter B7. D24-D27 retain the approved planning directions. S1-S6 production implementation, new commits, push, deployment, production-data changes, and physical table migration remain unauthorized.
 
-Current next step: review `SETTINGS_STRUCTURE_PLAN.md` with the user and obtain authorization for its first implementation batch before changing application code. B5 is `8da96cf82`, B6/D23 is already committed as `907ac2285`; earlier uncommitted descriptions are historical and superseded. Reassessment at that HEAD passed 1412/1412 tests with both disposable providers and no skips, plus a clean Web build. No blocking implementation defect was found in B5/B6. Final functional sign-off is not inferred from passing tests or permission to plan.
+Current next step: review `SETTINGS_STRUCTURE_S0.md`, obtain the pending Auth/Setup ownership/dependency answer, and await S0 acceptance / S1 execution authorization. S0 technical checks passed, including 44 new test-only cases. D28 confirms the ordinary-model direction, not the ownership choice. The structural plan is commit `aa58da8f9`; S0 started clean there and remains uncommitted. The earlier 1412/1412 provider regression is baseline evidence, not a newly repeated S0 check.
 
 Retention: the user explicitly requested a repository recovery and progress file. Keep this file across batches and context compaction. Do not delete it merely because tests pass; ask before removing or archiving it. Permanent documentation must not depend on this task record.
 
@@ -27,13 +27,13 @@ Improve settings reliability through independently testable, committable, review
 - Preserve grouped JSON storage, existing setting keys and field names, supported providers, public URLs, authorization, antiforgery protection, and the current successful-save guarantees unless the user approves a specific change.
 - Keep deployment configuration separate from administrator-editable blog settings. Do not move SMTP credentials or other deployment secrets into ordinary settings.
 - Do not introduce dependencies, schema revisions, conflict UI, distributed synchronization, or a generic settings framework without a demonstrated need and explicit scope approval.
-- Current scope is B7 assessment and structural planning for C1-C3; no structural implementation is authorized. Preserve the verified B1-B6 contracts. No deployment is included in any batch below.
+- Current scope is B7/S0 compatibility experiments and concrete design for C1-C3; production structural implementation is not authorized. Preserve the verified B1-B6 contracts. No deployment is included in any batch below.
 
 Repository files must be English, except permitted localization resources and relevant test data. Follow `.editorconfig` (UTF-8, CRLF, final newline). Use the existing .NET stack and repository tools.
 
 ## Confirmed User Decisions
 
-These decisions were explicitly supplied by the user on 2026-11-05 and, for D24-D27, on 2026-11-06.
+These decisions were explicitly supplied by the user on 2026-11-05 and, for D24-D28, on 2026-11-06.
 
 | ID | Decision | Execution consequence |
 | --- | --- | --- |
@@ -64,6 +64,7 @@ These decisions were explicitly supplied by the user on 2026-11-05 and, for D24-
 | D25 | C2 separates account/installation responsibilities in code while retaining the existing table, setting keys, and JSON. | No physical table migration or historical credential rewrite. Any later physical separation needs another decision and both providers' manual scripts. |
 | D26 | C1 consistency covers a captured immutable snapshot within each business operation or page render, not an implicit freeze of the whole HTTP request. | Migrate related readers and render descendants together. A subsequent operation, including after a successful save in the same request, may capture the new version. |
 | D27 | C3 includes versioned avatar files, confirmed database commit before old-file cleanup, success plus Error on cleanup failure, and file retention on uncertain commit outcome. | Preserve usable resources and tolerate orphan files; avatar CDN URLs may change with each version. No filesystem/database atomicity or automatic orphan deletion is implied. |
+| D28 | After S0 model experiments, prefer converting the existing ordinary settings types to init-only records with ImmutableList menus, adding a mutable request DTO only for a demonstrated boundary incompatibility. | Preserve current binding/JSON/validation/default behavior; do not duplicate every settings model. This does not imply the separately asked ownership/dependency choice or authorize S1 execution. |
 
 Existing repository constraints protect invalid persisted `LocalAccountSettings` and `SystemManifestSettings`: startup fails rather than replacing them with shipped defaults. Ordinary-setting recovery does not override that protection. D5 additionally covers missing account rows and empty settings tables with existing business data.
 
@@ -130,7 +131,7 @@ Allowed statuses: `Not started`, `In progress`, `Blocked: <specific dependency>`
 | B4 | B1-B3 accepted; D19-D21 confirmed | Verified: post-commit cache invalidation, activation hints, scheduler wake/recheck, full-feed source | Configuration 129/129; Web 297/297; Syndication 18/18; BackgroundServices 14/14; Auth 48/48; Email 106/106; Web build clean; isolated browser save/restart checks passed | `2a8f47078` | User authorized proceeding to B5 on 2026-11-05 |
 | B5 | B1 accepted; D7/D22 confirmed | Verified: opt-in settings/avatar post-save audit isolation with authentication contracts preserved | Web 331/331; Web build clean; diff/format checks passed | `8da96cf82` | User authorized proceeding to B6 on 2026-11-05 |
 | B6 | B1-B5 accepted; D23 confirmed | Verified: full regression, isolated scenarios, and startup host-safety correction | Reassessed 2026-11-06 at committed HEAD: 1412/1412, 0 skipped, both providers; Web build clean. Prior host/browser evidence retained as prior evidence. | `907ac2285` | Technical reassessment passed; user authorized B7 planning, without separately recorded final functional sign-off |
-| B7 | B5/B6 reassessment; D24-D27 confirmed | Structural plan prepared in `SETTINGS_STRUCTURE_PLAN.md`; no application changes | Current baseline regression and document checks; proposed structure not implemented/tested | No new commit authorized | Awaiting plan review / first-batch authorization |
+| B7 | B5/B6 reassessment; D24-D28 confirmed; S0 entered | S0 test-only evidence prepared in `SETTINGS_STRUCTURE_S0.md`; production code unchanged | 44 new probes; Web 375/375, Configuration 129/129, Auth 48/48, Setup 58 passed/17 skipped; Web build clean | S0 uncommitted; no new commit authorized | Model direction confirmed; ownership answer and S0 acceptance / S1 execution authorization pending |
 | C1-C3 | B7 plan review; separate implementation authorization | Design prepared under D25-D27; implementation not started | Future acceptance gates defined in structural plan | None | Not applicable to unimplemented work |
 
 ### B0 - Confirm Behavior and Compatibility Matrices
@@ -658,3 +659,28 @@ Limits and handoff:
 - The source inventory found 40 production files explicitly referencing IBlogConfig and 33 Razor files referencing BlogConfig; these overlap and must not be summed as unique files. The two layouts' direct AvatarUrl mutation and the CDN handler's delete-before-upload behavior are current deferred structural risks, not regressions introduced by B5/B6.
 - B7 changes are planning documents only: this tracker, B0 handoff, and the new structural plan. No application, tests, provider scripts, dependency, or permanent workflow documentation changed. Existing runtime behavior and durable docs need no implementation update yet. Document scope, references, English content, CRLF/final newlines, and diff checks were verified.
 - Status: B7 plan prepared for user review, not structural implementation complete. Technical evidence supports entering design, but final user functional acceptance is not silently inferred. Next action: review the proposed plan, authorize S0 if desired, then resolve its concrete interface/model/ownership gates before later batches. No new local commit has been requested or created in this turn.
+
+### 2026-11-06 - B7/S0 Technical Verification Complete; Ownership Decision Pending
+
+- User requested entering B7 after the plan was committed as `aa58da8f9`. Started on a clean `master` at that commit. Interpreted the request as executing S0 compatibility/boundary experiments; S1-S6 production implementation and new commits remain separately gated.
+- Added test-only Feed/Menu immutable candidates, actual MVC JSON/form/validation probes, compiled MVC/Razor Page/partial/component/layout fixtures with a concurrent publication barrier, and SQLite commit-boundary experiments. Enabled the built-in Razor SDK in the Web test project to compile these fixtures; no NuGet dependency or production application change was made. Updated the long-lived test guide to explain the fixture SDK and isolation; permanent docs do not link task records.
+- Models: valid historical JSON, persisted default merging, explicit null/false/0/empty lists, nested menus, existing annotations, and retained immutable graphs work in the tested candidates. HTTP missing feed count remains 0 while persisted `{}` uses the current default 20. Null/empty avatar fallback keeps PathBase and never mutates the stored/captured value. An ImmutableArray MaxLength compatibility probe also passed; do not claim that type is unsupported.
+- Rendering: a single capture survives publication during a paused partial in both MVC and Razor Pages, through the component and layout as well as the root/partial. A following render captures new values. A second operation in the same request can also capture new values, preserving D26. Initial Razor Page setup accidentally loaded the production ViewStart; the probe host now excludes production compiled views, and early request failures surface rather than becoming a gate timeout.
+- Commit boundary: an outer-transaction characterization confirms that the current command publishes before an outer CommitAsync and rollback does not restore runtime. A separate one-save experiment proves a staged asset/settings row pair commits together before runtime/event publication, while a settings trigger failure rolls both back. These are test-only SQLite results, not a new avatar implementation or a promise about uncertain commits/filesystems/providers.
+- The user answered the first design question and accepted converting existing ordinary models to init-only records with ImmutableList menus, using mutable request DTOs only for demonstrated incompatibility. Recorded D28. The second, separate question proposes Auth account ownership, Setup manifest ownership, and a Setup-to-Auth reference; its answer has not arrived. Do not infer it from D28. Source-graph analysis across 20 production projects confirms the proposed reference is acyclic, without adding it.
+- Added `SETTINGS_STRUCTURE_S0.md` with the tested evidence, concrete S1-S5 ownership/API/transaction/render recommendations, compatibility requirements, future acceptance gates, and limits. In particular, a new root must apply submitted groups to the latest state inside the write boundary, retaining unrelated concurrent group changes; same-group last-save-wins is not replaced by field merging. Protected state must not leak through ordinary readers or generated diagnostic strings.
+
+Verification (sequential, repository root):
+
+| Check | Exact command | Result |
+| --- | --- | --- |
+| Web and S0 probes | `dotnet test --project src/Tests/Moonglade.Web.Tests/Moonglade.Web.Tests.csproj --no-restore` | 375 passed, 0 failed, 0 skipped; includes 44 new S0 cases. |
+| Configuration | `dotnet test --project src/Tests/Moonglade.Configuration.Tests/Moonglade.Configuration.Tests.csproj --no-restore` | 129 passed, 0 failed, 0 skipped. |
+| Auth | `dotnet test --project src/Tests/Moonglade.Auth.Tests/Moonglade.Auth.Tests.csproj --no-restore` | 48 passed, 0 failed, 0 skipped. |
+| Setup, no provider opt-in | `dotnet test --project src/Tests/Moonglade.Setup.Tests/Moonglade.Setup.Tests.csproj --no-restore` | 58 passed, 0 failed, 17 skipped provider groups/theories. |
+| Web build | `dotnet build src/Moonglade.Web/Moonglade.Web.csproj --no-restore --verbosity quiet` | 0 warnings, 0 errors. |
+| Diff / records | `git diff --check`, English documentation, CRLF/final newlines, source-scope review | Passed. |
+
+- Total focused results: 610 passed, 0 failed, 17 skipped. No full-solution/provider-container/browser run was repeated for S0, and no production or external resources were used. The earlier 1412/1412 provider run remains baseline evidence only. S1 must exercise both supported providers after changing initialization/ownership.
+- Commit: none created or requested in this turn; test/document changes remain reviewable in the working tree. Production code, actual reader contracts, schema, keys/JSON, dependencies, and live application behavior are unchanged.
+- Handoff: S0 technical verification is complete; user acceptance and the remaining ownership decision are pending. Review the S0 evidence and obtain explicit S1 authorization before moving types, references, startup flows, or writers. Do not silently resolve the outstanding ownership question or start the rest of B7.

@@ -6,10 +6,10 @@ This is a retained task plan, requested as a continuation of the settings review
 
 - Date: 2026-11-06, Asia/Taipei. Assessment baseline: `907ac228573e151b3dfcc3f334a15d72959cc2e9` on `master`, initially clean working tree.
 - B5 is `8da96cf82`; B6's startup-safety correction is already committed as `907ac2285`. The previous tracker's statements that B6 was uncommitted were stale, not missing implementation.
-- B7 authorizes assessment and planning only. The user explicitly selected planning C1-C3 rather than defining B7 as reliability closeout. No application edits, schema migration, new commit, push, deployment, or production-data operation is authorized by this request.
-- D25: separate code responsibilities without changing the existing database table, keys, or JSON. D26: consistency within one captured business operation/render, not automatic request-wide freezing. D27: versioned avatar files; clean old files only after confirmed database commit; cleanup failure returns save success plus Error; uncertain commit retains files.
+- Current authorization: on 2026-11-06 the user requested entering B7 after reviewing the plan. Proceed with S0 compatibility/boundary experiments and recovery-record updates. S1-S6 implementation remains gated by S0 evidence, design confirmation, and separate batch authorization. No new commit, push, deployment, or production-data operation is inferred.
+- D25: separate code responsibilities without changing the existing database table, keys, or JSON. D26: consistency within one captured business operation/render, not automatic request-wide freezing. D27: versioned avatar files; clean old files only after confirmed database commit; cleanup failure returns save success plus Error; uncertain commit retains files. D28 confirms existing ordinary types as init-only records with ImmutableList menus, adding mutable request DTOs only for demonstrated incompatibility.
 - These directions are approved for the plan. Specific interfaces, classes, ownership edges, collection representation, and sub-batch execution still require review/authorization. Recommendations below are not implemented decisions.
-- Next recommended action: review this plan and authorize S0, the compatibility and boundary proof batch. Do not treat a request to plan as permission to run S0 application experiments or implement S1-S6.
+- Current next action: review S0 evidence in `SETTINGS_STRUCTURE_S0.md` and obtain the remaining ownership/dependency answer plus S1 batch authorization. S0 technical checks passed; D28 confirms the ordinary immutable-model direction. The ownership question remains separate and unanswered; do not start S1 automatically.
 - Keep this file and the reliability tracker across conversations. Permanent project documentation must not depend on these temporary task records.
 
 ## B5/B6 Assessment
@@ -100,7 +100,7 @@ Important integration constraints:
 
 ## Proposed Implementation Batches
 
-S labels are sub-batches of this structural plan, not renamed historical B1-B6 batches. None has implementation authorization yet. Each batch includes focused tests, relevant long-lived documentation, a reviewed independent commit only when authorized, a tracker update, and user acceptance before its dependent batch.
+S labels are sub-batches of this structural plan, not renamed historical B1-B6 batches. S0 experiments are authorized; S1-S6 implementation is not. Each batch includes focused tests, relevant long-lived documentation, a reviewed independent commit only when authorized, a tracker update, and user acceptance before its dependent batch.
 
 | Batch | Purpose / concrete scope | Dependency and verification | Acceptance / rollback |
 | --- | --- | --- | --- |
@@ -138,7 +138,7 @@ Recommended order is S0, S1, S2, S3, S4, S5, S6: separating protected state firs
 - Re-run `git status --short` and current references first. The baseline 1412 count is current assessment evidence, not a permanent expected count after adding tests.
 - Run focused owning suites per batch. Cross-module/startup registration changes require a Web build. Set `MOONGLADE_TEST_CATEGORY_DATABASES=1` only for disposable-provider checks; normal skipped-provider runs cannot prove relational safety.
 - Preserve B1-B6's group-level recovery, explicit restart settings, scheduler pre-dispatch checks, last-save-wins, audit Error behavior, and failed-startup nonzero exit. Do not silently redesign these while changing structure.
-- G1: review/approve this plan and authorize S0. G2: after S0, review the proven model/binding representation and contract/ownership graph before S1-S3 implementation. G3: review S4/S5's concrete commit/compensation protocol and any genuinely new recovery/cleanup policy before implementation. No elapsed time substitutes for an answer.
+- G1: fulfilled by the user's request to enter B7/S0. G2: the ordinary-model direction is confirmed as D28; the separately asked Auth/Setup ownership/dependency proposal is pending. Review `SETTINGS_STRUCTURE_S0.md` before authorizing S1-S3. G3: review S4/S5's concrete commit/compensation protocol and any genuinely new recovery/cleanup policy before implementation. No elapsed time substitutes for an answer.
 - Exact orphan retention, automatic retries/deletion, a durable recovery journal, physical account/manifest tables, distributed state, new credential/session rules, and source-file/type renames that change keys remain unapproved. Ask only when a concrete batch needs such a choice; keep independent work moving.
 - Update this file and the reliability tracker at each batch boundary with actual commits, commands/counts, skipped checks, faults found, rollback limits, and user acceptance. Passing technical checks is not user acceptance.
 
@@ -147,8 +147,9 @@ Recommended order is S0, S1, S2, S3, S4, S5, S6: separating protected state firs
 | Item | Status |
 | --- | --- |
 | B5/B6 code/test reassessment | Verified at `907ac2285`, 2026-11-06 |
-| User directions D24-D27 | Confirmed for planning |
-| B7 structural plan | Prepared for user review |
-| S0-S6 implementation | Not started; no application edits authorized or performed |
+| User directions D24-D28 | Confirmed; ownership answer remains separate and pending |
+| B7 structural plan | Reviewed sufficiently to authorize S0; later batch implementation remains gated |
+| S0 compatibility experiments | Technical verification complete: 44 new cases; Web 375/375, Configuration 129/129, Auth 48/48, Setup 58 passed/17 skipped; Web build clean. Ownership decision and user acceptance pending. |
+| S1-S6 implementation | Not started; requires design confirmation and batch authorization |
 | Physical table migration / production rollout | Not authorized |
-| New local commit | Not requested; planning changes remain uncommitted |
+| New local commit | Not requested; S0 test/document changes remain uncommitted |
