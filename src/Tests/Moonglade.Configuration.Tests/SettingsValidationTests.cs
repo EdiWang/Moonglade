@@ -31,17 +31,6 @@ public class SettingsValidationTests
         { nameof(CustomMenuSettings), new CustomMenuSettings { Menus = Enumerable.Range(0, 6).Select(_ => new Menu { Title = "Valid" }).ToArray() }.ToJson() }
     };
 
-    public static TheoryData<string, string> InvalidProtectedSettings => new()
-    {
-        { nameof(LocalAccountSettings), """{"username":null}""" },
-        { nameof(LocalAccountSettings), """{"passwordHash":""}""" },
-        { nameof(LocalAccountSettings), """{"passwordSalt":""}""" },
-        { nameof(LocalAccountSettings), """{"isTotpEnabled":true,"totpSecret":null}""" },
-        { nameof(LocalAccountSettings), """{"totpSecret":"invalid-marker!"}""" },
-        { nameof(SystemManifestSettings), """{"installTimeUtc":"0001-01-01T00:00:00Z"}""" },
-        { nameof(SystemManifestSettings), """{"installTimeUtc":"2024-01-01T00:00:00"}""" }
-    };
-
     [Theory]
     [MemberData(nameof(InvalidOrdinarySettings))]
     public void Load_SemanticallyInvalidOrdinaryGroup_ReturnsWholeGroupDefaultsForRepair(string name, string patch)
@@ -60,7 +49,6 @@ public class SettingsValidationTests
 
     [Theory]
     [MemberData(nameof(InvalidOrdinarySettings))]
-    [MemberData(nameof(InvalidProtectedSettings))]
     public async Task Write_InvalidGroup_ChangesNeitherStoreNorRuntime(string name, string patch)
     {
         var ct = TestContext.Current.CancellationToken;
@@ -80,7 +68,7 @@ public class SettingsValidationTests
         var command = (UpdateConfigurationCommand)factory.Invoke(null, [value])!;
 
         var exception = await Assert.ThrowsAsync<ValidationException>(() => new UpdateConfigurationCommandHandler(
-            db, config, Mock.Of<IEventMediator>(), NullLogger<UpdateConfigurationCommandHandler>.Instance).HandleAsync(command, ct));
+            db, config, Mock.Of<IEventMediator>(), new ConfigurationWriteGate(), NullLogger<UpdateConfigurationCommandHandler>.Instance).HandleAsync(command, ct));
 
         Assert.DoesNotContain("invalid-marker", exception.Message);
         Assert.Same(runtime, property.GetValue(config));
@@ -90,49 +78,7 @@ public class SettingsValidationTests
         Assert.Equal(timestamp, row.LastModifiedTimeUtc);
     }
 
-    [Theory]
-    [MemberData(nameof(InvalidProtectedSettings))]
-    public void Load_InvalidProtectedState_ThrowsKeyOnlyError(string name, string patch)
-    {
-        var type = typeof(IBlogConfig).GetProperty(name)!.PropertyType;
 
-        var exception = Assert.Throws<InvalidOperationException>(() => new BlogConfig().LoadFromConfig(
-            new Dictionary<string, string> { [name] = InvalidJson(type, patch) }));
-
-        Assert.Contains(name, exception.Message);
-        Assert.DoesNotContain("invalid-marker", exception.ToString());
-        Assert.Null(exception.InnerException);
-    }
-
-    [Theory]
-    [InlineData(false)]
-    [InlineData(true)]
-    public void Account_ValidExistingAndSetupStates_AreAcceptedWithoutMutation(bool enabled)
-    {
-        var account = LocalAccountSettings.DefaultValue;
-        account.Username = "legacy.user@example.com";
-        account.IsTotpEnabled = enabled;
-        account.TotpSecret = " jbsw y3dpehpk3pxp ";
-        var original = account.ToJson();
-
-        Assert.True(Validator.TryValidateObject(account, new ValidationContext(account), null, true));
-        Assert.Equal(original, account.ToJson());
-    }
-
-    [Theory]
-    [InlineData(null)]
-    [InlineData("")]
-    [InlineData("historical-version")]
-    public void Manifest_UnknownOrHistoricalVersion_WithValidUtcTime_IsPreserved(string? version)
-    {
-        var manifest = new SystemManifestSettings { VersionString = version, InstallTimeUtc = DateTime.UtcNow.AddYears(-1) };
-        var config = new BlogConfig();
-
-        var repairs = config.LoadFromConfig(new Dictionary<string, string> { [nameof(SystemManifestSettings)] = manifest.ToJson() });
-
-        Assert.DoesNotContain(nameof(SystemManifestSettings), repairs.Keys);
-        Assert.Equal(manifest.ToJson(), config.SystemManifestSettings.ToJson());
-    }
 
     [Fact]
     public void ApprovedCompatibilityExceptions_AreValid()

@@ -5,7 +5,6 @@ namespace Moonglade.Configuration.Tests;
 public class PersistedSettingsDefaultsTests
 {
     public static IEnumerable<object[]> OrdinarySettingNames => typeof(IBlogConfig).GetProperties()
-        .Where(property => property.Name != nameof(LocalAccountSettings) && property.Name != nameof(SystemManifestSettings))
         .Select(property => new object[] { property.Name });
 
     [Theory]
@@ -77,25 +76,6 @@ public class PersistedSettingsDefaultsTests
 
         Assert.Equal(count, config.FeedSettings.FeedItemCount);
         Assert.Equal(repaired, repairs.ContainsKey(nameof(FeedSettings)));
-    }
-
-    [Theory]
-    [InlineData(nameof(LocalAccountSettings))]
-    [InlineData(nameof(SystemManifestSettings))]
-    public void Load_ProtectedPartialObjects_AreRejectedWithoutBootstrapDefaults(string name)
-    {
-        var config = new BlogConfig();
-
-        var exception = Assert.Throws<InvalidOperationException>(() => config.LoadFromConfig(new Dictionary<string, string>
-        {
-            [nameof(LocalAccountSettings)] = name == nameof(LocalAccountSettings) ? "{}" : LocalAccountSettings.DefaultValue.ToJson(),
-            [nameof(SystemManifestSettings)] = name == nameof(SystemManifestSettings) ? "{}" : SystemManifestSettings.DefaultValue.ToJson()
-        }));
-
-        Assert.Contains(name, exception.Message);
-        if (name == nameof(LocalAccountSettings)) Assert.Null(config.LocalAccountSettings.PasswordHash);
-        Assert.Null(config.SystemManifestSettings.VersionString);
-        Assert.Equal(DateTime.MinValue, config.SystemManifestSettings.InstallTimeUtc);
     }
 
     [Fact]

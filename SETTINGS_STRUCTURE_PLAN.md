@@ -6,10 +6,10 @@ This is a retained task plan, requested as a continuation of the settings review
 
 - Date: 2026-11-06, Asia/Taipei. Assessment baseline: `907ac228573e151b3dfcc3f334a15d72959cc2e9` on `master`, initially clean working tree.
 - B5 is `8da96cf82`; B6's startup-safety correction is already committed as `907ac2285`. The previous tracker's statements that B6 was uncommitted were stale, not missing implementation.
-- Current authorization: on 2026-11-06 the user requested entering B7 after reviewing the plan. Proceed with S0 compatibility/boundary experiments and recovery-record updates. S1-S6 implementation remains gated by S0 evidence, design confirmation, and separate batch authorization. No new commit, push, deployment, or production-data operation is inferred.
+- Current authorization: the user confirmed the Auth/Setup/Configuration responsibilities and Setup-to-Auth dependency and explicitly authorized S1 on 2026-11-06 (D29). S0 is committed as `90e302d45`; S1 began clean at `832060d97` with the unrelated TemplateEmail 2026.8.0 update preserved. S2-S6, a new commit, push, deployment, and production-data operations are not authorized.
 - D25: separate code responsibilities without changing the existing database table, keys, or JSON. D26: consistency within one captured business operation/render, not automatic request-wide freezing. D27: versioned avatar files; clean old files only after confirmed database commit; cleanup failure returns save success plus Error; uncertain commit retains files. D28 confirms existing ordinary types as init-only records with ImmutableList menus, adding mutable request DTOs only for demonstrated incompatibility.
-- These directions are approved for the plan. Specific interfaces, classes, ownership edges, collection representation, and sub-batch execution still require review/authorization. Recommendations below are not implemented decisions.
-- Current next action: review S0 evidence in `SETTINGS_STRUCTURE_S0.md` and obtain the remaining ownership/dependency answer plus S1 batch authorization. S0 technical checks passed; D28 confirms the ordinary immutable-model direction. The ownership question remains separate and unanswered; do not start S1 automatically.
+- D29 confirms the S1 ownership/dependency direction below. Later snapshot and avatar workflow batches remain separately gated; planning recommendations do not authorize all of B7.
+- Current next action: complete S1 verification and present its acceptance evidence. Follow the latest execution entry in `SETTINGS_RELIABILITY_PLAN.md`; do not begin S2 automatically.
 - Keep this file and the reliability tracker across conversations. Permanent project documentation must not depend on these temporary task records.
 
 ## B5/B6 Assessment
@@ -64,14 +64,14 @@ Alternatives considered:
 
 ### C2: Protected-State Responsibility Separation Without Migration
 
-Proposed ownership for review: Configuration owns ordinary preferences; Auth owns account operations and restricted account reads; Setup owns installation-history initialization/reconstruction. Data retains the existing entity/table/provider mappings. Reuse existing projects and real application-boundary contracts; do not add interfaces solely for tests.
+Ownership confirmed in D29: Configuration owns ordinary preferences; Auth owns account operations and restricted account reads; Setup owns installation-history initialization/reconstruction. Data retains the existing entity/table/provider mappings. Reuse existing projects and real application-boundary contracts; do not add interfaces solely for tests.
 
 - Preserve `LocalAccountSettings` and `SystemManifestSettings` keys, all JSON fields, timestamp behavior, and valid old usernames/versions. Namespace/file moves must not rename storage keys. A new general registry is not necessary merely to move code.
 - Ordinary templates and preference consumers should no longer receive credentials or a manifest initializer. Password/TOTP operations use the account boundary; startup uses the protected-state boundary; installation history is not made an administrator preference.
 - Admin account views receive only the username/status they need, not hash/salt/secret objects. The dedicated authorized authenticator-enrollment flow must still render its setup key/QR as intended; separating ordinary readers must not break enrollment.
 - Keep all validation/preflight checks before any ordinary repair. Missing/invalid protected state must fail the host before workers or repair writes. Missing manifest reconstruction still means unknown version and reconstruction time with Warning.
 - Keep fresh seed data, ordinary defaults, account, and manifest on the same scoped database context and first-install transaction. Verify provider retries and lost commit acknowledgment against all expected rows; splitting code ownership must not split this transaction.
-- Review the dependency graph before moving types. Auth already references Configuration; Setup currently does not reference Auth. A proposed Setup-to-Auth edge is acyclic, but adding it and choosing contract locations are S0 ownership gates. Configuration must not acquire a reverse reference to Auth/Setup just to preserve old properties.
+- Review the dependency graph before moving types. Auth references Configuration; D29 approves the acyclic Setup-to-Auth edge implemented in S1. Configuration must not acquire a reverse reference to Auth/Setup just to preserve old properties.
 - Preserve commit/runtime ordering and last-save-wins within each affected state domain. Do not replace the existing serialization guarantee with unrelated per-request locks or claim a cross-domain atomic read that is no longer provided. Any required shared write gate must have a justified lifetime and remain process-local.
 - Do not move SMTP/deployment secrets into this storage, rewrite credentials, create new default accounts on existing sites, or add schema migration. Physical separation remains a separate future proposal needing both providers' manual scripts and rollback/recovery decisions.
 
@@ -100,7 +100,7 @@ Important integration constraints:
 
 ## Proposed Implementation Batches
 
-S labels are sub-batches of this structural plan, not renamed historical B1-B6 batches. S0 experiments are authorized; S1-S6 implementation is not. Each batch includes focused tests, relevant long-lived documentation, a reviewed independent commit only when authorized, a tracker update, and user acceptance before its dependent batch.
+S labels are sub-batches of this structural plan, not renamed historical B1-B6 batches. S0 is complete and S1 is authorized; S2-S6 implementation is not. Each batch includes focused tests, relevant long-lived documentation, a reviewed independent commit only when authorized, a tracker update, and user acceptance before its dependent batch.
 
 | Batch | Purpose / concrete scope | Dependency and verification | Acceptance / rollback |
 | --- | --- | --- | --- |
@@ -138,7 +138,7 @@ Recommended order is S0, S1, S2, S3, S4, S5, S6: separating protected state firs
 - Re-run `git status --short` and current references first. The baseline 1412 count is current assessment evidence, not a permanent expected count after adding tests.
 - Run focused owning suites per batch. Cross-module/startup registration changes require a Web build. Set `MOONGLADE_TEST_CATEGORY_DATABASES=1` only for disposable-provider checks; normal skipped-provider runs cannot prove relational safety.
 - Preserve B1-B6's group-level recovery, explicit restart settings, scheduler pre-dispatch checks, last-save-wins, audit Error behavior, and failed-startup nonzero exit. Do not silently redesign these while changing structure.
-- G1: fulfilled by the user's request to enter B7/S0. G2: the ordinary-model direction is confirmed as D28; the separately asked Auth/Setup ownership/dependency proposal is pending. Review `SETTINGS_STRUCTURE_S0.md` before authorizing S1-S3. G3: review S4/S5's concrete commit/compensation protocol and any genuinely new recovery/cleanup policy before implementation. No elapsed time substitutes for an answer.
+- G1: fulfilled by entry into B7/S0. G2-M: D28 confirms existing init-only ordinary models and immutable menus. G2-O: D29 confirms Auth/Setup ownership and the Setup-to-Auth dependency, and authorizes S1. S2-S3 still require acceptance/authorization. G3: review S4/S5 commit/compensation and any new recovery/cleanup policy before implementation.
 - Exact orphan retention, automatic retries/deletion, a durable recovery journal, physical account/manifest tables, distributed state, new credential/session rules, and source-file/type renames that change keys remain unapproved. Ask only when a concrete batch needs such a choice; keep independent work moving.
 - Update this file and the reliability tracker at each batch boundary with actual commits, commands/counts, skipped checks, faults found, rollback limits, and user acceptance. Passing technical checks is not user acceptance.
 
@@ -147,9 +147,10 @@ Recommended order is S0, S1, S2, S3, S4, S5, S6: separating protected state firs
 | Item | Status |
 | --- | --- |
 | B5/B6 code/test reassessment | Verified at `907ac2285`, 2026-11-06 |
-| User directions D24-D28 | Confirmed; ownership answer remains separate and pending |
-| B7 structural plan | Reviewed sufficiently to authorize S0; later batch implementation remains gated |
-| S0 compatibility experiments | Technical verification complete: 44 new cases; Web 375/375, Configuration 129/129, Auth 48/48, Setup 58 passed/17 skipped; Web build clean. Ownership decision and user acceptance pending. |
-| S1-S6 implementation | Not started; requires design confirmation and batch authorization |
+| User directions D24-D29 | Confirmed, including protected-state ownership and S1 authorization |
+| B7 structural plan | S0 complete; S1 authorized; dependent batches remain gated |
+| S0 compatibility experiments | Committed as `90e302d45`; D28/D29 resolve model and ownership gates. Historical S0 results remain in its evidence report. |
+| S1 protected-state boundaries | Technical checks complete: full solution 1474 passed with both providers; Web build clean. User acceptance pending; see reliability tracker. |
+| S2-S6 implementation | Not started; requires separate authorization |
 | Physical table migration / production rollout | Not authorized |
-| New local commit | Not requested; S0 test/document changes remain uncommitted |
+| New local commit | S1 changes are uncommitted; no new commit requested |

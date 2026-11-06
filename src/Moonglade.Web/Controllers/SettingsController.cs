@@ -19,6 +19,7 @@ public class SettingsController(
         IEventMediator eventMediator,
         EmailCapabilityStatus emailCapabilityStatus,
         IQueryMediator queryMediator,
+        ILocalAccountReader accounts,
         ICommandMediator commandMediator) : BlogControllerBase(commandMediator)
 {
     [HttpPost("general")]
@@ -205,7 +206,8 @@ public class SettingsController(
     [HttpPut("password/local")]
     public async Task<IActionResult> UpdateLocalAccountPassword(UpdateLocalAccountPasswordRequest request)
     {
-        var oldPasswordValid = blogConfig.LocalAccountSettings.PasswordHash == SecurityHelper.HashPassword(request.OldPassword.Trim(), blogConfig.LocalAccountSettings.PasswordSalt);
+        var account = accounts.Read();
+        var oldPasswordValid = account.PasswordHash == SecurityHelper.HashPassword(request.OldPassword.Trim(), account.PasswordSalt);
 
         if (!oldPasswordValid) return Conflict("Old password is incorrect.");
 
@@ -215,19 +217,20 @@ public class SettingsController(
             Username = request.NewUsername.Trim(),
             PasswordSalt = newSalt,
             PasswordHash = SecurityHelper.HashPassword(request.NewPassword, newSalt),
-            TotpSecret = blogConfig.LocalAccountSettings.TotpSecret,
-            IsTotpEnabled = blogConfig.LocalAccountSettings.IsTotpEnabled
+            TotpSecret = account.TotpSecret,
+            IsTotpEnabled = account.IsTotpEnabled
         };
 
-        return await UpdateSettingsAsync(newSettings,
-            EventType.SettingsPasswordUpdated, "Update Local Account Password", request.NewUsername,
+        await CommandMediator.SendAsync(new UpdateLocalAccountCommand(newSettings), HttpContext.RequestAborted);
+        await LogActivityAfterSaveAsync(logger, EventType.SettingsPasswordUpdated, "Update Local Account Password", request.NewUsername,
             ActivityLogMetaData.Create(("Username", request.NewUsername)));
+        return NoContent();
     }
 
     [HttpPut("totp/local/reset")]
     public async Task<IActionResult> ResetLocalAccountTotp(ResetLocalAccountTotpRequest request)
     {
-        var account = blogConfig.LocalAccountSettings;
+        var account = accounts.Read();
         var passwordValid = account.PasswordHash == SecurityHelper.HashPassword(request.CurrentPassword.Trim(), account.PasswordSalt);
 
         if (!passwordValid) return Conflict("Current password is incorrect.");
@@ -241,7 +244,7 @@ public class SettingsController(
             IsTotpEnabled = false
         };
 
-        await CommandMediator.SendAsync(UpdateConfigurationCommand.Create(newSettings), HttpContext.RequestAborted);
+        await CommandMediator.SendAsync(new UpdateLocalAccountCommand(newSettings), HttpContext.RequestAborted);
         await LogActivityAfterSaveAsync(logger,
             EventType.SettingsAuthenticatorReset,
             "Reset Local Account Authenticator",

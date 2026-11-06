@@ -20,8 +20,6 @@ public interface IBlogConfig
     AdvancedSettings AdvancedSettings { get; set; }
     AppearanceSettings AppearanceSettings { get; set; }
     CustomMenuSettings CustomMenuSettings { get; set; }
-    LocalAccountSettings LocalAccountSettings { get; set; }
-    SystemManifestSettings SystemManifestSettings { get; set; }
 
     IReadOnlyDictionary<string, string> LoadFromConfig(IDictionary<string, string> config, bool isNew = false);
 }
@@ -37,8 +35,6 @@ public class BlogConfig : IBlogConfig
     public AdvancedSettings AdvancedSettings { get; set; } = new();
     public AppearanceSettings AppearanceSettings { get; set; } = new();
     public CustomMenuSettings CustomMenuSettings { get; set; } = new();
-    public LocalAccountSettings LocalAccountSettings { get; set; } = new();
-    public SystemManifestSettings SystemManifestSettings { get; set; } = new();
 
     public IReadOnlyDictionary<string, string> LoadFromConfig(IDictionary<string, string> config, bool isNew = false)
     {
@@ -53,24 +49,18 @@ public class BlogConfig : IBlogConfig
         Assign<AdvancedSettings>(v => AdvancedSettings = v);
         Assign<AppearanceSettings>(v => AppearanceSettings = v);
         Assign<CustomMenuSettings>(v => CustomMenuSettings = v);
-        Assign<LocalAccountSettings>(v => LocalAccountSettings = v);
-        Assign<SystemManifestSettings>(v => SystemManifestSettings = v,
-            () => isNew ? SystemManifestSettings.DefaultValueNew : SystemManifestSettings.DefaultValue);
 
         return defaultsToInit;
 
-        void Assign<T>(Action<T> setter, Func<T> defaultProvider = null) where T : IBlogSettings<T>
+        void Assign<T>(Action<T> setter) where T : IBlogSettings<T>
         {
             var name = typeof(T).Name;
-            var isProtected = typeof(T) == typeof(LocalAccountSettings) || typeof(T) == typeof(SystemManifestSettings);
 
             if (config.TryGetValue(name, out var json))
             {
                 try
                 {
-                    var settings = json is null ? default : isProtected
-                        ? json.FromJson<T>()
-                        : json.FromJsonWithDefaults(T.DefaultValue);
+                    var settings = json is null ? default : json.FromJsonWithDefaults(T.DefaultValue);
                     if (settings is not null && Validator.TryValidateObject(settings, new ValidationContext(settings), null, true))
                     {
                         setter(settings);
@@ -81,15 +71,9 @@ public class BlogConfig : IBlogConfig
                 {
                     // Fall through to use default value
                 }
-
-                if (isProtected)
-                {
-                    throw new InvalidOperationException(
-                        $"Stored configuration '{name}' is invalid. Restore a valid value before restarting.");
-                }
             }
 
-            var defaultValue = defaultProvider is null ? T.DefaultValue : defaultProvider();
+            var defaultValue = T.DefaultValue;
             defaultsToInit.Add(name, defaultValue.ToJson());
             setter(defaultValue);
         }

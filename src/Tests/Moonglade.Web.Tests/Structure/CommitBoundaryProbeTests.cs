@@ -81,7 +81,7 @@ public class CommitBoundaryProbeTests
     private static BlogDbContext Context(SqliteConnection connection) => new(new DbContextOptionsBuilder<BlogDbContext>().UseSqlite(connection).Options);
 
     private static UpdateConfigurationCommandHandler Handler(BlogDbContext db, IBlogConfig config, IEventMediator events) =>
-        new(db, config, events, NullLogger<UpdateConfigurationCommandHandler>.Instance);
+        new(db, config, events, new ConfigurationWriteGate(), NullLogger<UpdateConfigurationCommandHandler>.Instance);
 
     private static async Task Seed(BlogDbContext db)
     {

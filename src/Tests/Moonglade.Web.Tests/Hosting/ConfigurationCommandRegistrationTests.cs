@@ -8,6 +8,8 @@ using LiteBus.Extensions.Microsoft.DependencyInjection;
 using LiteBus.Messaging;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Configuration;
+using Moonglade.Auth;
 using Moonglade.Configuration;
 using Moonglade.Web.Tests.TestSupport;
 
@@ -24,6 +26,8 @@ public class ConfigurationCommandRegistrationTests
         var services = new ServiceCollection();
         services.AddLogging();
         services.AddSingleton(store.Db);
+        services.AddBlogConfig();
+        services.AddBlogAuthentication(new ConfigurationBuilder().Build());
         services.AddSingleton<IBlogConfig>(config);
         services.AddInMemoryCacheAside();
         services.AddSingleton<PostCacheInvalidator>();
@@ -32,7 +36,11 @@ public class ConfigurationCommandRegistrationTests
         services.AddLiteBus(bus =>
         {
             bus.AddMessaging(_ => { });
-            bus.AddCommands(module => module.RegisterFromAssembly(typeof(UpdateConfigurationCommand).Assembly));
+            bus.AddCommands(module =>
+            {
+                module.RegisterFromAssembly(typeof(UpdateConfigurationCommand).Assembly);
+                module.RegisterFromAssembly(typeof(UpdateLocalAccountCommand).Assembly);
+            });
             bus.AddEvents(module => module.RegisterFromAssembly(typeof(ConfigurationChangedEventHandler).Assembly));
         });
         using var provider = services.BuildServiceProvider();
@@ -47,5 +55,19 @@ public class ConfigurationCommandRegistrationTests
         Assert.NotEqual(previousFeedKey, feeds.GetFeedCacheKey("rss"));
         Assert.Equal(config.GeneralSettings.ToJson(), (await store.Db.BlogConfiguration.SingleAsync(
             p => p.CfgKey == nameof(GeneralSettings), TestContext.Current.CancellationToken)).CfgValue);
+
+        var gate = Assert.Single(provider.GetServices<ConfigurationWriteGate>());
+        Assert.Same(gate, provider.GetRequiredService<ConfigurationWriteGate>());
+        Assert.Same(provider.GetRequiredService<LocalAccountState>(), provider.GetRequiredService<ILocalAccountReader>());
+        var account = LocalAccountSettings.DefaultValue;
+        account.Username = "saved-via-auth-bus";
+        var feedKeyBeforeAccountSave = feeds.GetFeedCacheKey("rss");
+
+        await provider.GetRequiredService<ICommandMediator>().SendAsync(new UpdateLocalAccountCommand(account), TestContext.Current.CancellationToken);
+
+        Assert.Equal(account.ToJson(), provider.GetRequiredService<ILocalAccountReader>().Read().ToJson());
+        Assert.Equal(account.ToJson(), (await store.Db.BlogConfiguration.SingleAsync(
+            p => p.CfgKey == nameof(LocalAccountSettings), TestContext.Current.CancellationToken)).CfgValue);
+        Assert.Equal(feedKeyBeforeAccountSave, feeds.GetFeedCacheKey("rss"));
     }
 }

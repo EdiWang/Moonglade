@@ -13,7 +13,7 @@ namespace Moonglade.Web.Pages;
 [EnableRateLimiting(LocalAccountRateLimitPolicy.PolicyName)]
 public class VerifyAuthenticatorModel(
     IOptions<AuthenticationSettings> authSettings,
-    IBlogConfig blogConfig,
+    ILocalAccountReader accounts,
     ILocalAccountTotpService totpService,
     ILogger<VerifyAuthenticatorModel> logger) : PageModel
 {
@@ -33,7 +33,7 @@ public class VerifyAuthenticatorModel(
             return RedirectToPage("/Index");
         }
 
-        if (!IsTotpConfigured(blogConfig.LocalAccountSettings))
+        if (!IsTotpConfigured(accounts.Read()))
         {
             return RedirectToPage("/SignIn");
         }
@@ -48,7 +48,7 @@ public class VerifyAuthenticatorModel(
             return RedirectToPage("/Index");
         }
 
-        var account = blogConfig.LocalAccountSettings;
+        var account = accounts.Read();
         if (!IsTotpConfigured(account))
         {
             return RedirectToPage("/SignIn");

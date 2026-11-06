@@ -1,3 +1,4 @@
+using Moonglade.Auth;
 using LiteBus.Commands.Abstractions;
 using LiteBus.Messaging.Abstractions;
 using LiteBus.Queries.Abstractions;
@@ -20,22 +21,37 @@ public sealed class ConfigInitializerTests
     [InlineData(nameof(SystemManifestSettings), "null")]
     [InlineData(nameof(LocalAccountSettings), "{}")]
     [InlineData(nameof(SystemManifestSettings), "{}")]
+    [InlineData(nameof(LocalAccountSettings), "{\"username\":\"\",\"passwordHash\":\"hash\",\"passwordSalt\":\"salt\"}")]
+    [InlineData(nameof(LocalAccountSettings), "{\"username\":\"legacy\",\"passwordHash\":\"\",\"passwordSalt\":\"salt\"}")]
+    [InlineData(nameof(LocalAccountSettings), "{\"username\":\"legacy\",\"passwordHash\":\"hash\",\"passwordSalt\":\"\"}")]
+    [InlineData(nameof(LocalAccountSettings), "{\"username\":\"legacy\",\"passwordHash\":\"hash\",\"passwordSalt\":\"salt\",\"isTotpEnabled\":true}")]
+    [InlineData(nameof(LocalAccountSettings), "{\"username\":\"legacy\",\"passwordHash\":\"hash\",\"passwordSalt\":\"salt\",\"totpSecret\":\"private-marker!\"}")]
+    [InlineData(nameof(SystemManifestSettings), "{\"installTimeUtc\":\"0001-01-01T00:00:00Z\"}")]
+    [InlineData(nameof(SystemManifestSettings), "{\"installTimeUtc\":\"2024-01-01T00:00:00\"}")]
     public async Task Initialize_InvalidAccountOrManifest_DoesNotPersistAnyDefaults(string key, string invalidJson)
     {
         var ct = TestContext.Current.CancellationToken;
-        var persisted = new BlogConfig().LoadFromConfig(new Dictionary<string, string>(), isNew: true).ToDictionary();
+        var persisted = StartupSettings.Defaults();
         persisted[nameof(FeedSettings)] = "not-json";
         persisted[key] = invalidJson;
         var queryMediator = new Mock<IQueryMediator>();
         queryMediator.Setup(m => m.QueryAsync(It.IsAny<ListConfigurationsQuery>(), It.IsAny<QueryMediationSettings>(), ct))
             .ReturnsAsync(persisted);
         var commands = new RecordingCommandMediator();
-        var initializer = new ConfigInitializer(queryMediator.Object, commands, new BlogConfig(), NullLogger<ConfigInitializer>.Instance);
+        var config = new BlogConfig();
+        var originalGeneral = config.GeneralSettings;
+        var accounts = new LocalAccountState();
+        accounts.Publish(LocalAccountSettings.DefaultValue);
+        var originalAccount = accounts.Read().ToJson();
+        var initializer = new ConfigInitializer(queryMediator.Object, commands, config, NullLogger<ConfigInitializer>.Instance, accounts);
 
-        await Assert.ThrowsAsync<InvalidOperationException>(() => initializer.Initialize(isNew: false, ct));
+        var exception = await Assert.ThrowsAsync<InvalidOperationException>(() => initializer.Initialize(isNew: false, ct));
 
         Assert.Empty(commands.Commands);
         Assert.Equal(invalidJson, persisted[key]);
+        Assert.Same(originalGeneral, config.GeneralSettings);
+        Assert.Equal(originalAccount, accounts.Read().ToJson());
+        Assert.DoesNotContain("private-marker", exception.ToString());
     }
 
     [Theory]
@@ -51,7 +67,7 @@ public sealed class ConfigInitializerTests
         var ct = TestContext.Current.CancellationToken;
         var options = new DbContextOptionsBuilder<BlogDbContext>().UseInMemoryDatabase(Guid.NewGuid().ToString()).Options;
         await using var db = new BlogDbContext(options);
-        var persisted = new BlogConfig().LoadFromConfig(new Dictionary<string, string>(), isNew: true).ToDictionary();
+        var persisted = StartupSettings.Defaults();
         var general = GeneralSettings.DefaultValue;
         general.SiteTitle = "Preserved title";
         persisted[nameof(GeneralSettings)] = general.ToJson();
@@ -76,7 +92,7 @@ public sealed class ConfigInitializerTests
             .Returns((ICommand<OperationCode> command, CommandMediationSettings _, CancellationToken token) =>
                 defaultsHandler.HandleAsync((AddDefaultConfigurationCommand)command, token));
         var config = new BlogConfig();
-        var initializer = new ConfigInitializer(queryMediator.Object, commands.Object, config, NullLogger<ConfigInitializer>.Instance);
+        var initializer = new ConfigInitializer(queryMediator.Object, commands.Object, config, NullLogger<ConfigInitializer>.Instance, new LocalAccountState());
 
         await initializer.Initialize(isNew: false, ct);
 
@@ -114,7 +130,7 @@ public sealed class ConfigInitializerTests
         var ct = TestContext.Current.CancellationToken;
         await using var db = new BlogDbContext(new DbContextOptionsBuilder<BlogDbContext>()
             .UseInMemoryDatabase(Guid.NewGuid().ToString()).Options);
-        var saved = new BlogConfig().LoadFromConfig(new Dictionary<string, string>(), isNew: true).ToDictionary();
+        var saved = StartupSettings.Defaults();
         saved[name] = """ { "futureField": { "value": "preserved" } } """;
         var timestamp = DateTime.UtcNow.AddDays(-1);
         db.BlogConfiguration.AddRange(saved.Select(pair => new BlogConfigurationEntity
@@ -129,7 +145,7 @@ public sealed class ConfigInitializerTests
         var commands = new Mock<ICommandMediator>(MockBehavior.Strict);
         var config = new BlogConfig();
         var logger = new RecordingLogger<ConfigInitializer>();
-        var initializer = new ConfigInitializer(queries.Object, commands.Object, config, logger);
+        var initializer = new ConfigInitializer(queries.Object, commands.Object, config, logger, new LocalAccountState());
         var property = typeof(IBlogConfig).GetProperty(name)!;
         var expected = property.PropertyType.GetProperty("DefaultValue", BindingFlags.Public | BindingFlags.Static)!.GetValue(null).ToJson();
 
@@ -173,11 +189,11 @@ public sealed class ConfigInitializerTests
             queryMediator.Object,
             commandMediator,
             blogConfig,
-            NullLogger<ConfigInitializer>.Instance);
+            NullLogger<ConfigInitializer>.Instance, new LocalAccountState());
 
         await initializer.Initialize(isNew: false, cancellationToken);
 
-        Assert.Equal("16.3.0", blogConfig.SystemManifestSettings.VersionString);
+        Assert.Equal("16.3.0", SystemManifestSettings.ParseStored(persistedSettings[nameof(SystemManifestSettings)]).VersionString);
         Assert.Equal(9, commandMediator.Commands.Count);
         Assert.DoesNotContain(
             commandMediator.Commands.OfType<AddDefaultConfigurationCommand>(),
@@ -204,30 +220,32 @@ public sealed class ConfigInitializerTests
             });
         var commandMediator = new RecordingCommandMediator();
         var config = new BlogConfig();
-        var initializer = new ConfigInitializer(queryMediator.Object, commandMediator, config, NullLogger<ConfigInitializer>.Instance);
+        var initializer = new ConfigInitializer(queryMediator.Object, commandMediator, config, NullLogger<ConfigInitializer>.Instance, new LocalAccountState());
 
         await initializer.Initialize(isNew, cancellationToken);
 
         var commands = commandMediator.Commands.OfType<AddDefaultConfigurationCommand>().ToArray();
-        Assert.Equal(typeof(IBlogConfig).GetProperties().Length - (isNew ? 0 : 1), commands.Length);
+        Assert.Equal(typeof(IBlogConfig).GetProperties().Length + 2 - (isNew ? 0 : 1), commands.Length);
         var manifestCommand = Assert.Single(commands, command => command.CfgKey == nameof(SystemManifestSettings));
-        Assert.Equal(config.SystemManifestSettings.ToJson(), manifestCommand.DefaultJson);
+        var savedManifest = SystemManifestSettings.ParseStored(manifestCommand.DefaultJson);
+        Assert.Equal(DateTimeKind.Utc, savedManifest.InstallTimeUtc.Kind);
+        Assert.NotEqual(default, savedManifest.InstallTimeUtc);
         Assert.Equal(
             isNew ? SystemManifestSettings.DefaultValueNew.VersionString : "0.0.0.0",
-            config.SystemManifestSettings.VersionString);
+            savedManifest.VersionString);
     }
 
     [Fact]
     public async Task Initialize_CompleteStore_DoesNotWriteDefaults()
     {
         var cancellationToken = TestContext.Current.CancellationToken;
-        var persisted = new BlogConfig().LoadFromConfig(new Dictionary<string, string>(), isNew: true).ToDictionary();
+        var persisted = StartupSettings.Defaults();
         var queryMediator = new Mock<IQueryMediator>();
         queryMediator.Setup(mediator => mediator.QueryAsync(
                 It.IsAny<ListConfigurationsQuery>(), It.IsAny<QueryMediationSettings>(), cancellationToken))
             .ReturnsAsync(persisted);
         var commandMediator = new RecordingCommandMediator();
-        var initializer = new ConfigInitializer(queryMediator.Object, commandMediator, new BlogConfig(), NullLogger<ConfigInitializer>.Instance);
+        var initializer = new ConfigInitializer(queryMediator.Object, commandMediator, new BlogConfig(), NullLogger<ConfigInitializer>.Instance, new LocalAccountState());
 
         await initializer.Initialize(isNew: false, cancellationToken);
 

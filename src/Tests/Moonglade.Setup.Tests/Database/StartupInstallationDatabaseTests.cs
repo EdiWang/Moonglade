@@ -1,3 +1,4 @@
+using Moonglade.Auth;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Moonglade.Configuration;
@@ -29,7 +30,7 @@ public class StartupInstallationDatabaseTests(DisposableCategoryDatabases databa
         Assert.Equal(InitStartUpResult.Success, await harness.Initializer.InitStartUpAsync(ct));
 
         var postId = (await db.Post.AsNoTracking().SingleAsync(ct)).Id;
-        var manifest = harness.Config.SystemManifestSettings.ToJson();
+        var manifest = harness.Manifest.ToJson();
         var original = await db.BlogConfiguration.AsNoTracking().OrderBy(row => row.CfgKey).ToListAsync(ct);
         for (var restart = 0; restart < 2; restart++)
         {
@@ -37,7 +38,7 @@ public class StartupInstallationDatabaseTests(DisposableCategoryDatabases databa
             using var restarted = new StartupTestHarness(restartedDb);
             Assert.Equal(InitStartUpResult.Success, await restarted.Initializer.InitStartUpAsync(ct));
             Assert.Equal(postId, (await restartedDb.Post.SingleAsync(ct)).Id);
-            Assert.Equal(manifest, restarted.Config.SystemManifestSettings.ToJson());
+            Assert.Equal(manifest, restarted.Manifest.ToJson());
             var saved = await restartedDb.BlogConfiguration.OrderBy(row => row.CfgKey).ToListAsync(ct);
             Assert.Equal(original.Select(row => (row.CfgKey, row.CfgValue, row.LastModifiedTimeUtc)),
                 saved.Select(row => (row.CfgKey, row.CfgValue, row.LastModifiedTimeUtc)));
@@ -70,7 +71,7 @@ public class StartupInstallationDatabaseTests(DisposableCategoryDatabases databa
                 await failed.Initializer.InitStartUpAsync(ct));
             Assert.True(failure.Triggered);
             Assert.Same(originalRuntime, failed.Config.GeneralSettings);
-            Assert.Null(failed.Config.LocalAccountSettings.Username);
+            Assert.Null(failed.Accounts.Read().Username);
         }
         await using var restartedDb = CreateContext(database);
         Assert.False(await restartedDb.Post.AnyAsync(ct));
@@ -113,12 +114,17 @@ public class StartupInstallationDatabaseTests(DisposableCategoryDatabases databa
         await using var db = CreateContext(database, failure);
         using var harness = new StartupTestHarness(db);
         var originalRuntime = harness.Config.GeneralSettings;
-        failure.BeforeThrow = () => Assert.Same(originalRuntime, harness.Config.GeneralSettings);
+        failure.BeforeThrow = () =>
+        {
+            Assert.Same(originalRuntime, harness.Config.GeneralSettings);
+            Assert.Null(harness.Accounts.Read().Username);
+        };
 
         Assert.Equal(InitStartUpResult.Success, await harness.Initializer.InitStartUpAsync(ct));
 
         Assert.True(failure.Triggered);
         Assert.NotSame(originalRuntime, harness.Config.GeneralSettings);
+        Assert.Equal(LocalAccountSettings.DefaultValue.ToJson(), harness.Accounts.Read().ToJson());
         await AssertOneInstallationAsync(db, ct);
     }
 
@@ -196,7 +202,7 @@ public class StartupInstallationDatabaseTests(DisposableCategoryDatabases databa
         Assert.Equal(InitStartUpResult.FailedCreateDatabase, await harness.Initializer.InitStartUpAsync(ct));
 
         Assert.True(failure.Triggered);
-        Assert.Null(harness.Config.LocalAccountSettings.Username);
+        Assert.Null(harness.Accounts.Read().Username);
         Assert.Equal(InitStartUpResult.Success, await harness.Initializer.InitStartUpAsync(ct));
         await AssertOneInstallationAsync(db, ct);
     }
@@ -219,7 +225,7 @@ public class StartupInstallationDatabaseTests(DisposableCategoryDatabases databa
         await using var database = await databases.CreateAsync(provider);
         await using var db = CreateContext(database);
         await db.Database.EnsureCreatedAsync(ct);
-        var values = new BlogConfig().LoadFromConfig(new Dictionary<string, string>(), isNew: true).ToDictionary();
+        var values = StartupSettings.Defaults();
         var timestamp = DateTime.UtcNow.AddDays(-1);
         db.BlogConfiguration.AddRange(values.Select(pair => new BlogConfigurationEntity
         {

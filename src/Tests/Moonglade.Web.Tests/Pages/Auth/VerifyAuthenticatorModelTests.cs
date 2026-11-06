@@ -123,9 +123,11 @@ public class VerifyAuthenticatorModelTests
             RequestServices = services
         };
 
+        var accounts = new LocalAccountState();
+        accounts.Publish(account);
         var model = new VerifyAuthenticatorModel(
             Options.Create(new AuthenticationSettings { Provider = AuthenticationProvider.Local }),
-            new BlogConfig { LocalAccountSettings = account },
+            accounts,
             totpService,
             Mock.Of<ILogger<VerifyAuthenticatorModel>>());
 

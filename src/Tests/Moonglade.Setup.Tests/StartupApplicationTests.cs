@@ -1,3 +1,4 @@
+using Moonglade.Auth;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -86,8 +87,7 @@ public class StartupApplicationTests
     {
         var ct = TestContext.Current.CancellationToken;
         await using var db = CreateContext();
-        var config = new BlogConfig();
-        var settings = config.LoadFromConfig(new Dictionary<string, string>(), true);
+        var settings = StartupSettings.Defaults();
         var timestamp = DateTime.UtcNow.AddDays(-1);
         db.BlogConfiguration.AddRange(settings.Select(pair => new BlogConfigurationEntity
         {
@@ -106,8 +106,8 @@ public class StartupApplicationTests
         await app.InitStartUp().WaitAsync(TimeSpan.FromSeconds(10), ct);
 
         hosted.Verify(service => service.StartAsync(It.IsAny<CancellationToken>()), Times.Never);
-        Assert.Equal(config.GeneralSettings.ToJson(), harness.Config.GeneralSettings.ToJson());
-        Assert.Equal(config.LocalAccountSettings.ToJson(), harness.Config.LocalAccountSettings.ToJson());
+        Assert.Equal(settings[nameof(GeneralSettings)], harness.Config.GeneralSettings.ToJson());
+        Assert.Equal(LocalAccountSettings.DefaultValue.ToJson(), harness.Accounts.Read().ToJson());
         Assert.DoesNotContain(logger.Entries, entry => entry.Level == LogLevel.Critical);
         db.ChangeTracker.Clear();
         var rows = await db.BlogConfiguration.ToDictionaryAsync(row => row.CfgKey, ct);

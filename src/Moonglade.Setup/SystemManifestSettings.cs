@@ -1,10 +1,12 @@
-﻿using Edi.AspNetCore.Utils;
+using Edi.AspNetCore.Utils;
 using System.Text.Json.Serialization;
 using System.ComponentModel.DataAnnotations;
+using Moonglade.Configuration;
+using System.Text.Json;
 
-namespace Moonglade.Configuration;
+namespace Moonglade.Setup;
 
-public class SystemManifestSettings : IBlogSettings<SystemManifestSettings>, IValidatableObject
+public class SystemManifestSettings : IValidatableObject
 {
     public string VersionString { get; set; }
     public DateTime InstallTimeUtc { get; set; }
@@ -13,6 +15,19 @@ public class SystemManifestSettings : IBlogSettings<SystemManifestSettings>, IVa
     {
         if (InstallTimeUtc == default || InstallTimeUtc.Kind != DateTimeKind.Utc)
             yield return new("Installation time must be a non-minimum UTC timestamp.", [nameof(InstallTimeUtc)]);
+    }
+
+    public static SystemManifestSettings ParseStored(string json)
+    {
+        try
+        {
+            var value = json?.FromJson<SystemManifestSettings>();
+            if (value is not null && Validator.TryValidateObject(value, new ValidationContext(value), null, true)) return value;
+        }
+        catch (JsonException)
+        {
+        }
+        throw new InvalidOperationException($"Stored configuration '{nameof(SystemManifestSettings)}' is invalid. Restore a valid value before restarting.");
     }
 
     [JsonIgnore]

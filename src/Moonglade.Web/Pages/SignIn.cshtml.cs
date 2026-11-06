@@ -14,7 +14,7 @@ namespace Moonglade.Web.Pages;
 public class SignInModel(IOptions<AuthenticationSettings> authSettings,
         ICommandMediator commandMediator,
         ILogger<SignInModel> logger,
-        IBlogConfig blogConfig,
+        ILocalAccountReader accounts,
         IWebHostEnvironment webHostEnvironment)
     : PageModel
 {
@@ -85,7 +85,7 @@ public class SignInModel(IOptions<AuthenticationSettings> authSettings,
                 var isValid = await commandMediator.SendAsync(new ValidateLoginCommand(Username, Password));
                 if (isValid)
                 {
-                    var account = blogConfig.LocalAccountSettings;
+                    var account = accounts.Read();
 
                     if (!IsTotpRequired())
                     {

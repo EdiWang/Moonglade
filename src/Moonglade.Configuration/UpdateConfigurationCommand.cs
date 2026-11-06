@@ -33,15 +33,13 @@ public class UpdateConfigurationCommandHandler(
     BlogDbContext db,
     IBlogConfig blogConfig,
     IEventMediator eventMediator,
+    ConfigurationWriteGate gate,
     ILogger<UpdateConfigurationCommandHandler> logger) : ICommandHandler<UpdateConfigurationCommand>
 {
-    // Keep concurrent commits and singleton replacements in the same order within this process.
-    private static readonly SemaphoreSlim UpdateLock = new(1, 1);
-
     public async Task HandleAsync(UpdateConfigurationCommand request, CancellationToken ct)
     {
         var names = request.Settings.Keys.ToArray();
-        await UpdateLock.WaitAsync(ct);
+        await gate.WaitAsync(ct);
         try
         {
             var replacements = new List<(PropertyInfo Property, object Value)>();
@@ -98,7 +96,7 @@ public class UpdateConfigurationCommandHandler(
         }
         finally
         {
-            UpdateLock.Release();
+            gate.Release();
         }
     }
 }

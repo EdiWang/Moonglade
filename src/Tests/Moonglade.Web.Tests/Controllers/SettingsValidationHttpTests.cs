@@ -146,6 +146,7 @@ public class SettingsValidationHttpTests
         builder.WebHost.UseTestServer();
         builder.Logging.ClearProviders();
         builder.Services.AddSingleton<IBlogConfig>(config);
+        builder.Services.AddSingleton<ILocalAccountReader>(store.Accounts);
         builder.Services.AddSingleton<ICommandMediator>(store);
         builder.Services.AddSingleton(Mock.Of<IQueryMediator>());
         builder.Services.AddSingleton(Mock.Of<IEventMediator>());

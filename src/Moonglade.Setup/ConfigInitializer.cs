@@ -2,6 +2,7 @@
 using LiteBus.Queries.Abstractions;
 using Microsoft.Extensions.Logging;
 using Moonglade.Configuration;
+using Moonglade.Auth;
 
 namespace Moonglade.Setup;
 
@@ -18,12 +19,15 @@ public class ConfigInitializer(
     IQueryMediator queryMediator,
     ICommandMediator commandMediator,
     IBlogConfig blogConfig,
-    ILogger<ConfigInitializer> logger)
+    ILogger<ConfigInitializer> logger,
+    LocalAccountState accounts)
 {
     public async Task Initialize(bool isNew, CancellationToken cancellationToken = default)
     {
         var config = await InitializeStoreAsync(isNew, cancellationToken);
+        var account = LocalAccountSettings.ParseStored(config[nameof(LocalAccountSettings)]);
         blogConfig.LoadFromConfig(config, isNew);
+        accounts.Publish(account);
     }
 
     internal async Task<IDictionary<string, string>> InitializeStoreAsync(bool isNew, CancellationToken cancellationToken = default)
@@ -33,15 +37,25 @@ public class ConfigInitializer(
             logger.LogInformation("Starting blog configuration initialization. IsNew: {IsNew}", isNew);
 
             var config = await queryMediator.QueryAsync(new ListConfigurationsQuery(), cancellationToken);
-            if (!isNew && !config.ContainsKey(nameof(LocalAccountSettings)))
+            var accountKey = nameof(LocalAccountSettings);
+            var manifestKey = nameof(SystemManifestSettings);
+            if (!isNew && !config.ContainsKey(accountKey))
             {
                 throw new InvalidOperationException(
                     "Stored configuration 'LocalAccountSettings' is missing. Restore a valid value before restarting.");
             }
 
+            var account = config.TryGetValue(accountKey, out var accountJson)
+                ? LocalAccountSettings.ParseStored(accountJson) : LocalAccountSettings.DefaultValue;
+            var manifest = config.TryGetValue(manifestKey, out var manifestJson)
+                ? SystemManifestSettings.ParseStored(manifestJson)
+                : isNew ? SystemManifestSettings.DefaultValueNew : SystemManifestSettings.DefaultValue;
+
             // Validate detached settings before any repair writes or runtime publication.
-            var defaultsToAdd = new BlogConfig().LoadFromConfig(config, isNew);
-            if (!isNew && defaultsToAdd.ContainsKey(nameof(SystemManifestSettings)))
+            var defaultsToAdd = new BlogConfig().LoadFromConfig(config, isNew).ToDictionary();
+            if (!config.ContainsKey(accountKey)) defaultsToAdd.Add(accountKey, account.ToJson());
+            if (!config.ContainsKey(manifestKey)) defaultsToAdd.Add(manifestKey, manifest.ToJson());
+            if (!isNew && !config.ContainsKey(manifestKey))
             {
                 logger.LogWarning(
                     "Reconstructing missing configuration {Key}; version is unknown and InstallTimeUtc is the reconstruction time",

@@ -3,10 +3,10 @@
 ## Resume Here
 
 - Date: 2026-11-06, Asia/Taipei. Starting HEAD: `aa58da8f9` (`Plan structural settings improvements`), `master`, clean working tree.
-- Authorization: the user requested entering B7 after reviewing `SETTINGS_STRUCTURE_PLAN.md`. This turn executes S0 test-only experiments and records the results; it does not authorize S1-S6 production implementation or a new commit.
-- Production application files, stored keys, JSON fields, dependency versions, database schema, authentication policies, and live resources are unchanged.
-- Current state: technical checks passed. The user confirmed the ordinary-model direction (D28). The separate Auth/Setup ownership/dependency question is still pending; do not infer its answer from the model confirmation.
-- Next action: obtain the remaining ownership decision and S0 acceptance / S1 execution authorization. Preserve this report and both plan trackers across conversations. Do not begin S1 automatically.
+- Historical S0 authorization: test-only experiments after entry into B7; committed as `90e302d45`. On 2026-11-06 the user subsequently confirmed protected-state ownership and authorized S1 (D29).
+- The S0 experiment itself did not change production application files or storage/authentication contracts. S1 subsequently moves protected production responsibilities; see the live reliability tracker for current results. This report retains the historical S0 evidence.
+- Current state: S0 checks passed; D28 confirms the ordinary-model direction and D29 separately confirms Auth/Setup ownership and the dependency edge.
+- Next action: follow the S1 handoff in `SETTINGS_RELIABILITY_PLAN.md`. Preserve this report and both plan trackers. S2-S6 remain separately gated.
 
 ## Experimental Scope
 
@@ -101,9 +101,9 @@ Only ordinary-record conversion is approved by D28. Do not automatically turn cr
 | --- | --- |
 | G1: enter B7 / authorize S0 experiments | Fulfilled by the user's execution request |
 | G2-M: existing ordinary models become init-only records with ImmutableList menus; DTOs only for demonstrated incompatibility | Confirmed by the user's first answer; D28 |
-| G2-O: Auth owns accounts, Setup owns manifest, Configuration owns ordinary preferences; Setup references Auth | Pending separate answer; not implied by G2-M |
-| S0 acceptance / S1 implementation | Not yet authorized by a subsequent batch request |
+| G2-O: Auth owns accounts, Setup owns manifest, Configuration owns ordinary preferences; Setup references Auth | Confirmed separately by the user in D29 |
+| S0 acceptance / S1 implementation | User explicitly authorized S1 after confirming responsibilities (D29); S1 acceptance remains separate |
 | S4/S5 exact workflow/commit/recovery protocol | S0 evidence and proposals recorded; revisit the concrete implementation before authorizing those batches |
-| Local commit / push / deployment | No new authorization; S0 changes remain uncommitted |
+| Local commit / push / deployment | S0 committed as `90e302d45`; S1 commit and all push/deployment remain unrequested |
 
 When evolving these test-only candidates, migrate useful compatibility/concurrency cases to the real implementation and remove redundant prototype code rather than maintaining two settings systems. The outer-transaction characterization must change when the production boundary becomes safe or explicitly rejects the composition. Retain this evidence record and the plan as requested.

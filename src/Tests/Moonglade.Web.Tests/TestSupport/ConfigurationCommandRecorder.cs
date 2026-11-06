@@ -1,3 +1,4 @@
+using Moonglade.Auth;
 using LiteBus.Commands.Abstractions;
 using LiteBus.Events.Abstractions;
 using Moq;
@@ -20,6 +21,8 @@ internal sealed class ConfigurationCommandRecorder : ICommandMediator, IDisposab
     public List<ICommand> Commands { get; } = [];
     public BlogDbContext Db { get; }
     public IBlogConfig Config => _config;
+    public LocalAccountState Accounts { get; } = new();
+    public ConfigurationWriteGate Gate { get; } = new();
     public Exception? ActivityLogFailure { get; set; }
     public IEventMediator EventMediator { get; } = Mock.Of<IEventMediator>();
 
@@ -30,9 +33,17 @@ internal sealed class ConfigurationCommandRecorder : ICommandMediator, IDisposab
         Db.Database.EnsureCreated();
     }
 
-    public void Initialize(IBlogConfig config)
+    public void Initialize(IBlogConfig config, LocalAccountSettings? account = null)
     {
         _config = config;
+        account ??= LocalAccountSettings.DefaultValue;
+        Accounts.Publish(account);
+        Db.BlogConfiguration.Add(new BlogConfigurationEntity
+        {
+            CfgKey = nameof(LocalAccountSettings),
+            CfgValue = account.ToJson(),
+            LastModifiedTimeUtc = DateTime.UtcNow
+        });
         foreach (var property in typeof(IBlogConfig).GetProperties())
         {
             Db.BlogConfiguration.Add(new BlogConfigurationEntity
@@ -59,8 +70,13 @@ internal sealed class ConfigurationCommandRecorder : ICommandMediator, IDisposab
         Commands.Add(command);
         if (command is UpdateConfigurationCommand update)
         {
-            await new UpdateConfigurationCommandHandler(Db, _config, EventMediator, NullLogger<UpdateConfigurationCommandHandler>.Instance)
+            await new UpdateConfigurationCommandHandler(Db, _config, EventMediator, Gate, NullLogger<UpdateConfigurationCommandHandler>.Instance)
                 .HandleAsync(update, cancellationToken);
+        }
+        else if (command is UpdateLocalAccountCommand accountUpdate)
+        {
+            await new UpdateLocalAccountCommandHandler(Db, Accounts, Gate, EventMediator, NullLogger<UpdateLocalAccountCommandHandler>.Instance)
+                .HandleAsync(accountUpdate, cancellationToken);
         }
         else if (command is CreateActivityLogCommand && ActivityLogFailure is not null)
         {

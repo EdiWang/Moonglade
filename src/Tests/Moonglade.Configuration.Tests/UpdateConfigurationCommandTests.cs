@@ -11,6 +11,7 @@ namespace Moonglade.Configuration.Tests;
 
 public class UpdateConfigurationCommandTests
 {
+    private readonly ConfigurationWriteGate _gate = new();
     [Fact]
     public async Task Save_UpdatesDatabaseAndRuntimeFromDetachedSnapshot()
     {
@@ -96,20 +97,18 @@ public class UpdateConfigurationCommandTests
     {
         var interceptor = new FailingSaveInterceptor();
         using var db = CreateDbContext(interceptor);
-        var config = new BlogConfig { LocalAccountSettings = LocalAccountSettings.DefaultValue };
-        await SeedAsync(db, config.LocalAccountSettings);
-        var original = config.LocalAccountSettings;
+        var config = new BlogConfig { GeneralSettings = General("Old") };
+        await SeedAsync(db, config.GeneralSettings);
+        var original = config.GeneralSettings;
         interceptor.Fail = true;
 
-        var updated = LocalAccountSettings.DefaultValue;
-        updated.Username = "Changed";
-        updated.IsTotpEnabled = true;
-        updated.TotpSecret = "JBSWY3DPEHPK3PXP";
+        var updated = General("Old");
+        updated.SiteTitle = "Changed";
         await Assert.ThrowsAsync<DbUpdateException>(() => Handler(db, config).HandleAsync(
             UpdateConfigurationCommand.Create(updated),
             TestContext.Current.CancellationToken));
 
-        Assert.Same(original, config.LocalAccountSettings);
+        Assert.Same(original, config.GeneralSettings);
         db.ChangeTracker.Clear();
         Assert.Equal(original.ToJson(), (await db.BlogConfiguration.SingleAsync(TestContext.Current.CancellationToken)).CfgValue);
     }
@@ -178,7 +177,7 @@ public class UpdateConfigurationCommandTests
                 Assert.Equal([nameof(GeneralSettings)], ((ConfigurationChangedEvent)message).Names);
             }).Returns(Task.CompletedTask);
 
-        await new UpdateConfigurationCommandHandler(db, config, events.Object, NullLogger<UpdateConfigurationCommandHandler>.Instance)
+        await new UpdateConfigurationCommandHandler(db, config, events.Object, _gate, NullLogger<UpdateConfigurationCommandHandler>.Instance)
             .HandleAsync(UpdateConfigurationCommand.Create(General("Committed")), cancellation.Token);
 
         Assert.True(cancellation.IsCancellationRequested);
@@ -226,7 +225,7 @@ public class UpdateConfigurationCommandTests
         using var cancellation = CancellationTokenSource.CreateLinkedTokenSource(TestContext.Current.CancellationToken);
         if (scenario == "cancelled") await cancellation.CancelAsync();
         var events = new Mock<IEventMediator>();
-        var handler = new UpdateConfigurationCommandHandler(db, config, events.Object, NullLogger<UpdateConfigurationCommandHandler>.Instance);
+        var handler = new UpdateConfigurationCommandHandler(db, config, events.Object, _gate, NullLogger<UpdateConfigurationCommandHandler>.Instance);
         var settings = General(scenario == "unchanged" ? "Old" : "New");
         if (scenario == "invalid") settings.SiteTitle = null;
 
@@ -261,8 +260,8 @@ public class UpdateConfigurationCommandTests
         Assert.Equal(originalImage.ToJson(), rows[nameof(ImageSettings)].CfgValue);
     }
 
-    private static UpdateConfigurationCommandHandler Handler(BlogDbContext db, IBlogConfig config) =>
-        new(db, config, Mock.Of<IEventMediator>(), NullLogger<UpdateConfigurationCommandHandler>.Instance);
+    private UpdateConfigurationCommandHandler Handler(BlogDbContext db, IBlogConfig config) =>
+        new(db, config, Mock.Of<IEventMediator>(), _gate, NullLogger<UpdateConfigurationCommandHandler>.Instance);
 
     private static GeneralSettings General(string title)
     {

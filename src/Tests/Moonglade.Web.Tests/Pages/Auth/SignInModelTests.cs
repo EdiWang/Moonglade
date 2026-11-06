@@ -190,10 +190,8 @@ public class SignInModelTests
         };
         httpContext.Request.Headers.UserAgent = "UnitTest";
 
-        var blogConfig = new BlogConfig
-        {
-            LocalAccountSettings = account
-        };
+        var accounts = new LocalAccountState();
+        accounts.Publish(account);
 
         var model = new SignInModel(
             Options.Create(new AuthenticationSettings
@@ -203,7 +201,7 @@ public class SignInModelTests
             }),
             commandMediator,
             Mock.Of<ILogger<SignInModel>>(),
-            blogConfig,
+            accounts,
             Mock.Of<IWebHostEnvironment>(x => x.EnvironmentName == environmentName));
 
         model.PageContext = new PageContext

@@ -40,7 +40,7 @@ public class SetupAuthenticatorModelTests
         Assert.StartsWith("data:image/png;base64,", model.QrCodeImageUri);
 
         var settings = JsonSerializer.Deserialize<LocalAccountSettings>(
-            commandMediator.Single<UpdateConfigurationCommand>().Settings[nameof(LocalAccountSettings)],
+            commandMediator.Single<UpdateLocalAccountCommand>().Json,
             JsonOptions)!;
         Assert.Equal("JBSWY3DPEHPK3PXP", settings.TotpSecret);
         Assert.False(settings.IsTotpEnabled);
@@ -122,7 +122,7 @@ public class SetupAuthenticatorModelTests
         Assert.Equal("/Admin/Dashboard", redirect.PageName);
 
         var settings = JsonSerializer.Deserialize<LocalAccountSettings>(
-            commandMediator.Single<UpdateConfigurationCommand>().Settings[nameof(LocalAccountSettings)],
+            commandMediator.Single<UpdateLocalAccountCommand>().Json,
             JsonOptions)!;
         Assert.True(settings.IsTotpEnabled);
         Assert.Equal("JBSWY3DPEHPK3PXP", settings.TotpSecret);
@@ -157,7 +157,7 @@ public class SetupAuthenticatorModelTests
 
         await Assert.ThrowsAsync<DbUpdateException>(() => hasSecret ? model.OnPostAsync() : model.OnGetAsync());
 
-        Assert.Same(account, mediator.Config.LocalAccountSettings);
+        Assert.Equal(account.ToJson(), mediator.Accounts.Read().ToJson());
         Assert.Equal(originalJson, account.ToJson());
         authentication.Verify(p => p.SignInAsync(It.IsAny<HttpContext>(), It.IsAny<string>(),
             It.IsAny<ClaimsPrincipal>(), It.IsAny<AuthenticationProperties>()), Times.Never);
@@ -184,15 +184,14 @@ public class SetupAuthenticatorModelTests
             RequestServices = services
         };
 
-        var blogConfig = new BlogConfig { LocalAccountSettings = account };
-        commandMediator.Initialize(blogConfig);
+        commandMediator.Initialize(new BlogConfig(), account);
         var model = new SetupAuthenticatorModel(
             Options.Create(new AuthenticationSettings
             {
                 Provider = AuthenticationProvider.Local,
                 Totp = new TotpAuthenticationSettings { Issuer = "Moonglade Test" }
             }),
-            blogConfig,
+            commandMediator.Accounts,
             commandMediator,
             totpService,
             Mock.Of<ILogger<SetupAuthenticatorModel>>());

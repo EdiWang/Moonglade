@@ -1,9 +1,11 @@
-﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations;
 using OtpNet;
+using Moonglade.Configuration;
+using System.Text.Json;
 
-namespace Moonglade.Configuration;
+namespace Moonglade.Auth;
 
-public class LocalAccountSettings : IBlogSettings<LocalAccountSettings>, IValidatableObject
+public class LocalAccountSettings : IValidatableObject
 {
     [Required]
     public string Username { get; set; }
@@ -32,6 +34,19 @@ public class LocalAccountSettings : IBlogSettings<LocalAccountSettings>, IValida
             }
             if (!valid) yield return new("TOTP secret is not valid Base32.", [nameof(TotpSecret)]);
         }
+    }
+
+    public static LocalAccountSettings ParseStored(string json)
+    {
+        try
+        {
+            var value = json?.FromJson<LocalAccountSettings>();
+            if (value is not null && Validator.TryValidateObject(value, new ValidationContext(value), null, true)) return value;
+        }
+        catch (JsonException)
+        {
+        }
+        throw new InvalidOperationException($"Stored configuration '{nameof(LocalAccountSettings)}' is invalid. Restore a valid value before restarting.");
     }
 
     public static LocalAccountSettings DefaultValue =>

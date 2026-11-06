@@ -233,7 +233,7 @@ public partial class SettingsControllerTests
         Assert.IsType<NoContentResult>(result);
 
         var settings = JsonSerializer.Deserialize<LocalAccountSettings>(
-            commandMediator.Single<UpdateConfigurationCommand>().Settings[nameof(LocalAccountSettings)],
+            commandMediator.Single<UpdateLocalAccountCommand>().Json,
             JsonOptions)!;
         Assert.Equal(account.Username, settings.Username);
         Assert.Equal(account.PasswordHash, settings.PasswordHash);
@@ -393,7 +393,7 @@ public partial class SettingsControllerTests
         await Assert.ThrowsAsync<InvalidOperationException>(() => controller.ResetLocalAccountTotp(
             new ResetLocalAccountTotpRequest { CurrentPassword = "Password1" }));
 
-        Assert.Same(account, mediator.Config.LocalAccountSettings);
+        Assert.Equal(account.ToJson(), mediator.Accounts.Read().ToJson());
         Assert.True(account.IsTotpEnabled);
         Assert.Empty(mediator.Commands.OfType<CreateActivityLogCommand>());
         authentication.Verify(p => p.SignOutAsync(It.IsAny<HttpContext>(), It.IsAny<string>(), It.IsAny<AuthenticationProperties>()), Times.Never);
@@ -462,11 +462,11 @@ public partial class SettingsControllerTests
         Mock<IAuthenticationService> authenticationService)
     {
         return CreateController(
-            new BlogConfig { LocalAccountSettings = account },
+            new BlogConfig(),
             commandMediator,
             Mock.Of<IQueryMediator>(),
             authenticationService,
-            account.Username);
+            account.Username, account: account);
     }
 
     private static SettingsController CreateController(
@@ -477,9 +477,10 @@ public partial class SettingsControllerTests
         string username = "admin",
         IEventMediator? eventMediator = null,
         EmailCapabilityStatus? emailCapabilityStatus = null,
-        ILogger<SettingsController>? logger = null)
+        ILogger<SettingsController>? logger = null,
+        LocalAccountSettings? account = null)
     {
-        commandMediator.Initialize(blogConfig);
+        commandMediator.Initialize(blogConfig, account);
         var serviceCollection = new ServiceCollection();
         serviceCollection.AddSingleton(authenticationService.Object);
         serviceCollection.AddLogging();
@@ -501,6 +502,7 @@ public partial class SettingsControllerTests
             eventMediator ?? Mock.Of<IEventMediator>(),
             emailCapabilityStatus ?? CreateEmailCapabilityStatus(EmailCapabilityState.Available),
             queryMediator,
+            commandMediator.Accounts,
             commandMediator);
 
         controller.ControllerContext = new ControllerContext

@@ -317,6 +317,7 @@ public partial class PostCacheInvalidationTests
             services.AddSingleton<PostCacheInvalidator>();
             services.AddSingleton<ThemeCacheInvalidator>();
             services.AddSingleton<ScheduledPublishWakeUp>();
+            services.AddSingleton<ConfigurationWriteGate>();
             services.AddSingleton<IBlogConfig>(new BlogConfig
             {
                 GeneralSettings = GeneralSettings.DefaultValue,

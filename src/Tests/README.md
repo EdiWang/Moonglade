@@ -7,7 +7,7 @@ The 15 test projects follow the production project boundaries and use xUnit v3 w
 | Project | Organization |
 | --- | --- |
 | `Moonglade.Features.Tests` | Production feature folders: `Post`, `Page`, `Comment`, `Category`, `Tag`, `Dashboard`, and `SiteVerification`. |
-| `Moonglade.Web.Tests` | `Controllers`, `Pages`, `Commands`, `Handlers`, `Services`, `Models`, `Caching`, and `Hosting`. `Structure` contains test-only settings compatibility experiments; its Razor fixtures are compiled by the Razor SDK in the test project. Shared test helpers live in `TestSupport`. Page folders mirror the production pages. |
+| `Moonglade.Web.Tests` | `Controllers`, `Pages`, `Commands`, `Handlers`, `Services`, `Models`, `Caching`, and `Hosting`. `Structure` contains settings compatibility experiments and SQLite account-writer boundary tests; its Razor fixtures are compiled by the Razor SDK in the test project. Shared test helpers live in `TestSupport`. Page folders mirror the production pages. |
 | `Moonglade.Email.Tests` | `Configuration`, `Delivery`, `Notifications`, and `Outbox`. |
 | `Moonglade.Utils.Tests` | Content processing tests are split by behavior under `Content`; tag validation and normalization live under `Tags`. Other utilities have their own test files. |
 | `Moonglade.Setup.Tests` | Startup, configuration initialization, preservation of existing content and installation metadata, and UTC validation. |
@@ -15,7 +15,7 @@ The 15 test projects follow the production project boundaries and use xUnit v3 w
 
 Namespaces match folders. Import shared Web helpers from `Moonglade.Web.Tests.TestSupport`; keep helpers used by only one suite local.
 
-Structural settings probes use isolated TestHost endpoints and compiled Razor fixtures in the test assembly, with production views excluded from the probe host. They exercise immutable value binding/JSON, render propagation through partials/components/layouts, and SQLite commit/publication behavior; these types/routes are not application implementations. The outer-transaction test deliberately characterizes an unsafe composition of the current command and must be revised when that boundary is redesigned, not interpreted as an approved production pattern.
+Structural settings probes use isolated TestHost endpoints and compiled Razor fixtures in the test assembly, with production views excluded from the probe host. They exercise immutable value binding/JSON, render propagation through partials/components/layouts, and SQLite commit/publication behavior; the experimental candidate types/routes are not application implementations. `LocalAccountCommandTests` exercises the production Auth writer with SQLite, including failure, no-op, cancellation, shared serialization, event ordering, and detached credentials. Auth tests own protected account parsing and state isolation; Setup tests own manifest parsing and preflight validation. Real LiteBus registration covers both writers and the shared gate. The outer-transaction test deliberately characterizes an unsafe composition of the current command and must be revised when that boundary is redesigned, not interpreted as an approved production pattern.
 
 ## Test Value
 

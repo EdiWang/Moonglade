@@ -1,3 +1,4 @@
+using Moonglade.Auth;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Moonglade.Configuration;
@@ -51,13 +52,13 @@ public class StartUpInitializerTests
         Assert.Equal(originalTime, settings.Single(row => row.CfgKey == nameof(LocalAccountSettings)).LastModifiedTimeUtc);
         if (manifestVersion is not null)
         {
-            Assert.Equal(manifest.ToJson(), harness.Config.SystemManifestSettings.ToJson());
+            Assert.Equal(manifest.ToJson(), harness.Manifest.ToJson());
             Assert.DoesNotContain(harness.ConfigLogger.Entries, entry => entry.Level == LogLevel.Warning);
         }
         else
         {
-            Assert.Equal("0.0.0.0", harness.Config.SystemManifestSettings.VersionString);
-            Assert.InRange(harness.Config.SystemManifestSettings.InstallTimeUtc, before, DateTime.UtcNow);
+            Assert.Equal("0.0.0.0", harness.Manifest.VersionString);
+            Assert.InRange(harness.Manifest.InstallTimeUtc, before, DateTime.UtcNow);
             Assert.Contains(harness.ConfigLogger.Entries, entry => entry.Level == LogLevel.Warning
                 && entry.Message.Contains(nameof(SystemManifestSettings)) && entry.Message.Contains("reconstruction"));
         }

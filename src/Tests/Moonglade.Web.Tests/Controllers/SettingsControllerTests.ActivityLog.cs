@@ -89,12 +89,12 @@ public partial class SettingsControllerTests
     public async Task Password_WhenAuditFails_PreservesNewCredentialsAndExistingSession()
     {
         var original = CreateLocalAccount();
-        var config = new BlogConfig { LocalAccountSettings = original };
+        var config = new BlogConfig();
         var failure = CreateAuditFailure();
         using var mediator = new ConfigurationCommandRecorder { ActivityLogFailure = failure };
         var authentication = new Mock<IAuthenticationService>();
         var logger = new Mock<ILogger<SettingsController>>();
-        var controller = CreateController(config, mediator, Mock.Of<IQueryMediator>(), authentication, logger: logger.Object);
+        var controller = CreateController(config, mediator, Mock.Of<IQueryMediator>(), authentication, logger: logger.Object, account: original);
         var request = new UpdateLocalAccountPasswordRequest
         {
             OldPassword = "Password1",
@@ -111,7 +111,7 @@ public partial class SettingsControllerTests
         Assert.Equal(SecurityHelper.HashPassword("NewPassword2", saved.PasswordSalt), saved.PasswordHash);
         Assert.Equal(original.TotpSecret, saved.TotpSecret);
         Assert.True(saved.IsTotpEnabled);
-        Assert.Equal(saved.ToJson(), config.LocalAccountSettings.ToJson());
+        Assert.Equal(saved.ToJson(), mediator.Accounts.Read().ToJson());
         authentication.Verify(p => p.SignOutAsync(It.IsAny<HttpContext>(), It.IsAny<string>(), It.IsAny<AuthenticationProperties>()), Times.Never);
         AssertAuditFailure(logger, controller, failure, EventType.SettingsPasswordUpdated,
             request.OldPassword, request.NewPassword, request.NewUsername, saved.PasswordHash, saved.PasswordSalt, saved.TotpSecret);
@@ -123,14 +123,14 @@ public partial class SettingsControllerTests
     public async Task ResetTotp_WhenAuditFails_PreservesResetAndSignsOutAllSchemes(bool canceledAudit)
     {
         var original = CreateLocalAccount();
-        var config = new BlogConfig { LocalAccountSettings = original };
+        var config = new BlogConfig();
         var failure = CreateAuditFailure(canceledAudit);
         using var mediator = new ConfigurationCommandRecorder { ActivityLogFailure = failure };
         var authentication = new Mock<IAuthenticationService>();
         var logger = new Mock<ILogger<SettingsController>>();
-        var controller = CreateController(config, mediator, Mock.Of<IQueryMediator>(), authentication, logger: logger.Object);
+        var controller = CreateController(config, mediator, Mock.Of<IQueryMediator>(), authentication, logger: logger.Object, account: original);
         authentication.Setup(p => p.SignOutAsync(It.IsAny<HttpContext>(), It.IsAny<string>(), It.IsAny<AuthenticationProperties>()))
-            .Callback(() => Assert.False(config.LocalAccountSettings.IsTotpEnabled))
+            .Callback(() => Assert.False(mediator.Accounts.Read().IsTotpEnabled))
             .Returns(Task.CompletedTask);
 
         var result = await controller.ResetLocalAccountTotp(new ResetLocalAccountTotpRequest { CurrentPassword = "Password1" });
@@ -142,7 +142,7 @@ public partial class SettingsControllerTests
         Assert.Equal(original.PasswordSalt, saved.PasswordSalt);
         Assert.Empty(saved.TotpSecret);
         Assert.False(saved.IsTotpEnabled);
-        Assert.Equal(saved.ToJson(), config.LocalAccountSettings.ToJson());
+        Assert.Equal(saved.ToJson(), mediator.Accounts.Read().ToJson());
         foreach (var scheme in new[] { CookieAuthenticationDefaults.AuthenticationScheme, BlogAuthSchemas.LocalAccountSetup, BlogAuthSchemas.LocalAccountTwoFactor })
             authentication.Verify(p => p.SignOutAsync(controller.HttpContext, scheme, null), Times.Once);
         authentication.VerifyNoOtherCalls();
@@ -156,11 +156,11 @@ public partial class SettingsControllerTests
     public async Task AccountSave_WhenPersistenceFails_PreservesCredentialsWithoutAuditingOrSignOut(bool resetTotp)
     {
         var account = CreateLocalAccount();
-        var config = new BlogConfig { LocalAccountSettings = account };
+        var config = new BlogConfig();
         using var mediator = new ConfigurationCommandRecorder { ActivityLogFailure = CreateAuditFailure() };
         var authentication = new Mock<IAuthenticationService>();
         var logger = new Mock<ILogger<SettingsController>>();
-        var controller = CreateController(config, mediator, Mock.Of<IQueryMediator>(), authentication, logger: logger.Object);
+        var controller = CreateController(config, mediator, Mock.Of<IQueryMediator>(), authentication, logger: logger.Object, account: account);
         await mediator.Db.Database.ExecuteSqlRawAsync(
             "CREATE TRIGGER reject_settings BEFORE UPDATE ON BlogConfiguration BEGIN SELECT RAISE(ABORT, 'Save rejected'); END;",
             TestContext.Current.CancellationToken);
@@ -172,7 +172,7 @@ public partial class SettingsControllerTests
                 OldPassword = "Password1", NewPassword = "NewPassword2", NewUsername = "updated-admin"
             }));
 
-        Assert.Same(account, config.LocalAccountSettings);
+        Assert.Equal(account.ToJson(), mediator.Accounts.Read().ToJson());
         Assert.Equal(account.ToJson(), await ReadStoredSettings(mediator, nameof(LocalAccountSettings)));
         Assert.Empty(mediator.Commands.OfType<CreateActivityLogCommand>());
         Assert.Empty(logger.Invocations);
@@ -244,19 +244,20 @@ public partial class SettingsControllerTests
     [Fact]
     public async Task ResetTotp_WhenSignOutFails_PropagatesFailureEvenAfterAuditFailure()
     {
-        var config = new BlogConfig { LocalAccountSettings = CreateLocalAccount() };
+        var account = CreateLocalAccount();
+        var config = new BlogConfig();
         using var mediator = new ConfigurationCommandRecorder { ActivityLogFailure = CreateAuditFailure() };
         var failure = new InvalidOperationException("Sign-out failed.");
         var authentication = new Mock<IAuthenticationService>();
         authentication.Setup(p => p.SignOutAsync(It.IsAny<HttpContext>(), CookieAuthenticationDefaults.AuthenticationScheme, null))
             .ThrowsAsync(failure);
-        var controller = CreateController(config, mediator, Mock.Of<IQueryMediator>(), authentication);
+        var controller = CreateController(config, mediator, Mock.Of<IQueryMediator>(), authentication, account: account);
 
         Assert.Same(failure, await Assert.ThrowsAsync<InvalidOperationException>(() =>
             controller.ResetLocalAccountTotp(new ResetLocalAccountTotpRequest { CurrentPassword = "Password1" })));
 
-        Assert.False(config.LocalAccountSettings.IsTotpEnabled);
-        Assert.Empty(config.LocalAccountSettings.TotpSecret);
+        Assert.False(mediator.Accounts.Read().IsTotpEnabled);
+        Assert.Empty(mediator.Accounts.Read().TotpSecret);
         var saved = (await ReadStoredSettings(mediator, nameof(LocalAccountSettings))).FromJson<LocalAccountSettings>();
         Assert.False(saved.IsTotpEnabled);
         Assert.Empty(saved.TotpSecret);
