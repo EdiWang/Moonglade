@@ -8,15 +8,13 @@ using Moonglade.Utils;
 namespace Moonglade.Syndication;
 
 public class SyndicationDataSource(
-    IBlogConfig blogConfig,
     IHttpContextAccessor httpContextAccessor,
     BlogDbContext db)
 {
     private readonly string _baseUrl = $"{httpContextAccessor.HttpContext!.Request.Scheme}://{httpContextAccessor.HttpContext.Request.Host}";
 
-    public async Task<List<FeedEntry>> GetFeedDataAsync(string catSlug = null, BlogSettingsSnapshot snapshot = null, CancellationToken ct = default)
+    public async Task<List<FeedEntry>> GetFeedDataAsync(string catSlug, BlogSettingsSnapshot settings, CancellationToken ct = default)
     {
-        var settings = snapshot ?? blogConfig.Capture();
         List<FeedEntry> itemCollection;
         if (!string.IsNullOrWhiteSpace(catSlug))
         {

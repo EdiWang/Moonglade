@@ -12,14 +12,12 @@ public class BlogConfigTests
         Assert.DoesNotContain(typeof(BlogConfig).GetProperties(), property => property.Name is "LocalAccountSettings" or "SystemManifestSettings");
     }
 
-    [Theory]
-    [InlineData(false)]
-    [InlineData(true)]
-    public void LoadFromConfig_EmptyStore_ReturnsTheDefaultsAssignedToEverySetting(bool isNew)
+    [Fact]
+    public void LoadFromConfig_EmptyStore_ReturnsTheDefaultsAssignedToEverySetting()
     {
         var config = new BlogConfig();
 
-        var defaults = config.LoadFromConfig(new Dictionary<string, string>(), isNew);
+        var defaults = config.LoadFromConfig(new Dictionary<string, string>());
 
         var properties = typeof(BlogSettingsSnapshot).GetProperties();
         Assert.Equal(properties.Length, defaults.Count);
@@ -39,7 +37,7 @@ public class BlogConfigTests
         persisted[nameof(ContentSettings)] = new ContentSettings { DefaultEditor = EditorChoice.Markdown }.ToJson();
         var config = new BlogConfig();
 
-        var defaults = config.LoadFromConfig(persisted, isNew: true);
+        var defaults = config.LoadFromConfig(persisted);
 
         Assert.Empty(defaults);
         Assert.Equal("Saved title", config.Capture().GeneralSettings.SiteTitle);

@@ -181,7 +181,9 @@ public partial class PostCacheInvalidationTests
     {
         using var environment = await TestEnvironment.CreateAsync();
         var themes = environment.Services.GetRequiredService<ThemeCacheInvalidator>();
-        string Key() => theme ? themes.CacheKey : environment.Invalidator.GetFeedCacheKey("rss");
+        string Key() => theme
+            ? themes.GetCacheKey(environment.Services.GetRequiredService<IBlogConfig>().Capture().AppearanceSettings.ThemeId)
+            : environment.CacheKey("General", "rss");
         var started = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
         var finish = new TaskCompletionSource<string>(TaskCreationOptions.RunContinuationsAsynchronously);
         var old = environment.Cache.GetOrCreateAsync("General", Key(), () =>
@@ -262,10 +264,10 @@ public partial class PostCacheInvalidationTests
     private static async Task<string> ReadTheme(TestEnvironment environment)
     {
         using var scope = environment.Services.CreateScope();
-        var config = environment.Services.GetRequiredService<IBlogConfig>();
-        return Assert.IsType<string>(await environment.Cache.GetOrCreateAsync("General", environment.Services.GetRequiredService<ThemeCacheInvalidator>().CacheKey,
+        var settings = environment.Services.GetRequiredService<IBlogConfig>().Capture();
+        return Assert.IsType<string>(await environment.Cache.GetOrCreateAsync("General", environment.Services.GetRequiredService<ThemeCacheInvalidator>().GetCacheKey(settings.AppearanceSettings.ThemeId),
             () => scope.ServiceProvider.GetRequiredService<IQueryMediator>()
-                .QueryAsync(new GetSiteThemeStyleSheetQuery(config.Capture().AppearanceSettings.ThemeId), TestContext.Current.CancellationToken), TimeSpan.FromMinutes(20)));
+                .QueryAsync(new GetSiteThemeStyleSheetQuery(settings.AppearanceSettings.ThemeId), TestContext.Current.CancellationToken), TimeSpan.FromMinutes(20)));
     }
 
     private sealed class SettingsSaveFailure : SaveChangesInterceptor

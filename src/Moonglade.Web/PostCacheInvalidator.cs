@@ -32,16 +32,10 @@ public class PostCacheInvalidator(ICacheAside cache)
 
     public void InvalidateFeeds()
     {
-        var previousVersion = Interlocked.Increment(ref _feedVersion) - 1;
-        cache.Remove(BlogCachePartition.General.ToString(), $"{previousVersion}:rss");
-        cache.Remove(BlogCachePartition.General.ToString(), $"{previousVersion}:atom");
+        Interlocked.Increment(ref _feedVersion);
         cache.Remove(BlogCachePartition.RssCategory.ToString());
         cache.Remove(BlogCachePartition.AtomCategory.ToString());
     }
 
-    public void InvalidateSiteMap()
-    {
-        var previousVersion = Interlocked.Increment(ref _siteMapVersion) - 1;
-        cache.Remove(BlogCachePartition.General.ToString(), $"{previousVersion}:sitemap");
-    }
+    public void InvalidateSiteMap() => Interlocked.Increment(ref _siteMapVersion);
 }

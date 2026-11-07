@@ -37,7 +37,7 @@ public class SyndicationDataSourceTests
         });
         await db.SaveChangesAsync(TestContext.Current.CancellationToken);
 
-        var blogConfig = new BlogConfig(new BlogSettingsSnapshot
+        var settings = new BlogSettingsSnapshot
         {
             FeedSettings = new FeedSettings { UseFullContent = full },
             ImageSettings = new ImageSettings
@@ -45,16 +45,15 @@ public class SyndicationDataSourceTests
                 EnableCDNRedirect = true,
                 CDNEndpoint = "https://cdn.example.com/images"
             }
-        });
+        };
         var httpContext = new DefaultHttpContext();
         httpContext.Request.Scheme = "https";
         httpContext.Request.Host = new HostString("blog.example.com");
         var dataSource = new SyndicationDataSource(
-            blogConfig,
             new HttpContextAccessor { HttpContext = httpContext },
             db);
 
-        var entries = await dataSource.GetFeedDataAsync(ct: TestContext.Current.CancellationToken);
+        var entries = await dataSource.GetFeedDataAsync(null, settings, TestContext.Current.CancellationToken);
 
         var entry = Assert.Single(entries);
         if (!full)

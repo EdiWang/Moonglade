@@ -53,7 +53,7 @@ public class SyndicationSnapshotTests
         context.Request.Scheme = "https";
         context.Request.Host = new HostString("blog.example.com");
         var accessor = new HttpContextAccessor { HttpContext = context };
-        var source = new SyndicationDataSource(reader, accessor, db);
+        var source = new SyndicationDataSource(accessor, db);
         var rss = new GetRssStringQueryHandler(reader, source, accessor);
         var atomHandler = new GetAtomStringQueryHandler(reader, source, accessor);
         Task<string> Read() => atom

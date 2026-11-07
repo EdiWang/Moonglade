@@ -15,7 +15,7 @@ public class SyndicationQueryHandlerTests
         using var db = await CreateFeedDatabaseAsync();
         var config = CreateBlogConfig();
         var accessor = CreateHttpContextAccessor();
-        var handler = new GetRssStringQueryHandler(config, new SyndicationDataSource(config, accessor, db), accessor);
+        var handler = new GetRssStringQueryHandler(config, new SyndicationDataSource(accessor, db), accessor);
 
         var result = await handler.HandleAsync(new GetRssStringQuery("missing"), TestContext.Current.CancellationToken);
 
@@ -28,7 +28,7 @@ public class SyndicationQueryHandlerTests
         using var db = await CreateFeedDatabaseAsync();
         var config = CreateBlogConfig();
         var accessor = CreateHttpContextAccessor("https", "blog.example.com");
-        var handler = new GetRssStringQueryHandler(config, new SyndicationDataSource(config, accessor, db), accessor);
+        var handler = new GetRssStringQueryHandler(config, new SyndicationDataSource(accessor, db), accessor);
 
         var result = await handler.HandleAsync(new GetRssStringQuery("tech"), TestContext.Current.CancellationToken);
 
@@ -45,7 +45,7 @@ public class SyndicationQueryHandlerTests
         using var db = await CreateFeedDatabaseAsync();
         var config = CreateBlogConfig();
         var accessor = CreateHttpContextAccessor();
-        var handler = new GetAtomStringQueryHandler(config, new SyndicationDataSource(config, accessor, db), accessor);
+        var handler = new GetAtomStringQueryHandler(config, new SyndicationDataSource(accessor, db), accessor);
 
         var result = await handler.HandleAsync(new GetAtomStringQuery("missing"), TestContext.Current.CancellationToken);
 
@@ -59,7 +59,7 @@ public class SyndicationQueryHandlerTests
         var blogConfig = CreateBlogConfig();
         blogConfig.Publish(blogConfig.Capture() with { GeneralSettings = blogConfig.Capture().GeneralSettings with { OwnerEmail = "owner@example.com" } });
         var accessor = CreateHttpContextAccessor("https", "blog.example.com");
-        var handler = new GetAtomStringQueryHandler(blogConfig, new SyndicationDataSource(blogConfig, accessor, db), accessor);
+        var handler = new GetAtomStringQueryHandler(blogConfig, new SyndicationDataSource(accessor, db), accessor);
 
         var result = await handler.HandleAsync(new GetAtomStringQuery("tech"), TestContext.Current.CancellationToken);
 

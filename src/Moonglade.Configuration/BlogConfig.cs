@@ -30,7 +30,7 @@ public class BlogConfig : IBlogConfig
         Volatile.Write(ref _current, snapshot);
     }
 
-    public IReadOnlyDictionary<string, string> LoadFromConfig(IDictionary<string, string> config, bool isNew = false)
+    public IReadOnlyDictionary<string, string> LoadFromConfig(IDictionary<string, string> config)
     {
         var defaultsToInit = new Dictionary<string, string>();
 

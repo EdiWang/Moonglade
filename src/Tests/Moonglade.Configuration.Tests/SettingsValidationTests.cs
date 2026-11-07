@@ -61,7 +61,7 @@ public class SettingsValidationTests
         db.BlogConfiguration.Add(new BlogConfigurationEntity { CfgKey = name, CfgValue = original, LastModifiedTimeUtc = timestamp });
         await db.SaveChangesAsync(ct);
         var config = new BlogConfig();
-        config.LoadFromConfig(new Dictionary<string, string>(), true);
+        config.LoadFromConfig(new Dictionary<string, string>());
         var runtime = property.GetValue(config.Capture());
         var value = InvalidJson(property.PropertyType, patch).FromJson(property.PropertyType);
         var factory = typeof(UpdateConfigurationCommand).GetMethods().Single(method => method.Name == nameof(UpdateConfigurationCommand.Create)

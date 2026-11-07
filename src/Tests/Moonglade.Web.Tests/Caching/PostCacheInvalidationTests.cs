@@ -98,7 +98,7 @@ public partial class PostCacheInvalidationTests
 
         foreach (var (partition, key) in keys)
         {
-            Assert.Equal("fresh", environment.Cache.GetOrCreate(partition, key, () => "fresh"));
+            Assert.Equal("fresh", environment.Cache.GetOrCreate(partition, environment.CacheKey(partition, key), () => "fresh"));
         }
         Assert.Equal("1:probe", environment.Invalidator.GetCacheKey("probe"));
         foreach (var key in TestEnvironment.UnrelatedKeys)
@@ -209,7 +209,7 @@ public partial class PostCacheInvalidationTests
         await mediator.SendAsync(new AddViewCountCommand(environment.PostId), ct);
 
         Assert.Equal("0:probe", environment.Invalidator.GetCacheKey("probe"));
-        Assert.Equal("cached", environment.Cache.GetOrCreate("General", environment.Invalidator.GetFeedCacheKey("rss"), () => "missing"));
+        Assert.Equal("cached", environment.Cache.GetOrCreate("General", environment.CacheKey("General", "rss"), () => "missing"));
     }
 
     [Fact]
@@ -253,15 +253,17 @@ public partial class PostCacheInvalidationTests
     {
         using var environment = await TestEnvironment.CreateAsync();
         environment.PrimeCaches();
-        var oldKey = environment.Invalidator.SiteMapCacheKey;
+        var oldKey = environment.CacheKey("General", "sitemap");
         var filter = new ClearBlogCache(BlogCacheType.SiteMap, environment.Cache, environment.Invalidator);
 
         filter.OnActionExecuted(new ActionExecutedContext(
             new ActionContext(new DefaultHttpContext(), new RouteData(), new ActionDescriptor()), [], new object()));
 
-        Assert.NotEqual(oldKey, environment.Invalidator.SiteMapCacheKey);
-        Assert.Equal("fresh", environment.Cache.GetOrCreate("General", oldKey, () => "fresh"));
-        Assert.Equal("cached", environment.Cache.GetOrCreate("General", environment.Invalidator.GetFeedCacheKey("rss"), () => "missing"));
+        var currentKey = environment.CacheKey("General", "sitemap");
+        Assert.NotEqual(oldKey, currentKey);
+        Assert.Equal("cached", environment.Cache.GetOrCreate("General", oldKey, () => "missing"));
+        Assert.Equal("fresh", environment.Cache.GetOrCreate("General", currentKey, () => "fresh"));
+        Assert.Equal("cached", environment.Cache.GetOrCreate("General", environment.CacheKey("General", "rss"), () => "missing"));
         Assert.Equal("cached", environment.Cache.GetOrCreate("Post", environment.Invalidator.GetCacheKey("old-post"), () => "missing"));
     }
 
@@ -277,7 +279,7 @@ public partial class PostCacheInvalidationTests
         using var environment = await TestEnvironment.CreateAsync();
         var started = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
         var finish = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
-        string CurrentKey() => key == "sitemap" ? environment.Invalidator.SiteMapCacheKey : partition == "Post" ? environment.Invalidator.GetCacheKey(key) : environment.Invalidator.GetFeedCacheKey(key);
+        string CurrentKey() => environment.CacheKey(partition, key);
         var pending = environment.Cache.GetOrCreateAsync(partition, CurrentKey(), async () =>
         {
             started.SetResult();
@@ -372,17 +374,24 @@ public partial class PostCacheInvalidationTests
         {
             (string, string)[] keys =
             [
-                ("Post", Invalidator.GetCacheKey("old-post")),
-                ("General", Invalidator.GetFeedCacheKey("rss")),
-                ("General", Invalidator.GetFeedCacheKey("atom")),
-                ("General", Invalidator.SiteMapCacheKey),
-                ("RssCategory", Invalidator.GetFeedCacheKey("tech")),
-                ("AtomCategory", Invalidator.GetFeedCacheKey("tech"))
+                ("Post", "old-post"),
+                ("General", "rss"),
+                ("General", "atom"),
+                ("General", "sitemap"),
+                ("RssCategory", "tech"),
+                ("AtomCategory", "tech")
             ];
-            foreach (var (partition, key) in keys) Cache.GetOrCreate(partition, key, () => "cached");
+            foreach (var (partition, key) in keys) Cache.GetOrCreate(partition, CacheKey(partition, key), () => "cached");
             foreach (var key in UnrelatedKeys) Cache.GetOrCreate("General", key, () => "preserved");
             Cache.GetOrCreate("Page", "about", () => "preserved");
             return keys;
+        }
+
+        public string CacheKey(string partition, string key)
+        {
+            if (partition == "Post") return Invalidator.GetCacheKey(key);
+            var settings = Services.GetRequiredService<IBlogConfig>().Capture();
+            return key == "sitemap" ? Invalidator.GetSiteMapCacheKey(settings) : Invalidator.GetFeedCacheKey(key, settings);
         }
 
         public async Task<IActionResult> ReadPostAsync()

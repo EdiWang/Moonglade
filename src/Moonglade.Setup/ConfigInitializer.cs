@@ -26,7 +26,7 @@ public class ConfigInitializer(
     {
         var config = await InitializeStoreAsync(isNew, cancellationToken);
         var account = LocalAccountSettings.ParseStored(config[nameof(LocalAccountSettings)]);
-        blogConfig.LoadFromConfig(config, isNew);
+        blogConfig.LoadFromConfig(config);
         accounts.Publish(account);
     }
 
@@ -52,7 +52,7 @@ public class ConfigInitializer(
                 : isNew ? SystemManifestSettings.DefaultValueNew : SystemManifestSettings.DefaultValue;
 
             // Validate detached settings before any repair writes or runtime publication.
-            var defaultsToAdd = new BlogConfig().LoadFromConfig(config, isNew).ToDictionary();
+            var defaultsToAdd = new BlogConfig().LoadFromConfig(config).ToDictionary();
             if (!config.ContainsKey(accountKey)) defaultsToAdd.Add(accountKey, account.ToJson());
             if (!config.ContainsKey(manifestKey)) defaultsToAdd.Add(manifestKey, manifest.ToJson());
             if (!isNew && !config.ContainsKey(manifestKey))
@@ -75,7 +75,7 @@ public class ConfigInitializer(
 
             foreach (var (key, defaultJson) in defaultsToAdd)
             {
-                await InitializeSettingAsync(key, defaultJson, cancellationToken);
+                await commandMediator.SendAsync(new AddDefaultConfigurationCommand(key, defaultJson), cancellationToken);
                 config[key] = defaultJson;
             }
 
@@ -85,29 +85,6 @@ public class ConfigInitializer(
         catch (Exception ex)
         {
             logger.LogError(ex, "Failed to initialize blog configuration");
-            throw;
-        }
-    }
-
-    /// <summary>
-    /// Initializes a specific configuration setting with its default value.
-    /// </summary>
-    /// <param name="key">The configuration key to initialize.</param>
-    /// <param name="defaultJson">The validated default settings to persist before runtime publication.</param>
-    /// <returns>A task representing the asynchronous setting initialization operation.</returns>
-    /// <exception cref="Exception">
-    /// Thrown when the setting initialization fails due to command execution issues.
-    /// </exception>
-    private async Task InitializeSettingAsync(string key, string defaultJson, CancellationToken cancellationToken)
-    {
-        try
-        {
-            await commandMediator.SendAsync(new AddDefaultConfigurationCommand(key, defaultJson), cancellationToken);
-            logger.LogDebug("Successfully initialized setting: {Key}", key);
-        }
-        catch (Exception ex)
-        {
-            logger.LogError(ex, "Failed to initialize setting: {Key}", key);
             throw;
         }
     }

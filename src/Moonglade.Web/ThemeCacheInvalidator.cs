@@ -1,6 +1,6 @@
 namespace Moonglade.Web;
 
-public class ThemeCacheInvalidator(ICacheAside cache)
+public class ThemeCacheInvalidator
 {
     private long _version;
 
@@ -8,9 +8,5 @@ public class ThemeCacheInvalidator(ICacheAside cache)
 
     public string GetCacheKey(int themeId) => $"{CacheKey}:{themeId}";
 
-    public void Invalidate()
-    {
-        var previousVersion = Interlocked.Increment(ref _version) - 1;
-        cache.Remove(BlogCachePartition.General.ToString(), $"{previousVersion}:theme");
-    }
+    public void Invalidate() => Interlocked.Increment(ref _version);
 }

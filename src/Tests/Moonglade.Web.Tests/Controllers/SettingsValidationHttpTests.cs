@@ -100,7 +100,7 @@ public class SettingsValidationHttpTests
     private static BlogConfig Defaults()
     {
         var config = new BlogConfig();
-        config.LoadFromConfig(new Dictionary<string, string>(), true);
+        config.LoadFromConfig(new Dictionary<string, string>());
         return config;
     }
 

@@ -1,8 +1,6 @@
-using Edi.CacheAside.InMemory;
 using LiteBus.Commands.Abstractions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.DependencyInjection;
 using Moonglade.Data;
 using Moonglade.Theme;
 using Moonglade.Web.Controllers;
@@ -19,9 +17,8 @@ public class ThemeCacheTests
     [InlineData(true, false)]
     public async Task ThemeChanges_InvalidateOnlyAfterSuccessfulCommands(bool delete, bool success)
     {
-        using var services = new ServiceCollection().AddInMemoryCacheAside().BuildServiceProvider();
-        var themes = new ThemeCacheInvalidator(services.GetRequiredService<ICacheAside>());
-        var key = themes.CacheKey;
+        var themes = new ThemeCacheInvalidator();
+        var key = themes.GetCacheKey(1);
         var commands = new Mock<ICommandMediator>();
         commands.Setup(m => m.SendAsync(It.IsAny<CreateThemeCommand>(), It.IsAny<CommandMediationSettings>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(success ? 1 : -1);
@@ -35,6 +32,6 @@ public class ThemeCacheTests
         if (delete) await controller.Delete(1);
         else await controller.Create(new CreateThemeRequest { Name = "Test", AccentColor = "#abcdef" });
 
-        Assert.Equal(success, key != themes.CacheKey);
+        Assert.Equal(success, key != themes.GetCacheKey(1));
     }
 }
