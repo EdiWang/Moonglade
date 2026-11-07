@@ -1329,8 +1329,8 @@
   <data name="{0} posts" xml:space="preserve">
     <value>{0} Beiträge</value>
   </data>
-  <data name="* Changing site icon requires restarting the application" xml:space="preserve">
-    <value>* Das Ändern des Website-Symbols erfordert einen Neustart der Anwendung</value>
+  <data name="The site icon updates immediately after a successful upload. Your browser may still show the previous icon from its cache." xml:space="preserve">
+    <value>Das Website-Symbol wird nach erfolgreichem Hochladen sofort aktualisiert. Ihr Browser zeigt möglicherweise weiterhin das alte Symbol aus dem Cache an.</value>
   </data>
   <data name="* Global script that will be injected into every page&apos;s {0} section." xml:space="preserve">
     <value>* Globales Skript, das in den {0}-Bereich jeder Seite eingefügt wird.</value>

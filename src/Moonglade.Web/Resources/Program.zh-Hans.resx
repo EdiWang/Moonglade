@@ -1329,8 +1329,8 @@
   <data name="{0} posts" xml:space="preserve">
     <value>{0} 篇文章</value>
   </data>
-  <data name="* Changing site icon requires restarting the application" xml:space="preserve">
-    <value>* 更改站点图标需要重启应用程序</value>
+  <data name="The site icon updates immediately after a successful upload. Your browser may still show the previous icon from its cache." xml:space="preserve">
+    <value>上传成功后，站点图标会立即更新。浏览器可能因缓存继续显示旧图标。</value>
   </data>
   <data name="* Global script that will be injected into every page&apos;s {0} section." xml:space="preserve">
     <value>* 将注入到每个页面 {0} 区域的全局脚本。</value>

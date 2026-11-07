@@ -1329,8 +1329,8 @@
   <data name="{0} posts" xml:space="preserve">
     <value>{0} 件の投稿</value>
   </data>
-  <data name="* Changing site icon requires restarting the application" xml:space="preserve">
-    <value>* サイトアイコンの変更にはアプリケーションの再起動が必要です</value>
+  <data name="The site icon updates immediately after a successful upload. Your browser may still show the previous icon from its cache." xml:space="preserve">
+    <value>アップロードが完了すると、サイトアイコンはすぐに更新されます。ブラウザーのキャッシュにより、以前のアイコンが表示されることがあります。</value>
   </data>
   <data name="* Global script that will be injected into every page&apos;s {0} section." xml:space="preserve">
     <value>* すべてのページの {0} セクションに挿入されるグローバルスクリプトです。</value>
