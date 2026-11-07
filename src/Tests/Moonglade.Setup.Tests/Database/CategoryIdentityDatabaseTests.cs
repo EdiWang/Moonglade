@@ -2,7 +2,6 @@ using LiteBus.Events.Abstractions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Moonglade.Data;
-using Moonglade.Data.Entities;
 using Moonglade.Features.Category;
 using Moonglade.Features.Post;
 using Moq;
@@ -41,7 +40,9 @@ public class CategoryIdentityDatabaseTests(DisposableCategoryDatabases databases
         var createCategory = new CreateCategoryCommandHandler(db, Mock.Of<ILogger<CreateCategoryCommandHandler>>());
         await createCategory.HandleAsync(new CreateCategoryCommand
         {
-            DisplayName = "  Cloud  ", Slug = "cloud", Note = "  Cloud notes  "
+            DisplayName = "  Cloud  ",
+            Slug = "cloud",
+            Note = "  Cloud notes  "
         }, TestContext.Current.CancellationToken);
         db.ChangeTracker.Clear();
         var cloud = await db.Category.SingleAsync(c => c.Slug == "cloud", TestContext.Current.CancellationToken);
@@ -460,8 +461,17 @@ public class CategoryIdentityDatabaseTests(DisposableCategoryDatabases databases
 
     private static PostEditModel PostPayload(int[] categories) => new()
     {
-        Title = "Article", Slug = "article", Author = "Author", EditorContent = "Article content",
-        Abstract = "Article summary", ContentType = "html", LanguageCode = "en-us", Tags = "",
-        Keywords = "", PostStatus = PostStatus.Published, SelectedCatIds = categories, FeedIncluded = true
+        Title = "Article",
+        Slug = "article",
+        Author = "Author",
+        EditorContent = "Article content",
+        Abstract = "Article summary",
+        ContentType = "html",
+        LanguageCode = "en-us",
+        Tags = "",
+        Keywords = "",
+        PostStatus = PostStatus.Published,
+        SelectedCatIds = categories,
+        FeedIncluded = true
     };
 }

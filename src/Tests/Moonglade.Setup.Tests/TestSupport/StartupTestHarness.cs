@@ -1,14 +1,14 @@
-using Moonglade.Auth;
 using LiteBus.Commands.Abstractions;
 using LiteBus.Queries.Abstractions;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
+using Moonglade.Auth;
 using Moonglade.Configuration;
 using Moonglade.Data;
 using Moonglade.Features.Asset;
 using Moq;
-using Microsoft.EntityFrameworkCore;
 
 namespace Moonglade.Setup.Tests.TestSupport;
 

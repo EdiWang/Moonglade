@@ -40,7 +40,9 @@ public partial class AssetsControllerTests
         var base64 = Convert.ToBase64String(CreatePngBytes(300, 300));
         mediator.Db.BlogAsset.Add(new BlogAssetEntity
         {
-            Id = AssetId.AvatarBase64, Base64Data = Convert.ToBase64String([1, 2, 3]), LastModifiedTimeUtc = DateTime.UtcNow
+            Id = AssetId.AvatarBase64,
+            Base64Data = Convert.ToBase64String([1, 2, 3]),
+            LastModifiedTimeUtc = DateTime.UtcNow
         });
         await mediator.Db.SaveChangesAsync(TestContext.Current.CancellationToken);
         var rowsBefore = await mediator.Db.BlogConfiguration.AsNoTracking().OrderBy(row => row.CfgKey).ToListAsync(TestContext.Current.CancellationToken);

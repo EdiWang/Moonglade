@@ -1,4 +1,4 @@
-﻿using LiteBus.Commands.Abstractions;
+using LiteBus.Commands.Abstractions;
 using LiteBus.Events.Abstractions;
 using LiteBus.Queries.Abstractions;
 using Microsoft.AspNetCore.RateLimiting;
@@ -77,7 +77,8 @@ public class CommentController(
                         item.Email,
                         item.IpAddress,
                         item.PostTitle,
-                        item.CommentContent) { Snapshot = settings },
+                        item.CommentContent)
+                    { Snapshot = settings },
                     cancellationToken: HttpContext.RequestAborted);
             }
             catch (Exception ex)
@@ -201,7 +202,8 @@ public class CommentController(
                             reply.CommentContent,
                             reply.Title,
                             reply.ReplyContentHtml,
-                            postLink) { Snapshot = settings },
+                            postLink)
+                        { Snapshot = settings },
                         cancellationToken: HttpContext.RequestAborted);
                 }
                 catch (Exception ex)

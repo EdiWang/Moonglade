@@ -1,6 +1,6 @@
 using LiteBus.Commands.Abstractions;
-using LiteBus.Messaging.Abstractions;
 using LiteBus.Events.Abstractions;
+using LiteBus.Messaging.Abstractions;
 using LiteBus.Queries.Abstractions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -16,11 +16,11 @@ using Moonglade.Moderation;
 using Moonglade.Web.Configuration;
 using Moonglade.Web.Controllers;
 using Moonglade.Web.Services;
+using Moonglade.Web.Tests.TestSupport;
 using Moq;
 using System.Net;
 using System.Reflection;
 using System.Security.Claims;
-using Moonglade.Web.Tests.TestSupport;
 
 namespace Moonglade.Web.Tests.Controllers;
 
@@ -37,7 +37,11 @@ public class CommentControllerTests
         var original = _blogConfig.Capture();
         _commandMediator.SetResult<CreateCommentCommand, CommentDetailedItem>(new CommentDetailedItem
         {
-            Id = Guid.NewGuid(), Username = "Reader", Email = "reader@example.com", CommentContent = "Content", PostTitle = "Post"
+            Id = Guid.NewGuid(),
+            Username = "Reader",
+            Email = "reader@example.com",
+            CommentContent = "Content",
+            PostTitle = "Post"
         });
         _commandMediator.BeforeResult = _ => _blogConfig.Publish(original with
         {

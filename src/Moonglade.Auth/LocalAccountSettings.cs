@@ -1,6 +1,6 @@
-using System.ComponentModel.DataAnnotations;
-using OtpNet;
 using Moonglade.Configuration;
+using OtpNet;
+using System.ComponentModel.DataAnnotations;
 using System.Text.Json;
 
 namespace Moonglade.Auth;

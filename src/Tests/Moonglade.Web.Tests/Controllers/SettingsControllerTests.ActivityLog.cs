@@ -157,7 +157,9 @@ public partial class SettingsControllerTests
             ? controller.ResetLocalAccountTotp(new ResetLocalAccountTotpRequest { CurrentPassword = "Password1" })
             : controller.UpdateLocalAccountPassword(new UpdateLocalAccountPasswordRequest
             {
-                OldPassword = "Password1", NewPassword = "NewPassword2", NewUsername = "updated-admin"
+                OldPassword = "Password1",
+                NewPassword = "NewPassword2",
+                NewUsername = "updated-admin"
             }));
 
         Assert.Equal(account.ToJson(), mediator.Accounts.Read().ToJson());

@@ -33,10 +33,19 @@ public class SyndicationSnapshotTests
         {
             db.Post.Add(new PostEntity
             {
-                Id = Guid.NewGuid(), Title = $"Post {i}", Slug = $"post-{i}", Author = "Author",
-                PostContent = "<p>Full marker</p><img src=\"/image/photo.png\">", ContentAbstract = "Summary marker",
-                ContentLanguageCode = "en-us", ContentType = "html", IsFeedIncluded = true, PostStatus = PostStatus.Published,
-                CreateTimeUtc = DateTime.UtcNow.AddDays(-2), PubDateUtc = DateTime.UtcNow.AddDays(-1), RouteLink = $"2026/1/1/post-{i}",
+                Id = Guid.NewGuid(),
+                Title = $"Post {i}",
+                Slug = $"post-{i}",
+                Author = "Author",
+                PostContent = "<p>Full marker</p><img src=\"/image/photo.png\">",
+                ContentAbstract = "Summary marker",
+                ContentLanguageCode = "en-us",
+                ContentType = "html",
+                IsFeedIncluded = true,
+                PostStatus = PostStatus.Published,
+                CreateTimeUtc = DateTime.UtcNow.AddDays(-2),
+                PubDateUtc = DateTime.UtcNow.AddDays(-1),
+                RouteLink = $"2026/1/1/post-{i}",
                 PostCategory = [new PostCategoryEntity { CategoryId = cat.Id }]
             });
         }

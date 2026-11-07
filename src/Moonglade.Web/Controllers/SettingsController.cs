@@ -1,4 +1,3 @@
-using System.Collections.Immutable;
 using Edi.PasswordGenerator;
 using LiteBus.Commands.Abstractions;
 using LiteBus.Events.Abstractions;
@@ -7,6 +6,7 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Moonglade.ActivityLog;
 using Moonglade.Email;
 using Moonglade.Email.Core;
+using System.Collections.Immutable;
 using System.Text.Json;
 
 namespace Moonglade.Web.Controllers;

@@ -1,9 +1,9 @@
-﻿using System.Text.Json.Serialization;
 using Edi.AspNetCore.Utils;
 using LiteBus.Queries.Abstractions;
 using Microsoft.AspNetCore.Http;
 using Moonglade.Configuration;
 using Moonglade.Utils;
+using System.Text.Json.Serialization;
 
 namespace Moonglade.Syndication;
 

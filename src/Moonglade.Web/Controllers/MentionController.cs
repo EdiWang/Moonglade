@@ -1,4 +1,4 @@
-﻿using LiteBus.Commands.Abstractions;
+using LiteBus.Commands.Abstractions;
 using LiteBus.Events.Abstractions;
 using LiteBus.Queries.Abstractions;
 using Moonglade.Data.Entities;
@@ -60,7 +60,8 @@ public class MentionController(
                     mention.Domain,
                     mention.SourceIp,
                     mention.SourceUrl,
-                    mention.SourceTitle) { Snapshot = settings },
+                    mention.SourceTitle)
+                { Snapshot = settings },
                 cancellationToken: HttpContext.RequestAborted);
         }
         catch (Exception ex)

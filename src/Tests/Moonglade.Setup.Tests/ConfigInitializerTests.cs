@@ -1,10 +1,10 @@
-using Moonglade.Auth;
 using LiteBus.Commands.Abstractions;
 using LiteBus.Messaging.Abstractions;
 using LiteBus.Queries.Abstractions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
+using Moonglade.Auth;
 using Moonglade.Configuration;
 using Moonglade.Data;
 using Moonglade.Data.Entities;
@@ -194,7 +194,9 @@ public sealed class ConfigInitializerTests
         var timestamp = DateTime.UtcNow.AddDays(-1);
         db.BlogConfiguration.AddRange(saved.Select(pair => new BlogConfigurationEntity
         {
-            CfgKey = pair.Key, CfgValue = pair.Value, LastModifiedTimeUtc = timestamp
+            CfgKey = pair.Key,
+            CfgValue = pair.Value,
+            LastModifiedTimeUtc = timestamp
         }));
         await db.SaveChangesAsync(ct);
         var queries = new Mock<IQueryMediator>();

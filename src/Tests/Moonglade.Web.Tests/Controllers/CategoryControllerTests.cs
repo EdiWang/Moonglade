@@ -1,25 +1,25 @@
 using LiteBus.Commands.Abstractions;
 using LiteBus.Messaging.Abstractions;
 using LiteBus.Queries.Abstractions;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ApplicationParts;
+using Microsoft.AspNetCore.Mvc.Controllers;
+using Microsoft.AspNetCore.TestHost;
+using Microsoft.Extensions.DependencyInjection;
 using Moonglade.ActivityLog;
+using Moonglade.Auth;
 using Moonglade.Data;
 using Moonglade.Data.Entities;
 using Moonglade.Features.Category;
 using Moonglade.Web.Controllers;
+using Moonglade.Web.Tests.TestSupport;
 using Moq;
 using System.Net;
-using System.Security.Claims;
-using Moonglade.Web.Tests.TestSupport;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.TestHost;
-using Microsoft.Extensions.DependencyInjection;
-using Moonglade.Auth;
 using System.Net.Http.Json;
+using System.Security.Claims;
 using System.Text.Json;
-using Microsoft.AspNetCore.Mvc.ApplicationParts;
-using Microsoft.AspNetCore.Mvc.Controllers;
 
 namespace Moonglade.Web.Tests.Controllers;
 
@@ -124,7 +124,9 @@ public class CategoryControllerTests
         {
             Content = method == "PUT" ? JsonContent.Create(new UpdateCategoryCommand
             {
-                DisplayName = "Cloud", Slug = "cloud", Note = "Cloud"
+                DisplayName = "Cloud",
+                Slug = "cloud",
+                Note = "Cloud"
             }) : null
         };
 

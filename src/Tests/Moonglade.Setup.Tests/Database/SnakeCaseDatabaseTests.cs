@@ -27,8 +27,13 @@ public class SnakeCaseDatabaseTests(DisposableCategoryDatabases databases) : ICl
         post.Tags = await legacy.Tag.ToListAsync(TestContext.Current.CancellationToken);
         legacy.Comment.Add(new CommentEntity
         {
-            Id = Guid.NewGuid(), PostId = post.Id, Username = "Reader", Email = "reader@example.test",
-            IPAddress = "192.0.2.1", CommentContent = "Preserved comment", CreateTimeUtc = DateTime.UtcNow
+            Id = Guid.NewGuid(),
+            PostId = post.Id,
+            Username = "Reader",
+            Email = "reader@example.test",
+            IPAddress = "192.0.2.1",
+            CommentContent = "Preserved comment",
+            CreateTimeUtc = DateTime.UtcNow
         });
         legacy.PostCategory.Add(new PostCategoryEntity { PostId = post.Id, CategoryId = 100 });
         await legacy.SaveChangesAsync(TestContext.Current.CancellationToken);

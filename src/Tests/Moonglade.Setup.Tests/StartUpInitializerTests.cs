@@ -1,6 +1,6 @@
-using Moonglade.Auth;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using Moonglade.Auth;
 using Moonglade.Configuration;
 using Moonglade.Data;
 using Moonglade.Data.Entities;
@@ -30,7 +30,9 @@ public class StartUpInitializerTests
         if (manifestVersion is not null)
             db.BlogConfiguration.Add(new BlogConfigurationEntity
             {
-                CfgKey = nameof(SystemManifestSettings), CfgValue = manifest.ToJson(), LastModifiedTimeUtc = originalTime
+                CfgKey = nameof(SystemManifestSettings),
+                CfgValue = manifest.ToJson(),
+                LastModifiedTimeUtc = originalTime
             });
         var post = new PostEntity { Id = Guid.NewGuid(), Title = "Historical post", ContentType = "", CreateTimeUtc = originalTime };
         db.Post.Add(post);

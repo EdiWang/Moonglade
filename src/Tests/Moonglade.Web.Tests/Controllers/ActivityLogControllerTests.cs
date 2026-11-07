@@ -6,10 +6,10 @@ using Microsoft.AspNetCore.Mvc;
 using Moonglade.ActivityLog;
 using Moonglade.Data;
 using Moonglade.Web.Controllers;
+using Moonglade.Web.Tests.TestSupport;
 using Moq;
 using System.Net;
 using System.Security.Claims;
-using Moonglade.Web.Tests.TestSupport;
 
 namespace Moonglade.Web.Tests.Controllers;
 

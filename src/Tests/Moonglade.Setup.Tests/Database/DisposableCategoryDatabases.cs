@@ -81,13 +81,23 @@ public sealed class DisposableCategoryDatabases : IAsyncLifetime
         var connectionString = provider == "PostgreSql"
             ? new NpgsqlConnectionStringBuilder
             {
-                Host = "127.0.0.1", Port = localPort, Database = database, Username = "category_tests",
-                Password = password, Timeout = 2, Pooling = false
+                Host = "127.0.0.1",
+                Port = localPort,
+                Database = database,
+                Username = "category_tests",
+                Password = password,
+                Timeout = 2,
+                Pooling = false
             }.ConnectionString
             : new SqlConnectionStringBuilder
             {
-                DataSource = $"127.0.0.1,{localPort}", InitialCatalog = database, UserID = "sa",
-                Password = password, ConnectTimeout = 2, TrustServerCertificate = true, Pooling = false
+                DataSource = $"127.0.0.1,{localPort}",
+                InitialCatalog = database,
+                UserID = "sa",
+                Password = password,
+                ConnectTimeout = 2,
+                TrustServerCertificate = true,
+                Pooling = false
             }.ConnectionString;
         var deadline = DateTime.UtcNow.AddMinutes(2);
         while (true)

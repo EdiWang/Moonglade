@@ -1,5 +1,4 @@
 using LiteBus.Events.Abstractions;
-using LiteBus.Messaging.Abstractions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.Logging.Abstractions;

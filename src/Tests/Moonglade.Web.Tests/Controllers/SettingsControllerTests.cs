@@ -15,11 +15,11 @@ using Moonglade.Configuration;
 using Moonglade.Email;
 using Moonglade.Email.Core;
 using Moonglade.Web.Controllers;
+using Moonglade.Web.Tests.TestSupport;
 using Moq;
 using System.Net;
 using System.Security.Claims;
 using System.Text.Json;
-using Moonglade.Web.Tests.TestSupport;
 
 namespace Moonglade.Web.Tests.Controllers;
 

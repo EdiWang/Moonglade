@@ -7,7 +7,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Moonglade.Auth;
-using Moonglade.Configuration;
 using Moonglade.Web.Pages;
 using Moq;
 using System.Security.Claims;

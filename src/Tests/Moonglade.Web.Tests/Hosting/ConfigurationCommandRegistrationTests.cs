@@ -1,18 +1,18 @@
+using Edi.CacheAside.InMemory;
 using LiteBus.Commands;
 using LiteBus.Commands.Abstractions;
 using LiteBus.Events;
 using LiteBus.Events.Abstractions;
-using Edi.CacheAside.InMemory;
-using Moonglade.BackgroundServices;
-using Moonglade.Web.Handlers;
 using LiteBus.Extensions.Microsoft.DependencyInjection;
 using LiteBus.Messaging;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Moonglade.Auth;
-using Moonglade.Features.Asset;
+using Moonglade.BackgroundServices;
 using Moonglade.Configuration;
+using Moonglade.Features.Asset;
+using Moonglade.Web.Handlers;
 using Moonglade.Web.Tests.TestSupport;
 
 namespace Moonglade.Web.Tests.Hosting;

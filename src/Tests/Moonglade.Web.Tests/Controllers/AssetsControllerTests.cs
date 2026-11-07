@@ -1,7 +1,7 @@
 using Edi.CacheAside.InMemory;
 using LiteBus.Commands.Abstractions;
-using LiteBus.Messaging.Abstractions;
 using LiteBus.Events.Abstractions;
+using LiteBus.Messaging.Abstractions;
 using LiteBus.Queries.Abstractions;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -12,11 +12,11 @@ using Moonglade.ActivityLog;
 using Moonglade.Features.Asset;
 using Moonglade.Setup;
 using Moonglade.Web.Controllers;
+using Moonglade.Web.Tests.TestSupport;
 using Moq;
 using SkiaSharp;
 using System.Net;
 using System.Security.Claims;
-using Moonglade.Web.Tests.TestSupport;
 
 namespace Moonglade.Web.Tests.Controllers;
 

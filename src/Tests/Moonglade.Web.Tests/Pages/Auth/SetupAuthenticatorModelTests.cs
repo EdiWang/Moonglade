@@ -10,10 +10,10 @@ using Microsoft.Extensions.Options;
 using Moonglade.Auth;
 using Moonglade.Configuration;
 using Moonglade.Web.Pages;
+using Moonglade.Web.Tests.TestSupport;
 using Moq;
 using System.Security.Claims;
 using System.Text.Json;
-using Moonglade.Web.Tests.TestSupport;
 
 namespace Moonglade.Web.Tests.Pages.Auth;
 

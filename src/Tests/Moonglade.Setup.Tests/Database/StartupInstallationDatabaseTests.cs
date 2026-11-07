@@ -1,6 +1,6 @@
-using Moonglade.Auth;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
+using Moonglade.Auth;
 using Moonglade.Configuration;
 using Moonglade.Data;
 using Moonglade.Data.Entities;
@@ -143,8 +143,13 @@ public class StartupInstallationDatabaseTests(DisposableCategoryDatabases databa
         var post = await db.Post.SingleAsync(ct);
         var comment = new CommentEntity
         {
-            Id = Guid.NewGuid(), PostId = post.Id, Username = "Preserve", Email = "preserve@example.com",
-            IPAddress = "127.0.0.1", CommentContent = "Preserve this comment", CreateTimeUtc = DateTime.UtcNow
+            Id = Guid.NewGuid(),
+            PostId = post.Id,
+            Username = "Preserve",
+            Email = "preserve@example.com",
+            IPAddress = "127.0.0.1",
+            CommentContent = "Preserve this comment",
+            CreateTimeUtc = DateTime.UtcNow
         };
         db.Comment.Add(comment);
         await db.SaveChangesAsync(ct);

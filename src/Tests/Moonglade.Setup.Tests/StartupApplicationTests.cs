@@ -1,10 +1,10 @@
-using Moonglade.Auth;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Moonglade.Auth;
 using Moonglade.Configuration;
 using Moonglade.Data;
 using Moonglade.Data.Entities;

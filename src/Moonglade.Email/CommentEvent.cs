@@ -1,9 +1,9 @@
-using System.Text.Json.Serialization;
 using LiteBus.Events.Abstractions;
 using Moonglade.Configuration;
 using Moonglade.Email.Core;
 using Moonglade.Utils;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace Moonglade.Email;
 
