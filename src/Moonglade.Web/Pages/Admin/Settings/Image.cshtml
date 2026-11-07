@@ -33,7 +33,7 @@
                         <div class="col-md-5 text-end">
                             <div class="form-check form-switch form-control-lg">
                                 <input type="hidden" name="EnableCDNRedirect" value="false">
-                                <input type="checkbox" name="EnableCDNRedirect" value="true" class="form-check-input" @(settings.EnableCDNRedirect ? "checked" : null)>
+                                <input type="checkbox" name="EnableCDNRedirect" value="true" data-setting-requires="CDNEndpoint" class="form-check-input" @(settings.EnableCDNRedirect ? "checked" : null)>
                             </div>
                         </div>
                     </div>
@@ -47,7 +47,7 @@
                             <div class="form-text">@SharedLocalizer["e.g. https://cdn.edi.wang/ediwang-images"]</div>
                         </div>
                         <div class="col-md-5">
-                            <input asp-for="@settings.CDNEndpoint" class="form-control" />
+                            <input asp-for="@settings.CDNEndpoint" data-setting-edit="" class="form-control" />
                         </div>
                     </div>
                 </div>
@@ -103,7 +103,7 @@
                         <label asp-for="@settings.WatermarkText"></label>
                     </div>
                     <div class="col-5">
-                        <input asp-for="@settings.WatermarkText" class="form-control" />
+                        <input asp-for="@settings.WatermarkText" data-setting-edit="" class="form-control" />
                     </div>
                 </div>
 
@@ -118,7 +118,7 @@
                         </div>
                     </div>
                     <div class="col-5">
-                        <input asp-for="@settings.WatermarkSkipPixel" required min="0" max="@int.MaxValue" class="form-control" />
+                        <input asp-for="@settings.WatermarkSkipPixel" data-setting-edit="" required min="0" max="@int.MaxValue" class="form-control" />
                     </div>
                 </div>
 
@@ -149,13 +149,12 @@
                         <label asp-for="@settings.WatermarkFontSize"></label>
                     </div>
                     <div class="col-md-5">
-                        <input asp-for="@settings.WatermarkFontSize" min="8" max="32" class="form-control" />
+                        <input asp-for="@settings.WatermarkFontSize" data-setting-edit="" min="8" max="32" class="form-control" required />
                     </div>
                 </div>
             </div>
         </div>
     </div>
-    <div class="admin-settings-action-container border-top pt-2 mt-2">
-        <input id="btn-save-settings" type="submit" value="@SharedLocalizer["Save"]" class="btn btn-outline-accent" />
-    </div>
 </form>
+
+<partial name="_SettingEditModal" />

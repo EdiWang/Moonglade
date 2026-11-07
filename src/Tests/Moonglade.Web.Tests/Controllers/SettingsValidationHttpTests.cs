@@ -54,6 +54,53 @@ public class SettingsValidationHttpTests
     }
 
     [Theory]
+    [InlineData("general", """{"avatarUrl":"https://example.com"}""", "avatarUrl")]
+    [InlineData("subscription", """{"feedItemCount":null}""", "FeedItemCount")]
+    [InlineData("subscription", """{"FeedItemCount":1,"feedItemCount":2}""", "FeedItemCount")]
+    [InlineData("appearance", """{"enableCustomCss":true}""", "CssCode")]
+    public async Task InvalidPatch_DoesNotPersistOrAudit(string route, string json, string field)
+    {
+        using var store = new ConfigurationCommandRecorder();
+        var config = Defaults();
+        var original = config.Capture();
+        await using var app = await CreateApp(store, config);
+        using var client = app.GetTestClient();
+        var ct = TestContext.Current.CancellationToken;
+
+        using var response = await client.PatchAsync($"/api/settings/{route}", new StringContent(json, Encoding.UTF8, "application/json"), ct);
+
+        Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+        using var problem = JsonDocument.Parse(await response.Content.ReadAsStringAsync(ct));
+        Assert.True(problem.RootElement.GetProperty("errors").TryGetProperty(field, out _));
+        Assert.Same(original, config.Capture());
+        Assert.Empty(store.Commands.OfType<Moonglade.ActivityLog.CreateActivityLogCommand>());
+    }
+
+    [Fact]
+    public async Task Patch_EnablesCssWithContentAndPreservesTheme()
+    {
+        using var store = new ConfigurationCommandRecorder();
+        var config = Defaults();
+        var original = config.Capture().AppearanceSettings;
+        await using var app = await CreateApp(store, config);
+        using var client = app.GetTestClient();
+        var ct = TestContext.Current.CancellationToken;
+        const string css = "body { color: red; }";
+        const string json = """{"enableCustomCss":true,"cssCode":"body { color: red; }"}""";
+
+        using var response = await client.PatchAsync("/api/settings/appearance", new StringContent(json, Encoding.UTF8, "application/json"), ct);
+
+        Assert.Equal(HttpStatusCode.NoContent, response.StatusCode);
+        var updated = config.Capture().AppearanceSettings;
+        Assert.Equal(original.ThemeId, updated.ThemeId);
+        Assert.True(updated.EnableCustomCss);
+        Assert.Equal(css, updated.CssCode);
+        Assert.Equal(updated.ToJson(), (await store.Db.BlogConfiguration.AsNoTracking().SingleAsync(
+            row => row.CfgKey == nameof(AppearanceSettings), ct)).CfgValue);
+        Assert.Single(store.Commands.OfType<Moonglade.ActivityLog.CreateActivityLogCommand>());
+    }
+
+    [Theory]
     [InlineData(5, true)]
     [InlineData(6, false)]
     public async Task MenuLimit_IsValidatedAtTheSharedWriteBoundary(int count, bool valid)

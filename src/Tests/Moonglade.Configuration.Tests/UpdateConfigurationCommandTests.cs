@@ -6,6 +6,7 @@ using Microsoft.Extensions.Logging.Abstractions;
 using Moonglade.Data;
 using Moonglade.Data.Entities;
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json;
 
 namespace Moonglade.Configuration.Tests;
 
@@ -135,6 +136,39 @@ public class UpdateConfigurationCommandTests
         Assert.Equal("Second", config.Capture().GeneralSettings.SiteTitle);
         secondDb.ChangeTracker.Clear();
         Assert.Equal(config.Capture().GeneralSettings.ToJson(), (await secondDb.BlogConfiguration.SingleAsync(TestContext.Current.CancellationToken)).CfgValue);
+    }
+
+    [Fact]
+    public async Task QueuedPatchesToSameGroup_PreserveBothFieldChanges()
+    {
+        var ct = TestContext.Current.CancellationToken;
+        var interceptor = new BlockingSaveInterceptor();
+        var options = new DbContextOptionsBuilder<BlogDbContext>().UseInMemoryDatabase(Guid.NewGuid().ToString())
+            .AddInterceptors(interceptor).Options;
+        using var firstDb = new BlogDbContext(options);
+        using var secondDb = new BlogDbContext(options);
+        var config = new BlogConfig(new BlogSettingsSnapshot { GeneralSettings = General("Old") });
+        var original = config.Capture().GeneralSettings;
+        await SeedAsync(firstDb, original);
+        var title = Patch(nameof(GeneralSettings.SiteTitle), "New title");
+        var logo = Patch(nameof(GeneralSettings.LogoText), "New logo");
+        interceptor.Enabled = true;
+
+        var firstSave = Handler(firstDb, config).HandleAsync(title, ct);
+        await interceptor.Committed.Task.WaitAsync(TimeSpan.FromSeconds(10), ct);
+        var secondSave = Handler(secondDb, config).HandleAsync(logo, ct);
+        var secondWasBlocked = !secondSave.IsCompleted;
+        interceptor.Resume.SetResult();
+        await Task.WhenAll(firstSave, secondSave);
+
+        Assert.True(secondWasBlocked);
+        var saved = config.Capture().GeneralSettings;
+        Assert.Equal(original with { SiteTitle = "New title", LogoText = "New logo" }, saved);
+        Assert.Equal(saved.ToJson(), (await secondDb.BlogConfiguration.AsNoTracking().SingleAsync(ct)).CfgValue);
+
+        static PatchConfigurationCommand Patch(string name, string value) =>
+            PatchConfigurationCommand.Create<GeneralSettings>(static current => current with { },
+                JsonSerializer.SerializeToElement(new Dictionary<string, string> { [name] = value }), name);
     }
 
     [Fact]

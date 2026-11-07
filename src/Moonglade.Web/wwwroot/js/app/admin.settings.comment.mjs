@@ -1,10 +1,8 @@
-import { handleSettingsSubmit } from './admin.settings.mjs';
+import { initializeSettings } from './admin.settings.mjs';
 
 const builtInRadio = document.getElementById('BuiltIn');
-const thirdPartyRadio = document.getElementById('ThirdParty');
 const builtInSettings = document.querySelector('.comment-settings-built-in');
 const thirdPartySettings = document.querySelector('.comment-settings-3rd');
-const form = document.getElementById('form-settings');
 
 const toggleCommentSettingsUI = () => {
     if (builtInRadio?.checked) {
@@ -16,8 +14,5 @@ const toggleCommentSettingsUI = () => {
     }
 };
 
-form?.addEventListener('submit', handleSettingsSubmit);
-builtInRadio?.addEventListener('change', toggleCommentSettingsUI);
-thirdPartyRadio?.addEventListener('change', toggleCommentSettingsUI);
-
+initializeSettings({ onSaved: toggleCommentSettingsUI });
 toggleCommentSettingsUI();

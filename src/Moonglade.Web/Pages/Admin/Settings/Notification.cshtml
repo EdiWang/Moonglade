@@ -11,7 +11,6 @@
 }
 
 <div id="localizedStrings" style="display:none"
-     data-settings-updated="@SharedLocalizer["Settings Updated"]"
      data-email-sent="@SharedLocalizer["Test email is queued."]">
 </div>
 
@@ -66,18 +65,6 @@
 
                     <div class="settings-entry row align-items-center py-3 px-2 rounded-3 border mb-1">
                         <div class="col-auto">
-                            <i class="bi-envelope-gear settings-entry-icon"></i>
-                        </div>
-                        <div class="col">
-                            <label>@SharedLocalizer["Provider"]</label>
-                        </div>
-                        <div class="col-6">
-                            <input readonly="readonly" class="form-control" spellcheck="false" value="@pageState.ProviderLabel" />
-                        </div>
-                    </div>
-
-                    <div class="settings-entry row align-items-center py-3 px-2 rounded-3 border mb-1">
-                        <div class="col-auto">
                             <i class="bi-send settings-entry-icon"></i>
                         </div>
                         <div class="col">
@@ -109,7 +96,7 @@
                             <div class="form-text">@SharedLocalizer["* Requires restarting application"]</div>
                         </div>
                         <div class="col-6">
-                            <input asp-for="@settings.EmailDisplayName" class="form-control" maxlength="64" />
+                            <input asp-for="@settings.EmailDisplayName" data-setting-edit="" class="form-control" maxlength="64" />
                         </div>
                     </div>
 
@@ -184,7 +171,6 @@
         </div>
     </div>
 
-    <div class="admin-settings-action-container border-top pt-2 mt-2">
-        <input id="btn-save-settings" type="submit" value="@SharedLocalizer["Save"]" class="btn btn-outline-accent" />
-    </div>
 </form>
+
+<partial name="_SettingEditModal" />

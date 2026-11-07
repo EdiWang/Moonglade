@@ -24,20 +24,28 @@ public class UpdateConfigurationCommandHandler(
     BlogConfig blogConfig,
     IEventMediator eventMediator,
     ConfigurationWriteGate gate,
-    ILogger<UpdateConfigurationCommandHandler> logger) : ICommandHandler<UpdateConfigurationCommand>
+    ILogger<UpdateConfigurationCommandHandler> logger)
+    : ICommandHandler<UpdateConfigurationCommand>, ICommandHandler<PatchConfigurationCommand, object>
 {
-    public async Task HandleAsync(UpdateConfigurationCommand request, CancellationToken ct)
+    public async Task HandleAsync(UpdateConfigurationCommand request, CancellationToken ct) =>
+        await SaveAsync(request.Settings.GetType(), _ => request.Settings, ct);
+
+    public Task<object> HandleAsync(PatchConfigurationCommand request, CancellationToken ct) =>
+        SaveAsync(request.SettingsType, request.Apply, ct);
+
+    private async Task<object> SaveAsync(Type settingsType, Func<object, object> replace, CancellationToken ct)
     {
-        var settings = request.Settings;
-        var name = settings.GetType().Name;
+        var name = settingsType.Name;
         await gate.WaitAsync(ct);
         try
         {
             var property = typeof(BlogSettingsSnapshot).GetProperty(name)
                 ?? throw new InvalidOperationException($"Unknown blog setting '{name}'.");
+            var current = blogConfig.Capture();
+            var settings = replace(property.GetValue(current));
             Validator.ValidateObject(settings, new ValidationContext(settings), true);
 
-            var candidate = blogConfig.Capture() with { };
+            var candidate = current with { };
             property.SetValue(candidate, settings);
 
             var entity = await db.BlogConfiguration.SingleOrDefaultAsync(p => p.CfgKey == name, ct)
@@ -60,6 +68,7 @@ public class UpdateConfigurationCommandHandler(
                 await eventMediator.PublishAsync(new ConfigurationChangedEvent([name]), CancellationToken.None);
 
             logger.LogInformation("Configuration updated successfully: {Name}", name);
+            return settings;
         }
         catch (Exception ex)
         {

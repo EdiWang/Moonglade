@@ -10,10 +10,6 @@
     <script type="module" src="~/js/app/admin.settings.content.mjs"></script>
 }
 
-<div id="localizedStrings" style="display:none"
-     data-settings-updated="@SharedLocalizer["Settings Updated"]">
-</div>
-
 @section admintoolbar {
     <partial name="_SettingsHeader" />
 }
@@ -49,7 +45,7 @@
                             <label asp-for="@settings.PostListPageSize"></label>
                         </div>
                         <div class="col-4">
-                            <input asp-for="@settings.PostListPageSize" class="form-control" min="1" max="30" required />
+                            <input asp-for="@settings.PostListPageSize" data-setting-edit="" class="form-control" min="5" max="30" required />
                         </div>
                     </div>
 
@@ -61,7 +57,7 @@
                             <label asp-for="@settings.MaximumPageNumbersToDisplay"></label>
                         </div>
                         <div class="col-4">
-                            <input asp-for="@settings.MaximumPageNumbersToDisplay" class="form-control" min="2" max="10" required />
+                            <input asp-for="@settings.MaximumPageNumbersToDisplay" data-setting-edit="" class="form-control" min="2" max="10" required />
                         </div>
                     </div>
                 </div>
@@ -135,7 +131,7 @@
                     </div>
                     <div class="border-top p-2">
                         <div class="form-floating">
-                            <textarea asp-for="@settings.PostFooterHtmlPitch"
+                            <textarea asp-for="@settings.PostFooterHtmlPitch" data-setting-edit=""
                                       placeholder="@Html.DisplayNameFor(m => settings.PostFooterHtmlPitch)"
                                       class="form-control form-control-sm h-100px"
                                       spellcheck="false"></textarea>
@@ -165,7 +161,7 @@
                     </div>
                     <div class="border-top p-2">
                         <div class="form-floating">
-                            <textarea asp-for="@settings.CalloutSectionHtmlPitch"
+                            <textarea asp-for="@settings.CalloutSectionHtmlPitch" data-setting-edit=""
                                       placeholder="@Html.DisplayNameFor(m => settings.CalloutSectionHtmlPitch)"
                                       class="form-control form-control-sm h-100px"
                                       spellcheck="false"></textarea>
@@ -176,7 +172,6 @@
             </div>
         </div>
     </div>
-    <div class="admin-settings-action-container border-top pt-2 mt-2">
-        <input id="btn-save-settings" type="submit" value="@SharedLocalizer["Save"]" class="btn btn-outline-accent" />
-    </div>
 </form>
+
+<partial name="_SettingEditModal" />

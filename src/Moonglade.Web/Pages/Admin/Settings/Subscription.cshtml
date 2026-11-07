@@ -3,17 +3,8 @@
     var snapshot = ViewData.CaptureSettings(SettingsReader);
 }
 @section scripts{
-    <script type="module">
-        import * as settings from '/js/app/admin.settings.mjs';
-
-        const form = document.querySelector('#form-settings');
-        form.addEventListener('submit', settings.handleSettingsSubmit);
-    </script>
+    <script type="module" src="~/js/app/admin.settings.content.mjs"></script>
 }
-
-<div id="localizedStrings" style="display:none"
-     data-settings-updated="@SharedLocalizer["Settings Updated"]">
-</div>
 
 @{
     var settings = snapshot.FeedSettings;
@@ -36,7 +27,7 @@
                         <div class="form-text">@SharedLocalizer["The number of entries to include in RSS/ATOM feed."]</div>
                     </div>
                     <div class="col-md-5">
-                        <input asp-for="@settings.FeedItemCount" class="form-control" required />
+                        <input asp-for="@settings.FeedItemCount" data-setting-edit="" class="form-control" required />
                     </div>
                 </div>
 
@@ -57,7 +48,6 @@
             </div>
         </div>
     </div>
-    <div class="admin-settings-action-container border-top pt-2 mt-2">
-        <input id="btn-save-settings" type="submit" value="@SharedLocalizer["Save"]" class="btn btn-outline-accent" />
-    </div>
 </form>
+
+<partial name="_SettingEditModal" />

@@ -1911,9 +1911,6 @@
   <data name="Email notification configuration is invalid." xml:space="preserve">
     <value>邮件通知配置无效。</value>
   </data>
-  <data name="Provider" xml:space="preserve">
-    <value>提供程序</value>
-  </data>
   <data name="Sender Address" xml:space="preserve">
     <value>发件人地址</value>
   </data>

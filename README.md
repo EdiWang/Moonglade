@@ -95,6 +95,8 @@ Deploy the current application at the URL root. Hosting under a prefix such as `
 
 > Host settings use `src/Moonglade.Web/appsettings.json` and standard environment overrides (`:` becomes `__`). Persisted blog settings use `/admin/settings`.
 
+In blog settings, switches and selections save when changed. For text, code, and typed numbers, choose **Change** and use **Save** or **Cancel** in the dialog.
+
 ### Default Post Editor
 
 Choose HTML or Markdown under **Settings > Content > Default editor** (`/admin/settings/content`). The default is HTML. Changes are stored in the database and apply immediately when creating a new post; existing posts retain their own content type. The former `DefaultEditor` application configuration key is no longer used or imported. Startup no longer fills empty content types on historical posts.

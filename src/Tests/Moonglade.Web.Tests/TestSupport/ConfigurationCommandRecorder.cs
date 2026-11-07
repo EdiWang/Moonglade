@@ -84,9 +84,18 @@ internal sealed class ConfigurationCommandRecorder : ICommandMediator, IDisposab
         }
     }
 
-    public Task<TCommandResult> SendAsync<TCommandResult>(ICommand<TCommandResult> command,
-        CommandMediationSettings? settings, CancellationToken cancellationToken) =>
-        Task.FromException<TCommandResult>(new NotSupportedException("No result configured for this command."));
+    public async Task<TCommandResult> SendAsync<TCommandResult>(ICommand<TCommandResult> command,
+        CommandMediationSettings? settings, CancellationToken cancellationToken)
+    {
+        if (command is PatchConfigurationCommand patch)
+        {
+            var handler = new UpdateConfigurationCommandHandler(Db, _config, EventMediator, Gate,
+                NullLogger<UpdateConfigurationCommandHandler>.Instance);
+            return (TCommandResult)await handler.HandleAsync(patch, cancellationToken);
+        }
+
+        throw new NotSupportedException("No result configured for this command.");
+    }
 
     public TCommand Single<TCommand>() where TCommand : ICommand => Commands.OfType<TCommand>().Single();
 

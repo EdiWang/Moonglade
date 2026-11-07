@@ -1,4 +1,4 @@
-import { handleSettingsSubmit } from './admin.settings.mjs';
+import { initializeSettings } from './admin.settings.mjs';
 import { ImageUploader } from './imageuploader.mjs';
 
 var avatarUploader = new ImageUploader('avatar', 300, 'image/jpeg');
@@ -15,5 +15,4 @@ document.getElementById('btn-upload-siteicon').addEventListener('click', async f
     await siteiconUploader.uploadImage('/siteicon');
 });
 
-const form = document.querySelector('#form-settings');
-form.addEventListener('submit', handleSettingsSubmit);
+initializeSettings();

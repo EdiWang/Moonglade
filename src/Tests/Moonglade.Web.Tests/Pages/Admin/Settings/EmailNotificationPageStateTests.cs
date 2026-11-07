@@ -77,7 +77,6 @@ public class EmailNotificationPageStateTests
         var pageState = EmailNotificationPageState.Create(
             CreateStatus(serviceOptions, workerOptions), serviceOptions, emailSendingEnabled: true);
 
-        Assert.Equal("SMTP", pageState.ProviderLabel);
         Assert.Equal(expectedAddress, pageState.SenderAddress);
         Assert.True(pageState.CanSendTestEmail);
     }

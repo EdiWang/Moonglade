@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Moonglade.ActivityLog;
 using Moonglade.Email;
 using Moonglade.Email.Core;
+using System.Text.Json;
 
 namespace Moonglade.Web.Controllers;
 
@@ -26,36 +27,25 @@ public class SettingsController(
         var settings = blogConfig.Capture();
         model = model with { AvatarUrl = settings.GeneralSettings.AvatarUrl };
 
-        await CommandMediator.SendAsync(UpdateConfigurationCommand.Create(model), HttpContext.RequestAborted);
-        await LogActivityAfterSaveAsync(logger, EventType.SettingsGeneralUpdated, "Update General Settings", "General Settings",
-            ActivityLogMetaData.Create(
-                ("SiteTitle", model.SiteTitle),
-                ("LogoText", model.LogoText)));
-        return NoContent();
+        return await UpdateSettingsAsync(model);
     }
 
     [HttpPost("content")]
     public async Task<IActionResult> Content(ContentSettings model)
     {
-        return await UpdateSettingsAsync(model,
-            EventType.SettingsContentUpdated, "Update Content Settings", "Content Settings");
+        return await UpdateSettingsAsync(model);
     }
 
     [HttpPost("comment")]
     public async Task<IActionResult> Comment(CommentSettings model)
     {
-        return await UpdateSettingsAsync(model,
-            EventType.SettingsCommentUpdated, "Update Comment Settings", "Comment Settings",
-            ActivityLogMetaData.Create(
-                ("EnableComments", model.EnableComments),
-                ("RequireCommentReview", model.RequireCommentReview)));
+        return await UpdateSettingsAsync(model);
     }
 
     [HttpPost("notification")]
     public async Task<IActionResult> Notification(NotificationSettings model)
     {
-        return await UpdateSettingsAsync(model,
-            EventType.SettingsNotificationUpdated, "Update Notification Settings", "Notification Settings");
+        return await UpdateSettingsAsync(model);
     }
 
     [HttpPost("email/test")]
@@ -93,35 +83,107 @@ public class SettingsController(
     [HttpPost("subscription")]
     public async Task<IActionResult> Subscription(FeedSettings model)
     {
-        return await UpdateSettingsAsync(model,
-            EventType.SettingsSubscriptionUpdated, "Update Subscription Settings", "Subscription Settings");
+        return await UpdateSettingsAsync(model);
     }
 
     [HttpPost("watermark")]
     public async Task<IActionResult> Image(ImageSettings model)
     {
-        return await UpdateSettingsAsync(model,
-            EventType.SettingsImageUpdated, "Update Image Settings", "Image Settings",
-            ActivityLogMetaData.Create(
-                ("EnableCDNRedirect", model.EnableCDNRedirect),
-                ("IsWatermarkEnabled", model.IsWatermarkEnabled)));
+        return await UpdateSettingsAsync(model);
     }
 
     [HttpPost("advanced")]
     public async Task<IActionResult> Advanced(AdvancedSettings model)
     {
-        return await UpdateSettingsAsync(model,
-            EventType.SettingsAdvancedUpdated, "Update Advanced Settings", "Advanced Settings");
+        return await UpdateSettingsAsync(model);
     }
 
     [HttpPost("appearance")]
     public async Task<IActionResult> Appearance(AppearanceSettings model)
     {
-        return await UpdateSettingsAsync(model,
-            EventType.SettingsAppearanceUpdated, "Update Appearance Settings", "Appearance Settings",
-            ActivityLogMetaData.Create(
-                ("ThemeId", model.ThemeId),
-                ("EnableCustomCss", model.EnableCustomCss)));
+        return await UpdateSettingsAsync(model);
+    }
+
+    [HttpPatch("{group}")]
+    public async Task<IActionResult> Patch(string group, JsonElement fields)
+    {
+        var command = group switch
+        {
+            "general" => PatchConfigurationCommand.Create<GeneralSettings>(static value => value with { }, fields,
+                nameof(GeneralSettings.MetaKeyword), nameof(GeneralSettings.CanonicalPrefix),
+                nameof(GeneralSettings.LogoText), nameof(GeneralSettings.Copyright),
+                nameof(GeneralSettings.SiteTitle), nameof(GeneralSettings.OwnerName),
+                nameof(GeneralSettings.OwnerEmail), nameof(GeneralSettings.Description),
+                nameof(GeneralSettings.SideBarOption), nameof(GeneralSettings.WidgetsProfile),
+                nameof(GeneralSettings.HotTagAmount), nameof(GeneralSettings.WidgetsCategoryList),
+                nameof(GeneralSettings.WidgetsSubscriptionButtons), nameof(GeneralSettings.UseGravatarAsProfilePicture),
+                nameof(GeneralSettings.DefaultLanguageCode), nameof(GeneralSettings.UseDublinCoreMetaData),
+                nameof(GeneralSettings.DcLicenseUrl)),
+            "content" => PatchConfigurationCommand.Create<ContentSettings>(static value => value with { }, fields,
+                nameof(ContentSettings.DefaultEditor), nameof(ContentSettings.PostListPageSize),
+                nameof(ContentSettings.PostTitleAlignment), nameof(ContentSettings.CalloutSectionHtmlPitch),
+                nameof(ContentSettings.ShowCalloutSection), nameof(ContentSettings.ShowPostFooter),
+                nameof(ContentSettings.PostFooterHtmlPitch), nameof(ContentSettings.DocumentOutline),
+                nameof(ContentSettings.EnableViewCount), nameof(ContentSettings.MaximumPageNumbersToDisplay)),
+            "comment" => PatchConfigurationCommand.Create<CommentSettings>(static value => value with { }, fields,
+                nameof(CommentSettings.CommentProvider), nameof(CommentSettings.CommentOrder),
+                nameof(CommentSettings.ThirdPartyCommentHtmlPitch), nameof(CommentSettings.EnableComments),
+                nameof(CommentSettings.EnableGravatar), nameof(CommentSettings.EnableMarkdownLinks),
+                nameof(CommentSettings.RequireCommentReview), nameof(CommentSettings.CloseCommentAfterDays),
+                nameof(CommentSettings.EnableWordFilter), nameof(CommentSettings.WordFilterMode),
+                nameof(CommentSettings.WordFilterKeywords), nameof(CommentSettings.EnableCommentSectionOnMobile)),
+            "notification" => PatchConfigurationCommand.Create<NotificationSettings>(static value => value with { }, fields,
+                nameof(NotificationSettings.EnableEmailSending), nameof(NotificationSettings.SendEmailOnCommentReply),
+                nameof(NotificationSettings.SendEmailOnNewComment), nameof(NotificationSettings.EmailDisplayName)),
+            "subscription" => PatchConfigurationCommand.Create<FeedSettings>(static value => value with { }, fields,
+                nameof(FeedSettings.FeedItemCount), nameof(FeedSettings.UseFullContent)),
+            "watermark" => PatchConfigurationCommand.Create<ImageSettings>(static value => value with { }, fields,
+                nameof(ImageSettings.IsWatermarkEnabled), nameof(ImageSettings.KeepOriginImage),
+                nameof(ImageSettings.WatermarkFontSize), nameof(ImageSettings.WatermarkText),
+                nameof(ImageSettings.WatermarkColorA), nameof(ImageSettings.WatermarkSkipPixel),
+                nameof(ImageSettings.EnableCDNRedirect), nameof(ImageSettings.CDNEndpoint)),
+            "advanced" => PatchConfigurationCommand.Create<AdvancedSettings>(static value => value with { }, fields,
+                nameof(AdvancedSettings.RobotsTxtContent), nameof(AdvancedSettings.HeadScripts),
+                nameof(AdvancedSettings.FootScripts), nameof(AdvancedSettings.EnableWebmention),
+                nameof(AdvancedSettings.EnableOpenSearch), nameof(AdvancedSettings.EnableFoaf),
+                nameof(AdvancedSettings.EnableOpml), nameof(AdvancedSettings.EnableSiteMap),
+                nameof(AdvancedSettings.EnablePostScheduler), nameof(AdvancedSettings.WarnPostExternalLink),
+                nameof(AdvancedSettings.WarnCommentExternalLink), nameof(AdvancedSettings.EnableJsonLdBlogPosting)),
+            "appearance" => PatchConfigurationCommand.Create<AppearanceSettings>(static value => value with { }, fields,
+                nameof(AppearanceSettings.ThemeId), nameof(AppearanceSettings.EnableCustomCss),
+                nameof(AppearanceSettings.CssCode)),
+            _ => null
+        };
+
+        if (command is null) return NotFound();
+
+        var updated = await CommandMediator.SendAsync(command, HttpContext.RequestAborted);
+        return await CompleteSettingsSaveAsync(updated);
+    }
+
+    private async Task<IActionResult> CompleteSettingsSaveAsync(object settings)
+    {
+        var (eventType, groupName, metadata) = settings switch
+        {
+            GeneralSettings model => (EventType.SettingsGeneralUpdated, "General",
+                ActivityLogMetaData.Create(("SiteTitle", model.SiteTitle), ("LogoText", model.LogoText))),
+            CommentSettings model => (EventType.SettingsCommentUpdated, "Comment",
+                ActivityLogMetaData.Create(("EnableComments", model.EnableComments), ("RequireCommentReview", model.RequireCommentReview))),
+            ImageSettings model => (EventType.SettingsImageUpdated, "Image",
+                ActivityLogMetaData.Create(("EnableCDNRedirect", model.EnableCDNRedirect), ("IsWatermarkEnabled", model.IsWatermarkEnabled))),
+            AppearanceSettings model => (EventType.SettingsAppearanceUpdated, "Appearance",
+                ActivityLogMetaData.Create(("ThemeId", model.ThemeId), ("EnableCustomCss", model.EnableCustomCss))),
+            ContentSettings => (EventType.SettingsContentUpdated, "Content", null),
+            NotificationSettings => (EventType.SettingsNotificationUpdated, "Notification", null),
+            FeedSettings => (EventType.SettingsSubscriptionUpdated, "Subscription", null),
+            AdvancedSettings => (EventType.SettingsAdvancedUpdated, "Advanced", null),
+            CustomMenuSettings model => (EventType.SettingsCustomMenuUpdated, "Custom Menu",
+                ActivityLogMetaData.Create(("IsEnabled", model.IsEnabled))),
+            _ => throw new InvalidOperationException("Unexpected settings type.")
+        };
+
+        await LogActivityAfterSaveAsync(logger, eventType, $"Update {groupName} Settings", $"{groupName} Settings", metadata);
+        return NoContent();
     }
 
     [HttpGet("custom-menu")]
@@ -154,9 +216,7 @@ public class SettingsController(
             Menus = menus
         };
 
-        return await UpdateSettingsAsync(settings,
-            EventType.SettingsCustomMenuUpdated, "Update Custom Menu Settings", "Custom Menu Settings",
-            ActivityLogMetaData.Create(("IsEnabled", model.IsEnabled)));
+        return await UpdateSettingsAsync(settings);
     }
 
     [HttpGet("password/generate")]
@@ -221,16 +281,10 @@ public class SettingsController(
         return NoContent();
     }
 
-    private async Task<IActionResult> UpdateSettingsAsync<T>(
-        T settings,
-        EventType eventType,
-        string operation,
-        string targetName,
-        object metadata = null) where T : IBlogSettings<T>
+    private async Task<IActionResult> UpdateSettingsAsync<T>(T settings) where T : IBlogSettings<T>
     {
         await CommandMediator.SendAsync(UpdateConfigurationCommand.Create(settings), HttpContext.RequestAborted);
-        await LogActivityAfterSaveAsync(logger, eventType, operation, targetName, metadata);
-        return NoContent();
+        return await CompleteSettingsSaveAsync(settings);
     }
 
     private IActionResult CreateEmailCapabilityProblem()

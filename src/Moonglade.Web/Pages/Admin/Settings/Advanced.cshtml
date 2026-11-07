@@ -12,10 +12,6 @@
     <script type="module" src="~/js/app/admin.settings.content.mjs"></script>
 }
 
-<div id="localizedStrings" style="display:none"
-     data-settings-updated="@SharedLocalizer["Settings Updated"]">
-</div>
-
 @section admintoolbar {
     <partial name="_SettingsHeader" />
 }
@@ -187,7 +183,7 @@
                 <div class="mb-3">
                     <h4 class="admin-subtitle fw-bold mb-2">@Html.DisplayNameFor(m => settings.RobotsTxtContent)</h4>
                     <div class="p-3 rounded-3 border mb-3">
-                        <textarea asp-for="@settings.RobotsTxtContent" class="form-control textarea-code" cols="60" rows="10" spellcheck="false"></textarea>
+                        <textarea asp-for="@settings.RobotsTxtContent" data-setting-edit='@Html.DisplayNameFor(m => settings.RobotsTxtContent)' class="form-control textarea-code" cols="60" rows="10" spellcheck="false"></textarea>
                     </div>
 
                     <h4 class="admin-subtitle fw-bold mb-2">@Html.DisplayNameFor(m => settings.HeadScripts)</h4>
@@ -196,7 +192,7 @@
                             @SharedLocalizer["Using a third party script may cause your website to be blocked by some browsers or ad blockers, it can have security risks too. Please use with caution."]
                         </div>
 
-                        <textarea asp-for="@settings.HeadScripts" class="form-control textarea-code" cols="60" rows="10" spellcheck="false"></textarea>
+                        <textarea asp-for="@settings.HeadScripts" data-setting-edit='@Html.DisplayNameFor(m => settings.HeadScripts)' class="form-control textarea-code" cols="60" rows="10" spellcheck="false"></textarea>
 
                         <div class="form-text">
                             @Html.Raw(string.Format(SharedLocalizer["* Global script that will be injected into every page's {0} section."].Value, "<code>head</code>")) <br />
@@ -211,7 +207,7 @@
                             @SharedLocalizer["Using a third party script may cause your website to be blocked by some browsers or ad blockers, it can have security risks too. Please use with caution."]
                         </div>
 
-                        <textarea asp-for="@settings.FootScripts" class="form-control textarea-code" cols="60" rows="10" spellcheck="false"></textarea>
+                        <textarea asp-for="@settings.FootScripts" data-setting-edit='@Html.DisplayNameFor(m => settings.FootScripts)' class="form-control textarea-code" cols="60" rows="10" spellcheck="false"></textarea>
 
                         <div class="form-text">
                             @Html.Raw(string.Format(SharedLocalizer["* Global script that will be injected into every page's footer, before the ending of {0} tag. Typically used for third party analytics services."].Value, "<code>body</code>")) <br />
@@ -223,7 +219,6 @@
                             </div>
                         </div>
                     </div>
-                    <div class="admin-settings-action-container border-top pt-2 mt-2">
-                        <input id="btn-save-settings" type="submit" value="@SharedLocalizer["Save"]" class="btn btn-outline-accent" />
-                    </div>
-                </form>
+</form>
+
+<partial name="_SettingEditModal" />

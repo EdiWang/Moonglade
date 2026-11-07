@@ -6,10 +6,6 @@
     <script type="module" src="~/js/app/admin.settings.comment.mjs"></script>
 }
 
-<div id="localizedStrings" style="display:none"
-     data-settings-updated="@SharedLocalizer["Settings Updated"]">
-</div>
-
 @{
     var settings = snapshot.CommentSettings;
 }
@@ -75,7 +71,7 @@
                         <div class="form-text">@SharedLocalizer["Set to 0 to never close comments after any days"]</div>
                     </div>
                     <div class="col-4">
-                        <input asp-for="@settings.CloseCommentAfterDays" class="form-control" min="0" max="65536" required />
+                        <input asp-for="@settings.CloseCommentAfterDays" data-setting-edit="" class="form-control" min="0" max="65536" required />
                     </div>
                 </div>
 
@@ -149,7 +145,7 @@
                 <div class="comment-settings-3rd">
                     <div>
                         <div class="form-floating">
-                            <textarea asp-for="@settings.ThirdPartyCommentHtmlPitch"
+                            <textarea asp-for="@settings.ThirdPartyCommentHtmlPitch" data-setting-edit=""
                                       placeholder="@Html.DisplayNameFor(m => settings.ThirdPartyCommentHtmlPitch)"
                                       class="form-control form-control-sm h-100px"
                                       spellcheck="false"></textarea>
@@ -225,14 +221,13 @@
                             <div class="form-text">@SharedLocalizer["Separate keywords with |"]</div>
                         </div>
                         <div class="col-md-5">
-                            <input asp-for="@settings.WordFilterKeywords" class="form-control" spellcheck="false" maxlength="4096" />
+                            <input asp-for="@settings.WordFilterKeywords" data-setting-edit="" class="form-control" spellcheck="false" maxlength="4096" />
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-    <div class="admin-settings-action-container border-top pt-2 mt-2">
-        <input id="btn-save-settings" type="submit" value="@SharedLocalizer["Save"]" class="btn btn-outline-accent" />
-    </div>
 </form>
+
+<partial name="_SettingEditModal" />

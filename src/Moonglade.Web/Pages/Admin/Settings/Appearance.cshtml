@@ -10,17 +10,12 @@
 }
 
 <div id="localizedStrings" style="display:none"
-     data-settings-updated="@SharedLocalizer["Settings Updated"]"
      data-theme-deleted="@SharedLocalizer["Theme deleted."]">
 </div>
 
 @section head {
     <link href="~/_content/Moonglade.Editor.StaticAssets/moonglade-editor/moonglade-editor.css" rel="stylesheet" asp-append-version="true" />
     <style>
-        .settings-code-editor {
-            min-height: calc(100vh - 450px);
-        }
-
         .theme-selector-container.active {
             border: 2px solid black !important;
         }
@@ -74,7 +69,7 @@
 
                                     <div class="card-footer text-light theme-selector-footer @(ViewModel.ThemeId == theme.Id ? "active" : null)"
                                          style="background-color: @theme.CssRulesDictionary["--accent-color1"]">
-                                        <input class="form-check-input" type="radio" asp-for="@ViewModel.ThemeId" id="ThemeId_@theme.Id" value="@theme.Id" />
+                                        <input class="form-check-input" type="radio" asp-for="@ViewModel.ThemeId" data-setting-number="" id="ThemeId_@theme.Id" value="@theme.Id" />
                                         <label class="form-check-label" for="ThemeId_@theme.Id">@theme.ThemeName</label>
                                     </div>
                                 </div>
@@ -116,7 +111,7 @@
                                          style="background-color: @theme.CssRulesDictionary["--accent-color1"]">
 
                                         <div>
-                                            <input class="form-check-input" type="radio" asp-for="@ViewModel.ThemeId" id="ThemeId_@theme.Id" value="@theme.Id" />
+                                            <input class="form-check-input" type="radio" asp-for="@ViewModel.ThemeId" data-setting-number="" id="ThemeId_@theme.Id" value="@theme.Id" />
                                             <label class="form-check-label" for="ThemeId_@theme.Id">@theme.ThemeName</label>
                                         </div>
 
@@ -161,24 +156,21 @@
                     <div class="col-md-5 text-end">
                         <div class="form-check form-switch form-control-lg">
                             <input type="hidden" name="EnableCustomCss" value="false">
-                            <input type="checkbox" name="EnableCustomCss" value="true" class="form-check-input" @(@ViewModel.EnableCustomCss ? "checked" : null) />
+                            <input type="checkbox" name="EnableCustomCss" value="true" data-setting-requires="CssCode" class="form-check-input" @(@ViewModel.EnableCustomCss ? "checked" : null) />
                         </div>
                     </div>
                 </div>
 
-                <div id="CssContentEditor" class="settings-code-editor">
+                <div class="p-3 rounded-3 border">
+                    <textarea asp-for="@ViewModel.CssCode" data-setting-edit='@SharedLocalizer["Custom CSS"]' class="form-control" rows="14" spellcheck="false"></textarea>
                 </div>
-                <textarea asp-for="@ViewModel.CssCode" class="settings-csscontent-textarea d-none"></textarea>
             </div>
         </div>
     </div>
 
-    <div class="admin-settings-action-container border-top pt-2 mt-2">
-        <button type="submit" class="btn btn-outline-accent" id="btn-save-settings">
-            @SharedLocalizer["Save"]
-        </button>
-    </div>
 </form>
+
+<partial name="_SettingEditModal" />
 
 <partial name="_ThemeModal" model="ThemeRequest" />
 

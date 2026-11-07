@@ -1911,9 +1911,6 @@
   <data name="Email notification configuration is invalid." xml:space="preserve">
     <value>メール通知の設定が無効です。</value>
   </data>
-  <data name="Provider" xml:space="preserve">
-    <value>プロバイダー</value>
-  </data>
   <data name="Sender Address" xml:space="preserve">
     <value>送信者アドレス</value>
   </data>

@@ -22,7 +22,6 @@
 }
 
 <div id="localizedStrings" style="display:none"
-     data-settings-updated="@SharedLocalizer["Settings Updated"]"
      data-image-updated="@SharedLocalizer["Updated"]"
      data-please-select-image="@SharedLocalizer["Please select an image"]"
      data-please-select-image-file="@SharedLocalizer["Please select an image file."]"
@@ -48,7 +47,7 @@
                             <label asp-for="@ViewModel.SiteTitle"></label>
                         </div>
                         <div class="col-md-5 text-end">
-                            <input asp-for="@ViewModel.SiteTitle" class="form-control" required />
+                            <input asp-for="@ViewModel.SiteTitle" data-setting-edit="" class="form-control" required />
                         </div>
                     </div>
 
@@ -60,7 +59,7 @@
                             <label asp-for="@ViewModel.LogoText"></label>
                         </div>
                         <div class="col-md-5 text-end">
-                            <input asp-for="@ViewModel.LogoText" class="form-control" required />
+                            <input asp-for="@ViewModel.LogoText" data-setting-edit="" class="form-control" required />
                         </div>
                     </div>
 
@@ -72,7 +71,7 @@
                             <label asp-for="@ViewModel.MetaKeyword"></label>
                         </div>
                         <div class="col-md-5 text-end">
-                            <input asp-for="@ViewModel.MetaKeyword" class="form-control" required />
+                            <input asp-for="@ViewModel.MetaKeyword" data-setting-edit="" class="form-control" required />
                         </div>
                     </div>
 
@@ -100,7 +99,7 @@
                             <div class="form-text">@SharedLocalizer["Set a primary domain if your website binds to multiple domian names."]</div>
                         </div>
                         <div class="col-md-5 text-end">
-                            <input asp-for="@ViewModel.CanonicalPrefix" class="form-control" />
+                            <input asp-for="@ViewModel.CanonicalPrefix" data-setting-edit="" class="form-control" />
                         </div>
                     </div>
 
@@ -126,7 +125,7 @@
                             <div class="form-text">@Html.Raw(@SharedLocalizer["Use [c] for copyright mark: &copy;, [year] for current year."])</div>
                         </div>
                         <div class="col-md-5 text-end">
-                            <input asp-for="@ViewModel.Copyright" class="form-control" required />
+                            <input asp-for="@ViewModel.Copyright" data-setting-edit="" class="form-control" required />
                         </div>
                     </div>
                 </div>
@@ -159,7 +158,7 @@
                                 <label asp-for="@snapshot.GeneralSettings.DcLicenseUrl"></label>
                             </div>
                             <div class="col-md-5 text-end">
-                                <input asp-for="@snapshot.GeneralSettings.DcLicenseUrl" class="form-control" />
+                                <input asp-for="@snapshot.GeneralSettings.DcLicenseUrl" data-setting-edit="" class="form-control" />
                             </div>
                         </div>
                     </div>
@@ -237,19 +236,19 @@
                                     <div class="row mb-2 gap-0">
                                         <div class="col">
                                             <label class="form-label" asp-for="@ViewModel.OwnerName"></label>
-                                            <input asp-for="@ViewModel.OwnerName" class="form-control" required />
+                                            <input asp-for="@ViewModel.OwnerName" data-setting-edit="" class="form-control" required />
                                         </div>
                                         <div class="col">
                                             <label class="form-label" asp-for="@ViewModel.OwnerEmail"></label>
-                                            <input asp-for="@ViewModel.OwnerEmail" class="form-control" required title="@SharedLocalizer["Email address to receive notifications from this blog."]" />
+                                            <input asp-for="@ViewModel.OwnerEmail" data-setting-edit="" class="form-control" required title="@SharedLocalizer["Email address to receive notifications from this blog."]" />
                                         </div>
                                     </div>
 
-                                    <div class="form-floating mb-2">
-                                        <input asp-for="@ViewModel.Description"
+                                    <div class="mb-2">
+                                        <label class="form-label" asp-for="@ViewModel.Description"></label>
+                                        <input asp-for="@ViewModel.Description" data-setting-edit=""
                                                placeholder="@Html.DisplayName(ViewModel.Description)"
                                                class="form-control" required>
-                                        <label class="form-label" asp-for="@ViewModel.Description"></label>
                                     </div>
                                 </div>
                             </div>
@@ -280,7 +279,7 @@
                                 <div class="text-muted">@SharedLocalizer["Set to 0 to hide tags widget"]</div>
                             </div>
                             <div class="col-4">
-                                <input asp-for="@ViewModel.HotTagAmount" class="form-control" min="1" max="32" />
+                                <input asp-for="@ViewModel.HotTagAmount" data-setting-edit="" class="form-control" min="0" max="20" required />
                             </div>
                         </div>
 
@@ -318,10 +317,9 @@
             </div>
         </div>
     </div>
-    <div class="admin-settings-action-container border-top pt-2 mt-2">
-        <input id="btn-save-settings" type="submit" value="@SharedLocalizer["Save"]" class="btn btn-outline-accent" />
-    </div>
 </form>
+
+<partial name="_SettingEditModal" />
 
 <partial name="_AvatarModal" />
 <partial name="_FaviconModal" />

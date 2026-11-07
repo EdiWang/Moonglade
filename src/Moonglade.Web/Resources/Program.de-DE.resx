@@ -1911,9 +1911,6 @@
   <data name="Email notification configuration is invalid." xml:space="preserve">
     <value>Die Konfiguration für E-Mail-Benachrichtigungen ist ungültig.</value>
   </data>
-  <data name="Provider" xml:space="preserve">
-    <value>Anbieter</value>
-  </data>
   <data name="Sender Address" xml:space="preserve">
     <value>Absenderadresse</value>
   </data>
