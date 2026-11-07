@@ -7,7 +7,6 @@ avatarUploader.bindEvents();
 var siteiconUploader = new ImageUploader('siteicon', 512, 'image/png');
 siteiconUploader.bindEvents();
 
-bsCustomFileInput.init();
 document.getElementById('btn-upload-avatar').addEventListener('click', async function () {
     await avatarUploader.uploadImage('/avatar');
 });
