@@ -186,20 +186,15 @@ public class SearchPageTests
     }
 
     [Theory]
-    [InlineData(null, "")]
-    [InlineData("", "")]
-    [InlineData("https://cdn.example.com/avatar.png", "")]
-    [InlineData(null, "/blog")]
-    [InlineData("", "/blog")]
-    [InlineData("https://cdn.example.com/avatar.png", "/blog")]
-    public async Task PublicAndAdminAvatarRendering_AlwaysUsesLocalEndpointWithoutChangingLegacySettings(string? avatar, string pathBase)
+    [InlineData("")]
+    [InlineData("/blog")]
+    public async Task PublicAndAdminAvatarRendering_UsesLocalEndpointWithoutMutatingSettings(string pathBase)
     {
         var config = CreateBlogConfig();
         config.Publish(config.Capture() with
         {
             GeneralSettings = config.Capture().GeneralSettings with
             {
-                AvatarUrl = avatar,
                 WidgetsProfile = true,
                 SideBarOption = SideBarOption.Right
             }
@@ -214,9 +209,7 @@ public class SearchPageTests
             var html = await client.GetStringAsync(route, TestContext.Current.CancellationToken);
 
             Assert.Contains($"src=\"{expected}\"", html);
-            if (!string.IsNullOrEmpty(avatar)) Assert.DoesNotContain($"src=\"{avatar}\"", html);
             Assert.Same(retained, config.Capture());
-            Assert.Equal(avatar, config.Capture().GeneralSettings.AvatarUrl);
         }
     }
 

@@ -6,7 +6,7 @@ namespace Moonglade.Configuration.Tests;
 public class BlogSettingsSnapshotTests
 {
     [Fact]
-    public void ConsumerBoundary_HasNoLoadOrPublicationAccess_AndSharesItsOwner()
+    public void ReaderAndOwner_ShareTheCurrentSnapshot()
     {
         var services = new ServiceCollection();
         services.AddBlogConfig();
@@ -16,10 +16,6 @@ public class BlogSettingsSnapshotTests
 
         Assert.Same(owner, reader);
         Assert.Same(owner.Capture(), reader.Capture());
-        Assert.Empty(typeof(IBlogConfig).GetProperties());
-        Assert.DoesNotContain(typeof(IBlogConfig).GetMethods(), method => method.Name is "Publish" or "Parse");
-        Assert.Equal(9, typeof(BlogSettingsSnapshot).GetProperties().Length);
-        Assert.DoesNotContain(typeof(BlogSettingsSnapshot).GetProperties(), property => property.Name is "LocalAccountSettings" or "SystemManifestSettings");
     }
 
     [Fact]

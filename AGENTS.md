@@ -90,6 +90,7 @@ See [Build & Run](README.md#build--run) for restore/build/run commands and [Run 
 
 ### Test Selection
 
+- Do not add tests solely to prove that a removed feature, member, or dependency is absent. Test current behavior and meaningful failure cases instead.
 - Add or update behavior tests in the owning `Moonglade.*.Tests` project; see the [test layout](src/Tests/README.md#layout). Tests use xUnit v3, Moq, and EF Core InMemory/Sqlite patterns.
 - When following the existing async test style, use `TestContext.Current.CancellationToken`.
 - Prefer focused unit tests for command/query handlers, services, middleware, validators, and protocol generators. Use integration tests when behavior depends on EF/database setup or host-level wiring.

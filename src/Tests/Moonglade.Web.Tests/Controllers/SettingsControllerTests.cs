@@ -273,11 +273,11 @@ public partial class SettingsControllerTests
     [Theory]
     [InlineData(false)]
     [InlineData(true)]
-    public async Task Image_SavesOnlyImageSettingsWithoutChangingLegacyAvatar(bool enableCdn)
+    public async Task Image_SavesImageSettingsAndPreservesGeneralSettings(bool enableCdn)
     {
         var blogConfig = new BlogConfig(new BlogSettingsSnapshot
         {
-            GeneralSettings = GeneralSettings.DefaultValue with { AvatarUrl = "https://legacy-cdn.example.com/avatar.png" },
+            GeneralSettings = GeneralSettings.DefaultValue,
             ImageSettings = ImageSettings.DefaultValue
         });
         using var mediator = new ConfigurationCommandRecorder();

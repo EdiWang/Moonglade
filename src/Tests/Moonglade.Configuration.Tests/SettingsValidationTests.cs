@@ -78,11 +78,8 @@ public class SettingsValidationTests
 
 
     [Fact]
-    public void ApprovedCompatibilityExceptions_AreValid()
+    public void SupportedSettingValues_AreValid()
     {
-        var general = GeneralSettings.DefaultValue;
-        general = general with { AvatarUrl = "https://cdn.example.com/" + new string('a', 300) };
-        Assert.True(Validator.TryValidateObject(general, new ValidationContext(general), null, true));
         var notification = new NotificationSettings { EmailDisplayName = null };
         Assert.True(Validator.TryValidateObject(notification, new ValidationContext(notification), null, true));
         var appearance = new AppearanceSettings { ThemeId = int.MaxValue };

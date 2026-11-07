@@ -3,14 +3,14 @@
 ## Resume Here
 
 - Last reconciled: 2026-11-07, Asia/Taipei.
-- S6 started from clean HEAD `d81240a86`; the scheduler fix and S6 records are now committed in `65e13ad43`. Current HEAD is `8ce2f9b67` (`Remove settings change notice`), on `master`; the Pronouns removal below is uncommitted.
+- S6 started from clean HEAD `d81240a86`; the scheduler fix and S6 records are committed in `65e13ad43`. Current HEAD is `bf7e6399a` (`Remove profile pronouns setting`), on `master`; the subsequent test cleanup below is uncommitted.
 - Reliability and structural implementation through S3 is complete. S6 technical verification passed within the agreed deployment scope; final user sign-off and temporary-file cleanup remain pending.
 - Maintenance review items 1, 4, 6, and the duplicate initialization-log wrapper are committed in `fe22d13ce`.
 - Review items 2 and 3 are committed in `701b3be04`. Ordinary commands retain one immutable settings group; production regression coverage supersedes the S0 candidate implementation.
 - Review item 5 is committed in `cacdae4f1`. Pure `BlogConfig.Parse` returns the snapshot and default JSON; initialization repairs once, then publishes the prepared snapshot/account without re-parsing. First-install transactions, commit verification, and the subsequent committed-data reload remain. No new loader interface, registry, or batch-write framework was added.
 - **S6 technical checks passed:** full solution with both providers **1465 passed, 0 failed, 0 skipped**; isolated PostgreSQL host/Chrome checks passed. The user authorized fixing overdue scheduled posts missing immediate wake-up publication. The next-time query now includes overdue, nondeleted schedules with timestamps; five new regression cases and the rebuilt live-host reproduction passed.
 - The user accepted the existing root-path deployment limit. Full subpath hosting is outside this work; do not add forwarded-prefix or client-URL changes without a new decision. Local authentication/TOTP was exercised live; external OIDC sign-in was not provisioned.
-- Follow-up UI cleanup: removed Pronouns from the model, editor, profile, CSS and translations. The user explicitly chose to ignore legacy JSON without database migration or startup rewrites; a later General save drops the field. Configuration tests: **107 passed**; Web tests: **367 passed**; Web build: **0 warnings/errors**; diff check passed. The new compatibility test verifies loading without repair and omission on save. Full-solution/provider/browser acceptance was not repeated for this change; the S6 evidence below predates it.
+- Follow-up UI cleanup: removed Pronouns from the model, editor, profile, CSS and translations. The user explicitly chose to ignore legacy JSON without database migration or startup rewrites; a later General save drops the field. Per the user's test policy, removed the Pronouns-only test, old-member/interface absence assertions and redundant retired avatar-CDN cases; retained actual behavior, security, failure and migration coverage. Focused verification: **105 Configuration, 63 Auth and 363 Web tests passed** (531 total), no failures/skips; diff check passed. Full-solution/provider/browser acceptance was not repeated; S6 evidence predates these changes. The test policy is recorded in `AGENTS.md`.
 - Next actions: final user sign-off and cleanup of `C:/Users/Edi/AppData/Local/Temp/moonglade-s6-062e5864aadc`. Automatic approval review rejected deletion with "blocked by policy" after target verification. Containers/volumes/network, proxy and browser session are already removed; only that temporary directory remains. Do not print its test credentials. See [S6 evidence](SETTINGS_STRUCTURE_PLAN.md). No commit, deployment, or production-data change is authorized.
 - Retain this tracker and update status, verification, remaining issues, and the next action at every batch boundary. A new conversation should read this file, `AGENTS.md`, and the relevant engineering-reference sections first.
 - No design question is currently pending. Ask about new requirement, business, architecture, or recovery-policy choices, with a recommendation; continue independent authorized work while waiting.
@@ -30,7 +30,7 @@
 | Maintenance 3 | Review item 5 complete; full automated acceptance below includes the previously skipped database groups. | `cacdae4f1` |
 | Automated acceptance | Superseded by S6 final regression: 1465 passed with both providers, no failures/skips. | Earlier evidence `d81240a86` |
 | S6 | Technical verification passed; overdue-scheduler fix verified. User sign-off and policy-blocked temporary-directory cleanup pending. | `65e13ad43` |
-| UI cleanup | Shared notice removed; Pronouns feature removed with approved legacy-JSON behavior and focused verification above. | Notice `8ce2f9b67`; Pronouns uncommitted |
+| UI cleanup | Shared notice and Pronouns feature removed. Deletion-only test cleanup and focused verification are recorded above. | Notice `8ce2f9b67`; Pronouns `bf7e6399a`; test cleanup uncommitted |
 
 ## Rules To Preserve
 

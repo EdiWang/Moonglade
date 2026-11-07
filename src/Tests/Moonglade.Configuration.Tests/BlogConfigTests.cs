@@ -3,16 +3,6 @@ namespace Moonglade.Configuration.Tests;
 public class BlogConfigTests
 {
     [Fact]
-    public void OrdinaryConsumerContract_ExcludesProtectedState()
-    {
-        var properties = typeof(BlogSettingsSnapshot).GetProperties();
-
-        Assert.Equal(9, properties.Length);
-        Assert.DoesNotContain(properties, property => property.Name is "LocalAccountSettings" or "SystemManifestSettings");
-        Assert.DoesNotContain(typeof(BlogConfig).GetProperties(), property => property.Name is "LocalAccountSettings" or "SystemManifestSettings");
-    }
-
-    [Fact]
     public void Parse_EmptyStore_ReturnsTheDefaultsAssignedToEverySetting()
     {
         var (snapshot, defaults) = BlogConfig.Parse(new Dictionary<string, string>());

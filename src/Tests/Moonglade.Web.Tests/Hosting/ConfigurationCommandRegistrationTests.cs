@@ -20,7 +20,7 @@ namespace Moonglade.Web.Tests.Hosting;
 public class ConfigurationCommandRegistrationTests
 {
     [Fact]
-    public async Task AvatarEvent_WithActualHandlerDiscovery_SavesOnlyLocalAssetWithoutImageStorage()
+    public async Task AvatarEvent_WithActualHandlerDiscovery_PersistsUploadedData()
     {
         using var store = new ConfigurationCommandRecorder();
         var services = new ServiceCollection();

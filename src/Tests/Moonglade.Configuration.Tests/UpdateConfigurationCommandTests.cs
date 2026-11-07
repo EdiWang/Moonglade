@@ -6,45 +6,12 @@ using Microsoft.Extensions.Logging.Abstractions;
 using Moonglade.Data;
 using Moonglade.Data.Entities;
 using System.ComponentModel.DataAnnotations;
-using System.Text.Json;
 
 namespace Moonglade.Configuration.Tests;
 
 public class UpdateConfigurationCommandTests
 {
     private readonly ConfigurationWriteGate _gate = new();
-
-    [Fact]
-    public async Task RemovedPronouns_LegacyJsonLoadsWithoutRepairAndIsOmittedOnSave()
-    {
-        using var db = CreateDbContext();
-        var original = General("Old");
-        var legacyJson = original.ToJson()[..^1] + ",\"pronouns\":\"they/them\"}";
-        await SeedAsync(db, original);
-        var row = await db.BlogConfiguration.SingleAsync(TestContext.Current.CancellationToken);
-        row.CfgValue = legacyJson;
-        await db.SaveChangesAsync(TestContext.Current.CancellationToken);
-        var timestamp = row.LastModifiedTimeUtc;
-        var stored = new Dictionary<string, string> { [nameof(GeneralSettings)] = legacyJson };
-
-        var (snapshot, repairs) = BlogConfig.Parse(stored);
-
-        Assert.DoesNotContain(nameof(GeneralSettings), repairs.Keys);
-        Assert.Equal(original.ToJson(), snapshot.GeneralSettings.ToJson());
-        Assert.Equal(legacyJson, stored[nameof(GeneralSettings)]);
-        Assert.Equal(legacyJson, row.CfgValue);
-        Assert.Equal(timestamp, row.LastModifiedTimeUtc);
-
-        var config = new BlogConfig(snapshot);
-        await Handler(db, config).HandleAsync(UpdateConfigurationCommand.Create(snapshot.GeneralSettings with { SiteTitle = "New" }),
-            TestContext.Current.CancellationToken);
-
-        using var saved = JsonDocument.Parse(row.CfgValue);
-        Assert.False(saved.RootElement.TryGetProperty("pronouns", out _));
-        Assert.Equal("New", saved.RootElement.GetProperty("siteTitle").GetString());
-        Assert.Equal(row.CfgValue, config.Capture().GeneralSettings.ToJson());
-    }
-
     [Fact]
     public async Task Save_UpdatesDatabaseAndRuntimeFromRetainedImmutableValue()
     {

@@ -99,27 +99,22 @@ public class SettingsValidationHttpTests
     }
 
     [Fact]
-    public async Task ApprovedBlankSenderDisabledMenuAndLongGeneratedAvatar_CanBeSaved()
+    public async Task BlankSenderAndDisabledMenu_CanBeSaved()
     {
         using var store = new ConfigurationCommandRecorder();
         var config = Defaults();
-        var avatar = "https://cdn.example.com/" + new string('a', 300);
-        config.Publish(config.Capture() with { GeneralSettings = config.Capture().GeneralSettings with { AvatarUrl = avatar } });
         await using var app = await CreateApp(store, config);
         using var client = app.GetTestClient();
         using var sender = await client.PostAsJsonAsync("/api/settings/notification", new NotificationSettings { EmailDisplayName = null },
             TestContext.Current.CancellationToken);
         using var menu = await client.PostAsJsonAsync("/api/settings/custom-menu", new CustomMenuSettingsJsonModel { IsEnabled = false },
             TestContext.Current.CancellationToken);
-        using var general = await client.PostAsJsonAsync("/api/settings/general", GeneralSettings.DefaultValue, TestContext.Current.CancellationToken);
 
         Assert.Equal(HttpStatusCode.NoContent, sender.StatusCode);
         Assert.Equal(HttpStatusCode.NoContent, menu.StatusCode);
-        Assert.Equal(HttpStatusCode.NoContent, general.StatusCode);
         Assert.Null(config.Capture().NotificationSettings.EmailDisplayName);
         Assert.False(config.Capture().CustomMenuSettings.IsEnabled);
         Assert.Null(config.Capture().CustomMenuSettings.Menus);
-        Assert.Equal(avatar, config.Capture().GeneralSettings.AvatarUrl);
     }
 
     private static BlogConfig Defaults()

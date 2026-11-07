@@ -74,8 +74,6 @@ public class LocalAccountStateTests
         Assert.DoesNotContain(account.PasswordSalt, command.ToString());
         Assert.DoesNotContain(account.TotpSecret, command.ToString());
         Assert.DoesNotContain("PasswordHash", account.ToString());
-        Assert.DoesNotContain(typeof(LocalAccountSettings).GetInterfaces(), contract =>
-            contract.IsGenericType && contract.GetGenericTypeDefinition() == typeof(IBlogSettings<>));
     }
 
     private static string Invalid(Action<LocalAccountSettings> change)
