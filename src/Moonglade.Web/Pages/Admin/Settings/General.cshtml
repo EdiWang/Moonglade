@@ -15,14 +15,6 @@
             Text = t.NativeName,
             Value = t.Value.ToLower()
         });
-
-    var pronounsList = new List<SelectListItem>
-    {
-        new("Don't specify", ""),
-        new("they/them","they/them"),
-        new("she/her","she/her"),
-        new("he/him","he/him")
-    };
 }
 
 @section scripts {
@@ -277,18 +269,6 @@
                                     <input type="hidden" name="UseGravatarAsProfilePicture" value="false">
                                     <input type="checkbox" name="UseGravatarAsProfilePicture" value="true" class="form-check-input" @(ViewModel.UseGravatarAsProfilePicture ? "checked" : null)>
                                 </div>
-                            </div>
-                        </div>
-
-                        <div class="settings-entry row align-items-center py-3 px-2 border-top">
-                            <div class="col-auto">
-                                <i class="bi-person-heart settings-entry-icon"></i>
-                            </div>
-                            <div class="col">
-                                <label for="Pronouns">@SharedLocalizer["Pronouns"]</label>
-                            </div>
-                            <div class="col-md-5 text-end">
-                                <select class="form-select" asp-for="@ViewModel.Pronouns" asp-items="@pronounsList"></select>
                             </div>
                         </div>
 

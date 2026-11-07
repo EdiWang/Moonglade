@@ -32,19 +32,9 @@
         }
 
         <div>
-            @if (!string.IsNullOrWhiteSpace(snapshot.GeneralSettings.Pronouns))
-            {
-                <h3 class="mt-3 mb-0 text-white font-sairas heading-ownername" title="@snapshot.GeneralSettings.OwnerName (@snapshot.GeneralSettings.Pronouns)">
-                    <a class="p-name u-url text-white text-decoration-none" rel="me" href="~/">@snapshot.GeneralSettings.OwnerName</a>
-                </h3>
-                <div class="profile-pronouns mb-2 p-pronoun">@snapshot.GeneralSettings.Pronouns</div>
-            }
-            else
-            {
-                <h3 class="mt-3 text-white font-sairas heading-ownername">
-                    <a class="p-name u-url text-white text-decoration-none" rel="me" href="~/">@snapshot.GeneralSettings.OwnerName</a>
-                </h3>
-            }
+            <h3 class="mt-3 text-white font-sairas heading-ownername">
+                <a class="p-name u-url text-white text-decoration-none" rel="me" href="~/">@snapshot.GeneralSettings.OwnerName</a>
+            </h3>
 
             <p class="me-3 ms-3 profile-description p-note">
                 @snapshot.GeneralSettings.Description

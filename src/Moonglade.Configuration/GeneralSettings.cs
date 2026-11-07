@@ -48,10 +48,6 @@ public sealed record GeneralSettings : IBlogSettings<GeneralSettings>
     [MaxLength(256)]
     public string Description { get; init; }
 
-    [Display(Name = "Your pronouns")]
-    [MaxLength(32)]
-    public string Pronouns { get; init; }
-
     [Display(Name = "Side bar display")]
     [EnumDataType(typeof(SideBarOption))]
     public SideBarOption SideBarOption { get; init; }
