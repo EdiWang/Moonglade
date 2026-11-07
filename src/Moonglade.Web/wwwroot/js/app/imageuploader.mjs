@@ -40,12 +40,10 @@ export class ImageUploader {
             evt.preventDefault();
 
             if (window.File && window.FileReader && window.FileList && window.Blob) {
-                var file;
-                if (evt.dataTransfer) {
-                    file = evt.dataTransfer.files[0];
-                    document.querySelector(`.custom-file-label-${targetName}`).innerText = file.name;
-                } else {
-                    file = evt.target.files[0];
+                var file = evt.dataTransfer ? evt.dataTransfer.files[0] : evt.target.files[0];
+                if (!file) {
+                    error(getLocalizedString('pleaseSelectImage'));
+                    return;
                 }
 
                 if (!file.type.match('image.*')) {
