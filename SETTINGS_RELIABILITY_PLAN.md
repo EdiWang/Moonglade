@@ -3,12 +3,13 @@
 ## Resume Here
 
 - Last reconciled: 2026-11-07, Asia/Taipei.
-- Committed application baseline: `701b3be04` (`Simplify settings writes and regression tests`), on `master`. The working tree was clean when review item 5 started.
+- Committed application baseline: `cacdae4f1` (`Separate settings parsing from publication`), on `master`. The working tree was clean before automated acceptance.
 - Reliability and structural implementation through S3 is complete and committed. Final functional acceptance is pending.
 - Maintenance review items 1, 4, 6, and the duplicate initialization-log wrapper are committed in `fe22d13ce`.
 - Review items 2 and 3 are committed in `701b3be04`. Ordinary commands retain one immutable settings group; production regression coverage supersedes the S0 candidate implementation.
-- Review item 5 is implemented and locally verified, but uncommitted. Pure `BlogConfig.Parse` returns the snapshot and default JSON; initialization repairs once, then publishes the prepared snapshot/account without re-parsing. First-install transactions, commit verification, and the subsequent committed-data reload remain. No new loader interface, registry, or batch-write framework was added. Docker provider verification is unavailable; no commit is authorized.
-- Next acceptance batch: **S6**, defined in [the acceptance plan](SETTINGS_STRUCTURE_PLAN.md). S6 has not started and requires explicit authorization. This maintenance batch does not authorize S6 execution, commits, deployment, or production-data changes.
+- Review item 5 is committed in `cacdae4f1`. Pure `BlogConfig.Parse` returns the snapshot and default JSON; initialization repairs once, then publishes the prepared snapshot/account without re-parsing. First-install transactions, commit verification, and the subsequent committed-data reload remain. No new loader interface, registry, or batch-write framework was added.
+- Authorized automated acceptance is complete: the full solution passed with PostgreSQL and SQL Server enabled, with no failed or skipped cases. Docker is available and the previous provider-verification gap is closed. This turn changed only acceptance records; no commit is authorized.
+- Next acceptance batch: **S6** real-host/browser checks, defined in [the acceptance plan](SETTINGS_STRUCTURE_PLAN.md). The user limited this acceptance run to both database providers and full automated tests; real-host/browser work still requires authorization. No commit, deployment, or production-data change is authorized.
 - Retain this tracker and update status, verification, remaining issues, and the next action at every batch boundary. A new conversation should read this file, `AGENTS.md`, and the relevant engineering-reference sections first.
 - No design question is currently pending. Ask about new requirement, business, architecture, or recovery-policy choices, with a recommendation; continue independent authorized work while waiting.
 
@@ -24,7 +25,8 @@
 | S4-S5 | Not applicable: uploaded avatars no longer have a CDN/file workflow. | No implementation required |
 | Maintenance 1 | Review items 1, 4, 6 and duplicate log wrapper complete; focused tests and Web build passed, with provider tests skipped as recorded below. | `fe22d13ce` |
 | Maintenance 2 | Review items 2 and 3 complete; Configuration/Web regression tests and Web build passed as recorded below. | `701b3be04` |
-| Maintenance 3 | Review item 5 complete; Configuration/Setup/Web tests and Web build passed. The 17 opt-in database groups were skipped because Docker is unavailable. | Uncommitted |
+| Maintenance 3 | Review item 5 complete; full automated acceptance below includes the previously skipped database groups. | `cacdae4f1` |
+| Automated acceptance | Full solution with both providers: 1460 passed, 0 failed, 0 skipped. Web build passed; disposable containers cleaned up. | Application `cacdae4f1`; acceptance records uncommitted |
 | S6 | Final isolated-host/browser regression and acceptance; not started. | Await authorization |
 
 ## Rules To Preserve
@@ -56,34 +58,21 @@
 
 ## Verification Baseline
 
-Maintenance 3 checks on 2026-11-07:
+Automated acceptance on 2026-11-07, against `cacdae4f1`:
 
-- Ran `dotnet test --project <path> --no-restore` for `src/Tests/Moonglade.Configuration.Tests/Moonglade.Configuration.Tests.csproj` (106 passed), `src/Tests/Moonglade.Setup.Tests/Moonglade.Setup.Tests.csproj` (77 passed, 17 skipped), and `src/Tests/Moonglade.Web.Tests/Moonglade.Web.Tests.csproj` (366 passed). Total: **549 passed, 0 failed, 17 skipped**.
-- Two new paused-repair cases cover successful and failed repair completion: neither ordinary settings nor the account may publish while repair is pending, and failure retains the previous runtime values. Existing defaults, partial-JSON preservation, protected-state checks, and Web regressions passed after migration to the pure parser.
-- `dotnet build src/Moonglade.Web/Moonglade.Web.csproj --no-restore`: **0 warnings, 0 errors**. `git diff --check` passed.
-- `docker info --format '{{.ServerVersion}}'` could not connect to the Docker Desktop Linux engine. The normal Setup run explicitly skipped its 17 opt-in database groups; this batch has not verified PostgreSQL/SQL Server transaction, rollback/retry, or uncertain-commit behavior. Re-run those checks with Docker available before final acceptance. Full-solution and S6 browser/real-host acceptance were not run. No schema, real data, commit, or deployment changed.
+```powershell
+$env:MOONGLADE_TEST_CATEGORY_DATABASES = '1'
+dotnet test --solution src/Moonglade.slnx --no-restore
+dotnet build src/Moonglade.Web/Moonglade.Web.csproj --no-restore
+```
 
-Maintenance 2 checks on 2026-11-07:
-
-- `dotnet test --project src/Tests/Moonglade.Configuration.Tests/Moonglade.Configuration.Tests.csproj --no-restore`: **106 passed, 0 failed, 0 skipped**. This retains save failure/cancellation, validation, missing rows, no-op timestamps/events, retained immutable values, and queued unrelated-group publication checks.
-- `dotnet test --project src/Tests/Moonglade.Web.Tests/Moonglade.Web.Tests.csproj`: **366 passed, 0 failed, 0 skipped**, after restoring with the regular .NET SDK. Actual JSON/API/menu-limit/subscription-page assertions replace useful S0 coverage; production render/query concurrency and SQLite commit-boundary tests remain. The count change is expected: 37 experimental cases and one paired-write case were removed; five production cases were added across the two suites.
-- Total: **472 passed, 0 failed, 0 skipped**. `dotnet build src/Moonglade.Web/Moonglade.Web.csproj --no-restore`: **0 warnings, 0 errors**. `git diff --check` passed.
-- Full-solution, opt-in provider, and S6 browser/real-host acceptance were not rerun. No schema, settings JSON, protected-account behavior, deployment, or real data changed. No commit was created.
-
-Maintenance 1 checks on 2026-11-07:
-
-- Ran `dotnet test --project <path> --no-restore` for `src/Tests/Moonglade.Web.Tests/Moonglade.Web.Tests.csproj` (398 passed), `src/Tests/Moonglade.Configuration.Tests/Moonglade.Configuration.Tests.csproj` (107 passed), `src/Tests/Moonglade.Syndication.Tests/Moonglade.Syndication.Tests.csproj` (18 passed), and `src/Tests/Moonglade.Setup.Tests/Moonglade.Setup.Tests.csproj` (75 passed, 17 skipped). Total: **598 passed, 0 failed, 17 skipped**. The duplicate ordinary-loader true/false theory is now one case because its unused flag was removed.
-- Cache tests now warm production keys with captured-setting fingerprints/theme IDs and check active-generation isolation instead of requiring old General entries to be deleted. Existing concurrent query/render tests passed.
-- `dotnet build src/Moonglade.Web/Moonglade.Web.csproj --no-restore`: **0 warnings, 0 errors**. `git diff --check` passed.
-- Full-solution, opt-in Docker provider tests, and S6 browser/real-host acceptance were not rerun. The 17 Setup skips are the opt-in disposable-database cases; no provider-specific or schema behavior changed. No commit, deployment, or real-data operation was performed.
-
-Prior S3 implementation checks, retained as the full-solution baseline:
-
-- Full solution: **1492 passed, 0 failed, 0 skipped**, with disposable PostgreSQL and SQL Server groups.
-- Focused Web suite: **398 passed**, including the final supplied-snapshot assertions and actual cached Razor rendering.
-- Web build: **0 warnings, 0 errors**. Earlier solution compilation reported three nullable warnings in unchanged `CannonServiceTests.cs` (88/188/226).
-- Coverage includes startup rollback/retry/lost acknowledgment, defaults/validation, protected state, save failure/cancellation/audit, local avatars, scheduler and restart rules, and paused feed/render/image/comment operations across publication.
-- Browser/manual real-host acceptance remains S6. Passing automated tests is not final user acceptance.
+- Full solution: **1460 passed, 0 failed, 0 skipped**, across all 15 test assemblies; reported test duration 42.312 seconds. The previously skipped opt-in database groups ran against disposable PostgreSQL 18 and SQL Server 2022 databases. This replaces the earlier focused runs and their unavailable-provider limitation.
+- Database coverage includes fresh/existing-empty-schema installation, repeated startup, installation rollback and retry, transient failure, lost commit acknowledgment, failed emptiness queries, preservation of existing content when protected state is missing/invalid, ordinary-group repair, valid partial JSON/timestamp preservation, and both manual upgrade suites.
+- Other regression coverage includes the pure parser, paused repair publication, single-group writes and event ordering, audit failures, local avatars, scheduler/restart rules, and paused feed/render/image/comment operations across publication.
+- Web build: **0 warnings, 0 errors**. Full test compilation reported three existing **CS8602** warnings in unchanged `src/Tests/Moonglade.BackgroundServices.Tests/CannonServiceTests.cs` (88/188/226). `git diff --check` passed.
+- Docker server version: 29.9.2. The test fixture removed its disposable containers; `docker ps -a --filter label=moonglade.category-tests=true` returned no containers afterward. No real blog data, image storage, or external service configuration was changed.
+- Diagnostic output is retained in the local temporary file `moonglade-settings-acceptance-602ec074da26485696996f9370329cbb.log`. No application code changed in this acceptance run; only these task records were updated. No commit or deployment was performed.
+- The user explicitly deferred S6 real-host/browser acceptance. Automated acceptance passed; it does not complete those remaining checks or imply final user sign-off.
 
 ## References And Limits
 
