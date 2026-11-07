@@ -126,7 +126,7 @@ public class StartUpInitializer(
                     await using var transaction = await context.Database.BeginTransactionAsync(cancellationToken);
                     await Seed.SeedAsync(context, logger, cancellationToken);
                     installedPostId = await context.Post.Select(post => post.Id).SingleAsync(cancellationToken);
-                    installedSettings = await blogConfigInitializer.InitializeStoreAsync(true, cancellationToken);
+                    installedSettings = (await blogConfigInitializer.InitializeStoreAsync(true, cancellationToken)).Values;
                     await transaction.CommitAsync(cancellationToken);
                 });
             },

@@ -14,11 +14,9 @@ public class PersistedSettingsDefaultsTests
         var property = typeof(BlogSettingsSnapshot).GetProperty(name)!;
         var expected = property.PropertyType.GetProperty("DefaultValue", BindingFlags.Public | BindingFlags.Static)!.GetValue(null);
         var saved = new Dictionary<string, string> { [name] = "{}" };
-        var config = new BlogConfig();
+        var (snapshot, repairs) = BlogConfig.Parse(saved);
 
-        var repairs = config.LoadFromConfig(saved);
-
-        Assert.Equal(expected.ToJson(), property.GetValue(config.Capture()).ToJson());
+        Assert.Equal(expected.ToJson(), property.GetValue(snapshot).ToJson());
         Assert.DoesNotContain(name, repairs.Keys);
         Assert.Equal("{}", saved[name]);
     }
@@ -38,29 +36,27 @@ public class PersistedSettingsDefaultsTests
             [nameof(CustomMenuSettings)] = """{"isEnabled":false,"menus":[]}"""
         };
         var original = saved.ToDictionary();
-        var config = new BlogConfig();
+        var (snapshot, repairs) = BlogConfig.Parse(saved);
 
-        var repairs = config.LoadFromConfig(saved);
-
-        Assert.Equal("Saved title", config.Capture().GeneralSettings.SiteTitle);
-        Assert.Null(config.Capture().GeneralSettings.CanonicalPrefix);
-        Assert.Equal(0, config.Capture().GeneralSettings.HotTagAmount);
-        Assert.False(config.Capture().GeneralSettings.WidgetsProfile);
-        Assert.Equal(GeneralSettings.DefaultValue.OwnerName, config.Capture().GeneralSettings.OwnerName);
-        Assert.Null(config.Capture().ContentSettings.CalloutSectionHtmlPitch);
-        Assert.Equal(20, config.Capture().ContentSettings.PostListPageSize);
-        Assert.False(config.Capture().CommentSettings.RequireCommentReview);
-        Assert.False(config.Capture().CommentSettings.EnableGravatar);
-        Assert.Null(config.Capture().NotificationSettings.EmailDisplayName);
-        Assert.Equal(0, config.Capture().FeedSettings.FeedItemCount);
-        Assert.True(config.Capture().FeedSettings.UseFullContent);
-        Assert.False(config.Capture().ImageSettings.IsWatermarkEnabled);
-        Assert.Equal(8, config.Capture().ImageSettings.WatermarkFontSize);
-        Assert.Equal("Saved", config.Capture().ImageSettings.WatermarkText);
-        Assert.Equal(0, config.Capture().ImageSettings.WatermarkColorA);
-        Assert.Null(config.Capture().AppearanceSettings.CssCode);
-        Assert.False(config.Capture().CustomMenuSettings.IsEnabled);
-        Assert.Empty(config.Capture().CustomMenuSettings.Menus);
+        Assert.Equal("Saved title", snapshot.GeneralSettings.SiteTitle);
+        Assert.Null(snapshot.GeneralSettings.CanonicalPrefix);
+        Assert.Equal(0, snapshot.GeneralSettings.HotTagAmount);
+        Assert.False(snapshot.GeneralSettings.WidgetsProfile);
+        Assert.Equal(GeneralSettings.DefaultValue.OwnerName, snapshot.GeneralSettings.OwnerName);
+        Assert.Null(snapshot.ContentSettings.CalloutSectionHtmlPitch);
+        Assert.Equal(20, snapshot.ContentSettings.PostListPageSize);
+        Assert.False(snapshot.CommentSettings.RequireCommentReview);
+        Assert.False(snapshot.CommentSettings.EnableGravatar);
+        Assert.Null(snapshot.NotificationSettings.EmailDisplayName);
+        Assert.Equal(0, snapshot.FeedSettings.FeedItemCount);
+        Assert.True(snapshot.FeedSettings.UseFullContent);
+        Assert.False(snapshot.ImageSettings.IsWatermarkEnabled);
+        Assert.Equal(8, snapshot.ImageSettings.WatermarkFontSize);
+        Assert.Equal("Saved", snapshot.ImageSettings.WatermarkText);
+        Assert.Equal(0, snapshot.ImageSettings.WatermarkColorA);
+        Assert.Null(snapshot.AppearanceSettings.CssCode);
+        Assert.False(snapshot.CustomMenuSettings.IsEnabled);
+        Assert.Empty(snapshot.CustomMenuSettings.Menus);
         Assert.Equal(original, saved);
         Assert.DoesNotContain(repairs.Keys, original.ContainsKey);
     }
@@ -70,36 +66,30 @@ public class PersistedSettingsDefaultsTests
     [InlineData("""{"feedItemCount":"invalid","FeedItemCount":5}""", 20, true)]
     public void Load_DuplicateCaseInsensitiveFields_KeepExistingDeserializationSemantics(string json, int count, bool repaired)
     {
-        var config = new BlogConfig();
+        var (snapshot, repairs) = BlogConfig.Parse(new Dictionary<string, string> { [nameof(FeedSettings)] = json });
 
-        var repairs = config.LoadFromConfig(new Dictionary<string, string> { [nameof(FeedSettings)] = json });
-
-        Assert.Equal(count, config.Capture().FeedSettings.FeedItemCount);
+        Assert.Equal(count, snapshot.FeedSettings.FeedItemCount);
         Assert.Equal(repaired, repairs.ContainsKey(nameof(FeedSettings)));
     }
 
     [Fact]
     public void Load_ExplicitNullMenuArray_IsPreserved()
     {
-        var config = new BlogConfig();
-
-        config.LoadFromConfig(new Dictionary<string, string>
+        var (snapshot, _) = BlogConfig.Parse(new Dictionary<string, string>
         {
             [nameof(CustomMenuSettings)] = """{"isEnabled":false,"menus":null}"""
         });
 
-        Assert.Null(config.Capture().CustomMenuSettings.Menus);
-        Assert.False(config.Capture().CustomMenuSettings.IsEnabled);
+        Assert.Null(snapshot.CustomMenuSettings.Menus);
+        Assert.False(snapshot.CustomMenuSettings.IsEnabled);
     }
 
     [Fact]
     public void Load_DefaultMenus_AreIndependentAcrossConfigurationInstances()
     {
         var saved = new Dictionary<string, string> { [nameof(CustomMenuSettings)] = "{}" };
-        var first = new BlogConfig();
-        var second = new BlogConfig();
-        first.LoadFromConfig(saved);
-        second.LoadFromConfig(saved);
+        var first = new BlogConfig(BlogConfig.Parse(saved).Snapshot);
+        var second = new BlogConfig(BlogConfig.Parse(saved).Snapshot);
 
         var original = first.Capture().CustomMenuSettings;
         var changedMenu = original.Menus[0] with

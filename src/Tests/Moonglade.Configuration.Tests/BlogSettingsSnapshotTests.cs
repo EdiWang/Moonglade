@@ -17,7 +17,7 @@ public class BlogSettingsSnapshotTests
         Assert.Same(owner, reader);
         Assert.Same(owner.Capture(), reader.Capture());
         Assert.Empty(typeof(IBlogConfig).GetProperties());
-        Assert.DoesNotContain(typeof(IBlogConfig).GetMethods(), method => method.Name is "Publish" or "LoadFromConfig");
+        Assert.DoesNotContain(typeof(IBlogConfig).GetMethods(), method => method.Name is "Publish" or "Parse");
         Assert.Equal(9, typeof(BlogSettingsSnapshot).GetProperties().Length);
         Assert.DoesNotContain(typeof(BlogSettingsSnapshot).GetProperties(), property => property.Name is "LocalAccountSettings" or "SystemManifestSettings");
     }
@@ -39,8 +39,7 @@ public class BlogSettingsSnapshotTests
     [Fact]
     public void MenuEdits_ProduceNewListsAndValuesWithoutChangingRetainedSnapshots()
     {
-        var owner = new BlogConfig();
-        owner.LoadFromConfig(new Dictionary<string, string>());
+        var owner = new BlogConfig(BlogConfig.Parse(new Dictionary<string, string>()).Snapshot);
         var retained = owner.Capture();
         var menu = retained.CustomMenuSettings.Menus[0];
         var edited = menu with

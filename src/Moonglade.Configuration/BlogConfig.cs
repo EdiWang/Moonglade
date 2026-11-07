@@ -30,7 +30,7 @@ public class BlogConfig : IBlogConfig
         Volatile.Write(ref _current, snapshot);
     }
 
-    public IReadOnlyDictionary<string, string> LoadFromConfig(IDictionary<string, string> config)
+    public static (BlogSettingsSnapshot Snapshot, Dictionary<string, string> Defaults) Parse(IDictionary<string, string> config)
     {
         var defaultsToInit = new Dictionary<string, string>();
 
@@ -46,8 +46,7 @@ public class BlogConfig : IBlogConfig
             AppearanceSettings = Read<AppearanceSettings>(),
             CustomMenuSettings = Read<CustomMenuSettings>(),
         };
-        Publish(snapshot);
-        return defaultsToInit;
+        return (snapshot, defaultsToInit);
 
         T Read<T>() where T : IBlogSettings<T>
         {

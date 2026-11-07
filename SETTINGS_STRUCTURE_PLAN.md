@@ -2,7 +2,7 @@
 
 ## Status And Scope
 
-S6 is the remaining batch. It has not started and requires explicit authorization. The committed implementation baseline is `fe22d13ce`; additional review items 2 and 3 are implemented and verified but uncommitted. Current rules, completed batches, and recorded checks are in [the task tracker](SETTINGS_RELIABILITY_PLAN.md).
+S6 is the remaining batch. It has not started and requires explicit authorization. The committed implementation baseline is `701b3be04`; additional review item 5 is implemented and locally verified but uncommitted, with Docker provider checks unavailable. Current rules, completed batches, and recorded checks are in [the task tracker](SETTINGS_RELIABILITY_PLAN.md).
 
 S6 verifies the implemented behavior using automated tests and disposable host/browser environments, then presents evidence for user acceptance. Avatar CDN consolidation and versioned-file work are not active batches. No deployment, physical storage migration, real-data recovery, or automatic deletion of old avatar files is included.
 

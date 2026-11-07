@@ -7,7 +7,7 @@ internal static class StartupSettings
 {
     public static Dictionary<string, string> Defaults(bool isNew = true)
     {
-        var settings = new BlogConfig().LoadFromConfig(new Dictionary<string, string>()).ToDictionary();
+        var settings = BlogConfig.Parse(new Dictionary<string, string>()).Defaults;
         settings.Add(nameof(LocalAccountSettings), LocalAccountSettings.DefaultValue.ToJson());
         settings.Add(nameof(SystemManifestSettings), (isNew ? SystemManifestSettings.DefaultValueNew : SystemManifestSettings.DefaultValue).ToJson());
         return settings;

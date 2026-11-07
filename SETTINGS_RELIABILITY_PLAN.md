@@ -3,10 +3,11 @@
 ## Resume Here
 
 - Last reconciled: 2026-11-07, Asia/Taipei.
-- Committed application baseline: `fe22d13ce` (`Simplify settings loading and cache invalidation`), on `master`. The working tree was clean when review items 2 and 3 started.
+- Committed application baseline: `701b3be04` (`Simplify settings writes and regression tests`), on `master`. The working tree was clean when review item 5 started.
 - Reliability and structural implementation through S3 is complete and committed. Final functional acceptance is pending.
 - Maintenance review items 1, 4, 6, and the duplicate initialization-log wrapper are committed in `fe22d13ce`.
-- Review items 2 and 3 are implemented and verified, but uncommitted. Ordinary commands retain one immutable settings group without JSON round-trip copying. Useful S0 assertions now use production models/endpoints/pages; the parallel probes and test-only Razor fixtures are removed, and the Web test project uses the regular .NET SDK. Validation, write serialization, commit/publication ordering, actual snapshot regressions, and the unsupported-outer-transaction characterization remain. No commit is authorized.
+- Review items 2 and 3 are committed in `701b3be04`. Ordinary commands retain one immutable settings group; production regression coverage supersedes the S0 candidate implementation.
+- Review item 5 is implemented and locally verified, but uncommitted. Pure `BlogConfig.Parse` returns the snapshot and default JSON; initialization repairs once, then publishes the prepared snapshot/account without re-parsing. First-install transactions, commit verification, and the subsequent committed-data reload remain. No new loader interface, registry, or batch-write framework was added. Docker provider verification is unavailable; no commit is authorized.
 - Next acceptance batch: **S6**, defined in [the acceptance plan](SETTINGS_STRUCTURE_PLAN.md). S6 has not started and requires explicit authorization. This maintenance batch does not authorize S6 execution, commits, deployment, or production-data changes.
 - Retain this tracker and update status, verification, remaining issues, and the next action at every batch boundary. A new conversation should read this file, `AGENTS.md`, and the relevant engineering-reference sections first.
 - No design question is currently pending. Ask about new requirement, business, architecture, or recovery-policy choices, with a recommendation; continue independent authorized work while waiting.
@@ -22,7 +23,8 @@
 | S3 | Operation/render capture propagation, reader migration, and configuration-dependent cache coherence complete. | `4b3185757` |
 | S4-S5 | Not applicable: uploaded avatars no longer have a CDN/file workflow. | No implementation required |
 | Maintenance 1 | Review items 1, 4, 6 and duplicate log wrapper complete; focused tests and Web build passed, with provider tests skipped as recorded below. | `fe22d13ce` |
-| Maintenance 2 | Review items 2 and 3 complete; Configuration/Web regression tests and Web build passed as recorded below. | Uncommitted |
+| Maintenance 2 | Review items 2 and 3 complete; Configuration/Web regression tests and Web build passed as recorded below. | `701b3be04` |
+| Maintenance 3 | Review item 5 complete; Configuration/Setup/Web tests and Web build passed. The 17 opt-in database groups were skipped because Docker is unavailable. | Uncommitted |
 | S6 | Final isolated-host/browser regression and acceptance; not started. | Await authorization |
 
 ## Rules To Preserve
@@ -53,6 +55,13 @@
 - Uploaded avatars use the database asset and local `/avatar` route, with the bundled default when absent. Preserve PathBase and Gravatar behavior. Image CDN settings affect article images, not avatars; toggling them does not migrate avatars or write General settings. `AvatarUrl` remains inactive compatibility data. Existing copied avatar files are not automatically deleted. Do not restore avatar CDN orchestration or versioned-file cleanup.
 
 ## Verification Baseline
+
+Maintenance 3 checks on 2026-11-07:
+
+- Ran `dotnet test --project <path> --no-restore` for `src/Tests/Moonglade.Configuration.Tests/Moonglade.Configuration.Tests.csproj` (106 passed), `src/Tests/Moonglade.Setup.Tests/Moonglade.Setup.Tests.csproj` (77 passed, 17 skipped), and `src/Tests/Moonglade.Web.Tests/Moonglade.Web.Tests.csproj` (366 passed). Total: **549 passed, 0 failed, 17 skipped**.
+- Two new paused-repair cases cover successful and failed repair completion: neither ordinary settings nor the account may publish while repair is pending, and failure retains the previous runtime values. Existing defaults, partial-JSON preservation, protected-state checks, and Web regressions passed after migration to the pure parser.
+- `dotnet build src/Moonglade.Web/Moonglade.Web.csproj --no-restore`: **0 warnings, 0 errors**. `git diff --check` passed.
+- `docker info --format '{{.ServerVersion}}'` could not connect to the Docker Desktop Linux engine. The normal Setup run explicitly skipped its 17 opt-in database groups; this batch has not verified PostgreSQL/SQL Server transaction, rollback/retry, or uncertain-commit behavior. Re-run those checks with Docker available before final acceptance. Full-solution and S6 browser/real-host acceptance were not run. No schema, real data, commit, or deployment changed.
 
 Maintenance 2 checks on 2026-11-07:
 

@@ -24,13 +24,13 @@ public class ConfigInitializer(
 {
     public async Task Initialize(bool isNew, CancellationToken cancellationToken = default)
     {
-        var config = await InitializeStoreAsync(isNew, cancellationToken);
-        var account = LocalAccountSettings.ParseStored(config[nameof(LocalAccountSettings)]);
-        blogConfig.LoadFromConfig(config);
+        var (_, snapshot, account) = await InitializeStoreAsync(isNew, cancellationToken);
+        blogConfig.Publish(snapshot);
         accounts.Publish(account);
     }
 
-    internal async Task<IDictionary<string, string>> InitializeStoreAsync(bool isNew, CancellationToken cancellationToken = default)
+    internal async Task<(IDictionary<string, string> Values, BlogSettingsSnapshot Snapshot, LocalAccountSettings Account)> InitializeStoreAsync(
+        bool isNew, CancellationToken cancellationToken = default)
     {
         try
         {
@@ -52,7 +52,7 @@ public class ConfigInitializer(
                 : isNew ? SystemManifestSettings.DefaultValueNew : SystemManifestSettings.DefaultValue;
 
             // Validate detached settings before any repair writes or runtime publication.
-            var defaultsToAdd = new BlogConfig().LoadFromConfig(config).ToDictionary();
+            var (snapshot, defaultsToAdd) = BlogConfig.Parse(config);
             if (!config.ContainsKey(accountKey)) defaultsToAdd.Add(accountKey, account.ToJson());
             if (!config.ContainsKey(manifestKey)) defaultsToAdd.Add(manifestKey, manifest.ToJson());
             if (!isNew && !config.ContainsKey(manifestKey))
@@ -65,7 +65,7 @@ public class ConfigInitializer(
             if (defaultsToAdd.Count == 0)
             {
                 logger.LogInformation("No configuration keys to initialize");
-                return config;
+                return (config, snapshot, account);
             }
 
             logger.LogInformation(
@@ -80,7 +80,7 @@ public class ConfigInitializer(
             }
 
             logger.LogInformation("Blog configuration initialization completed successfully");
-            return config;
+            return (config, snapshot, account);
         }
         catch (Exception ex)
         {

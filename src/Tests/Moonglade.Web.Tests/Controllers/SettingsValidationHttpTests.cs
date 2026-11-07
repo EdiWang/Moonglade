@@ -124,9 +124,7 @@ public class SettingsValidationHttpTests
 
     private static BlogConfig Defaults()
     {
-        var config = new BlogConfig();
-        config.LoadFromConfig(new Dictionary<string, string>());
-        return config;
+        return new BlogConfig(BlogConfig.Parse(new Dictionary<string, string>()).Snapshot);
     }
 
     [Theory]

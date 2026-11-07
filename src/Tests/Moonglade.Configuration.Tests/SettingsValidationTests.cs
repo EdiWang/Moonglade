@@ -39,12 +39,10 @@ public class SettingsValidationTests
         var property = typeof(BlogSettingsSnapshot).GetProperty(name)!;
         var original = InvalidJson(property.PropertyType, patch);
         var saved = new Dictionary<string, string> { [name] = original };
-        var config = new BlogConfig();
-
-        var repairs = config.LoadFromConfig(saved);
+        var (snapshot, repairs) = BlogConfig.Parse(saved);
 
         Assert.Equal(DefaultJson(property.PropertyType), repairs[name]);
-        Assert.Equal(repairs[name], property.GetValue(config.Capture()).ToJson());
+        Assert.Equal(repairs[name], property.GetValue(snapshot).ToJson());
         Assert.Equal(original, saved[name]);
     }
 
@@ -60,8 +58,7 @@ public class SettingsValidationTests
         var timestamp = DateTime.UtcNow.AddDays(-1);
         db.BlogConfiguration.Add(new BlogConfigurationEntity { CfgKey = name, CfgValue = original, LastModifiedTimeUtc = timestamp });
         await db.SaveChangesAsync(ct);
-        var config = new BlogConfig();
-        config.LoadFromConfig(new Dictionary<string, string>());
+        var config = new BlogConfig(BlogConfig.Parse(new Dictionary<string, string>()).Snapshot);
         var runtime = property.GetValue(config.Capture());
         var value = InvalidJson(property.PropertyType, patch).FromJson(property.PropertyType);
         var factory = typeof(UpdateConfigurationCommand).GetMethod(nameof(UpdateConfigurationCommand.Create))!.MakeGenericMethod(property.PropertyType);

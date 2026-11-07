@@ -9,18 +9,16 @@ public class CommentSettingsTests
     }
 
     [Fact]
-    public void LoadFromConfig_WhenMarkdownLinksSettingIsMissing_DisablesLinksAndPreservesOtherSettings()
+    public void Parse_WhenMarkdownLinksSettingIsMissing_DisablesLinksAndPreservesOtherSettings()
     {
-        var config = new BlogConfig();
-
-        config.LoadFromConfig(new Dictionary<string, string>
+        var (snapshot, _) = BlogConfig.Parse(new Dictionary<string, string>
         {
             [nameof(CommentSettings)] = """{"enableComments":false,"requireCommentReview":true}"""
         });
 
-        Assert.False(config.Capture().CommentSettings.EnableMarkdownLinks);
-        Assert.False(config.Capture().CommentSettings.EnableComments);
-        Assert.True(config.Capture().CommentSettings.RequireCommentReview);
+        Assert.False(snapshot.CommentSettings.EnableMarkdownLinks);
+        Assert.False(snapshot.CommentSettings.EnableComments);
+        Assert.True(snapshot.CommentSettings.RequireCommentReview);
     }
 
     [Theory]

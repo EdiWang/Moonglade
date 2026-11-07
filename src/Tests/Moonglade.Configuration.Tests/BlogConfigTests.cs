@@ -13,35 +13,31 @@ public class BlogConfigTests
     }
 
     [Fact]
-    public void LoadFromConfig_EmptyStore_ReturnsTheDefaultsAssignedToEverySetting()
+    public void Parse_EmptyStore_ReturnsTheDefaultsAssignedToEverySetting()
     {
-        var config = new BlogConfig();
-
-        var defaults = config.LoadFromConfig(new Dictionary<string, string>());
+        var (snapshot, defaults) = BlogConfig.Parse(new Dictionary<string, string>());
 
         var properties = typeof(BlogSettingsSnapshot).GetProperties();
         Assert.Equal(properties.Length, defaults.Count);
         foreach (var property in properties)
         {
-            Assert.Equal(property.GetValue(config.Capture()).ToJson(), defaults[property.Name]);
+            Assert.Equal(property.GetValue(snapshot).ToJson(), defaults[property.Name]);
         }
     }
 
     [Fact]
-    public void LoadFromConfig_CompleteStore_PreservesSavedOrdinarySettings()
+    public void Parse_CompleteStore_PreservesSavedOrdinarySettings()
     {
-        var persisted = new BlogConfig().LoadFromConfig(new Dictionary<string, string>()).ToDictionary();
+        var persisted = BlogConfig.Parse(new Dictionary<string, string>()).Defaults;
         var general = GeneralSettings.DefaultValue;
         general = general with { SiteTitle = "Saved title" };
         persisted[nameof(GeneralSettings)] = general.ToJson();
         persisted[nameof(ContentSettings)] = new ContentSettings { DefaultEditor = EditorChoice.Markdown }.ToJson();
-        var config = new BlogConfig();
-
-        var defaults = config.LoadFromConfig(persisted);
+        var (snapshot, defaults) = BlogConfig.Parse(persisted);
 
         Assert.Empty(defaults);
-        Assert.Equal("Saved title", config.Capture().GeneralSettings.SiteTitle);
-        Assert.Equal(EditorChoice.Markdown, config.Capture().ContentSettings.DefaultEditor);
+        Assert.Equal("Saved title", snapshot.GeneralSettings.SiteTitle);
+        Assert.Equal(EditorChoice.Markdown, snapshot.ContentSettings.DefaultEditor);
     }
 
     [Theory]
@@ -52,30 +48,27 @@ public class BlogConfigTests
     [InlineData("[]")]
     [InlineData("42")]
     [InlineData("{\"siteTitle\":[]}")]
-    public void LoadFromConfig_MalformedJson_ReturnsFallbackWithoutReplacingValidSettings(string? json)
+    public void Parse_MalformedJson_ReturnsFallbackWithoutReplacingValidSettings(string? json)
     {
-        var config = new BlogConfig();
-
-        var defaults = config.LoadFromConfig(new Dictionary<string, string>
+        var (snapshot, defaults) = BlogConfig.Parse(new Dictionary<string, string>
         {
             [nameof(GeneralSettings)] = json!,
             [nameof(ContentSettings)] = """{"postListPageSize":20}"""
         });
 
         Assert.Equal(GeneralSettings.DefaultValue.ToJson(), defaults[nameof(GeneralSettings)]);
-        Assert.Equal(config.Capture().GeneralSettings.ToJson(), defaults[nameof(GeneralSettings)]);
+        Assert.Equal(snapshot.GeneralSettings.ToJson(), defaults[nameof(GeneralSettings)]);
         Assert.DoesNotContain(nameof(ContentSettings), defaults.Keys);
-        Assert.Equal(20, config.Capture().ContentSettings.PostListPageSize);
+        Assert.Equal(20, snapshot.ContentSettings.PostListPageSize);
     }
 
     [Fact]
-    public void LoadFromConfig_RepeatedLoads_KeepEarlierDefaultSnapshots()
+    public void Parse_RepeatedLoads_KeepEarlierDefaultSnapshots()
     {
-        var config = new BlogConfig();
-        var firstDefaults = config.LoadFromConfig(new Dictionary<string, string>());
+        var firstDefaults = BlogConfig.Parse(new Dictionary<string, string>()).Defaults;
         var originalDefaults = firstDefaults.ToDictionary();
 
-        var secondDefaults = config.LoadFromConfig(originalDefaults);
+        var secondDefaults = BlogConfig.Parse(originalDefaults).Defaults;
 
         Assert.Empty(secondDefaults);
         Assert.NotEmpty(firstDefaults);

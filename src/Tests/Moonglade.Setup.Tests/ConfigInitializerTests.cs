@@ -17,6 +17,65 @@ namespace Moonglade.Setup.Tests;
 public sealed class ConfigInitializerTests
 {
     [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public async Task Initialize_RepairMustCompleteBeforeSettingsAndAccountArePublished(bool fail)
+    {
+        var ct = TestContext.Current.CancellationToken;
+        var persisted = StartupSettings.Defaults();
+        persisted[nameof(FeedSettings)] = "not-json";
+        persisted[nameof(GeneralSettings)] = (GeneralSettings.DefaultValue with { SiteTitle = "Prepared title" }).ToJson();
+        var savedAccount = LocalAccountSettings.DefaultValue;
+        savedAccount.Username = "prepared-user";
+        persisted[nameof(LocalAccountSettings)] = savedAccount.ToJson();
+        var queries = new Mock<IQueryMediator>();
+        queries.Setup(m => m.QueryAsync(It.IsAny<ListConfigurationsQuery>(), It.IsAny<QueryMediationSettings>(), ct))
+            .ReturnsAsync(persisted);
+        var started = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+        var write = new TaskCompletionSource<OperationCode>(TaskCreationOptions.RunContinuationsAsynchronously);
+        var commands = new Mock<ICommandMediator>();
+        commands.Setup(m => m.SendAsync(It.IsAny<AddDefaultConfigurationCommand>(), It.IsAny<CommandMediationSettings>(), ct))
+            .Returns((ICommand<OperationCode> _, CommandMediationSettings _, CancellationToken _) =>
+            {
+                started.SetResult();
+                return write.Task;
+            });
+        var config = new BlogConfig();
+        var retained = config.Capture();
+        var accounts = new LocalAccountState();
+        accounts.Publish(LocalAccountSettings.DefaultValue);
+        var retainedAccount = accounts.Read().ToJson();
+        var initializer = new ConfigInitializer(queries.Object, commands.Object, config, NullLogger<ConfigInitializer>.Instance, accounts);
+
+        var pending = initializer.Initialize(false, ct);
+        try
+        {
+            await started.Task.WaitAsync(TimeSpan.FromSeconds(10), ct);
+            Assert.Same(retained, config.Capture());
+            Assert.Equal(retainedAccount, accounts.Read().ToJson());
+        }
+        finally
+        {
+            if (fail) write.SetException(new DbUpdateException("Injected repair failure."));
+            else write.SetResult(OperationCode.Done);
+        }
+
+        if (fail)
+        {
+            await Assert.ThrowsAsync<DbUpdateException>(() => pending);
+            Assert.Same(retained, config.Capture());
+            Assert.Equal(retainedAccount, accounts.Read().ToJson());
+        }
+        else
+        {
+            await pending;
+            Assert.Equal("Prepared title", config.Capture().GeneralSettings.SiteTitle);
+            Assert.Equal(savedAccount.ToJson(), accounts.Read().ToJson());
+            Assert.Equal(config.Capture().FeedSettings.ToJson(), persisted[nameof(FeedSettings)]);
+        }
+    }
+
+    [Theory]
     [InlineData(nameof(LocalAccountSettings), "null")]
     [InlineData(nameof(SystemManifestSettings), "null")]
     [InlineData(nameof(LocalAccountSettings), "{}")]

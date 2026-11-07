@@ -11,17 +11,15 @@ public class ContentSettingsTests
     }
 
     [Fact]
-    public void LoadFromConfig_WhenDefaultEditorIsMissing_UsesHtmlAndPreservesOtherSettings()
+    public void Parse_WhenDefaultEditorIsMissing_UsesHtmlAndPreservesOtherSettings()
     {
-        var config = new BlogConfig();
-
-        config.LoadFromConfig(new Dictionary<string, string>
+        var (snapshot, _) = BlogConfig.Parse(new Dictionary<string, string>
         {
             [nameof(ContentSettings)] = """{"postListPageSize":20}"""
         });
 
-        Assert.Equal(EditorChoice.Html, config.Capture().ContentSettings.DefaultEditor);
-        Assert.Equal(20, config.Capture().ContentSettings.PostListPageSize);
+        Assert.Equal(EditorChoice.Html, snapshot.ContentSettings.DefaultEditor);
+        Assert.Equal(20, snapshot.ContentSettings.PostListPageSize);
     }
 
     [Theory]
