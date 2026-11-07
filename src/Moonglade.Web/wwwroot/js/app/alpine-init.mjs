@@ -1,4 +1,4 @@
-import { default as Alpine } from '../../lib/alpinejs/alpinejs.3.16.1.module.esm.min.js';
+import { default as Alpine } from '../../lib/alpinejs/alpinejs.3.17.5.module.esm.min.js';
 
 window.Alpine = Alpine;
 

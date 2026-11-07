@@ -13,7 +13,7 @@ Task-specific guidance supplements [AGENTS.md](../AGENTS.md); read only the appl
 | Cache | `Edi.CacheAside.InMemory` with `BlogCachePartition` values `General`, `Post`, `Page`, `RssCategory`, and `AtomCategory`; widgets, sitemap, and uncategorized feeds use keys in the `General` partition. |
 | Background work | ASP.NET Core hosted services, `ScheduledPublishService`, `EmailOutboxWorker`, and `CannonService` for queued fire-and-forget work. |
 | Authentication | Cookie-based local account authentication and one configurable OpenID Connect provider through the ASP.NET Core OIDC handler. |
-| Frontend | Server-rendered Razor, Bootstrap, Bootstrap Icons v1.13.2, Alpine.js, unified Moonglade.Editor for rich HTML post editing plus Markdown/CSS/HTML code-like modes, Tagify, Mermaid.js for Markdown diagrams on post reading pages, and project-local JavaScript modules under `src/Moonglade.Web/wwwroot/js/app`. |
+| Frontend | Server-rendered Razor, Bootstrap, Bootstrap Icons v1.13.2, Alpine.js v3.17.5, unified Moonglade.Editor for rich HTML post editing plus Markdown/CSS/HTML code-like modes, Tagify, Mermaid.js for Markdown diagrams on post reading pages, and project-local JavaScript modules under `src/Moonglade.Web/wwwroot/js/app`. |
 | Image storage | `IBlogImageStorage` with one filesystem implementation and separate public primary and private original-image roots. External storage mounts and CDN origins are operator-owned. |
 | External integrations | Webmention, IndexNow, site ownership verification files, email outbox delivery through SMTP, local content moderation, and Gravatar. |
 | Package management | NuGet references in project files. |
