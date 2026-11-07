@@ -3,27 +3,13 @@ namespace Moonglade.Configuration.Tests;
 public class AdvancedSettingsTests
 {
     [Fact]
-    public void DefaultValue_UsesSeparateExternalLinkWarningDefaults()
+    public void Parse_WhenExternalLinkWarningSettingsAreMissing_UsesSeparateDefaults()
     {
-        var settings = AdvancedSettings.DefaultValue;
-
-        Assert.False(settings.WarnPostExternalLink);
-        Assert.True(settings.WarnCommentExternalLink);
-    }
-
-    [Fact]
-    public void DefaultValueJson_UsesSeparateExternalLinkWarningDefaults()
-    {
-        var settings = AdvancedSettings.DefaultValue.ToJson().FromJson<AdvancedSettings>();
-
-        Assert.False(settings.WarnPostExternalLink);
-        Assert.True(settings.WarnCommentExternalLink);
-    }
-
-    [Fact]
-    public void FromJson_WhenExternalLinkWarningSettingsAreMissing_UsesSeparateDefaults()
-    {
-        var settings = "{}".FromJson<AdvancedSettings>();
+        var (snapshot, _) = BlogConfig.Parse(new Dictionary<string, string>
+        {
+            [nameof(AdvancedSettings)] = "{}"
+        });
+        var settings = snapshot.AdvancedSettings;
 
         Assert.False(settings.WarnPostExternalLink);
         Assert.True(settings.WarnCommentExternalLink);

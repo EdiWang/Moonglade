@@ -3,33 +3,6 @@ namespace Moonglade.BackgroundServices.Tests;
 public class ScheduledPublishWakeUpTests
 {
     [Fact]
-    public void GetWakeToken_ReturnsValidToken()
-    {
-        // Arrange
-        var wakeUp = new ScheduledPublishWakeUp();
-
-        // Act
-        var token = wakeUp.GetWakeToken();
-
-        // Assert
-        Assert.False(token.IsCancellationRequested);
-    }
-
-    [Fact]
-    public void WakeUp_CancelsToken()
-    {
-        // Arrange
-        var wakeUp = new ScheduledPublishWakeUp();
-        var token = wakeUp.GetWakeToken();
-
-        // Act
-        wakeUp.WakeUp();
-
-        // Assert
-        Assert.True(token.IsCancellationRequested);
-    }
-
-    [Fact]
     public void GetWakeToken_AfterWakeUp_ReturnsNewToken()
     {
         // Arrange

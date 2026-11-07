@@ -65,18 +65,10 @@ public class UrlHelperTests
 
     #region GetUrlsFromContent Tests
 
-    [Theory]
-    [InlineData("<a href=\"https://example.com\">Link</a>", 1)]
-    [InlineData("<a href='http://test.com'>Test</a>", 1)]
-    [InlineData("<a href=\"https://example.com\">Link1</a> and <a href=\"http://test.com\">Link2</a>", 2)]
-    [InlineData("No links here", 0)]
-    public void GetUrlsFromContent_WithValidContent_ReturnsCorrectNumberOfUrls(string content, int expectedCount)
+    [Fact]
+    public void GetUrlsFromContent_WithoutLinks_ReturnsEmpty()
     {
-        // Act
-        var result = UrlHelper.GetUrlsFromContent(content);
-
-        // Assert
-        Assert.Equal(expectedCount, result.Count());
+        Assert.Empty(UrlHelper.GetUrlsFromContent("No links here"));
     }
 
     [Theory]
@@ -95,7 +87,7 @@ public class UrlHelperTests
     public void GetUrlsFromContent_WithValidUrls_ReturnsCorrectUris()
     {
         // Arrange
-        const string content = "<a href=\"https://example.com\">Example</a> and <a href=\"http://test.com/path\">Test</a>";
+        const string content = "<a href=\"https://example.com\">Example</a> and <a href='http://test.com/path'>Test</a>";
 
         // Act
         var result = UrlHelper.GetUrlsFromContent(content).ToList();
