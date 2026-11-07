@@ -2010,9 +2010,6 @@
   <data name="Enable Markdown links in comments and replies" xml:space="preserve">
     <value>コメントと返信の Markdown リンクを有効にする</value>
   </data>
-  <data name="Changes apply to subsequent requests or operations unless a restart is indicated. Browser and feed-reader caches may retain older responses." xml:space="preserve">
-    <value>再起動が必要と示されている設定を除き、変更は以後のリクエストや操作に適用されます。ブラウザーやフィードリーダーのキャッシュには古い応答が残る場合があります。</value>
-  </data>
   <data name="Changes wake the scheduler. Publishing already in progress is not canceled." xml:space="preserve">
     <value>変更するとスケジューラーが起動します。すでに開始した公開処理は取り消されません。</value>
   </data>

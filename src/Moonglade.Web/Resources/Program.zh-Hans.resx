@@ -2010,9 +2010,6 @@
   <data name="Enable Markdown links in comments and replies" xml:space="preserve">
     <value>启用评论和回复中的 Markdown 链接</value>
   </data>
-  <data name="Changes apply to subsequent requests or operations unless a restart is indicated. Browser and feed-reader caches may retain older responses." xml:space="preserve">
-    <value>除标明需要重启的设置外，更改将用于后续请求或操作。浏览器和订阅阅读器的缓存可能仍保留旧响应。</value>
-  </data>
   <data name="Changes wake the scheduler. Publishing already in progress is not canceled." xml:space="preserve">
     <value>更改会唤醒定时发布任务。已经开始的发布不会被取消。</value>
   </data>
