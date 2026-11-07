@@ -35,8 +35,8 @@
             <td style="border: 1px solid #dee2e6;padding: 5px;">{EmailDisplayName.Value}</td>
         </tr>
         <tr>
-            <td style="border: 1px solid #dee2e6;padding: 5px;">Enable TLS</td>
-            <td style="border: 1px solid #dee2e6;padding: 5px;">{EnableTls.Value}</td>
+            <td style="border: 1px solid #dee2e6;padding: 5px;">SMTP Security</td>
+            <td style="border: 1px solid #dee2e6;padding: 5px;">{SocketOptions.Value}</td>
         </tr>
     </tbody>
 </table>

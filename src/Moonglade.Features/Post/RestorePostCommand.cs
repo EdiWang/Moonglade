@@ -1,4 +1,5 @@
 using LiteBus.Commands.Abstractions;
+using LiteBus.Events.Abstractions;
 using Microsoft.Extensions.Logging;
 
 namespace Moonglade.Features.Post;
@@ -7,7 +8,8 @@ public record RestorePostCommand(Guid Id) : ICommand;
 
 public class RestorePostCommandHandler(
     BlogDbContext db,
-    ILogger<RestorePostCommandHandler> logger) : ICommandHandler<RestorePostCommand>
+    ILogger<RestorePostCommandHandler> logger,
+    IEventMediator eventMediator) : ICommandHandler<RestorePostCommand>
 {
     public async Task HandleAsync(RestorePostCommand request, CancellationToken ct)
     {
@@ -15,7 +17,10 @@ public class RestorePostCommandHandler(
         if (post == null) return;
 
         post.IsDeleted = false;
-        await db.SaveChangesAsync(ct);
+        if (await db.SaveChangesAsync(ct) > 0)
+        {
+            await eventMediator.PublishAsync(new PostChangedEvent(), cancellationToken: CancellationToken.None);
+        }
 
         logger.LogInformation("Post [{PostId}] restored", request.Id);
     }

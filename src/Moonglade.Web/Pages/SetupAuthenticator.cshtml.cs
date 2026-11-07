@@ -15,7 +15,7 @@ namespace Moonglade.Web.Pages;
 [EnableRateLimiting(LocalAccountRateLimitPolicy.PolicyName)]
 public class SetupAuthenticatorModel(
     IOptions<AuthenticationSettings> authSettings,
-    IBlogConfig blogConfig,
+    ILocalAccountReader accounts,
     ICommandMediator commandMediator,
     ILocalAccountTotpService totpService,
     ILogger<SetupAuthenticatorModel> logger) : PageModel
@@ -39,7 +39,7 @@ public class SetupAuthenticatorModel(
             return RedirectToPage("/Index");
         }
 
-        var account = blogConfig.LocalAccountSettings;
+        var account = accounts.Read();
         if (IsTotpConfigured(account))
         {
             return RedirectToPage("/SignIn");
@@ -58,7 +58,7 @@ public class SetupAuthenticatorModel(
             return RedirectToPage("/Index");
         }
 
-        var account = blogConfig.LocalAccountSettings;
+        var account = accounts.Read();
         if (IsTotpConfigured(account))
         {
             return RedirectToPage("/SignIn");
@@ -112,8 +112,7 @@ public class SetupAuthenticatorModel(
 
     private async Task SaveLocalAccountSettingsAsync(LocalAccountSettings account)
     {
-        var kvp = blogConfig.UpdateAsync(account);
-        await commandMediator.SendAsync(new UpdateConfigurationCommand(kvp.Key, kvp.Value));
+        await commandMediator.SendAsync(new UpdateLocalAccountCommand(account), HttpContext.RequestAborted);
     }
 
     private async Task SignInAdminAsync(string username)

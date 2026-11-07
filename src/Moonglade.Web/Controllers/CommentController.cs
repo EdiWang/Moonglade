@@ -17,17 +17,17 @@ public class CommentController(
         IQueryMediator queryMediator,
         IModeratorService moderator,
         IBlogConfig blogConfig,
-        ICommentSubmissionGuard submissionGuard,
+        CommentSubmissionGuard submissionGuard,
         IEventMediator eventMediator,
-        ILogger<CommentController> logger,
-        IConfiguration configuration) : BlogControllerBase(commandMediator)
+        ILogger<CommentController> logger) : BlogControllerBase(commandMediator)
 {
     [HttpPost("{postId:guid}")]
     [AllowAnonymous]
     [EnableRateLimiting(CommentRateLimitPolicy.PolicyName)]
     public async Task<IActionResult> Create([NotEmpty] Guid postId, CommentRequest request)
     {
-        if (!blogConfig.CommentSettings.EnableComments)
+        var settings = blogConfig.Capture();
+        if (!settings.CommentSettings.EnableComments)
         {
             return Forbid();
         }
@@ -44,11 +44,11 @@ public class CommentController(
         }
 
         // Apply word filtering
-        var filterResult = ApplyWordFiltering(request);
+        var filterResult = ApplyWordFiltering(request, settings.CommentSettings);
         if (filterResult != null) return filterResult;
 
         var ip = ClientIPHelper.GetClientIP(HttpContext);
-        var item = await CommandMediator.SendAsync(new CreateCommentCommand(postId, request, ip));
+        var item = await CommandMediator.SendAsync(new CreateCommentCommand(postId, request, ip) { Snapshot = settings });
 
         if (item == null)
         {
@@ -67,7 +67,7 @@ public class CommentController(
             username: item.Username);
 
         // Send email notification
-        if (blogConfig.NotificationSettings.SendEmailOnNewComment)
+        if (settings.NotificationSettings.SendEmailOnNewComment)
         {
             try
             {
@@ -77,7 +77,7 @@ public class CommentController(
                         item.Email,
                         item.IpAddress,
                         item.PostTitle,
-                        item.CommentContent),
+                        item.CommentContent) { Snapshot = settings },
                     cancellationToken: HttpContext.RequestAborted);
             }
             catch (Exception ex)
@@ -87,7 +87,7 @@ public class CommentController(
         }
 
         return Ok(new CommentCreateResponse(
-            blogConfig.CommentSettings.RequireCommentReview,
+            settings.CommentSettings.RequireCommentReview,
             DateTimeOffset.UtcNow.ToUnixTimeMilliseconds()));
     }
 
@@ -139,12 +139,13 @@ public class CommentController(
         [FromQuery] int pageSize = 5,
         [FromQuery] CommentFilter filter = null)
     {
+        var settings = blogConfig.Capture();
         filter ??= new();
         var comments = await queryMediator.QueryAsync(new ListCommentsQuery(pageSize, pageIndex, filter));
         var count = await queryMediator.QueryAsync(new CountCommentsQuery(filter));
 
         // Convert markdown to HTML for display
-        var enableLinks = configuration.GetValue<bool>("CommentMarkdown:EnableLinks");
+        var enableLinks = settings.CommentSettings.EnableMarkdownLinks;
         var commentsWithHtml = comments.Select(c => new CommentListItem(
             c.Id,
             c.Username,
@@ -167,17 +168,18 @@ public class CommentController(
         [NotEmpty] Guid commentId,
         [Required][FromBody] string replyContent)
     {
+        var settings = blogConfig.Capture();
         if (string.IsNullOrWhiteSpace(replyContent))
         {
             return BadRequest("Reply content cannot be empty.");
         }
 
-        if (!blogConfig.CommentSettings.EnableComments)
+        if (!settings.CommentSettings.EnableComments)
             return Forbid();
 
         try
         {
-            var reply = await CommandMediator.SendAsync(new ReplyCommentCommand(commentId, replyContent));
+            var reply = await CommandMediator.SendAsync(new ReplyCommentCommand(commentId, replyContent) { Snapshot = settings });
 
             await LogActivityAsync(
                 EventType.CommentReplied,
@@ -188,7 +190,7 @@ public class CommentController(
                     ("ReplyContent", replyContent)));
 
             // Send email notification
-            if (blogConfig.NotificationSettings.SendEmailOnCommentReply && !string.IsNullOrWhiteSpace(reply.Email))
+            if (settings.NotificationSettings.SendEmailOnCommentReply && !string.IsNullOrWhiteSpace(reply.Email))
             {
                 var postLink = UrlHelper.GetPostUrl(HttpContext, reply.RouteLink);
                 try
@@ -199,7 +201,7 @@ public class CommentController(
                             reply.CommentContent,
                             reply.Title,
                             reply.ReplyContentHtml,
-                            postLink),
+                            postLink) { Snapshot = settings },
                         cancellationToken: HttpContext.RequestAborted);
                 }
                 catch (Exception ex)
@@ -229,22 +231,22 @@ public class CommentController(
         return null;
     }
 
-    private IActionResult ApplyWordFiltering(CommentRequest request)
+    private IActionResult ApplyWordFiltering(CommentRequest request, CommentSettings commentSettings)
     {
-        if (!blogConfig.CommentSettings.EnableWordFilter || blogConfig.CommentSettings.RequireCommentReview)
+        if (!commentSettings.EnableWordFilter || commentSettings.RequireCommentReview)
         {
             return null;
         }
 
-        switch (blogConfig.CommentSettings.WordFilterMode)
+        switch (commentSettings.WordFilterMode)
         {
             case WordFilterMode.Mask:
-                request.Username = moderator.Mask(request.Username);
-                request.Content = moderator.Mask(request.Content);
+                request.Username = moderator.Mask(request.Username, commentSettings.WordFilterKeywords);
+                request.Content = moderator.Mask(request.Content, commentSettings.WordFilterKeywords);
                 break;
 
             case WordFilterMode.Block:
-                if (moderator.Detect(request.Username, request.Content))
+                if (moderator.Detect([request.Username, request.Content], commentSettings.WordFilterKeywords))
                 {
                     ModelState.AddModelError(nameof(request.Content), "Your comment contains inappropriate content.");
                     return ValidationProblem(ModelState);

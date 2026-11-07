@@ -13,7 +13,7 @@ public class AssetsController(
     IQueryMediator queryMediator,
     IWebHostEnvironment env,
     ILogger<AssetsController> logger,
-    ISiteIconBuilder siteIconBuilder,
+    SiteIconBuilder siteIconBuilder,
     ICommandMediator commandMediator) : BlogControllerBase(commandMediator)
 {
     [AllowAnonymous]
@@ -71,7 +71,7 @@ public class AssetsController(
         await eventMediator.PublishAsync(new SaveAssetEvent(AssetId.AvatarBase64, base64Img));
         logger.LogInformation("Avatar image updated successfully.");
 
-        await LogActivityAsync(
+        await LogActivityAfterSaveAsync(logger,
             EventType.AvatarUpdated,
             "Update Avatar",
             "Avatar Image");

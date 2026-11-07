@@ -1,4 +1,7 @@
-﻿@using Moonglade.Data.DTO
+﻿@{
+    var snapshot = ViewData.CaptureSettings(SettingsReader);
+}
+@using Moonglade.Data.DTO
 @model PagedResult<PostDigest>
 
 @foreach (var item in Model.Items)
@@ -7,6 +10,6 @@
 }
 
 @{
-    var maxPageNumbers = BlogConfig.ContentSettings.MaximumPageNumbersToDisplay;
+    var maxPageNumbers = snapshot.ContentSettings.MaximumPageNumbersToDisplay;
 }
 <partial name="_Pager" model="new PagerModel(Model.PageNumber, Model.PageCount, maxPageNumbers)" />

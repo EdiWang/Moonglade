@@ -44,7 +44,7 @@ export function createTagifyMixin() {
             if (!input) return;
 
             const whitelist = this.categories.map(category => ({
-                value: category.id,
+                value: String(category.id),
                 name: category.displayName,
                 title: category.displayName
             }));
@@ -58,7 +58,7 @@ export function createTagifyMixin() {
                 a11y: { inputAriaLabel: input.placeholder },
                 transformTag: tag => {
                     const category = whitelist.find(category =>
-                        category.value === tag.value || category.name === tag.value);
+                        category.value === String(tag.value) || category.name === tag.value);
                     if (category) Object.assign(tag, category);
                 },
                 dropdown: {
@@ -72,11 +72,11 @@ export function createTagifyMixin() {
             });
 
             this.categoryTagifyInstance.addTags(this.formData.selectedCatIds
-                .map(id => whitelist.find(category => category.value === id))
+                .map(id => whitelist.find(category => category.value === String(id)))
                 .filter(Boolean));
 
             this.categoryTagifyInstance.on('add remove', () => {
-                const ids = this.categoryTagifyInstance.value.map(category => category.value);
+                const ids = this.categoryTagifyInstance.value.map(category => Number(category.value));
                 if (JSON.stringify(ids) !== JSON.stringify(this.formData.selectedCatIds)) {
                     this.formData.selectedCatIds = ids;
                     this.isFormDirty = true;
@@ -90,7 +90,7 @@ export function createTagifyMixin() {
             }
 
             if (this.categoryTagifyInstance) {
-                this.formData.selectedCatIds = this.categoryTagifyInstance.value.map(category => category.value);
+                this.formData.selectedCatIds = this.categoryTagifyInstance.value.map(category => Number(category.value));
             }
         }
     };

@@ -2,6 +2,7 @@
 using LiteBus.Queries.Abstractions;
 using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Options;
+using Moonglade.ActivityLog;
 using Moonglade.Data.DTO;
 using Moonglade.Features.Category;
 using Moonglade.Features.Post;
@@ -13,7 +14,6 @@ namespace Moonglade.Web.Controllers;
 
 [Route("api/[controller]")]
 public class PostController(
-    IConfiguration configuration,
     ICommandMediator commandMediator,
     IQueryMediator queryMediator,
     IBlogConfig blogConfig,
@@ -33,11 +33,6 @@ public class PostController(
     }
 
     [HttpPost("createoredit")]
-    [TypeFilter(typeof(ClearBlogCache), Arguments =
-    [
-        BlogCacheType.SiteMap |
-        BlogCacheType.Subscription
-    ])]
     public async Task<IActionResult> CreateOrEdit(PostEditRequest model)
     {
         if (model.PostStatus == PostStatus.Scheduled)
@@ -75,33 +70,44 @@ public class PostController(
         return Ok(new SavePostResponse(result.PostId, result.LastModifiedUtc));
     }
 
-    [TypeFilter(typeof(ClearBlogCache), Arguments =
-    [
-        BlogCacheType.SiteMap |
-        BlogCacheType.Subscription
-    ])]
     [HttpDelete("{postId:guid}/recycle")]
     public async Task<IActionResult> Delete([NotEmpty] Guid postId)
     {
-        await CommandMediator.SendAsync(new RecyclePostCommand(postId, CreatePostOperationContext()));
+        await CommandMediator.SendAsync(new DeletePostCommand(postId, SoftDelete: true));
+
+        await LogActivityAsync(
+            EventType.PostDeleted,
+            "Delete Post (Move to Recycle Bin)",
+            $"Post #{postId}",
+            ActivityLogMetaData.Create(("PostId", postId)));
 
         return NoContent();
     }
 
-    [TypeFilter(typeof(ClearBlogCache), Arguments = [BlogCacheType.Subscription | BlogCacheType.SiteMap])]
     [HttpPut("{postId:guid}/publish")]
     public async Task<IActionResult> Publish([NotEmpty] Guid postId)
     {
-        await CommandMediator.SendAsync(new PublishPostWorkflowCommand(postId, CreatePostOperationContext()));
+        await CommandMediator.SendAsync(new PublishPostCommand(postId));
+
+        await LogActivityAsync(
+            EventType.PostPublished,
+            "Publish Post",
+            $"Post #{postId}",
+            ActivityLogMetaData.Create(("PostId", postId)));
 
         return NoContent();
     }
 
-    [TypeFilter(typeof(ClearBlogCache), Arguments = [BlogCacheType.Subscription | BlogCacheType.SiteMap])]
     [HttpPut("{postId:guid}/unpublish")]
     public async Task<IActionResult> Unpublish([NotEmpty] Guid postId)
     {
-        await CommandMediator.SendAsync(new UnpublishPostWorkflowCommand(postId, CreatePostOperationContext()));
+        await CommandMediator.SendAsync(new UnpublishPostCommand(postId));
+
+        await LogActivityAsync(
+            EventType.PostUnpublished,
+            "Unpublish Post",
+            $"Post #{postId}",
+            ActivityLogMetaData.Create(("PostId", postId)));
 
         return NoContent();
     }
@@ -120,13 +126,13 @@ public class PostController(
     [HttpGet("meta")]
     public async Task<IActionResult> GetMeta([FromServices] IOptions<RequestLocalizationOptions> locOptions)
     {
-        var ec = configuration.GetValue<EditorChoice>("DefaultEditor");
+        var settings = blogConfig.Capture();
         var cats = await queryMediator.QueryAsync(new ListCategoriesQuery());
 
         var response = new PostEditorMeta
         {
-            EditorChoice = ec.ToString().ToLower(),
-            DefaultAuthor = blogConfig.GeneralSettings.OwnerName,
+            EditorChoice = settings.ContentSettings.DefaultEditor.ToString().ToLowerInvariant(),
+            DefaultAuthor = settings.GeneralSettings.OwnerName,
             Categories = cats.Select(c => new CategoryBrief
             {
                 Id = c.Id,

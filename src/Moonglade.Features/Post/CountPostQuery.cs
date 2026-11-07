@@ -10,7 +10,7 @@ public enum CountType
     Featured
 }
 
-public record CountPostQuery(CountType CountType, Guid? CatId = null, int? TagId = null) : IQuery<int>;
+public record CountPostQuery(CountType CountType, int? CatId = null, int? TagId = null) : IQuery<int>;
 
 public class CountPostQueryHandler(
     BlogDbContext db)
@@ -22,7 +22,7 @@ public class CountPostQueryHandler(
         {
             CountType.Public => await db.Post.CountAsync(p => p.PostStatus == PostStatus.Published && !p.IsDeleted, ct),
 
-            CountType.Category => request.CatId is Guid catId
+            CountType.Category => request.CatId is int catId
                 ? await db.PostCategory.CountAsync(
                     pc => pc.CategoryId == catId
                           && pc.Post.PostStatus == PostStatus.Published

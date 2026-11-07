@@ -20,6 +20,8 @@ public class SqlServerBlogDbContext : BlogDbContext
         base.OnModelCreating(modelBuilder);
 
         modelBuilder.ApplyConfiguration(new BlogThemeConfiguration());
+        modelBuilder.Entity<Entities.CategoryEntity>()
+            .Property(e => e.Id).UseIdentityColumn(seed: 100, increment: 1);
         Data.Configurations.UtcDateTimeConvention.ConfigureUtcDateTimeColumnType(modelBuilder, "datetime2(7)");
     }
 }

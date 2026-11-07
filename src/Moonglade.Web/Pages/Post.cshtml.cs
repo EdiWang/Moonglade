@@ -1,3 +1,4 @@
+using Moonglade.Web.Rendering;
 using LiteBus.Commands.Abstractions;
 using LiteBus.Queries.Abstractions;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -10,6 +11,7 @@ public class PostModel(
     IConfiguration configuration,
     IBlogConfig blogConfig,
     ICacheAside cache,
+    PostCacheInvalidator postCacheInvalidator,
     IQueryMediator queryMediator,
     ICommandMediator commandMediator) : PageModel
 {
@@ -17,15 +19,16 @@ public class PostModel(
 
     public PostViewEntity PostView { get; set; }
 
-    public bool IsViewCountEnabled => blogConfig.ContentSettings.EnableViewCount;
+    public bool IsViewCountEnabled => ViewData.CaptureSettings(blogConfig).ContentSettings.EnableViewCount;
 
     public async Task<IActionResult> OnGetAsync(int year, int month, int day, string slug)
     {
+        ViewData.CaptureSettings(blogConfig);
         if (year > DateTime.UtcNow.Year || string.IsNullOrWhiteSpace(slug)) return NotFound();
 
         var routeLink = $"{year}/{month}/{day}/{slug}".ToLower();
 
-        var psm = await cache.GetOrCreateAsync(BlogCachePartition.Post.ToString(), $"{routeLink}", async () =>
+        var psm = await cache.GetOrCreateAsync(BlogCachePartition.Post.ToString(), postCacheInvalidator.GetCacheKey(routeLink), async () =>
         {
             var post = await queryMediator.QueryAsync(new GetPostBySlugQuery(routeLink));
             return post;

@@ -1,4 +1,5 @@
 using LiteBus.Commands.Abstractions;
+using LiteBus.Events.Abstractions;
 using Microsoft.Extensions.Logging;
 using Moonglade.Data.DTO;
 using Moonglade.Utils;
@@ -9,7 +10,8 @@ public record CreatePostCommand(PostEditModel Payload) : ICommand<PostCommandRes
 
 public class CreatePostCommandHandler(
         BlogDbContext db,
-        ILogger<CreatePostCommandHandler> logger)
+        ILogger<CreatePostCommandHandler> logger,
+        IEventMediator eventMediator)
     : ICommandHandler<CreatePostCommand, PostCommandResult>
 {
     public async Task<PostCommandResult> HandleAsync(CreatePostCommand request, CancellationToken ct)
@@ -30,13 +32,7 @@ public class CreatePostCommandHandler(
             Title = request.Payload.Title.Trim(),
             ContentLanguageCode = request.Payload.LanguageCode,
             IsFeedIncluded = request.Payload.FeedIncluded,
-            PubDateUtc = request.Payload.PostStatus == PostStatus.Published ? utcNow : null,
-            ScheduledPublishTimeUtc =
-                request.Payload.PostStatus == PostStatus.Scheduled ?
-                request.Payload.ScheduledPublishTimeUtc :
-                null,
             IsDeleted = false,
-            PostStatus = request.Payload.PostStatus,
             IsFeatured = request.Payload.Featured,
             IsOutdated = request.Payload.IsOutdated,
             ContainsAiAssistedContent = request.Payload.ContainsAiAssistedContent,
@@ -45,15 +41,22 @@ public class CreatePostCommandHandler(
 
         post.Keywords = ContentProcessor.GetKeywords(request.Payload.Keywords);
 
-        await CheckSlugConflict(post, ct);
-        post.RouteLink = GetRouteLink(post);
+        if (request.Payload.PostStatus == PostStatus.Published)
+        {
+            await CheckSlugConflict(post, utcNow, ct);
+        }
+
+        PostEntityHelper.SetStatus(post, request.Payload.PostStatus, utcNow, request.Payload.ScheduledPublishTimeUtc);
 
         PostEntityHelper.SetCategories(post, request.Payload.SelectedCatIds);
 
         await PostEntityHelper.ResolveAndAssignTagsAsync(post, request.Payload.Tags, db, logger, ct);
 
         db.Post.Add(post);
-        await db.SaveChangesAsync(ct);
+        if (await db.SaveChangesAsync(ct) > 0)
+        {
+            await eventMediator.PublishAsync(new PostChangedEvent(), cancellationToken: CancellationToken.None);
+        }
 
         logger.LogInformation("Created post Id: {PostId}, Title: '{PostTitle}'", post.Id, post.Title);
         return new PostCommandResult
@@ -67,14 +70,9 @@ public class CreatePostCommandHandler(
     }
 
     // check if exist same slug under the same day
-    private async Task CheckSlugConflict(PostEntity post, CancellationToken ct)
+    private async Task CheckSlugConflict(PostEntity post, DateTime publishTimeUtc, CancellationToken ct)
     {
-        if (post.PostStatus != PostStatus.Published || post.PubDateUtc is null)
-        {
-            return;
-        }
-
-        var publishDateUtc = post.PubDateUtc.Value.Date;
+        var publishDateUtc = publishTimeUtc.Date;
         var exists = await db.Post.AnyAsync(p =>
             p.Slug == post.Slug &&
             p.PostStatus == PostStatus.Published &&
@@ -89,12 +87,4 @@ public class CreatePostCommandHandler(
             logger.LogInformation("Found conflict for post slug, generated new slug: {Slug}", post.Slug);
         }
     }
-
-    private static string GetRouteLink(PostEntity post)
-    {
-        return post.PostStatus == PostStatus.Published && post.PubDateUtc.HasValue
-            ? UrlHelper.GenerateRouteLink(post.PubDateUtc.Value, post.Slug)
-            : null;
-    }
-
 }

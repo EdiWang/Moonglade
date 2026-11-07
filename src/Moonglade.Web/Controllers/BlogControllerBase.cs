@@ -12,6 +12,25 @@ public abstract class BlogControllerBase(ICommandMediator commandMediator) : Con
 {
     protected readonly ICommandMediator CommandMediator = commandMediator;
 
+    protected async Task LogActivityAfterSaveAsync(
+        ILogger logger,
+        EventType eventType,
+        string operation,
+        string targetName,
+        object metadata = null)
+    {
+        try
+        {
+            await LogActivityAsync(eventType, operation, targetName, metadata);
+        }
+        catch (Exception exception)
+        {
+            logger.LogError(exception,
+                "Changes saved, but activity logging failed for {EventType} ({Operation}). Trace identifier: {TraceIdentifier}",
+                eventType, operation, HttpContext.TraceIdentifier);
+        }
+    }
+
     /// <summary>
     /// Records an activity log entry
     /// </summary>

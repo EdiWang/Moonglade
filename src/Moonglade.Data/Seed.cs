@@ -6,90 +6,74 @@ namespace Moonglade.Data;
 
 public class Seed
 {
-    public static async Task SeedAsync(BlogDbContext dbContext, ILogger logger, int retry = 0)
+    public static async Task SeedAsync(BlogDbContext dbContext, ILogger logger, CancellationToken cancellationToken = default)
     {
-        var retryForAvailability = retry;
+        logger.LogDebug("Adding categories data...");
+        await dbContext.Category.AddRangeAsync(GetCategories(), cancellationToken);
 
-        try
+        logger.LogDebug("Adding tags data...");
+        await dbContext.Tag.AddRangeAsync(GetTags(), cancellationToken);
+
+        logger.LogDebug("Adding widgets data...");
+        await dbContext.Widget.AddRangeAsync(GetWidgets(), cancellationToken);
+
+        logger.LogDebug("Adding pages data...");
+        await dbContext.BlogPage.AddRangeAsync(GetPages(), cancellationToken);
+
+        logger.LogDebug("Adding example post...");
+        // Add example post
+        var content = """
+            <p dir="auto"><strong>Moonglade</strong> is a self-hosted personal blogging platform built for developers. It includes essential blogging tools such as posts, pages, comments, categories, tags, archives, themes, feeds, and an administration portal.</p>
+            <h2>Getting Started</h2>
+            <ul dir="auto">
+            <li>Sign in to the administration portal at <code>/admin</code>.</li>
+            <li>Review the settings for your site title, appearance, comments, images, and notifications.</li>
+            <li>Update or remove this welcome post.</li>
+            <li>Create your first post and publish it when you are ready.</li>
+            </ul>
+            <h2>Deployment</h2>
+            <ul dir="auto">
+            <li>Use a stable release from the <a href="https://github.com/EdiWang/Moonglade/releases" rel="nofollow">Moonglade releases page</a>.</li>
+            <li>Enable HTTPS and HTTP/2 on your web server or reverse proxy.</li>
+            <li>Keep the database and both image-storage directories on durable storage.</li>
+            <li>Store connection strings, passwords, and other secrets outside source control.</li>
+            <li>Use <code>/health</code> for liveness checks and <code>/health/ready</code> for database readiness.</li>
+            <li>Moonglade can run in containers, on virtual machines, on-premises, or on any cloud platform that supports ASP.NET Core.</li>
+            </ul>
+            <h2>Documentation</h2>
+            <p dir="auto">Configuration and deployment guidance is available in the <a href="https://github.com/EdiWang/Moonglade" rel="nofollow">project README</a>.</p>
+            <blockquote><p>Moonglade must not be used to serve users in mainland China or to publish content prohibited by Chinese law or any applicable regulations.</p></blockquote>
+            """;
+
+        var post = new PostEntity
         {
-            logger.LogDebug("Adding categories data...");
-            await dbContext.Category.AddRangeAsync(GetCategories());
+            Id = Guid.NewGuid(),
+            Title = "Welcome to Moonglade",
+            Slug = "welcome-to-moonglade",
+            Author = "admin",
+            PostContent = content,
+            CommentEnabled = true,
+            CreateTimeUtc = DateTime.UtcNow,
+            ContentAbstract = "Moonglade is a self-hosted personal blogging platform for developers, with support for posts, pages, comments, categories, tags, archives, themes, feeds, and more.",
+            PostStatus = PostStatus.Published,
+            IsFeatured = true,
+            IsFeedIncluded = true,
+            LastModifiedUtc = DateTime.UtcNow,
+            PubDateUtc = DateTime.UtcNow,
+            ContentLanguageCode = "en-us",
+            Tags = [.. dbContext.Tag],
+            PostCategory = [.. dbContext.PostCategory],
+            RouteLink = $"{DateTime.UtcNow.ToString("yyyy/M/d", CultureInfo.InvariantCulture)}/welcome-to-moonglade"
+        };
 
-            logger.LogDebug("Adding tags data...");
-            await dbContext.Tag.AddRangeAsync(GetTags());
-
-            logger.LogDebug("Adding widgets data...");
-            await dbContext.Widget.AddRangeAsync(GetWidgets());
-
-            logger.LogDebug("Adding pages data...");
-            await dbContext.BlogPage.AddRangeAsync(GetPages());
-
-            logger.LogDebug("Adding example post...");
-            // Add example post
-            var content = """
-                <p dir="auto"><strong>Moonglade</strong> is a self-hosted personal blogging platform built for developers. It includes essential blogging tools such as posts, pages, comments, categories, tags, archives, themes, feeds, and an administration portal.</p>
-                <h2>Getting Started</h2>
-                <ul dir="auto">
-                <li>Sign in to the administration portal at <code>/admin</code>.</li>
-                <li>Review the settings for your site title, appearance, comments, images, and notifications.</li>
-                <li>Update or remove this welcome post.</li>
-                <li>Create your first post and publish it when you are ready.</li>
-                </ul>
-                <h2>Deployment</h2>
-                <ul dir="auto">
-                <li>Use a stable release from the <a href="https://github.com/EdiWang/Moonglade/releases" rel="nofollow">Moonglade releases page</a>.</li>
-                <li>Enable HTTPS and HTTP/2 on your web server or reverse proxy.</li>
-                <li>Keep the database and both image-storage directories on durable storage.</li>
-                <li>Store connection strings, passwords, and other secrets outside source control.</li>
-                <li>Use <code>/health</code> for liveness checks and <code>/health/ready</code> for database readiness.</li>
-                <li>Moonglade can run in containers, on virtual machines, on-premises, or on any cloud platform that supports ASP.NET Core.</li>
-                </ul>
-                <h2>Documentation</h2>
-                <p dir="auto">Configuration and deployment guidance is available in the <a href="https://github.com/EdiWang/Moonglade" rel="nofollow">project README</a>.</p>
-                <blockquote><p>Moonglade must not be used to serve users in mainland China or to publish content prohibited by Chinese law or any applicable regulations.</p></blockquote>
-                """;
-
-            var post = new PostEntity
-            {
-                Id = Guid.NewGuid(),
-                Title = "Welcome to Moonglade",
-                Slug = "welcome-to-moonglade",
-                Author = "admin",
-                PostContent = content,
-                CommentEnabled = true,
-                CreateTimeUtc = DateTime.UtcNow,
-                ContentAbstract = "Moonglade is a self-hosted personal blogging platform for developers, with support for posts, pages, comments, categories, tags, archives, themes, feeds, and more.",
-                PostStatus = PostStatus.Published,
-                IsFeatured = true,
-                IsFeedIncluded = true,
-                LastModifiedUtc = DateTime.UtcNow,
-                PubDateUtc = DateTime.UtcNow,
-                ContentLanguageCode = "en-us",
-                Tags = [.. dbContext.Tag],
-                PostCategory = [.. dbContext.PostCategory],
-                RouteLink = $"{DateTime.UtcNow.ToString("yyyy/M/d", CultureInfo.InvariantCulture)}/welcome-to-moonglade"
-            };
-
-            await dbContext.Post.AddAsync(post);
-            await dbContext.SaveChangesAsync();
-        }
-        catch (Exception e)
-        {
-            if (retryForAvailability >= 5) throw;
-
-            retryForAvailability++;
-
-            logger.LogError(e.Message);
-            await SeedAsync(dbContext, logger, retryForAvailability);
-            throw;
-        }
+        await dbContext.Post.AddAsync(post, cancellationToken);
+        await dbContext.SaveChangesAsync(cancellationToken);
     }
 
     private static IEnumerable<CategoryEntity> GetCategories() =>
         [
             new()
             {
-                Id = Guid.Parse("b0c15707-dfc8-4b09-9aa0-5bfca744c50b"),
                 DisplayName = "Default",
                 Note = "Default Category",
                 Slug = "default"

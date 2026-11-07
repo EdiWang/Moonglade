@@ -867,9 +867,6 @@
   <data name="Use Dublin Core Metadata" xml:space="preserve">
     <value>使用都柏林核心元数据</value>
   </data>
-  <data name="Pronouns" xml:space="preserve">
-    <value>性别认同代词</value>
-  </data>
   <data name="Subscription buttons" xml:space="preserve">
     <value>订阅按钮</value>
   </data>
@@ -1620,9 +1617,6 @@
   <data name="New username" xml:space="preserve">
     <value>新用户名</value>
   </data>
-  <data name="New version available" xml:space="preserve">
-    <value>有新版本可用</value>
-  </data>
   <data name="No active tags found" xml:space="preserve">
     <value>未找到活跃标签</value>
   </data>
@@ -1902,11 +1896,11 @@
   <data name="Clear the current authenticator setup and enroll a new app on next sign-in." xml:space="preserve">
     <value>清除当前验证器设置，并在下次登录时绑定新的应用。</value>
   </data>
-  <data name="Email outbox worker is disabled." xml:space="preserve">
-    <value>Email 发件箱后台任务已禁用。</value>
+  <data name="Email notifications are disabled." xml:space="preserve">
+    <value>Email 通知已禁用。</value>
   </data>
-  <data name="Outbox Worker" xml:space="preserve">
-    <value>发件箱后台任务</value>
+  <data name="Email Notifications" xml:space="preserve">
+    <value>Email 通知</value>
   </data>
   <data name="Please configure email provider settings in appsettings.json." xml:space="preserve">
     <value>请在 `appsettings.json` 中配置邮件提供程序设置。</value>
@@ -2003,5 +1997,17 @@
   </data>
   <data name="Digit {0} of 6" xml:space="preserve">
     <value>第 {0} 位，共 6 位</value>
+  </data>
+  <data name="Default editor" xml:space="preserve">
+    <value>默认编辑器</value>
+  </data>
+  <data name="Applies to new posts only." xml:space="preserve">
+    <value>仅适用于新建文章。</value>
+  </data>
+  <data name="Enable Markdown links in comments and replies" xml:space="preserve">
+    <value>启用评论和回复中的 Markdown 链接</value>
+  </data>
+  <data name="Changes wake the scheduler. Publishing already in progress is not canceled." xml:space="preserve">
+    <value>更改会唤醒定时发布任务。已经开始的发布不会被取消。</value>
   </data>
 </root>

@@ -52,7 +52,9 @@ public class CreateThemeCommandTests
         var rules = new Dictionary<string, string>
         {
             { "--accent-color1", "#2A579A" },
-            { "--accent-color2", "#FFFFFF" }
+            { "--accent-color2", "#FFFFFF" },
+            { "--font-family", "Arial, sans-serif" },
+            { "--border-radius", "5px" }
         };
         var command = new CreateThemeCommand(themeName, rules);
 
@@ -73,8 +75,7 @@ public class CreateThemeCommandTests
         var deserializedRules = JsonSerializer.Deserialize<Dictionary<string, string>>(savedEntity.CssRules);
         Assert.NotNull(deserializedRules);
         Assert.Equal(rules.Count, deserializedRules.Count);
-        Assert.Equal(rules["--accent-color1"], deserializedRules["--accent-color1"]);
-        Assert.Equal(rules["--accent-color2"], deserializedRules["--accent-color2"]);
+        Assert.All(rules, rule => Assert.Equal(rule.Value, deserializedRules[rule.Key]));
     }
 
     [Fact]
@@ -123,59 +124,4 @@ public class CreateThemeCommandTests
         Assert.Equal("{}", savedEntity.CssRules);
     }
 
-    [Fact]
-    public async Task HandleAsync_MultipleRules_SerializesAllRulesCorrectly()
-    {
-        // Arrange
-        var themeName = "Complex Theme";
-        var rules = new Dictionary<string, string>
-        {
-            { "--accent-color1", "#2A579A" },
-            { "--accent-color2", "#FFFFFF" },
-            { "--accent-color3", "#000000" },
-            { "--font-family", "Arial, sans-serif" },
-            { "--border-radius", "5px" }
-        };
-        var command = new CreateThemeCommand(themeName, rules);
-
-        using var db = CreateDbContext();
-        var handler = new CreateThemeCommandHandler(db);
-
-        // Act
-        var result = await handler.HandleAsync(command, TestContext.Current.CancellationToken);
-
-        // Assert
-        Assert.True(result > 0);
-        var savedEntity = await db.BlogTheme.FindAsync([result], TestContext.Current.CancellationToken);
-        Assert.NotNull(savedEntity);
-
-        var deserializedRules = JsonSerializer.Deserialize<Dictionary<string, string>>(savedEntity.CssRules);
-        Assert.NotNull(deserializedRules);
-        Assert.Equal(5, deserializedRules.Count);
-        foreach (var kvp in rules)
-        {
-            Assert.True(deserializedRules.ContainsKey(kvp.Key));
-            Assert.Equal(kvp.Value, deserializedRules[kvp.Key]);
-        }
-    }
-
-    [Fact]
-    public async Task HandleAsync_CancellationTokenPassed_DoesNotThrow()
-    {
-        // Arrange
-        var themeName = "Test Theme";
-        var rules = new Dictionary<string, string> { { "--color", "#123456" } };
-        var command = new CreateThemeCommand(themeName, rules);
-        var cts = new CancellationTokenSource();
-
-        using var db = CreateDbContext();
-        var handler = new CreateThemeCommandHandler(db);
-
-        // Act
-        var result = await handler.HandleAsync(command, cts.Token);
-
-        // Assert
-        Assert.True(result > 0);
-        Assert.Equal(1, await db.BlogTheme.CountAsync(TestContext.Current.CancellationToken));
-    }
 }

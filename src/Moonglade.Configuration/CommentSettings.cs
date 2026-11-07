@@ -3,43 +3,49 @@ using System.Text.Json.Serialization;
 
 namespace Moonglade.Configuration;
 
-public class CommentSettings : IBlogSettings<CommentSettings>
+public sealed record CommentSettings : IBlogSettings<CommentSettings>
 {
     [Display(Name = "Comment provider")]
-    public CommentProvider CommentProvider { get; set; }
+    [EnumDataType(typeof(CommentProvider))]
+    public CommentProvider CommentProvider { get; init; }
 
     [Display(Name = "Comments display order")]
-    public CommentOrder CommentOrder { get; set; }
+    [EnumDataType(typeof(CommentOrder))]
+    public CommentOrder CommentOrder { get; init; }
 
     [Display(Name = "Third party comment html pitch")]
     [MaxLength(1024)]
-    public string ThirdPartyCommentHtmlPitch { get; set; }
+    public string ThirdPartyCommentHtmlPitch { get; init; }
 
     [Display(Name = "Enable comments")]
-    public bool EnableComments { get; set; } = true;
+    public bool EnableComments { get; init; } = true;
 
     [Display(Name = "Enable Gravatar in comment list")]
-    public bool EnableGravatar { get; set; }
+    public bool EnableGravatar { get; init; }
+
+    [Display(Name = "Enable Markdown links in comments and replies")]
+    public bool EnableMarkdownLinks { get; init; }
 
     [Display(Name = "Comments require review and approval")]
-    public bool RequireCommentReview { get; set; }
+    public bool RequireCommentReview { get; init; }
 
     [Display(Name = "Automatically close comments on posts older than x days")]
     [Range(0, 65536)]
-    public int CloseCommentAfterDays { get; set; }
+    public int CloseCommentAfterDays { get; init; }
 
     [Display(Name = "Enable word filter")]
-    public bool EnableWordFilter { get; set; }
+    public bool EnableWordFilter { get; init; }
 
     [Display(Name = "Word filter mode")]
-    public WordFilterMode WordFilterMode { get; set; }
+    [EnumDataType(typeof(WordFilterMode))]
+    public WordFilterMode WordFilterMode { get; init; }
 
     [Display(Name = "Word filter keywords")]
     [MaxLength(4096)]
-    public string WordFilterKeywords { get; set; } = "fuck|shit";
+    public string WordFilterKeywords { get; init; } = "fuck|shit";
 
     [Display(Name = "Show comment section on mobile screens")]
-    public bool EnableCommentSectionOnMobile { get; set; }
+    public bool EnableCommentSectionOnMobile { get; init; }
 
     [JsonIgnore]
     public static CommentSettings DefaultValue => new()

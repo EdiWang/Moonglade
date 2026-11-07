@@ -1,7 +1,11 @@
 ﻿@page "/admin/settings/general"
+@{
+    var snapshot = ViewData.CaptureSettings(SettingsReader);
+}
 @inject IOptions<RequestLocalizationOptions> LocOptions
 
 @{
+    var avatarUrl = Url.Action("Avatar", "Assets");
     var cultureItems = LocOptions.Value.SupportedUICultures
         .Select(c => new { Value = c.Name, c.NativeName });
 
@@ -11,14 +15,6 @@
             Text = t.NativeName,
             Value = t.Value.ToLower()
         });
-
-    var pronounsList = new List<SelectListItem>
-    {
-        new("Don't specify", ""),
-        new("they/them","they/them"),
-        new("she/her","she/her"),
-        new("he/him","he/him")
-    };
 }
 
 @section scripts {
@@ -146,12 +142,12 @@
                                 <i class="bi bi-globe settings-entry-icon"></i>
                             </div>
                             <div class="col">
-                                <label asp-for="@BlogConfig.GeneralSettings.UseDublinCoreMetaData" class="form-check-label"></label>
+                                <label asp-for="@snapshot.GeneralSettings.UseDublinCoreMetaData" class="form-check-label"></label>
                             </div>
                             <div class="col-md-5 text-end">
                                 <div class="form-check form-switch form-control-lg">
                                     <input type="hidden" name="UseDublinCoreMetaData" value="false">
-                                    <input type="checkbox" name="UseDublinCoreMetaData" value="true" class="form-check-input" @(BlogConfig.GeneralSettings.UseDublinCoreMetaData ? "checked" : null)>
+                                    <input type="checkbox" name="UseDublinCoreMetaData" value="true" class="form-check-input" @(snapshot.GeneralSettings.UseDublinCoreMetaData ? "checked" : null)>
                                 </div>
                             </div>
                         </div>
@@ -161,10 +157,10 @@
                                 <i class="bi-link settings-entry-icon"></i>
                             </div>
                             <div class="col">
-                                <label asp-for="@BlogConfig.GeneralSettings.DcLicenseUrl"></label>
+                                <label asp-for="@snapshot.GeneralSettings.DcLicenseUrl"></label>
                             </div>
                             <div class="col-md-5 text-end">
-                                <input asp-for="@BlogConfig.GeneralSettings.DcLicenseUrl" class="form-control" />
+                                <input asp-for="@snapshot.GeneralSettings.DcLicenseUrl" class="form-control" />
                             </div>
                         </div>
                     </div>
@@ -234,7 +230,7 @@
                             <div class="row">
                                 <div class="col-md-2 col-sm-4">
                                     <div class="mb-3">
-                                        <img src="@BlogConfig.GeneralSettings.AvatarUrl" class="img-thumbnail img-fluid blogadmin-avatar" />
+                                        <img src="@avatarUrl" class="img-thumbnail img-fluid blogadmin-avatar" />
                                     </div>
                                     <a class="btn w-100 btn-sm btn-outline-accent" href="#" data-bs-toggle="modal" data-bs-target="#avatarmodal">@SharedLocalizer["Change"]</a>
                                 </div>
@@ -273,18 +269,6 @@
                                     <input type="hidden" name="UseGravatarAsProfilePicture" value="false">
                                     <input type="checkbox" name="UseGravatarAsProfilePicture" value="true" class="form-check-input" @(ViewModel.UseGravatarAsProfilePicture ? "checked" : null)>
                                 </div>
-                            </div>
-                        </div>
-
-                        <div class="settings-entry row align-items-center py-3 px-2 border-top">
-                            <div class="col-auto">
-                                <i class="bi-person-heart settings-entry-icon"></i>
-                            </div>
-                            <div class="col">
-                                <label for="Pronouns">@SharedLocalizer["Pronouns"]</label>
-                            </div>
-                            <div class="col-md-5 text-end">
-                                <select class="form-select" asp-for="@ViewModel.Pronouns" asp-items="@pronounsList"></select>
                             </div>
                         </div>
 
@@ -349,6 +333,7 @@
 
     public void OnGet()
     {
-        ViewModel = BlogConfig.GeneralSettings;
+        var snapshot = ViewData.CaptureSettings(SettingsReader);
+        ViewModel = snapshot.GeneralSettings;
     }
 }

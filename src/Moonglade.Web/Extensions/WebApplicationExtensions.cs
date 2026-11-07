@@ -60,13 +60,13 @@ public static class WebApplicationExtensions
         app.MapGet("/manifest.webmanifest", WebManifestMapHandler.Handler);
         app.MapGet("/opensearch", OpenSearchMapHandler.Handler);
 
-        var bc = app.Services.GetRequiredService<IBlogConfig>();
-        if (bc.AdvancedSettings.EnableFoaf)
+        var settings = app.Services.GetRequiredService<IBlogConfig>().Capture();
+        if (settings.AdvancedSettings.EnableFoaf)
         {
             app.MapGet("/foaf.xml", FoafMapHandler.Handler);
         }
 
-        if (bc.AdvancedSettings.EnableSiteMap)
+        if (settings.AdvancedSettings.EnableSiteMap)
         {
             app.MapGet("/sitemap.xml", SiteMapMapHandler.Handler);
         }

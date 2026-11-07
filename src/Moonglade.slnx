@@ -9,10 +9,6 @@
     <File Path="../README.md" />
     <File Path="Directory.Build.props" />
   </Folder>
-  <Folder Name="/.Solution Items/Deployment/">
-    <File Path="../Deployment/Deploy-Azure-App-Service.ps1" />
-    <File Path="../Deployment/main.bicep" />
-  </Folder>
   <Folder Name="/Application/">
     <Project Path="Moonglade.BackgroundServices/Moonglade.BackgroundServices.csproj" Id="73207b43-cf18-4eae-8b36-d44ce5e9760b" />
     <Project Path="Moonglade.Web.Middleware/Moonglade.Web.Middleware.csproj" />

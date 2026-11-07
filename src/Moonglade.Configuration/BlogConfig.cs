@@ -1,4 +1,7 @@
 ﻿
+using System.Text.Json;
+using System.ComponentModel.DataAnnotations;
+
 namespace Moonglade.Configuration;
 
 public interface IBlogSettings<TSelf> where TSelf : IBlogSettings<TSelf>
@@ -8,87 +11,66 @@ public interface IBlogSettings<TSelf> where TSelf : IBlogSettings<TSelf>
 
 public interface IBlogConfig
 {
-    GeneralSettings GeneralSettings { get; set; }
-    ContentSettings ContentSettings { get; set; }
-    CommentSettings CommentSettings { get; set; }
-    NotificationSettings NotificationSettings { get; set; }
-    FeedSettings FeedSettings { get; set; }
-    ImageSettings ImageSettings { get; set; }
-    AdvancedSettings AdvancedSettings { get; set; }
-    AppearanceSettings AppearanceSettings { get; set; }
-    CustomMenuSettings CustomMenuSettings { get; set; }
-    LocalAccountSettings LocalAccountSettings { get; set; }
-    SystemManifestSettings SystemManifestSettings { get; set; }
-
-    IEnumerable<string> LoadFromConfig(IDictionary<string, string> config);
-    KeyValuePair<string, string> UpdateAsync<T>(T blogSettings) where T : IBlogSettings<T>;
+    BlogSettingsSnapshot Capture();
 }
 
 public class BlogConfig : IBlogConfig
 {
-    public GeneralSettings GeneralSettings { get; set; } = new();
-    public ContentSettings ContentSettings { get; set; } = new();
-    public CommentSettings CommentSettings { get; set; } = new();
-    public NotificationSettings NotificationSettings { get; set; } = new();
-    public FeedSettings FeedSettings { get; set; } = new();
-    public ImageSettings ImageSettings { get; set; } = new();
-    public AdvancedSettings AdvancedSettings { get; set; } = new();
-    public AppearanceSettings AppearanceSettings { get; set; } = new();
-    public CustomMenuSettings CustomMenuSettings { get; set; } = new();
-    public LocalAccountSettings LocalAccountSettings { get; set; } = new();
-    public SystemManifestSettings SystemManifestSettings { get; set; } = new();
+    private BlogSettingsSnapshot _current = new();
 
-    private readonly List<string> _keysToInit = [];
+    public BlogConfig() { }
 
-    public IEnumerable<string> LoadFromConfig(IDictionary<string, string> config)
+    public BlogConfig(BlogSettingsSnapshot snapshot) => Publish(snapshot);
+
+    public BlogSettingsSnapshot Capture() => Volatile.Read(ref _current);
+
+    public void Publish(BlogSettingsSnapshot snapshot)
     {
-        _keysToInit.Clear();
-
-        Assign<GeneralSettings>(config, v => GeneralSettings = v);
-        Assign<ContentSettings>(config, v => ContentSettings = v);
-        Assign<CommentSettings>(config, v => CommentSettings = v);
-        Assign<NotificationSettings>(config, v => NotificationSettings = v);
-        Assign<FeedSettings>(config, v => FeedSettings = v);
-        Assign<ImageSettings>(config, v => ImageSettings = v);
-        Assign<AdvancedSettings>(config, v => AdvancedSettings = v);
-        Assign<AppearanceSettings>(config, v => AppearanceSettings = v);
-        Assign<CustomMenuSettings>(config, v => CustomMenuSettings = v);
-        Assign<LocalAccountSettings>(config, v => LocalAccountSettings = v);
-        Assign<SystemManifestSettings>(config, v => SystemManifestSettings = v);
-
-        return _keysToInit.AsEnumerable();
+        ArgumentNullException.ThrowIfNull(snapshot);
+        Volatile.Write(ref _current, snapshot);
     }
 
-    private void Assign<T>(IDictionary<string, string> config, Action<T> setter) where T : IBlogSettings<T>
+    public static (BlogSettingsSnapshot Snapshot, Dictionary<string, string> Defaults) Parse(IDictionary<string, string> config)
     {
-        var name = typeof(T).Name;
+        var defaultsToInit = new Dictionary<string, string>();
 
-        if (config.TryGetValue(name, out var json))
+        var snapshot = new BlogSettingsSnapshot
         {
-            try
+            GeneralSettings = Read<GeneralSettings>(),
+            ContentSettings = Read<ContentSettings>(),
+            CommentSettings = Read<CommentSettings>(),
+            NotificationSettings = Read<NotificationSettings>(),
+            FeedSettings = Read<FeedSettings>(),
+            ImageSettings = Read<ImageSettings>(),
+            AdvancedSettings = Read<AdvancedSettings>(),
+            AppearanceSettings = Read<AppearanceSettings>(),
+            CustomMenuSettings = Read<CustomMenuSettings>(),
+        };
+        return (snapshot, defaultsToInit);
+
+        T Read<T>() where T : IBlogSettings<T>
+        {
+            var name = typeof(T).Name;
+
+            if (config.TryGetValue(name, out var json))
             {
-                setter(json.FromJson<T>());
-                return;
+                try
+                {
+                    var settings = json is null ? default : json.FromJsonWithDefaults(T.DefaultValue);
+                    if (settings is not null && Validator.TryValidateObject(settings, new ValidationContext(settings), null, true))
+                    {
+                        return settings;
+                    }
+                }
+                catch (JsonException)
+                {
+                    // Fall through to use default value
+                }
             }
-            catch
-            {
-                // Fall through to use default value
-            }
+
+            var defaultValue = T.DefaultValue;
+            defaultsToInit.Add(name, defaultValue.ToJson());
+            return defaultValue;
         }
-
-        _keysToInit.Add(name);
-        setter(T.DefaultValue);
-    }
-
-    public KeyValuePair<string, string> UpdateAsync<T>(T blogSettings) where T : IBlogSettings<T>
-    {
-        var name = typeof(T).Name;
-        var json = blogSettings.ToJson();
-
-        // update singleton itself
-        var prop = GetType().GetProperty(name);
-        prop?.SetValue(this, blogSettings);
-
-        return new(name, json);
     }
 }

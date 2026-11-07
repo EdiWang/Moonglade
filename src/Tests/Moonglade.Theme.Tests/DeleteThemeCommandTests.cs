@@ -64,7 +64,8 @@ public class DeleteThemeCommandTests
             Id = 2,
             ThemeName = "Custom User Theme",
             ThemeType = ThemeType.User,
-            CssRules = """{"--primary-color": "#ff0000"}"""
+            CssRules = """{"--primary-color": "#ff0000"}""",
+            AdditionalProps = """{"darkMode": true}"""
         };
         db.BlogTheme.Add(userTheme);
         await db.SaveChangesAsync(TestContext.Current.CancellationToken);
@@ -78,33 +79,6 @@ public class DeleteThemeCommandTests
         // Assert
         Assert.Equal(OperationCode.Done, result);
         Assert.Null(await db.BlogTheme.FindAsync([2], TestContext.Current.CancellationToken)); // Deleted
-    }
-
-    [Fact]
-    public async Task HandleAsync_UserThemeWithAdditionalProps_DeletesAndReturnsDone()
-    {
-        // Arrange
-        using var db = CreateDbContext();
-        var userTheme = new BlogThemeEntity
-        {
-            Id = 5,
-            ThemeName = "Feature Rich Theme",
-            ThemeType = ThemeType.User,
-            CssRules = """{"--accent-color": "#00ff00"}""",
-            AdditionalProps = """{"darkMode": true}"""
-        };
-        db.BlogTheme.Add(userTheme);
-        await db.SaveChangesAsync(TestContext.Current.CancellationToken);
-
-        var command = new DeleteThemeCommand(5);
-        var handler = new DeleteThemeCommandHandler(db);
-
-        // Act
-        var result = await handler.HandleAsync(command, TestContext.Current.CancellationToken);
-
-        // Assert
-        Assert.Equal(OperationCode.Done, result);
-        Assert.Null(await db.BlogTheme.FindAsync([5], TestContext.Current.CancellationToken)); // Deleted
     }
 
     [Fact]

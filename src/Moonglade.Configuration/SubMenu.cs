@@ -1,10 +1,14 @@
-﻿namespace Moonglade.Configuration;
+﻿using System.ComponentModel.DataAnnotations;
 
-public record SubMenu
+namespace Moonglade.Configuration;
+
+public sealed record SubMenu
 {
-    public string Title { get; set; }
+    [Required]
+    public string Title { get; init; }
 
-    public string Url { get; set; }
+    [Required]
+    public string Url { get; init; }
 
-    public bool IsOpenInNewTab { get; set; }
+    public bool IsOpenInNewTab { get; init; }
 }

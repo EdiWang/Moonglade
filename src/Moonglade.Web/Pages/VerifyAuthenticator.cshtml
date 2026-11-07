@@ -1,5 +1,9 @@
 @page "/auth/verify-authenticator"
+@{
+    var snapshot = ViewData.CaptureSettings(SettingsReader);
+}
 @inject ICacheAside Cache
+@inject ThemeCacheInvalidator ThemeCache
 @model Moonglade.Web.Pages.VerifyAuthenticatorModel
 @using Edi.AspNetCore.Utils
 @using Moonglade.Utils
@@ -7,9 +11,9 @@
 @{
     Layout = null;
 
-    var themeCss = await Cache.GetOrCreateAsync(BlogCachePartition.General.ToString(), "theme", async () =>
+    var themeCss = await Cache.GetOrCreateAsync(BlogCachePartition.General.ToString(), ThemeCache.GetCacheKey(snapshot.AppearanceSettings.ThemeId), async () =>
     {
-        return await QueryMediator.QueryAsync(new GetSiteThemeStyleSheetQuery(BlogConfig.AppearanceSettings.ThemeId));
+        return await QueryMediator.QueryAsync(new GetSiteThemeStyleSheetQuery(snapshot.AppearanceSettings.ThemeId));
     }, TimeSpan.FromMinutes(20));
 }
 

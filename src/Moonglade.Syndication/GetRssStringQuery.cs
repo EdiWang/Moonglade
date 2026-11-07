@@ -1,4 +1,5 @@
-﻿using Edi.AspNetCore.Utils;
+﻿using System.Text.Json.Serialization;
+using Edi.AspNetCore.Utils;
 using LiteBus.Queries.Abstractions;
 using Microsoft.AspNetCore.Http;
 using Moonglade.Configuration;
@@ -6,36 +7,26 @@ using Moonglade.Utils;
 
 namespace Moonglade.Syndication;
 
-public record GetRssStringQuery(string CategoryName = null) : IQuery<string>;
+public record GetRssStringQuery(string CategoryName = null, [property: JsonIgnore] BlogSettingsSnapshot Snapshot = null) : IQuery<string>;
 
-public class GetRssStringQueryHandler : IQueryHandler<GetRssStringQuery, string>
+public class GetRssStringQueryHandler(IBlogConfig blogConfig, SyndicationDataSource sdds, IHttpContextAccessor httpContextAccessor)
+    : IQueryHandler<GetRssStringQuery, string>
 {
-    private readonly ISyndicationDataSource _sdds;
-    private readonly FeedGenerator _feedGenerator;
-
-    public GetRssStringQueryHandler(IBlogConfig blogConfig, ISyndicationDataSource sdds, IHttpContextAccessor httpContextAccessor)
-    {
-        _sdds = sdds;
-
-        var baseUrl = $"{httpContextAccessor.HttpContext!.Request.Scheme}://{httpContextAccessor.HttpContext.Request.Host}";
-
-        _feedGenerator = new(
-            baseUrl,
-            blogConfig.GeneralSettings.SiteTitle,
-            blogConfig.GeneralSettings.Description,
-            Helper.FormatCopyright2Html(blogConfig.GeneralSettings.Copyright).Replace("&copy;", "©"),
-            $"Moonglade v{VersionHelper.AppVersion}",
-            baseUrl,
-            blogConfig.GeneralSettings.DefaultLanguageCode);
-    }
-
     public async Task<string> HandleAsync(GetRssStringQuery request, CancellationToken ct)
     {
-        var data = await _sdds.GetFeedDataAsync(request.CategoryName);
+        var settings = request.Snapshot ?? blogConfig.Capture();
+        var baseUrl = $"{httpContextAccessor.HttpContext!.Request.Scheme}://{httpContextAccessor.HttpContext.Request.Host}";
+        var generator = new FeedGenerator(
+            baseUrl,
+            settings.GeneralSettings.SiteTitle,
+            settings.GeneralSettings.Description,
+            Helper.FormatCopyright2Html(settings.GeneralSettings.Copyright).Replace("&copy;", "©"),
+            $"Moonglade v{VersionHelper.AppVersion}",
+            baseUrl,
+            settings.GeneralSettings.DefaultLanguageCode);
+        var data = await sdds.GetFeedDataAsync(request.CategoryName, settings, ct);
         if (data is null) return null;
-
-        _feedGenerator.FeedItemCollection = data;
-        var xml = await _feedGenerator.WriteRssAsync();
-        return xml;
+        generator.FeedItemCollection = data;
+        return await generator.WriteRssAsync();
     }
 }

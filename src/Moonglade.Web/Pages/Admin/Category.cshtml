@@ -45,7 +45,7 @@
             <div class="card shadow-sm">
                 <div class="card-body">
                     <h6 class="card-title">
-                        <a :href="`/CategoryList?slug=${encodeURIComponent(cat.slug)}`" target="_blank" x-text="cat.displayName"></a>
+                        <a :href="`/category/${encodeURIComponent(cat.slug)}`" target="_blank" x-text="cat.displayName"></a>
                     </h6>
                     <p class="mt-2 h-30px" x-text="cat.note"></p>
                     <small class="text-muted" x-text="cat.slug"></small>
@@ -78,7 +78,7 @@
                 </div>
                 <div class="mb-3">
                     <label class="form-label" asp-for="@EditCategoryRequest.Slug"></label>
-                    <input x-model="formData.slug" class="form-control" required pattern="(?!-)([a-z0-9-]+)" />
+                    <input x-model="formData.slug" class="form-control" required pattern="(?!-)([a-z0-9\-]+)" />
                     <small class="text-muted">
                         @SharedLocalizer["lower case English letters (a-z) and numbers (0-9) with/out hyphen (-) in middle."]
                     </small>

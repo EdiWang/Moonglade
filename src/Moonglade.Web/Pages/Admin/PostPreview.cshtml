@@ -1,4 +1,7 @@
 ﻿@page "/admin/post/preview/{postId:guid}"
+@{
+    var snapshot = ViewData.CaptureSettings(SettingsReader);
+}
 @using Microsoft.AspNetCore.Mvc.TagHelpers
 @using Moonglade.Data.DTO
 @using Moonglade.Data.Entities
@@ -13,7 +16,7 @@
 @section meta {
     <meta name="robots" content="noindex, nofollow" />
     <meta name="title" content="@Post.Title" />
-    <meta name="author" content="@(string.IsNullOrWhiteSpace(Post.Author) ? BlogConfig.GeneralSettings.OwnerName : Post.Author) " />
+    <meta name="author" content="@(string.IsNullOrWhiteSpace(Post.Author) ? snapshot.GeneralSettings.OwnerName : Post.Author) " />
     <meta name="post-is-published" content="@((Model.Post.PostStatus == PostStatus.Published).ToString().ToLower())" />
 }
 
@@ -27,7 +30,7 @@
     <script src="~/js/3rd/katex.min.js"></script>
     <script src="~/js/3rd/mermaid.min.js"></script>
     <script type="module" src="~/js/app/post.mjs"></script>
-    @if (BlogConfig.AdvancedSettings.WarnPostExternalLink)
+    @if (snapshot.AdvancedSettings.WarnPostExternalLink)
     {
         <script type="module" src="~/js/app/externalLinkWarning.mjs"></script>
     }
@@ -43,7 +46,7 @@
         <partial name="_FeaturedTag" />
     }
 
-    <header class="post-header @(BlogConfig.ContentSettings.PostTitleAlignment == PostTitleAlignment.Center ? "text-center" : null)">
+    <header class="post-header @(snapshot.ContentSettings.PostTitleAlignment == PostTitleAlignment.Center ? "text-center" : null)">
         <h1 class="post-title">
             @Post.Title
         </h1>
@@ -54,10 +57,10 @@
     <section class="post-content clearfix">
         <partial name="_PostContentRender" model="(Post.PostContent, Post.ContentType)" />
     </section>
-    @if (BlogConfig.ContentSettings.ShowPostFooter)
+    @if (snapshot.ContentSettings.ShowPostFooter)
     {
         <section class="post-footer clearfix">
-            @Html.Raw(BlogConfig.ContentSettings.PostFooterHtmlPitch)
+            @Html.Raw(snapshot.ContentSettings.PostFooterHtmlPitch)
         </section>
     }
 
@@ -72,7 +75,7 @@
     </div>
 </div>
 
-@if (BlogConfig.AdvancedSettings.WarnPostExternalLink)
+@if (snapshot.AdvancedSettings.WarnPostExternalLink)
 {
     <partial name="_ExternalLink" />
 }
@@ -85,6 +88,7 @@
 
     public async Task<IActionResult> OnGetAsync(Guid postId)
     {
+        var snapshot = ViewData.CaptureSettings(SettingsReader);
         var post = await QueryMediator.QueryAsync(new GetDraftQuery(postId));
         if (post is null) return NotFound();
 

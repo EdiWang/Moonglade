@@ -6,7 +6,6 @@ public class EmailOutboxWorkerOptions
 {
     public const string SectionName = "Email:OutboxWorker";
 
-    public bool Enabled { get; set; } = true;
     public int BatchSize { get; set; } = 5;
     public int PollIntervalSeconds { get; set; } = 30;
     public int LeaseDurationSeconds { get; set; } = 300;

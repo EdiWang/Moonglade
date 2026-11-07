@@ -1,6 +1,8 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
+using Moonglade.Configuration;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 
@@ -10,6 +12,9 @@ public static class ServiceCollectionExtensions
 {
     public static IServiceCollection AddBlogAuthentication(this IServiceCollection services, IConfiguration configuration)
     {
+        services.AddSingleton<LocalAccountState>();
+        services.AddSingleton<ILocalAccountReader>(sp => sp.GetRequiredService<LocalAccountState>());
+        services.TryAddSingleton<ConfigurationWriteGate>();
         var section = configuration.GetSection("Authentication");
         var authentication = section.Get<AuthenticationSettings>() ?? new AuthenticationSettings();
         var oidc = authentication.OpenIdConnect ?? new OpenIdConnectAuthenticationSettings();

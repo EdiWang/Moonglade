@@ -6,10 +6,10 @@ namespace Moonglade.Web.Controllers;
 
 [Route("api/[controller]")]
 public class ThemeController(
-    ICommandMediator commandMediator) : BlogControllerBase(commandMediator)
+    ICommandMediator commandMediator,
+    ThemeCacheInvalidator themes) : BlogControllerBase(commandMediator)
 {
     [HttpPost]
-    [TypeFilter(typeof(ClearBlogCache), Arguments = [BlogCachePartition.General, "theme"])]
     public async Task<IActionResult> Create(CreateThemeRequest request)
     {
         // AccentColor2 = AccentColor Lighten by 20%
@@ -24,6 +24,7 @@ public class ThemeController(
 
         var id = await CommandMediator.SendAsync(new CreateThemeCommand(request.Name, dic));
         if (id == -1) return Conflict("Theme with same name already exists");
+        themes.Invalidate();
 
         await LogActivityAsync(
             EventType.ThemeCreated,
@@ -37,13 +38,13 @@ public class ThemeController(
     }
 
     [HttpDelete("{id:int}")]
-    [TypeFilter(typeof(ClearBlogCache), Arguments = [BlogCachePartition.General, "theme"])]
     public async Task<IActionResult> Delete([Range(1, int.MaxValue)] int id)
     {
         var oc = await CommandMediator.SendAsync(new DeleteThemeCommand(id));
 
         if (oc == OperationCode.Done)
         {
+            themes.Invalidate();
             await LogActivityAsync(
                 EventType.ThemeDeleted,
                 "Delete Theme",

@@ -1,4 +1,7 @@
 ﻿@page "/tags/{normalizedName:regex(^(?!-)([a-zA-Z0-9-]){{1,32}}$)}"
+@{
+    var snapshot = ViewData.CaptureSettings(SettingsReader);
+}
 @using Microsoft.AspNetCore.Mvc.TagHelpers
 @using Moonglade.Data.DTO
 @using Moonglade.Features.Post
@@ -31,12 +34,13 @@ else
 
     public async Task<IActionResult> OnGet(string normalizedName)
     {
+        var snapshot = ViewData.CaptureSettings(SettingsReader);
         if (P == 0) return BadRequest();
 
         var tagResponse = await QueryMediator.QueryAsync(new GetTagQuery(normalizedName));
         if (tagResponse is null) return NotFound();
 
-        var pagesize = BlogConfig.ContentSettings.PostListPageSize;
+        var pagesize = snapshot.ContentSettings.PostListPageSize;
         var posts = await QueryMediator.QueryAsync(new ListByTagQuery(tagResponse.Id, pagesize, P));
         var count = await QueryMediator.QueryAsync(new CountPostQuery(CountType.Tag, TagId: tagResponse.Id));
 

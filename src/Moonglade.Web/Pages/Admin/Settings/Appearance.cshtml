@@ -1,4 +1,7 @@
 ﻿@page "/admin/settings/appearance"
+@{
+    var snapshot = ViewData.CaptureSettings(SettingsReader);
+}
 @using Moonglade.Data.Entities
 
 @Html.AntiForgeryToken()
@@ -192,7 +195,8 @@
 
     public async Task OnGetAsync()
     {
-        ViewModel = BlogConfig.AppearanceSettings;
+        var snapshot = ViewData.CaptureSettings(SettingsReader);
+        ViewModel = snapshot.AppearanceSettings;
 
         Themes = await QueryMediator.QueryAsync(new ListThemeSegmentsQuery());
     }

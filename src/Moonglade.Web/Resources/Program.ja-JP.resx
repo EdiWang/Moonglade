@@ -867,9 +867,6 @@
   <data name="Use Dublin Core Metadata" xml:space="preserve">
     <value>Dublin Core メタデータの使用</value>
   </data>
-  <data name="Pronouns" xml:space="preserve">
-    <value>性自認の代名詞</value>
-  </data>
   <data name="Subscription buttons" xml:space="preserve">
     <value>[購読] ボタン</value>
   </data>
@@ -1620,9 +1617,6 @@
   <data name="New username" xml:space="preserve">
     <value>新しいユーザー名</value>
   </data>
-  <data name="New version available" xml:space="preserve">
-    <value>新しいバージョンがあります</value>
-  </data>
   <data name="No active tags found" xml:space="preserve">
     <value>有効なタグが見つかりません</value>
   </data>
@@ -1902,11 +1896,11 @@
   <data name="Clear the current authenticator setup and enroll a new app on next sign-in." xml:space="preserve">
     <value>現在の認証アプリ設定をクリアし、次回サインイン時に新しいアプリを登録します。</value>
   </data>
-  <data name="Email outbox worker is disabled." xml:space="preserve">
-    <value>メール送信キューのワーカーは無効です。</value>
+  <data name="Email notifications are disabled." xml:space="preserve">
+    <value>メール通知は無効です。</value>
   </data>
-  <data name="Outbox Worker" xml:space="preserve">
-    <value>送信キューワーカー</value>
+  <data name="Email Notifications" xml:space="preserve">
+    <value>メール通知</value>
   </data>
   <data name="Please configure email provider settings in appsettings.json." xml:space="preserve">
     <value>`appsettings.json` でメールプロバイダー設定を構成してください。</value>
@@ -2003,5 +1997,17 @@
   </data>
   <data name="Digit {0} of 6" xml:space="preserve">
     <value>6 桁中 {0} 桁目</value>
+  </data>
+  <data name="Default editor" xml:space="preserve">
+    <value>既定のエディター</value>
+  </data>
+  <data name="Applies to new posts only." xml:space="preserve">
+    <value>新規記事にのみ適用されます。</value>
+  </data>
+  <data name="Enable Markdown links in comments and replies" xml:space="preserve">
+    <value>コメントと返信の Markdown リンクを有効にする</value>
+  </data>
+  <data name="Changes wake the scheduler. Publishing already in progress is not canceled." xml:space="preserve">
+    <value>変更するとスケジューラーが起動します。すでに開始した公開処理は取り消されません。</value>
   </data>
 </root>

@@ -1,11 +1,11 @@
 using LiteBus.Commands.Abstractions;
-using Moonglade.Utils;
+using LiteBus.Events.Abstractions;
 
 namespace Moonglade.Features.Post;
 
 public record PublishScheduledPostCommand : ICommand<int>;
 
-public class PublishScheduledPostCommandHandler(BlogDbContext db, TimeProvider timeProvider) :
+public class PublishScheduledPostCommandHandler(BlogDbContext db, TimeProvider timeProvider, IEventMediator eventMediator) :
     ICommandHandler<PublishScheduledPostCommand, int>
 {
     public async Task<int> HandleAsync(PublishScheduledPostCommand request, CancellationToken ct)
@@ -23,12 +23,15 @@ public class PublishScheduledPostCommandHandler(BlogDbContext db, TimeProvider t
         var publishedTimeUtc = timeProvider.GetUtcNow().UtcDateTime;
         foreach (var post in scheduledPosts)
         {
-            post.PostStatus = PostStatus.Published;
-            post.PubDateUtc = publishedTimeUtc;
-            post.ScheduledPublishTimeUtc = null;
-            post.RouteLink = UrlHelper.GenerateRouteLink(post.PubDateUtc.GetValueOrDefault(), post.Slug);
+            PostEntityHelper.SetStatus(post, PostStatus.Published, publishedTimeUtc);
         }
 
-        return await db.SaveChangesAsync(ct);
+        var rows = await db.SaveChangesAsync(ct);
+        if (rows > 0)
+        {
+            await eventMediator.PublishAsync(new PostChangedEvent(), cancellationToken: CancellationToken.None);
+        }
+
+        return rows;
     }
 }

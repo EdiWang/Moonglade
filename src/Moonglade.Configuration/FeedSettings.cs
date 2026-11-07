@@ -3,13 +3,14 @@ using System.Text.Json.Serialization;
 
 namespace Moonglade.Configuration;
 
-public class FeedSettings : IBlogSettings<FeedSettings>
+public sealed record FeedSettings : IBlogSettings<FeedSettings>
 {
     [Display(Name = "Feed items")]
-    public int FeedItemCount { get; set; }
+    [Range(0, int.MaxValue)]
+    public int FeedItemCount { get; init; }
 
     [Display(Name = "Use full blog post content instead of abstract")]
-    public bool UseFullContent { get; set; }
+    public bool UseFullContent { get; init; }
 
     [JsonIgnore]
     public static FeedSettings DefaultValue => new()

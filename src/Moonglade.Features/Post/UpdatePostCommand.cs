@@ -1,4 +1,5 @@
 using LiteBus.Commands.Abstractions;
+using LiteBus.Events.Abstractions;
 using Microsoft.Extensions.Logging;
 using Moonglade.Data.DTO;
 using Moonglade.Utils;
@@ -8,7 +9,8 @@ namespace Moonglade.Features.Post;
 public record UpdatePostCommand(Guid Id, PostEditModel Payload) : ICommand<PostCommandResult>;
 public class UpdatePostCommandHandler(
     BlogDbContext db,
-    ILogger<UpdatePostCommandHandler> logger) : ICommandHandler<UpdatePostCommand, PostCommandResult>
+    ILogger<UpdatePostCommandHandler> logger,
+    IEventMediator eventMediator) : ICommandHandler<UpdatePostCommand, PostCommandResult>
 {
     public async Task<PostCommandResult> HandleAsync(UpdatePostCommand request, CancellationToken ct)
     {
@@ -25,7 +27,10 @@ public class UpdatePostCommandHandler(
         await PostEntityHelper.ResolveAndAssignTagsAsync(post, postEditModel.Tags, db, logger, ct);
         PostEntityHelper.SetCategories(post, postEditModel.SelectedCatIds);
 
-        await db.SaveChangesAsync(ct);
+        if (await db.SaveChangesAsync(ct) > 0)
+        {
+            await eventMediator.PublishAsync(new PostChangedEvent(), cancellationToken: CancellationToken.None);
+        }
 
         logger.LogInformation("Post updated with ID: {PostId}", post.Id);
         return new PostCommandResult
@@ -44,32 +49,6 @@ public class UpdatePostCommandHandler(
         post.PostContent = postEditModel.EditorContent;
         post.ContentAbstract = postEditModel.Abstract.Trim();
 
-        // Only publish the post if it was not yet published
-        // Otherwise, updating existing post will result in changing publish date and break the slug URL
-        if (post.PostStatus != PostStatus.Published &&
-            postEditModel.PostStatus == PostStatus.Published)
-        {
-            post.PostStatus = PostStatus.Published;
-            post.PubDateUtc = utcNow;
-        }
-
-        if (postEditModel.PostStatus == PostStatus.Scheduled)
-        {
-            post.PostStatus = PostStatus.Scheduled;
-            post.PubDateUtc = null;
-            post.ScheduledPublishTimeUtc = postEditModel.ScheduledPublishTimeUtc;
-            post.RouteLink = null;
-        }
-
-        // Back to draft for unscheduled posts
-        if (postEditModel.PostStatus == PostStatus.Draft)
-        {
-            post.PostStatus = PostStatus.Draft;
-            post.PubDateUtc = null;
-            post.ScheduledPublishTimeUtc = null;
-            post.RouteLink = null;
-        }
-
         post.Author = postEditModel.Author?.Trim();
         post.Slug = postEditModel.Slug.ToLower().Trim();
         post.Title = postEditModel.Title.Trim();
@@ -80,14 +59,10 @@ public class UpdatePostCommandHandler(
         post.IsOutdated = postEditModel.IsOutdated;
         post.ContainsAiAssistedContent = postEditModel.ContainsAiAssistedContent;
         post.ContentType = postEditModel.ContentType;
-        post.RouteLink = GetRouteLink(post);
-        post.Keywords = ContentProcessor.GetKeywords(postEditModel.Keywords);
-    }
 
-    private static string GetRouteLink(PostEntity post)
-    {
-        return post.PostStatus == PostStatus.Published && post.PubDateUtc.HasValue
-            ? UrlHelper.GenerateRouteLink(post.PubDateUtc.Value, post.Slug)
-            : null;
+        // Preserve the publication date when editing a published post so its URL stays stable.
+        var publishDateUtc = post.PostStatus == PostStatus.Published ? post.PubDateUtc : utcNow;
+        PostEntityHelper.SetStatus(post, postEditModel.PostStatus, publishDateUtc, postEditModel.ScheduledPublishTimeUtc);
+        post.Keywords = ContentProcessor.GetKeywords(postEditModel.Keywords);
     }
 }

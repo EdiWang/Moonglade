@@ -10,7 +10,7 @@ public record PostEditorMeta
 
 public record CategoryBrief
 {
-    public Guid Id { get; set; }
+    public int Id { get; set; }
     public string DisplayName { get; set; }
 }
 

@@ -1,6 +1,6 @@
 ﻿namespace Moonglade.ImageStorage;
 
-public class DatedGuidFileNameGenerator(Guid? id = null) : IFileNameGenerator
+public class DatedGuidFileNameGenerator(Guid? id = null)
 {
     public Guid UniqueId { get; } = id ?? Guid.NewGuid();
 

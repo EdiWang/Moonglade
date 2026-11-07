@@ -1,4 +1,7 @@
 ﻿@page "/archive/featured"
+@{
+    var snapshot = ViewData.CaptureSettings(SettingsReader);
+}
 @using Microsoft.AspNetCore.Mvc.TagHelpers
 @using Moonglade.Data.DTO
 @using Moonglade.Features.Post
@@ -29,7 +32,8 @@ else
 
     public async Task OnGet(int p = 1)
     {
-        var pagesize = BlogConfig.ContentSettings.PostListPageSize;
+        var snapshot = ViewData.CaptureSettings(SettingsReader);
+        var pagesize = snapshot.ContentSettings.PostListPageSize;
         var posts = await QueryMediator.QueryAsync(new ListFeaturedQuery(pagesize, p));
         var count = await QueryMediator.QueryAsync(new CountPostQuery(CountType.Featured));
 

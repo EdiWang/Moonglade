@@ -1,6 +1,9 @@
 ﻿@page "/admin/settings/image"
 @{
-    var settings = BlogConfig.ImageSettings;
+    var snapshot = ViewData.CaptureSettings(SettingsReader);
+}
+@{
+    var settings = snapshot.ImageSettings;
 }
 
 @section scripts {

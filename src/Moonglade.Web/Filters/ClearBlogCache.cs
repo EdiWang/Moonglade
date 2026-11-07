@@ -6,16 +6,16 @@ namespace Moonglade.Web.Filters;
 public enum BlogCacheType
 {
     None = 0,
-    Subscription = 2,
     SiteMap = 4
 }
 
-public class ClearBlogCache(BlogCachePartition partition, string cacheKey, ICacheAside cache)
+public class ClearBlogCache(BlogCachePartition partition, string cacheKey, ICacheAside cache, PostCacheInvalidator postCacheInvalidator)
     : ActionFilterAttribute
 {
     private readonly BlogCacheType _type = BlogCacheType.None;
 
-    public ClearBlogCache(BlogCacheType type, ICacheAside cache) : this(BlogCachePartition.General, null, cache)
+    public ClearBlogCache(BlogCacheType type, ICacheAside cache, PostCacheInvalidator postCacheInvalidator)
+        : this(BlogCachePartition.General, null, cache, postCacheInvalidator)
     {
         _type = type;
     }
@@ -29,18 +29,9 @@ public class ClearBlogCache(BlogCachePartition partition, string cacheKey, ICach
             cache.Remove(partition.ToString(), cacheKey);
         }
 
-        var generalPartition = BlogCachePartition.General.ToString();
-
-        if (_type.HasFlag(BlogCacheType.Subscription))
-        {
-            cache.Remove(generalPartition, "rss");
-            cache.Remove(generalPartition, "atom");
-            cache.Remove(BlogCachePartition.RssCategory.ToString());
-        }
-
         if (_type.HasFlag(BlogCacheType.SiteMap))
         {
-            cache.Remove(generalPartition, "sitemap");
+            postCacheInvalidator.InvalidateSiteMap();
         }
     }
 }

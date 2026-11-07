@@ -1,10 +1,15 @@
+using System.Text.Json.Serialization;
 using LiteBus.Events.Abstractions;
 using Moonglade.Configuration;
 using Moonglade.Email.Core;
 
 namespace Moonglade.Email;
 
-public record TestEmailEvent : IEvent;
+public record TestEmailEvent : IEvent
+{
+    [JsonIgnore]
+    public BlogSettingsSnapshot Snapshot { get; init; }
+}
 
 public class TestNotificationHandler(
     IEmailNotificationQueue queue,
@@ -13,7 +18,8 @@ public class TestNotificationHandler(
 {
     public async Task HandleAsync(TestEmailEvent notification, CancellationToken ct)
     {
-        if (!capabilityStatus.IsAvailable || !blogConfig.NotificationSettings.EnableEmailSending)
+        var settings = notification.Snapshot ?? blogConfig.Capture();
+        if (!capabilityStatus.IsAvailable || !settings.NotificationSettings.EnableEmailSending)
         {
             return;
         }
@@ -21,7 +27,7 @@ public class TestNotificationHandler(
         await queue.EnqueueAsync(new EmailNotification
         {
             MessageType = MessageTypes.TestMail,
-            DistributionList = blogConfig.GeneralSettings.OwnerEmail,
+            DistributionList = settings.GeneralSettings.OwnerEmail,
             MessageBody = "{}"
         }, ct);
     }

@@ -13,14 +13,16 @@ public class SiteMapMapHandler
         HttpContext httpContext,
         IBlogConfig blogConfig,
         ICacheAside cache,
+        PostCacheInvalidator postCacheInvalidator,
         BlogDbContext db)
     {
-        var xml = await cache.GetOrCreateAsync(BlogCachePartition.General.ToString(), "sitemap", async () =>
+        var settings = blogConfig.Capture();
+        var xml = await cache.GetOrCreateAsync(BlogCachePartition.General.ToString(), postCacheInvalidator.GetSiteMapCacheKey(settings), async () =>
         {
-            var url = UrlHelper.ResolveRootUrl(httpContext, blogConfig.GeneralSettings.CanonicalPrefix, true, true);
+            var url = UrlHelper.ResolveRootUrl(httpContext, settings.GeneralSettings.CanonicalPrefix, true, true);
             var data = await GetSiteMapData(url, db, httpContext.RequestAborted);
             return data;
-        });
+        }, TimeSpan.FromHours(1));
 
         return Results.Text(xml, "text/xml; charset=utf-8");
     }

@@ -1,5 +1,5 @@
+using System.Text.Json.Serialization;
 using LiteBus.Events.Abstractions;
-using Microsoft.Extensions.Configuration;
 using Moonglade.Configuration;
 using Moonglade.Email.Core;
 using Moonglade.Utils;
@@ -12,17 +12,21 @@ public record CommentEvent(
     string Email,
     string IPAddress,
     string PostTitle,
-    string CommentContent) : IEvent;
+    string CommentContent) : IEvent
+{
+    [JsonIgnore]
+    public BlogSettingsSnapshot Snapshot { get; init; }
+}
 
 public class CommentNotificationEventHandler(
     IEmailNotificationQueue queue,
     IBlogConfig blogConfig,
-    EmailCapabilityStatus capabilityStatus,
-    IConfiguration configuration) : IEventHandler<CommentEvent>
+    EmailCapabilityStatus capabilityStatus) : IEventHandler<CommentEvent>
 {
     public async Task HandleAsync(CommentEvent notification, CancellationToken ct)
     {
-        if (!capabilityStatus.IsAvailable || !blogConfig.NotificationSettings.EnableEmailSending)
+        var settings = notification.Snapshot ?? blogConfig.Capture();
+        if (!capabilityStatus.IsAvailable || !settings.NotificationSettings.EnableEmailSending)
         {
             return;
         }
@@ -34,13 +38,13 @@ public class CommentNotificationEventHandler(
             IpAddress = notification.IPAddress,
             PostTitle = notification.PostTitle,
             CommentContent = ContentProcessor.MarkdownToCommentHtml(notification.CommentContent,
-                configuration.GetValue<bool>("CommentMarkdown:EnableLinks"))
+                settings.CommentSettings.EnableMarkdownLinks)
         };
 
         await queue.EnqueueAsync(new EmailNotification
         {
             MessageType = MessageTypes.NewCommentNotification,
-            DistributionList = blogConfig.GeneralSettings.OwnerEmail,
+            DistributionList = settings.GeneralSettings.OwnerEmail,
             MessageBody = JsonSerializer.Serialize(payload, MoongladeJsonSerializerOptions.Default)
         }, ct);
     }

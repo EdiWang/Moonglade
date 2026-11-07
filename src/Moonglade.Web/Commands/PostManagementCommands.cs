@@ -33,7 +33,6 @@ public record SavePostCommand(
     PostOperationContext Context) : ICommand<PostOperationResult>;
 
 public class SavePostCommandHandler(
-    ICacheAside cache,
     IConfiguration configuration,
     ICommandMediator commandMediator,
     IBlogConfig blogConfig,
@@ -44,6 +43,7 @@ public class SavePostCommandHandler(
 {
     public async Task<PostOperationResult> HandleAsync(SavePostCommand request, CancellationToken ct)
     {
+        var settings = blogConfig.Capture();
         try
         {
             var model = request.Payload;
@@ -61,11 +61,6 @@ public class SavePostCommandHandler(
                 logger.LogInformation("Scheduled publish wake-up triggered for post: {PostId}", postEntity.Id);
             }
 
-            if (!string.IsNullOrWhiteSpace(postEntity.RouteLink))
-            {
-                cache.Remove(BlogCachePartition.Post.ToString(), postEntity.RouteLink);
-            }
-
             await PostActivityLogger.LogAsync(
                 commandMediator,
                 request.Context,
@@ -80,7 +75,7 @@ public class SavePostCommandHandler(
 
             if (model.PostStatus == PostStatus.Published)
             {
-                ProcessPublishedPost(request.PreviousLastModifiedUtc, postEntity, request.Context);
+                ProcessPublishedPost(request.PreviousLastModifiedUtc, postEntity, request.Context, settings.AdvancedSettings);
             }
 
             return PostOperationResult.Success(postEntity.Id, postEntity.LastModifiedUtc);
@@ -116,19 +111,19 @@ public class SavePostCommandHandler(
         return true;
     }
 
-    private void ProcessPublishedPost(DateTimeOffset? lastModifiedUtc, PostCommandResult postEntity, PostOperationContext context)
+    private void ProcessPublishedPost(DateTimeOffset? lastModifiedUtc, PostCommandResult postEntity, PostOperationContext context, AdvancedSettings settings)
     {
         logger.LogInformation("Trying to Ping URL for post: {PostId}", postEntity.Id);
 
         var link = GetPostUri(context, postEntity.RouteLink);
 
-        NotifyExternalServices(postEntity.PostContent, link);
+        NotifyExternalServices(postEntity.PostContent, link, settings);
         ProcessIndexing(lastModifiedUtc, postEntity.LastModifiedUtc == postEntity.PubDateUtc, link);
     }
 
-    private void NotifyExternalServices(string postContent, Uri link)
+    private void NotifyExternalServices(string postContent, Uri link, AdvancedSettings advancedSettings)
     {
-        if (blogConfig.AdvancedSettings.EnableWebmention)
+        if (advancedSettings.EnableWebmention)
         {
             cannonService.FireAsync<IWebmentionSender>(async sender => await sender.SendWebmentionAsync(link.ToString(), postContent));
         }
@@ -154,73 +149,6 @@ public class SavePostCommandHandler(
     {
         var rootUrl = context.RootUrl.EndsWith('/') ? context.RootUrl : $"{context.RootUrl}/";
         return new Uri(new Uri(rootUrl), $"post/{routeLink.ToLower()}");
-    }
-
-}
-
-public record RecyclePostCommand(Guid PostId, PostOperationContext Context) : ICommand;
-
-public class RecyclePostCommandHandler(
-    ICommandMediator commandMediator) : ICommandHandler<RecyclePostCommand>
-{
-    public async Task HandleAsync(RecyclePostCommand request, CancellationToken ct)
-    {
-        await commandMediator.SendAsync(new DeletePostCommand(request.PostId, true), ct);
-
-        await PostActivityLogger.LogAsync(
-            commandMediator,
-            request.Context,
-            EventType.PostDeleted,
-            "Delete Post (Move to Recycle Bin)",
-            $"Post #{request.PostId}",
-            ActivityLogMetaData.Create(("PostId", request.PostId)),
-            ct);
-    }
-
-}
-
-public record PublishPostWorkflowCommand(Guid PostId, PostOperationContext Context) : ICommand;
-
-public class PublishPostWorkflowCommandHandler(
-    ICacheAside cache,
-    ICommandMediator commandMediator) : ICommandHandler<PublishPostWorkflowCommand>
-{
-    public async Task HandleAsync(PublishPostWorkflowCommand request, CancellationToken ct)
-    {
-        await commandMediator.SendAsync(new PublishPostCommand(request.PostId), ct);
-        cache.Remove(BlogCachePartition.Post.ToString(), request.PostId.ToString());
-
-        await PostActivityLogger.LogAsync(
-            commandMediator,
-            request.Context,
-            EventType.PostPublished,
-            "Publish Post",
-            $"Post #{request.PostId}",
-            ActivityLogMetaData.Create(("PostId", request.PostId)),
-            ct);
-    }
-
-}
-
-public record UnpublishPostWorkflowCommand(Guid PostId, PostOperationContext Context) : ICommand;
-
-public class UnpublishPostWorkflowCommandHandler(
-    ICacheAside cache,
-    ICommandMediator commandMediator) : ICommandHandler<UnpublishPostWorkflowCommand>
-{
-    public async Task HandleAsync(UnpublishPostWorkflowCommand request, CancellationToken ct)
-    {
-        await commandMediator.SendAsync(new UnpublishPostCommand(request.PostId), ct);
-        cache.Remove(BlogCachePartition.Post.ToString(), request.PostId.ToString());
-
-        await PostActivityLogger.LogAsync(
-            commandMediator,
-            request.Context,
-            EventType.PostUnpublished,
-            "Unpublish Post",
-            $"Post #{request.PostId}",
-            ActivityLogMetaData.Create(("PostId", request.PostId)),
-            ct);
     }
 
 }

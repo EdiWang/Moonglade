@@ -1,34 +1,34 @@
+@{
+    var snapshot = ViewData.CaptureSettings(SettingsReader);
+}
 @inject IOptions<AuthenticationSettings> AuthOptions
 @inject IConfiguration Configuration
 @inject ICacheAside Cache
-@inject Moonglade.BackgroundServices.UpdateCheckerState UpdateCheckerState
+@inject ThemeCacheInvalidator ThemeCache
 
 @{
-    if (string.IsNullOrEmpty(BlogConfig.GeneralSettings.AvatarUrl))
-    {
-        BlogConfig.GeneralSettings.AvatarUrl = Url.Action("Avatar", "Assets");
-    }
+    var avatarUrl = Url.Action("Avatar", "Assets");
 
     bool clientPreferDarkMode = Helper.IsClientPreferDarkMode(Context);
     bool hideAdminSidebar = ViewBag.HideAdminSidebar == true;
     string adminBackUrl = ViewBag.AdminBackUrl as string;
 
-    var themeCss = await Cache.GetOrCreateAsync(BlogCachePartition.General.ToString(), "theme", async () =>
+    var themeCss = await Cache.GetOrCreateAsync(BlogCachePartition.General.ToString(), ThemeCache.GetCacheKey(snapshot.AppearanceSettings.ThemeId), async () =>
     {
-        return await QueryMediator.QueryAsync(new GetSiteThemeStyleSheetQuery(BlogConfig.AppearanceSettings.ThemeId));
+        return await QueryMediator.QueryAsync(new GetSiteThemeStyleSheetQuery(snapshot.AppearanceSettings.ThemeId));
     }, TimeSpan.FromMinutes(20));
 }
 <!DOCTYPE html>
-<html lang="@BlogConfig.GeneralSettings.DefaultLanguageCode" data-bs-theme="@(clientPreferDarkMode ? "dark" : null)">
+<html lang="@snapshot.GeneralSettings.DefaultLanguageCode" data-bs-theme="@(clientPreferDarkMode ? "dark" : null)">
 
 <head>
     <title>
-        @BlogConfig.GeneralSettings.SiteTitle @SharedLocalizer["Admin"] @(ViewBag.Title != null ? $"- {ViewBag.Title}" : null)
+        @snapshot.GeneralSettings.SiteTitle @SharedLocalizer["Admin"] @(ViewBag.Title != null ? $"- {ViewBag.Title}" : null)
     </title>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
     @await RenderSectionAsync("meta", false)
-    <link rel="start" title="@BlogConfig.GeneralSettings.SiteTitle" href="~/" />
+    <link rel="start" title="@snapshot.GeneralSettings.SiteTitle" href="~/" />
     <partial name="_Favicons" />
     <link href="~/lib/twitter-bootstrap/css/bootstrap.min.css" rel="stylesheet" />
     <link href="~/lib/bootstrap-icons/bootstrap-icons.min.css" rel="stylesheet" />
@@ -48,7 +48,7 @@
 <body class="admin-body bg-gray-1">
     <nav class="admin-navbar navbar navbar-expand-lg navbar-moonglade" data-bs-theme="dark">
         <a class="navbar-brand font-sairas" asp-page="/Admin/Dashboard">
-            @BlogConfig.GeneralSettings.SiteTitle
+            @snapshot.GeneralSettings.SiteTitle
         </a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
                 aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -69,16 +69,6 @@
             }
 
             <ul class="navbar-nav @(string.IsNullOrEmpty(adminBackUrl) ? "ms-auto" : "")">
-                @if (UpdateCheckerState.HasNewVersion)
-                {
-                    <li class="nav-item">
-                        <a class="nav-link" href="https://github.com/EdiWang/Moonglade/releases" target="_blank" rel="noopener noreferrer">
-                            <i class="bi-arrow-up-circle me-1"></i>
-                            @SharedLocalizer["New version available"]: @UpdateCheckerState.NewVersion
-                        </a>
-                    </li>
-                }
-
                 @await RenderSectionAsync("navbarActions", false)
                 <li class="nav-item">
                     <a class="nav-link" asp-page="/Admin/About" title="about link">
@@ -96,14 +86,14 @@
                 @if (AuthOptions.Value.Provider == AuthenticationProvider.Local)
                 {
                     <a asp-page="/Admin/LocalAccount">
-                        <img src="@BlogConfig.GeneralSettings.AvatarUrl" alt="@BlogConfig.GeneralSettings.OwnerName"
+                        <img src="@avatarUrl" alt="@snapshot.GeneralSettings.OwnerName"
                              class="rounded-circle admin-nav-head-pic me-1" />
                         <userinfo user="User" user-info-display="PreferName"></userinfo>
                     </a>
                 }
                 else
                 {
-                    <img src="@BlogConfig.GeneralSettings.AvatarUrl" alt="@BlogConfig.GeneralSettings.OwnerName"
+                    <img src="@avatarUrl" alt="@snapshot.GeneralSettings.OwnerName"
                          class="rounded-circle admin-nav-head-pic me-1" />
                     <userinfo user="User"></userinfo>
                 }

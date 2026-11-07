@@ -1,48 +1,74 @@
 using LiteBus.Commands.Abstractions;
+using LiteBus.Events.Abstractions;
 using Microsoft.Extensions.Logging;
 using Moonglade.Data;
+using System.ComponentModel.DataAnnotations;
 
 namespace Moonglade.Configuration;
 
-public record UpdateConfigurationCommand(string Name, string Json) : ICommand<OperationCode>;
+public record UpdateConfigurationCommand : ICommand
+{
+    public object Settings { get; }
+
+    private UpdateConfigurationCommand(object settings) => Settings = settings;
+
+    public static UpdateConfigurationCommand Create<T>(T settings) where T : IBlogSettings<T>
+    {
+        ArgumentNullException.ThrowIfNull(settings);
+        return new(settings);
+    }
+}
 
 public class UpdateConfigurationCommandHandler(
     BlogDbContext db,
-    ILogger<UpdateConfigurationCommandHandler> logger
-    ) : ICommandHandler<UpdateConfigurationCommand, OperationCode>
+    BlogConfig blogConfig,
+    IEventMediator eventMediator,
+    ConfigurationWriteGate gate,
+    ILogger<UpdateConfigurationCommandHandler> logger) : ICommandHandler<UpdateConfigurationCommand>
 {
-    public async Task<OperationCode> HandleAsync(UpdateConfigurationCommand request, CancellationToken ct)
+    public async Task HandleAsync(UpdateConfigurationCommand request, CancellationToken ct)
     {
-        var (name, json) = request;
-
+        var settings = request.Settings;
+        var name = settings.GetType().Name;
+        await gate.WaitAsync(ct);
         try
         {
-            var entity = await db.BlogConfiguration.FirstOrDefaultAsync(p => p.CfgKey == name, ct);
-            if (entity == null)
-            {
-                logger.LogWarning("Configuration entity not found: {Name}", name);
-                return OperationCode.ObjectNotFound;
-            }
+            var property = typeof(BlogSettingsSnapshot).GetProperty(name)
+                ?? throw new InvalidOperationException($"Unknown blog setting '{name}'.");
+            Validator.ValidateObject(settings, new ValidationContext(settings), true);
 
-            // Check if the value has actually changed to avoid unnecessary updates
-            if (entity.CfgValue == json)
-            {
-                logger.LogDebug("Configuration value unchanged for {Name}, skipping update", name);
-                return OperationCode.Done;
-            }
+            var candidate = blogConfig.Capture() with { };
+            property.SetValue(candidate, settings);
 
-            entity.CfgValue = json;
-            entity.LastModifiedTimeUtc = DateTime.UtcNow;
+            var entity = await db.BlogConfiguration.SingleOrDefaultAsync(p => p.CfgKey == name, ct)
+                ?? throw new InvalidOperationException($"Configuration '{name}' was not found.");
+
+            var json = settings.ToJson();
+            var changed = entity.CfgValue != json;
+            if (changed)
+            {
+                entity.CfgValue = json;
+                entity.LastModifiedTimeUtc = DateTime.UtcNow;
+            }
 
             await db.SaveChangesAsync(ct);
 
+            blogConfig.Publish(candidate);
+
+            // Commit and runtime publication must precede invalidation, even if the client disconnects.
+            if (changed)
+                await eventMediator.PublishAsync(new ConfigurationChangedEvent([name]), CancellationToken.None);
+
             logger.LogInformation("Configuration updated successfully: {Name}", name);
-            return OperationCode.Done;
         }
         catch (Exception ex)
         {
             logger.LogError(ex, "Failed to update configuration {Name}", name);
             throw;
+        }
+        finally
+        {
+            gate.Release();
         }
     }
 }

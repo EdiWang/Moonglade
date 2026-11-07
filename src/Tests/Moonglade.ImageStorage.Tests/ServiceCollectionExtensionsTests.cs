@@ -29,7 +29,7 @@ public class ServiceCollectionExtensionsTests
             Assert.Equal(Path.GetFullPath(primaryPath), storageConfiguration.PrimaryPath);
             Assert.Equal(Path.GetFullPath(originalPath), storageConfiguration.OriginalPath);
             Assert.IsType<FileSystemImageStorage>(serviceProvider.GetRequiredService<IBlogImageStorage>());
-            Assert.IsType<DatedGuidFileNameGenerator>(serviceProvider.GetRequiredService<IFileNameGenerator>());
+            Assert.IsType<DatedGuidFileNameGenerator>(serviceProvider.GetRequiredService<DatedGuidFileNameGenerator>());
         }
         finally
         {

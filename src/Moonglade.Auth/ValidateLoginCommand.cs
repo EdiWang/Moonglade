@@ -1,20 +1,19 @@
 ﻿using Edi.AspNetCore.Utils;
 using LiteBus.Commands.Abstractions;
 using Microsoft.Extensions.Logging;
-using Moonglade.Configuration;
 
 namespace Moonglade.Auth;
 
 public record ValidateLoginCommand(string Username, string InputPassword) : ICommand<bool>;
 
 public class ValidateLoginCommandHandler(
-    IBlogConfig config,
+    ILocalAccountReader accounts,
     ILogger<ValidateLoginCommandHandler> logger
     ) : ICommandHandler<ValidateLoginCommand, bool>
 {
     public Task<bool> HandleAsync(ValidateLoginCommand request, CancellationToken ct)
     {
-        var account = config.LocalAccountSettings;
+        var account = accounts.Read();
 
         if (account is null) return Task.FromResult(false);
         if (account.Username != request.Username) return Task.FromResult(false);

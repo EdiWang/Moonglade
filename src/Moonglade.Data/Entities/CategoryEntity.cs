@@ -9,7 +9,7 @@ public class CategoryEntity
         PostCategory = new HashSet<PostCategoryEntity>();
     }
 
-    public Guid Id { get; set; }
+    public int Id { get; set; }
     public string Slug { get; set; }
     public string DisplayName { get; set; }
     public string Note { get; set; }

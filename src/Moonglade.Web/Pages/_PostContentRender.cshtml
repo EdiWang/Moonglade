@@ -1,4 +1,7 @@
-﻿@model (string Content, string ContentType)
+﻿@{
+    var snapshot = ViewData.CaptureSettings(SettingsReader);
+}
+@model (string Content, string ContentType)
 @inject IConfiguration Configuration
 
 @{
@@ -10,9 +13,9 @@
         ? ContentProcessor.MarkdownToContent(Model.Content, ContentProcessor.MarkdownConvertType.Html, false)
         : Model.Content;
 
-    if (BlogConfig.ImageSettings.EnableCDNRedirect)
+    if (snapshot.ImageSettings.EnableCDNRedirect)
     {
-        content = content.ReplaceCDNEndpointToImgTags(BlogConfig.ImageSettings.CDNEndpoint);
+        content = content.ReplaceCDNEndpointToImgTags(snapshot.ImageSettings.CDNEndpoint);
     }
 }
 

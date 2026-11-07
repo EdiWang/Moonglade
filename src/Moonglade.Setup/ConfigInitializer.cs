@@ -2,24 +2,12 @@
 using LiteBus.Queries.Abstractions;
 using Microsoft.Extensions.Logging;
 using Moonglade.Configuration;
+using Moonglade.Auth;
 
 namespace Moonglade.Setup;
 
 /// <summary>
-/// Defines the contract for initializing blog configuration settings.
-/// </summary>
-public interface IConfigInitializer
-{
-    /// <summary>
-    /// Loads persisted blog configuration and writes defaults for missing settings.
-    /// </summary>
-    /// <param name="isNew">Indicates whether this is a new blog installation.</param>
-    /// <returns>A task representing the asynchronous initialization operation.</returns>
-    Task Initialize(bool isNew, CancellationToken cancellationToken = default);
-}
-
-/// <summary>
-/// Initializes blog configuration settings by loading default values for missing configuration keys.
+/// Initializes blog configuration settings by loading default values for missing or invalid configuration keys.
 /// This class ensures that all required configuration settings have appropriate default values
 /// when the blog is first set up or when new settings are introduced.
 /// </summary>
@@ -30,98 +18,73 @@ public interface IConfigInitializer
 public class ConfigInitializer(
     IQueryMediator queryMediator,
     ICommandMediator commandMediator,
-    IBlogConfig blogConfig,
-    ILogger<ConfigInitializer> logger) : IConfigInitializer
+    BlogConfig blogConfig,
+    ILogger<ConfigInitializer> logger,
+    LocalAccountState accounts)
 {
-    /// <summary>
-    /// Dictionary that maps configuration setting names to their corresponding default value providers.
-    /// Each provider function takes a boolean parameter indicating if this is a new installation
-    /// and returns the JSON representation of the default settings.
-    /// </summary>
-    private static readonly Dictionary<string, Func<bool, string>> SettingProviders = new()
-    {
-        { nameof(ContentSettings), _ => ContentSettings.DefaultValue.ToJson() },
-        { nameof(NotificationSettings), _ => NotificationSettings.DefaultValue.ToJson() },
-        { nameof(FeedSettings), _ => FeedSettings.DefaultValue.ToJson() },
-        { nameof(GeneralSettings), _ => GeneralSettings.DefaultValue.ToJson() },
-        { nameof(ImageSettings), _ => ImageSettings.DefaultValue.ToJson() },
-        { nameof(AdvancedSettings), _ => AdvancedSettings.DefaultValue.ToJson() },
-        { nameof(AppearanceSettings), _ => AppearanceSettings.DefaultValue.ToJson() },
-        { nameof(CommentSettings), _ => CommentSettings.DefaultValue.ToJson() },
-        { nameof(CustomMenuSettings), _ => CustomMenuSettings.DefaultValue.ToJson() },
-        { nameof(LocalAccountSettings), _ => LocalAccountSettings.DefaultValue.ToJson() },
-        { nameof(SystemManifestSettings), isNew => isNew ? SystemManifestSettings.DefaultValueNew.ToJson() : SystemManifestSettings.DefaultValue.ToJson() }
-    };
-
     public async Task Initialize(bool isNew, CancellationToken cancellationToken = default)
+    {
+        var (_, snapshot, account) = await InitializeStoreAsync(isNew, cancellationToken);
+        blogConfig.Publish(snapshot);
+        accounts.Publish(account);
+    }
+
+    internal async Task<(IDictionary<string, string> Values, BlogSettingsSnapshot Snapshot, LocalAccountSettings Account)> InitializeStoreAsync(
+        bool isNew, CancellationToken cancellationToken = default)
     {
         try
         {
             logger.LogInformation("Starting blog configuration initialization. IsNew: {IsNew}", isNew);
 
             var config = await queryMediator.QueryAsync(new ListConfigurationsQuery(), cancellationToken);
-            var keysToAdd = blogConfig.LoadFromConfig(config)?.Distinct().ToArray() ?? [];
+            var accountKey = nameof(LocalAccountSettings);
+            var manifestKey = nameof(SystemManifestSettings);
+            if (!isNew && !config.ContainsKey(accountKey))
+            {
+                throw new InvalidOperationException(
+                    "Stored configuration 'LocalAccountSettings' is missing. Restore a valid value before restarting.");
+            }
 
-            if (keysToAdd.Length == 0)
+            var account = config.TryGetValue(accountKey, out var accountJson)
+                ? LocalAccountSettings.ParseStored(accountJson) : LocalAccountSettings.DefaultValue;
+            var manifest = config.TryGetValue(manifestKey, out var manifestJson)
+                ? SystemManifestSettings.ParseStored(manifestJson)
+                : isNew ? SystemManifestSettings.DefaultValueNew : SystemManifestSettings.DefaultValue;
+
+            // Validate detached settings before any repair writes or runtime publication.
+            var (snapshot, defaultsToAdd) = BlogConfig.Parse(config);
+            if (!config.ContainsKey(accountKey)) defaultsToAdd.Add(accountKey, account.ToJson());
+            if (!config.ContainsKey(manifestKey)) defaultsToAdd.Add(manifestKey, manifest.ToJson());
+            if (!isNew && !config.ContainsKey(manifestKey))
+            {
+                logger.LogWarning(
+                    "Reconstructing missing configuration {Key}; version is unknown and InstallTimeUtc is the reconstruction time",
+                    nameof(SystemManifestSettings));
+            }
+
+            if (defaultsToAdd.Count == 0)
             {
                 logger.LogInformation("No configuration keys to initialize");
-                return;
+                return (config, snapshot, account);
             }
 
             logger.LogInformation(
                 "Initializing {Count} configuration keys: {Keys}",
-                keysToAdd.Length,
-                string.Join(", ", keysToAdd));
+                defaultsToAdd.Count,
+                string.Join(", ", defaultsToAdd.Keys));
 
-            foreach (var key in keysToAdd)
+            foreach (var (key, defaultJson) in defaultsToAdd)
             {
-                await InitializeSettingAsync(key, isNew, cancellationToken);
-            }
-
-            var missingProviders = keysToAdd.Except(SettingProviders.Keys).ToArray();
-            if (missingProviders.Length > 0)
-            {
-                logger.LogWarning("No setting providers found for keys: {MissingKeys}", string.Join(", ", missingProviders));
+                await commandMediator.SendAsync(new AddDefaultConfigurationCommand(key, defaultJson), cancellationToken);
+                config[key] = defaultJson;
             }
 
             logger.LogInformation("Blog configuration initialization completed successfully");
+            return (config, snapshot, account);
         }
         catch (Exception ex)
         {
             logger.LogError(ex, "Failed to initialize blog configuration");
-            throw;
-        }
-    }
-
-    /// <summary>
-    /// Initializes a specific configuration setting with its default value.
-    /// </summary>
-    /// <param name="key">The configuration key to initialize.</param>
-    /// <param name="isNew">
-    /// Indicates whether this is a new blog installation, which may affect
-    /// the default values for certain settings.
-    /// </param>
-    /// <returns>A task representing the asynchronous setting initialization operation.</returns>
-    /// <exception cref="Exception">
-    /// Thrown when the setting initialization fails due to command execution issues.
-    /// </exception>
-    private async Task InitializeSettingAsync(string key, bool isNew, CancellationToken cancellationToken)
-    {
-        if (!SettingProviders.TryGetValue(key, out var settingProvider))
-        {
-            logger.LogWarning("No setting provider found for key: {Key}", key);
-            return;
-        }
-
-        try
-        {
-            var settingJson = settingProvider(isNew);
-            await commandMediator.SendAsync(new AddDefaultConfigurationCommand(key, settingJson), cancellationToken);
-            logger.LogDebug("Successfully initialized setting: {Key}", key);
-        }
-        catch (Exception ex)
-        {
-            logger.LogError(ex, "Failed to initialize setting: {Key}", key);
             throw;
         }
     }

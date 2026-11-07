@@ -4,11 +4,6 @@ using System.Xml.Linq;
 
 namespace Moonglade.Web.Services;
 
-public interface IImageUploadValidator
-{
-    ImageUploadValidationResult Validate(string fileName, byte[] imageBytes);
-}
-
 public sealed record ImageUploadValidationResult(
     bool Succeeded,
     string Extension,
@@ -23,7 +18,7 @@ public sealed record ImageUploadValidationResult(
         new(false, null, null, null, errorMessage);
 }
 
-public class ImageUploadValidator : IImageUploadValidator
+public class ImageUploadValidator
 {
     private const int MaxSvgCharacters = 5 * 1024 * 1024;
     private const string SvgNamespace = "http://www.w3.org/2000/svg";

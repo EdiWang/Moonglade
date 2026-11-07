@@ -9,14 +9,12 @@
         <ImplicitUsings>enable</ImplicitUsings>
     </PropertyGroup>
     <ItemGroup>
-          <PackageReference Include="SkiaSharp" Version="4.153.1" />
-          <PackageReference Include="SkiaSharp.NativeAssets.Linux.NoDependencies" Version="4.153.1" />
-    </ItemGroup>
-    <ItemGroup>
-        <EmbeddedResource Include="MigrationScripts\**\*.sql" />
+          <PackageReference Include="SkiaSharp" Version="4.155.0" />
+          <PackageReference Include="SkiaSharp.NativeAssets.Linux.NoDependencies" Version="4.155.0" />
     </ItemGroup>
     <ItemGroup>
         <ProjectReference Include="..\Moonglade.Configuration\Moonglade.Configuration.csproj" />
+		<ProjectReference Include="..\Moonglade.Auth\Moonglade.Auth.csproj" />
         <ProjectReference Include="..\Moonglade.Features\Moonglade.Features.csproj" />
         <ProjectReference Include="..\Moonglade.Data\Moonglade.Data.csproj" />
         <ProjectReference Include="..\Moonglade.Utils\Moonglade.Utils.csproj" />

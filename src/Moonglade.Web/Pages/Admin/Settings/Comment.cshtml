@@ -1,4 +1,7 @@
 ﻿@page "/admin/settings/comment"
+@{
+    var snapshot = ViewData.CaptureSettings(SettingsReader);
+}
 @section scripts {
     <script type="module" src="~/js/app/admin.settings.comment.mjs"></script>
 }
@@ -8,7 +11,7 @@
 </div>
 
 @{
-    var settings = BlogConfig.CommentSettings;
+    var settings = snapshot.CommentSettings;
 }
 
 @section admintoolbar {
@@ -92,6 +95,21 @@
                 </div>
 
                 <div class="comment-settings-built-in">
+
+                    <div class="settings-entry row align-items-center py-3 px-2 rounded-3 border mb-1">
+                        <div class="col-auto">
+                            <i class="bi-link-45deg settings-entry-icon"></i>
+                        </div>
+                        <div class="col">
+                            <label asp-for="@settings.EnableMarkdownLinks" class="form-check-label"></label>
+                        </div>
+                        <div class="col-md-5 text-end">
+                            <div class="form-check form-switch form-control-lg">
+                                <input type="hidden" name="EnableMarkdownLinks" value="false">
+                                <input type="checkbox" id="settings_EnableMarkdownLinks" name="EnableMarkdownLinks" value="true" class="form-check-input" @(settings.EnableMarkdownLinks ? "checked" : null)>
+                            </div>
+                        </div>
+                    </div>
 
                     <div class="settings-entry row align-items-center py-3 px-2 rounded-3 border mb-1">
                         <div class="col-auto">

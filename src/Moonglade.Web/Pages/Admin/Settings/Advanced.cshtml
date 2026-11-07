@@ -1,9 +1,12 @@
 ﻿@page "/admin/settings/advanced"
+@{
+    var snapshot = ViewData.CaptureSettings(SettingsReader);
+}
 @inject IConfiguration Configuration
 
 @Html.AntiForgeryToken()
 @{
-    var settings = BlogConfig.AdvancedSettings;
+    var settings = snapshot.AdvancedSettings;
 }
 @section scripts {
     <script type="module" src="~/js/app/admin.settings.content.mjs"></script>
@@ -45,6 +48,7 @@
                         </div>
                         <div class="col">
                             <label asp-for="@settings.EnableSiteMap" class="form-check-label"></label>
+                            <div class="form-text">@SharedLocalizer["* Requires restarting application"]</div>
                         </div>
                         <div class="col-md-4 text-end">
                             <div class="form-check form-switch form-control-lg">
@@ -125,6 +129,7 @@
                         </div>
                         <div class="col">
                             <label asp-for="@settings.EnablePostScheduler" class="form-check-label"></label>
+                            <div class="form-text">@SharedLocalizer["Changes wake the scheduler. Publishing already in progress is not canceled."]</div>
                         </div>
                         <div class="col-md-4 text-end">
                             <div class="form-check form-switch form-control-lg">

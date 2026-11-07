@@ -22,7 +22,7 @@ public class GetOpmlQueryTests
     }
 
     [Fact]
-    public async Task HandleAsync_ProducesValidOpmlXml()
+    public async Task HandleAsync_ProducesOpmlWithMetadataAndAllOutlines()
     {
         var handler = new GetOpmlQueryHandler();
         var query = new GetOpmlQuery(CreateSampleOpmlDoc());
@@ -33,74 +33,34 @@ public class GetOpmlQueryTests
         Assert.NotEmpty(result);
 
         var doc = XDocument.Parse(result);
+        Assert.NotNull(doc.Root);
         Assert.Equal("opml", doc.Root.Name.LocalName);
-    }
-
-    [Fact]
-    public async Task HandleAsync_ContainsVersionAttribute()
-    {
-        var handler = new GetOpmlQueryHandler();
-        var query = new GetOpmlQuery(CreateSampleOpmlDoc());
-
-        var result = await handler.HandleAsync(query, TestContext.Current.CancellationToken);
-        var doc = XDocument.Parse(result);
-
         Assert.Equal("1.0", doc.Root.Attribute("version")?.Value);
-    }
-
-    [Fact]
-    public async Task HandleAsync_ContainsHeadWithTitle()
-    {
-        var handler = new GetOpmlQueryHandler();
-        var query = new GetOpmlQuery(CreateSampleOpmlDoc());
-
-        var result = await handler.HandleAsync(query, TestContext.Current.CancellationToken);
-        var doc = XDocument.Parse(result);
-
-        var head = doc.Root.Element("head");
-        Assert.NotNull(head);
-        Assert.Equal("Test Blog", head.Element("title")?.Value);
-    }
-
-    [Fact]
-    public async Task HandleAsync_ContainsAllPostsOutline()
-    {
-        var handler = new GetOpmlQueryHandler();
-        var query = new GetOpmlQuery(CreateSampleOpmlDoc());
-
-        var result = await handler.HandleAsync(query, TestContext.Current.CancellationToken);
-        var doc = XDocument.Parse(result);
-
+        Assert.Equal("Test Blog", doc.Root.Element("head")?.Element("title")?.Value);
         var body = doc.Root.Element("body");
         Assert.NotNull(body);
-
-        var outlines = body.Elements("outline").ToList();
-        var allPosts = outlines.FirstOrDefault(o => o.Attribute("title")?.Value == "All Posts");
-        Assert.NotNull(allPosts);
-        Assert.Equal("rss", allPosts.Attribute("type")?.Value);
-        Assert.Equal("https://example.com/rss", allPosts.Attribute("xmlUrl")?.Value);
-        Assert.Equal("https://example.com", allPosts.Attribute("htmlUrl")?.Value);
-    }
-
-    [Fact]
-    public async Task HandleAsync_ContainsCategoryOutlines()
-    {
-        var handler = new GetOpmlQueryHandler();
-        var query = new GetOpmlQuery(CreateSampleOpmlDoc());
-
-        var result = await handler.HandleAsync(query, TestContext.Current.CancellationToken);
-        var doc = XDocument.Parse(result);
-
-        var body = doc.Root.Element("body");
-        var outlines = body.Elements("outline").ToList();
-
-        // 1 "All Posts" + 2 categories = 3
-        Assert.Equal(3, outlines.Count);
-
-        var techOutline = outlines.FirstOrDefault(o => o.Attribute("title")?.Value == "Tech");
-        Assert.NotNull(techOutline);
-        Assert.Equal("rss", techOutline.Attribute("type")?.Value);
-        Assert.Contains("tech", techOutline.Attribute("xmlUrl")?.Value);
+        Assert.Collection(body.Elements("outline"),
+            allPosts =>
+            {
+                Assert.Equal("All Posts", allPosts.Attribute("title")?.Value);
+                Assert.Equal("rss", allPosts.Attribute("type")?.Value);
+                Assert.Equal("https://example.com/rss", allPosts.Attribute("xmlUrl")?.Value);
+                Assert.Equal("https://example.com", allPosts.Attribute("htmlUrl")?.Value);
+            },
+            tech =>
+            {
+                Assert.Equal("Tech", tech.Attribute("title")?.Value);
+                Assert.Equal("rss", tech.Attribute("type")?.Value);
+                Assert.Equal("https://example.com/rss/category/tech", tech.Attribute("xmlUrl")?.Value);
+                Assert.Equal("https://example.com/category/tech", tech.Attribute("htmlUrl")?.Value);
+            },
+            life =>
+            {
+                Assert.Equal("Life", life.Attribute("title")?.Value);
+                Assert.Equal("rss", life.Attribute("type")?.Value);
+                Assert.Equal("https://example.com/rss/category/life", life.Attribute("xmlUrl")?.Value);
+                Assert.Equal("https://example.com/category/life", life.Attribute("htmlUrl")?.Value);
+            });
     }
 
     [Fact]
@@ -129,25 +89,4 @@ public class GetOpmlQueryTests
         Assert.Equal("All Posts", outlines[0].Attribute("title")?.Value);
     }
 
-    [Fact]
-    public async Task HandleAsync_CategoryUrlTemplateReplacement_IsCorrect()
-    {
-        var handler = new GetOpmlQueryHandler();
-        var query = new GetOpmlQuery(CreateSampleOpmlDoc());
-
-        var result = await handler.HandleAsync(query, TestContext.Current.CancellationToken);
-        var doc = XDocument.Parse(result);
-
-        var body = doc.Root.Element("body");
-        var outlines = body.Elements("outline").ToList();
-
-        var lifeOutline = outlines.FirstOrDefault(o => o.Attribute("title")?.Value == "Life");
-        Assert.NotNull(lifeOutline);
-
-        var xmlUrl = lifeOutline.Attribute("xmlUrl")?.Value;
-        var htmlUrl = lifeOutline.Attribute("htmlUrl")?.Value;
-
-        Assert.Equal("https://example.com/rss/category/life", xmlUrl);
-        Assert.Equal("https://example.com/category/life", htmlUrl);
-    }
 }

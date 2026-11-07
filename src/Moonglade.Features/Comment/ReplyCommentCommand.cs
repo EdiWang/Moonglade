@@ -1,20 +1,26 @@
+using System.Text.Json.Serialization;
 using LiteBus.Commands.Abstractions;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using Moonglade.Configuration;
 using Moonglade.Data.DTO;
 using Moonglade.Utils;
 
 namespace Moonglade.Features.Comment;
 
-public record ReplyCommentCommand(Guid CommentId, string ReplyContent) : ICommand<CommentReply>;
+public record ReplyCommentCommand(Guid CommentId, string ReplyContent) : ICommand<CommentReply>
+{
+    [JsonIgnore]
+    public BlogSettingsSnapshot Snapshot { get; init; }
+}
 
 public class ReplyCommentCommandHandler(
     ILogger<ReplyCommentCommandHandler> logger,
     BlogDbContext db,
-    IConfiguration configuration) : ICommandHandler<ReplyCommentCommand, CommentReply>
+    IBlogConfig blogConfig) : ICommandHandler<ReplyCommentCommand, CommentReply>
 {
     public async Task<CommentReply> HandleAsync(ReplyCommentCommand request, CancellationToken ct)
     {
+        var settings = request.Snapshot ?? blogConfig.Capture();
         var cmt = await db.Comment
             .Include(c => c.Post)
             .FirstOrDefaultAsync(c => c.Id == request.CommentId, ct)
@@ -41,7 +47,7 @@ public class ReplyCommentCommandHandler(
             PostId = cmt.PostId,
             ReplyContent = model.ReplyContent,
             ReplyContentHtml = ContentProcessor.MarkdownToCommentHtml(model.ReplyContent,
-                configuration.GetValue<bool>("CommentMarkdown:EnableLinks")),
+                settings.CommentSettings.EnableMarkdownLinks),
             ReplyTimeUtc = model.CreateTimeUtc,
             RouteLink = cmt.Post.RouteLink,
             Title = cmt.Post.Title

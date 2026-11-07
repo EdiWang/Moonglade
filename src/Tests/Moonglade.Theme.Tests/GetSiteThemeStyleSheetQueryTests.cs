@@ -13,26 +13,6 @@ public class GetSiteThemeStyleSheetQueryTests
         return new BlogDbContext(options);
     }
 
-    #region HandleAsync Tests - Success Cases
-
-    [Fact]
-    public async Task HandleAsync_SystemTheme_ReturnsValidCss()
-    {
-        // Arrange
-        using var db = CreateDbContext();
-        var handler = new GetStyleSheetQueryHandler(db);
-        var query = new GetSiteThemeStyleSheetQuery(100);
-
-        // Act
-        var result = await handler.HandleAsync(query, TestContext.Current.CancellationToken);
-
-        // Assert
-        Assert.NotNull(result);
-        Assert.StartsWith(":root {", result);
-        Assert.Contains("--accent-color1", result);
-        Assert.Contains("--accent-color2", result);
-    }
-
     [Fact]
     public async Task HandleAsync_CustomTheme_ReturnsValidCss()
     {
@@ -57,32 +37,6 @@ public class GetSiteThemeStyleSheetQueryTests
         // Assert
         Assert.NotNull(result);
         Assert.Equal(":root {--primary-color: #ff0000;--secondary-color: #00ff00;}", result);
-    }
-
-    [Fact]
-    public async Task HandleAsync_ValidCssRules_GeneratesCorrectCss()
-    {
-        // Arrange
-        using var db = CreateDbContext();
-        var cssRules = """{"--color-1": "blue", "--color-2": "red", "--color-3": "green"}""";
-        db.BlogTheme.Add(new BlogThemeEntity
-        {
-            Id = 50,
-            ThemeName = "Test",
-            CssRules = cssRules
-        });
-        await db.SaveChangesAsync(TestContext.Current.CancellationToken);
-
-        var handler = new GetStyleSheetQueryHandler(db);
-        var query = new GetSiteThemeStyleSheetQuery(50);
-
-        // Act
-        var result = await handler.HandleAsync(query, TestContext.Current.CancellationToken);
-
-        // Assert
-        Assert.Contains("--color-1: blue;", result);
-        Assert.Contains("--color-2: red;", result);
-        Assert.Contains("--color-3: green;", result);
     }
 
     [Fact]
@@ -112,29 +66,6 @@ public class GetSiteThemeStyleSheetQueryTests
     }
 
     [Fact]
-    public async Task HandleAsync_AllSystemThemeIds_ReturnValidCss()
-    {
-        // Arrange - System themes are 100-109 (10 themes)
-        using var db = CreateDbContext();
-        var handler = new GetStyleSheetQueryHandler(db);
-        var systemThemes = ThemeFactory.GetSystemThemes().ToList();
-
-        // Act & Assert
-        foreach (var theme in systemThemes)
-        {
-            var query = new GetSiteThemeStyleSheetQuery(theme.Id);
-            var result = await handler.HandleAsync(query, TestContext.Current.CancellationToken);
-
-            Assert.NotNull(result);
-            Assert.StartsWith(":root {", result);
-        }
-    }
-
-    #endregion
-
-    #region HandleAsync Tests - Null/Not Found Cases
-
-    [Fact]
     public async Task HandleAsync_CustomThemeNotFound_FallsBackToDefaultSystemTheme()
     {
         // Arrange
@@ -146,16 +77,13 @@ public class GetSiteThemeStyleSheetQueryTests
         var result = await handler.HandleAsync(query, TestContext.Current.CancellationToken);
 
         // Assert
-        Assert.NotNull(result);
-        Assert.StartsWith(":root {", result);
+        Assert.Equal(":root {--accent-color1: #2A579A;--accent-color2: #5579AE;}", result);
     }
 
-    #endregion
-
-    #region HandleAsync Tests - Error Cases
-
-    [Fact]
-    public async Task HandleAsync_EmptyCssRules_ThrowsInvalidDataException()
+    [Theory]
+    [InlineData("")]
+    [InlineData("   ")]
+    public async Task HandleAsync_BlankCssRules_ThrowsInvalidDataException(string cssRules)
     {
         // Arrange
         using var db = CreateDbContext();
@@ -163,7 +91,7 @@ public class GetSiteThemeStyleSheetQueryTests
         {
             Id = 50,
             ThemeName = "Test",
-            CssRules = ""
+            CssRules = cssRules
         });
         await db.SaveChangesAsync(TestContext.Current.CancellationToken);
 
@@ -175,29 +103,6 @@ public class GetSiteThemeStyleSheetQueryTests
             () => handler.HandleAsync(query, TestContext.Current.CancellationToken));
 
         Assert.Contains("Theme id '50' has empty CSS rules", exception.Message);
-    }
-
-    [Fact]
-    public async Task HandleAsync_WhitespaceCssRules_ThrowsInvalidDataException()
-    {
-        // Arrange
-        using var db = CreateDbContext();
-        db.BlogTheme.Add(new BlogThemeEntity
-        {
-            Id = 50,
-            ThemeName = "Test",
-            CssRules = "   "
-        });
-        await db.SaveChangesAsync(TestContext.Current.CancellationToken);
-
-        var handler = new GetStyleSheetQueryHandler(db);
-        var query = new GetSiteThemeStyleSheetQuery(50);
-
-        // Act & Assert
-        var exception = await Assert.ThrowsAsync<InvalidDataException>(
-            () => handler.HandleAsync(query, TestContext.Current.CancellationToken));
-
-        Assert.Contains("has empty CSS rules", exception.Message);
     }
 
     [Fact]
@@ -224,8 +129,10 @@ public class GetSiteThemeStyleSheetQueryTests
         Assert.NotNull(exception.InnerException);
     }
 
-    [Fact]
-    public async Task HandleAsync_NullDeserializedRules_ThrowsInvalidDataException()
+    [Theory]
+    [InlineData("null")]
+    [InlineData("{}")]
+    public async Task HandleAsync_EmptyDeserializedRules_ThrowsInvalidDataException(string cssRules)
     {
         // Arrange
         using var db = CreateDbContext();
@@ -233,7 +140,7 @@ public class GetSiteThemeStyleSheetQueryTests
         {
             Id = 50,
             ThemeName = "Test",
-            CssRules = "null"
+            CssRules = cssRules
         });
         await db.SaveChangesAsync(TestContext.Current.CancellationToken);
 
@@ -246,33 +153,6 @@ public class GetSiteThemeStyleSheetQueryTests
 
         Assert.Contains("Theme id '50' CssRules deserialized to empty or null", exception.Message);
     }
-
-    [Fact]
-    public async Task HandleAsync_EmptyJsonObject_ThrowsInvalidDataException()
-    {
-        // Arrange
-        using var db = CreateDbContext();
-        db.BlogTheme.Add(new BlogThemeEntity
-        {
-            Id = 50,
-            ThemeName = "Test",
-            CssRules = "{}"
-        });
-        await db.SaveChangesAsync(TestContext.Current.CancellationToken);
-
-        var handler = new GetStyleSheetQueryHandler(db);
-        var query = new GetSiteThemeStyleSheetQuery(50);
-
-        // Act & Assert
-        var exception = await Assert.ThrowsAsync<InvalidDataException>(
-            () => handler.HandleAsync(query, TestContext.Current.CancellationToken));
-
-        Assert.Contains("Theme id '50' CssRules deserialized to empty or null", exception.Message);
-    }
-
-    #endregion
-
-    #region Edge Cases
 
     [Theory]
     [InlineData(99)]  // Just below system theme range
@@ -304,12 +184,20 @@ public class GetSiteThemeStyleSheetQueryTests
 
     [Theory]
     [InlineData(100)] // System theme start
-    [InlineData(105)] // System theme middle
+    [InlineData(101)]
+    [InlineData(102)]
+    [InlineData(103)]
+    [InlineData(104)]
+    [InlineData(105)]
+    [InlineData(106)]
+    [InlineData(107)]
+    [InlineData(108)]
     [InlineData(109)] // System theme end
     public async Task HandleAsync_SystemThemeId_DoesNotNeedDatabase(int themeId)
     {
         // Arrange
         using var db = CreateDbContext();
+        await db.DisposeAsync();
         var handler = new GetStyleSheetQueryHandler(db);
         var query = new GetSiteThemeStyleSheetQuery(themeId);
 
@@ -319,6 +207,8 @@ public class GetSiteThemeStyleSheetQueryTests
         // Assert
         Assert.NotNull(result);
         Assert.StartsWith(":root {", result);
+        Assert.Contains("--accent-color1: #", result);
+        Assert.Contains("--accent-color2: #", result);
     }
 
     [Fact]
@@ -348,5 +238,4 @@ public class GetSiteThemeStyleSheetQueryTests
         Assert.DoesNotContain("<script>", result);
     }
 
-    #endregion
 }

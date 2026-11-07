@@ -1,4 +1,7 @@
 ﻿@page
+@{
+    var snapshot = ViewData.CaptureSettings(SettingsReader);
+}
 @using Microsoft.AspNetCore.Mvc.TagHelpers
 @using Moonglade.Data.DTO
 @using Moonglade.Features.Post
@@ -41,10 +44,11 @@ else
 
     public async Task<IActionResult> OnGetAsync(int p = 1)
     {
+        var snapshot = ViewData.CaptureSettings(SettingsReader);
         if (P == 0) return BadRequest();
 
         P = p;
-        var pageSize = BlogConfig.ContentSettings.PostListPageSize;
+        var pageSize = snapshot.ContentSettings.PostListPageSize;
 
         var posts = await QueryMediator.QueryAsync(new ListPostsQuery(pageSize, p));
         var totalPostsCount = await QueryMediator.QueryAsync(new CountPostQuery(CountType.Public));

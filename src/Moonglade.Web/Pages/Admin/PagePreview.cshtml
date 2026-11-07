@@ -35,6 +35,7 @@
 
     public async Task<IActionResult> OnGetAsync(Guid pageId)
     {
+        var snapshot = ViewData.CaptureSettings(SettingsReader);
         var page = await QueryMediator.QueryAsync(new GetPageByIdQuery(pageId));
         if (page is null) return NotFound();
 

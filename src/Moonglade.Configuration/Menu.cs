@@ -1,16 +1,21 @@
-﻿namespace Moonglade.Configuration;
+﻿using System.Collections.Immutable;
+using System.ComponentModel.DataAnnotations;
 
-public class Menu
+namespace Moonglade.Configuration;
+
+public sealed record Menu
 {
-    public string Title { get; set; }
+    [Required]
+    public string Title { get; init; }
 
-    public string Url { get; set; }
+    public string Url { get; init; }
 
-    public string Icon { get; set; } = "icon-file-text2";
+    public string Icon { get; init; } = "icon-file-text2";
 
-    public int DisplayOrder { get; set; }
+    public int DisplayOrder { get; init; }
 
-    public bool IsOpenInNewTab { get; set; }
+    public bool IsOpenInNewTab { get; init; }
 
-    public List<SubMenu> SubMenus { get; set; } = [];
+    [Required]
+    public ImmutableList<SubMenu> SubMenus { get; init; } = [];
 }

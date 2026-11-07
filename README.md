@@ -1,12 +1,10 @@
 # 🌙 Moonglade Blog
 
-**Moonglade** is a personal blogging platform built for developers. It features essential blogging tools: posts, comments, categories, tags, archives, and pages.
+**Moonglade** is a self-hosted personal blogging platform for developers, built with ASP.NET Core / .NET 10 and Razor Pages.
 
 ## What Moonglade Does
 
-Moonglade provides a self-hosted blog with a public reading experience and an authenticated admin portal. The core workflow is authoring posts and pages, organizing them with categories and tags, publishing immediately or on a schedule, and exposing the published content through web pages, feeds, sitemap, Webmention, and search-engine notification protocols.
-
-Key business areas include:
+A public blog and authenticated admin portal provide:
 
 - **Content publishing:** posts, drafts, scheduled posts, Markdown Mermaid diagrams, pages, featured/outdated flags, archives, recycle bin behavior, and route links for published posts.
 - **Reader interaction:** comments, replies, Webmentions, comment moderation, view counts, and optional email notifications.
@@ -15,20 +13,15 @@ Key business areas include:
 
 ## Repository Layout
 
-The main solution file is `src/Moonglade.slnx`.
+The solution is `src/Moonglade.slnx`. See the [engineering reference](docs/agent-reference.md#layers-and-project-responsibilities) for module responsibilities.
 
 | Path | Purpose |
 | --- | --- |
 | `src/Moonglade.Web` | ASP.NET Core web host, Razor Pages, API controllers, endpoint mapping, filters, middleware wiring, and static assets. |
-| `src/Moonglade.Features` | Blog feature commands and queries for posts, pages, comments, categories, tags, assets, dashboard data, and recycle bin behavior. |
-| `src/Moonglade.Data` | EF Core `BlogDbContext`, entities, DTOs, mappings, and import/export primitives. |
-| `src/Moonglade.Data.PostgreSql`, `src/Moonglade.Data.SqlServer` | PostgreSQL and SQL Server provider registration and provider-specific EF Core behavior. |
-| `src/Moonglade.Configuration` | Persisted blog settings models, defaults, loading, and update commands. |
-| `src/Moonglade.Auth` | Local account and standards-based OpenID Connect authentication support. |
-| `src/Moonglade.BackgroundServices` | Scheduled publishing, update checks, and fire-and-forget background work. |
-| `src/Moonglade.*` | Supporting projects for image storage, email, IndexNow, moderation, Webmention, syndication, themes, widgets, setup, utilities, and middleware. |
-| `src/Tests/Moonglade.*.Tests` | xUnit test projects aligned with the production projects. |
-| `Deployment`, `Dockerfile`, `compose.yaml` | Azure and Docker deployment assets. |
+| `src/Moonglade.*` | Feature, data, configuration, authentication, storage, integration, and background-service libraries. |
+| `src/Tests/Moonglade.*.Tests` | xUnit test projects aligned with the production projects. See the [test layout and maintenance guide](src/Tests/README.md). |
+| `Dockerfile`, `compose.yaml` | Docker deployment assets. |
+| `database/` | Manual, idempotent database migration SQL scripts and their conventions. |
 
 ## 🚀 Deployment
 
@@ -37,6 +30,19 @@ The main solution file is `src/Moonglade.slnx`.
 - **Stable Code:** Always use the [Release](https://github.com/EdiWang/Moonglade/releases) branch. Avoid deploying from `master`.
 - **Security:** Enable **HTTPS** and **HTTP/2** on your web server for optimal security and performance.
 - **Deployment Options:** Moonglade can run on any cloud provider or on-premises.
+
+### Database Upgrades
+
+Database upgrades are manual. Before starting a newer release against an existing database, back up the database and have an administrator run any required release-specific SQL scripts for PostgreSQL or SQL Server. Validate the upgrade on a restored backup first; restore the backup if rollback is needed.
+
+See [`database/README.md`](database/README.md) for the script catalog, authoring rules, and repeat-execution verification.
+
+Moonglade does not automatically migrate existing databases or check their version compatibility at startup. The former `AutoDatabaseMigration` setting is no longer supported, and the previous cumulative SQL migration scripts have been removed. Fresh installations still create the current database schema and seed initial data automatically.
+
+Apply upgrades in order when required:
+
+1. [Category integer IDs](docs/upgrade-category-int-identity.md): converts GUID keys; public category/feed URLs retain their slugs, while admin APIs use integers.
+2. [PostgreSQL snake_case names](docs/upgrade-postgresql-snake-case.md): requires integer category IDs first. SQL Server retains PascalCase names.
 
 ### Quick Local Deployment (Docker)
 
@@ -50,11 +56,7 @@ The supplied Compose file maps separate writable named volumes to `/app/images` 
 
 Compose starts PostgreSQL and supplies the database connection string to the web container. For a direct `dotnet run`, the default connection string in `appsettings.json` points to PostgreSQL on `localhost:5432`; override it with `ConnectionStrings__MoongladeDatabase` for your environment.
 
-Email notifications are optional. The supplied default Email section intentionally contains no SMTP credentials; the application still starts, logs a warning, and serves the blog with email notification inactive. Open `/admin/settings/notification` to see the setup guidance after signing in. Add SMTP configuration through deployment secrets only when email delivery is required.
-
-### Quick Azure Deployment (App Service on Linux)
-
-The optional [automated deployment script](https://github.com/EdiWang/Moonglade/wiki/Quick-Deploy-on-Azure) provisions Azure SQL and sets `ConnectionStrings__DatabaseProvider=SqlServer`. It also mounts separate writable Azure Files shares at `/app/images` and `/app/images-origin`. It does not provision a CDN or migrate images from an older Blob container.
+Email is optional and inactive until SMTP is configured. See [Email Notifications](#email-notifications) and `/admin/settings/notification` for setup.
 
 ## 🛠️ Development
 
@@ -79,25 +81,62 @@ Set `ConnectionStrings:DatabaseProvider` to match your database type (`PostgreSq
 
 ### Build & Run
 
-The commands below are derived from the project files and launch settings:
-
 ```bash
 dotnet restore src/Moonglade.Web/Moonglade.Web.csproj
 dotnet build src/Moonglade.Web/Moonglade.Web.csproj
 dotnet run --project src/Moonglade.Web/Moonglade.Web.csproj
 ```
 
-1. Build and run `./src/Moonglade.slnx` or `src/Moonglade.Web/Moonglade.Web.csproj`
-2. Access your blog:
-    - **Home:** `https://localhost:10210`
-    - **Admin:** `https://localhost:10210/admin`
-      - Default username: `admin`
-      - Default password: `admin123`
-      - On first local-account sign-in, scan the authenticator QR code and enter the 6-digit code to enable TOTP.
+Open `https://localhost:10210` or `https://localhost:10210/admin`. The default local account is `admin` / `admin123`; first sign-in requires scanning the authenticator QR code and entering its 6-digit TOTP code. For test commands and coverage guidance, see [Tests](src/Tests/README.md).
+
+Deploy the current application at the URL root. Hosting under a prefix such as `/blog` is not supported by forwarding `X-Forwarded-Prefix` alone; it requires additional host-pipeline and client-URL work.
 
 ## ⚙️ Configuration
 
-> These settings are managed in `appsettings.json`. For blog settings, use the `/admin/settings` UI.
+> Host settings use `src/Moonglade.Web/appsettings.json` and standard environment overrides (`:` becomes `__`). Persisted blog settings use `/admin/settings`.
+
+### Default Post Editor
+
+Choose HTML or Markdown under **Settings > Content > Default editor** (`/admin/settings/content`). The default is HTML. Changes are stored in the database and apply immediately when creating a new post; existing posts retain their own content type. The former `DefaultEditor` application configuration key is no longer used or imported. Startup no longer fills empty content types on historical posts.
+
+### Content Cache Invalidation
+
+Article saves, publication changes (including scheduled publishing), recycle-bin operations, and category/tag updates or deletions invalidate article caches, feeds, and the sitemap. Counters do not trigger invalidation; page-specific sitemap invalidation preserves article/feed caches. Feeds and the sitemap expire after one hour; articles use `PostCacheMinutes`. Invalidation is process-local, so multiple instances require separate coordination. See [Caching and Side Effects](docs/agent-reference.md#caching-and-side-effects) for implementation details.
+
+### Saving Blog Settings
+
+Settings become active only after a successful database save and publication of one immutable ordinary-settings snapshot; groups submitted together are persisted together. Each operation or page render uses one immutable settings capture, including its related layouts/components or feed data/formatting; a subsequent operation can capture newer values. Updates are serialized within one process; other instances must reload or synchronize separately. See the [configuration write contract](docs/agent-reference.md#configuration).
+
+If settings or an avatar have been saved but activity-log recording fails, the request retains its successful response and the failure is recorded at Error level. Authenticator reset still signs out the local-account sessions. Validation, settings persistence, cache invalidation, image storage, and sign-out failures are not treated as audit-only failures; they remain visible to the caller. Uploaded avatars are saved as database assets separately from ordinary settings.
+
+Successful changes invalidate affected server caches in the current process, including settings saved through the shared write command. Avatar uploads invalidate the local avatar cache without rewriting ordinary settings. Feed and theme caches use separate generations so an older request cannot refill the active cache after a change; settings changes do not flush unrelated article caches. Full-content RSS/Atom feeds use the article body, including Markdown formatting and configured CDN image URLs; summary feeds use the abstract.
+
+| Setting | When the change takes effect |
+| --- | --- |
+| Site information, feed count/full content, image CDN | Subsequent requests; affected RSS/Atom/category feeds and canonical sitemap outputs are refreshed after saving. |
+| Theme selection | Subsequent public, admin, and sign-in page renders. |
+| Custom CSS | The server reads the saved value; existing browser caching and ETag revalidation still apply. |
+| Watermarks and original-image retention | Future uploads; existing image files are not reprocessed. |
+| Notification switches | Future enqueue decisions; already queued email is retained. |
+| Notification sender display name | Application restart required, including when changing to/from the deployment fallback. |
+| FOAF and sitemap enable/disable | Application restart required in both directions. |
+| Scheduled publishing enable/disable | Saving wakes the worker and it rechecks before dispatching publication; publication already dispatched is not canceled. |
+
+Other rendering and operation settings apply to subsequent requests or operations. Server invalidation does not purge browser, CDN, proxy, or feed-reader caches; these can retain older responses under their existing cache rules.
+
+At startup, malformed ordinary settings JSON, incompatible JSON values, null settings, and semantically invalid settings are restored to that group's default in the existing database row. Recovery replaces the entire group, including its other valid fields. Missing settings are initialized, and valid settings retain their values and modification timestamps. Recovery warnings identify the configuration key without logging its JSON. Invalid `LocalAccountSettings` or `SystemManifestSettings` stop initialization before repair writes with a restoration message to protect administrator credentials and installation/upgrade history; restore those values from a trusted database backup before restarting.
+
+For ordinary settings, a field completely absent from saved JSON uses the group's current default when loaded. Explicitly saved `false`, `0`, `null`, and empty arrays are retained when they satisfy validation. Loading these defaults does not rewrite valid JSON or change its modification timestamp. Older partial settings can therefore acquire default comment review/Gravatar, watermarking, the About menu, or a 20-item feed limit when those fields were absent; an explicitly saved unlimited feed count of `0` stays unlimited. This rule does not fill missing credential or installation-history fields.
+
+Settings use the same model validation during loading and saving, including non-HTTP writes. Invalid submissions return validation errors without changing saved or runtime settings. Undefined enum values, negative feed counts, invalid nested menus, and invalid script/CSS conditions are rejected. Custom CSS is limited to 10,240 UTF-8 bytes. Disabled menus may have a null menu array; watermark font/text constraints still apply when watermarking is disabled. A blank notification display name uses the deployment-configured sender name, and unknown theme IDs retain the default-theme fallback.
+
+Protected account settings require nonblank username, password hash, and salt. A populated TOTP secret must be parseable; enabling TOTP requires a secret, while a generated secret awaiting activation is valid. Installation manifests require a non-minimum UTC installation timestamp; historical or empty version strings are preserved.
+
+First-install seeding is allowed only when every application table is empty, including when the current schema already exists. Seed data and all default settings are committed in one database transaction. If installation fails before commit, its data writes are rolled back; fix the dependency failure and restart to retry. A completed installation is not seeded again, including after a lost commit acknowledgment. Schema creation precedes this data transaction, and site-icon generation remains a separate, noncritical operation.
+
+An existing or partially populated database with no settings or a missing local-account row is preserved and cannot automatically receive a replacement default account. Startup reports the failure; restore from a trusted backup or resolve the incomplete installation manually before restarting. Moonglade does not automatically clear ambiguous data left by older installations. A missing installation manifest alone, with valid account settings, is reconstructed with a Warning: its version is unknown and its timestamp records reconstruction, not the original installation time.
+
+If initialization fails, Moonglade logs the error and exits with a nonzero process code before starting HTTP endpoints or business background services. It does not run a diagnostic-only 500 site with active workers. Correct the reported problem and restart; a rolled-back first installation can still be retried.
 
 ### Authentication
 
@@ -145,7 +184,7 @@ For Microsoft Entra ID, use the tenant-specific authority `https://login.microso
 
 ### Comment Markdown Links
 
-Comment Markdown links are disabled by default. Set `CommentMarkdown:EnableLinks` to `true` in `appsettings.json` (or `CommentMarkdown__EnableLinks=true` through an environment variable) to enable hyperlinks. When disabled, links retain their original Markdown syntax and URL as plain text; other Markdown formatting still renders. This setting applies to comments and replies in public pages, the admin portal, and generated email notifications. Stored content and post Markdown are unchanged. Enabled links retain protocol validation and `rel="nofollow ugc noopener noreferrer"`.
+Comment Markdown links are disabled by default. Enable **Settings > Comments > Enable Markdown links in comments and replies** (`/admin/settings/comment`) to allow hyperlinks. The setting is stored in the database and takes effect without a restart. The former `CommentMarkdown:EnableLinks` application configuration key is no longer used or imported. When disabled, links retain their original Markdown syntax and URL as plain text; other Markdown formatting still renders. This setting applies to comments and replies in public pages, the admin portal, and newly generated email notifications; emails already queued retain their generated content. Stored comments and post Markdown are unchanged. Enabled links retain protocol validation and `rel="nofollow ugc noopener noreferrer"`.
 
 ### Comment Rate Limiting
 
@@ -202,9 +241,13 @@ Leave both paths empty only for development. The defaults are `<user-profile>/mo
 
 CDN delivery remains configured in the admin image settings. When enabled, rendered posts and feeds use the configured CDN endpoint directly, and `/image/{filename}` redirects the browser to the CDN URL instead of proxying image bytes through Moonglade.
 
+Uploaded profile avatars always use `/avatar`, backed by the database asset or the bundled default image. Image CDN settings do not copy avatars to image storage or change their display URL. Legacy `AvatarUrl` settings are retained as inactive compatibility data; previously copied avatar files are not automatically deleted.
+
 The CDN origin must map a primary-root filename to the same root object key, serve the correct image `Content-Type`, and make a file visible only after its write is closed. CDN caching, invalidation, TLS, origin access, and any storage mount adapter are operator responsibilities. The private original root must not be attached to the CDN origin.
 
 Upgrading from a previous filesystem, Azure Blob, or S3-compatible provider requires manual storage preparation and data migration before the new version starts. See [Upgrade to Filesystem-Only Image Storage](docs/upgrade-filesystem-image-storage.md).
+
+For an optional deployment example using mounted object storage, see [Cloudflare R2 with rclone](docs/cloudflare-r2-image-storage.md).
 
 ### Comment Moderation
 
@@ -227,15 +270,13 @@ Email notifications for new comments, replies, and Webmentions are optional. Whe
 
 ```json
 "Email": {
+  "Enabled": true,
   "SmtpServer": "",
   "SmtpUserName": "",
   "SmtpSenderAddress": "",
   "SmtpPassword": "",
   "SmtpPort": 25,
-  "EnableSsl": false,
-  "OutboxWorker": {
-    "Enabled": true
-  }
+  "EnableSsl": false
 }
 ```
 
@@ -249,11 +290,13 @@ Email configuration never controls application liveness or database readiness:
 
 - Missing required SMTP values leave email inactive, produce one startup warning, and show setup guidance in `/admin/settings/notification`. The application continues to start normally.
 - Malformed, out-of-range, or inconsistent values leave email inactive, produce a startup error log, and show secret-safe validation details on the Notification settings page. They do not stop application startup.
-- Setting `Email:OutboxWorker:Enabled` to `false` deliberately disables email notification and is shown as a separate non-error state in the admin portal.
+- Setting `Email:Enabled` to `false` deliberately disables email notification and is shown as a separate non-error state in the admin portal. It defaults to `true`; delivery always uses the outbox.
+
+Replace the former `Email:OutboxWorker:Enabled` deployment override with `Email:Enabled` (or `Email__Enabled` for environment variables), then restart the application. The old key is no longer read.
 
 While email is unavailable, the worker does not poll or send and notification handlers do not enqueue new messages. Existing pending outbox messages are retained and can be processed after valid configuration is supplied and the application is restarted. The test-email action is disabled while delivery is unavailable.
 
-Email delivery uses at-least-once processing. If the application stops while a message is being sent, a later retry can occasionally send a duplicate notification. Keep secrets outside source control and use the platform's secret or environment-variable configuration mechanism.
+Delivery is at least once: a shutdown during sending can cause a duplicate notification on retry.
 
 #### Resend via SMTP
 
@@ -298,18 +341,9 @@ Incoming and outgoing Webmention URLs must use public HTTP/HTTPS addresses. Moon
 
 ## Health Checks
 
-To ensure your Moonglade process is running, use the liveness health check endpoint:
-
-```
-GET /health
-```
-
-This endpoint is intentionally process-only and does not check database availability.
-
-For readiness diagnostics that include database connectivity, use:
-
-```
-GET /health/ready
-```
+| Endpoint | Checks |
+| --- | --- |
+| `GET /health` | Process liveness only; no database check. |
+| `GET /health/ready` | Readiness including database connectivity. |
 
 The supplied Compose file checks the web container's `/health` endpoint and PostgreSQL with `pg_isready`. It waits for PostgreSQL to report healthy before starting the web container.

@@ -1,22 +1,25 @@
-﻿@inject IConfiguration Configuration
+﻿@{
+    var snapshot = ViewData.CaptureSettings(SettingsReader);
+}
+@inject IConfiguration Configuration
 
 <aside class="blog-sidebar d-none d-lg-block">
     @await Component.InvokeAsync("Widgets", new { minOrder = -30, maxOrder = -21 })
 
-    @if (BlogConfig.GeneralSettings.WidgetsProfile)
+    @if (snapshot.GeneralSettings.WidgetsProfile)
     {
         <partial name="_WidgetsProfile" />
     }
 
     @await Component.InvokeAsync("Widgets", new { minOrder = -20, maxOrder = -11 })
 
-    @if (BlogConfig.GeneralSettings.HotTagAmount > 0)
+    @if (snapshot.GeneralSettings.HotTagAmount > 0)
     {
         <section id="aside-tags" class="mt-4 mb-4">
             <div class="aside-widget p-3 rounded-3 shadow-sm border">
                 <h6 class="card-subtitle mb-3 text-secondary">@SharedLocalizer["Tags"]</h6>
                 <div>
-                    <cache expires-after="@TimeSpan.FromMinutes(int.Parse(Configuration["WidgetCacheMinutes"]!))">
+                    <cache vary-by="@snapshot.GeneralSettings.HotTagAmount" expires-after="@TimeSpan.FromMinutes(int.Parse(Configuration["WidgetCacheMinutes"]!))">
                         <partial name="_WidgetRender" model="@("Tags")" />
                     </cache>
                     <hr />
@@ -31,7 +34,7 @@
 
     @await Component.InvokeAsync("Widgets", new { minOrder = -10, maxOrder = -1 })
 
-    @if (BlogConfig.GeneralSettings.WidgetsCategoryList)
+    @if (snapshot.GeneralSettings.WidgetsCategoryList)
     {
         <section id="aside-cats" class="mb-4">
             <div class="aside-widget p-3 rounded-3 shadow-sm border">
@@ -43,7 +46,7 @@
 
     @await Component.InvokeAsync("Widgets", new { minOrder = 0, maxOrder = 999 })
 
-    @if (BlogConfig.GeneralSettings.WidgetsSubscriptionButtons)
+    @if (snapshot.GeneralSettings.WidgetsSubscriptionButtons)
     {
         <section id="aside-subscription" class="text-center mb-4">
             <a class="btn btn-sm rounded-pill btn-outline-secondary me-2" href="#" data-bs-toggle="modal" data-bs-target="#subscriptionmodal">
@@ -51,7 +54,7 @@
                 RSS / Atom
             </a>
 
-            @if (BlogConfig.AdvancedSettings.EnableOpml)
+            @if (snapshot.AdvancedSettings.EnableOpml)
             {
                 <a asp-controller="Subscription" asp-action="Opml" class="btn btn-sm rounded-pill btn-outline-secondary" target="_blank">
                     <i class="bi-code-slash"></i>

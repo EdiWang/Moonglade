@@ -1,53 +1,50 @@
+using System.Collections.Immutable;
 using Edi.PasswordGenerator;
 using LiteBus.Commands.Abstractions;
 using LiteBus.Events.Abstractions;
-using LiteBus.Queries.Abstractions;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Moonglade.ActivityLog;
 using Moonglade.Email;
 using Moonglade.Email.Core;
-using Moonglade.Features.Asset;
 
 namespace Moonglade.Web.Controllers;
 
 [Route("api/[controller]")]
+[SettingsValidation]
 public class SettingsController(
         IBlogConfig blogConfig,
         ILogger<SettingsController> logger,
         IEventMediator eventMediator,
         EmailCapabilityStatus emailCapabilityStatus,
-        IQueryMediator queryMediator,
+        ILocalAccountReader accounts,
         ICommandMediator commandMediator) : BlogControllerBase(commandMediator)
 {
     [HttpPost("general")]
     public async Task<IActionResult> General(GeneralSettings model)
     {
-        model.AvatarUrl = blogConfig.GeneralSettings.AvatarUrl;
-        blogConfig.GeneralSettings = model;
+        var settings = blogConfig.Capture();
+        model = model with { AvatarUrl = settings.GeneralSettings.AvatarUrl };
 
-        AppDomain.CurrentDomain.SetData("CurrentThemeColor", null);
-
-        return await UpdateSettingsAsync(blogConfig.GeneralSettings,
-            EventType.SettingsGeneralUpdated, "Update General Settings", "General Settings",
+        await CommandMediator.SendAsync(UpdateConfigurationCommand.Create(model), HttpContext.RequestAborted);
+        await LogActivityAfterSaveAsync(logger, EventType.SettingsGeneralUpdated, "Update General Settings", "General Settings",
             ActivityLogMetaData.Create(
                 ("SiteTitle", model.SiteTitle),
                 ("LogoText", model.LogoText)));
+        return NoContent();
     }
 
     [HttpPost("content")]
     public async Task<IActionResult> Content(ContentSettings model)
     {
-        blogConfig.ContentSettings = model;
-        return await UpdateSettingsAsync(blogConfig.ContentSettings,
+        return await UpdateSettingsAsync(model,
             EventType.SettingsContentUpdated, "Update Content Settings", "Content Settings");
     }
 
     [HttpPost("comment")]
     public async Task<IActionResult> Comment(CommentSettings model)
     {
-        blogConfig.CommentSettings = model;
-        return await UpdateSettingsAsync(blogConfig.CommentSettings,
+        return await UpdateSettingsAsync(model,
             EventType.SettingsCommentUpdated, "Update Comment Settings", "Comment Settings",
             ActivityLogMetaData.Create(
                 ("EnableComments", model.EnableComments),
@@ -57,20 +54,20 @@ public class SettingsController(
     [HttpPost("notification")]
     public async Task<IActionResult> Notification(NotificationSettings model)
     {
-        blogConfig.NotificationSettings = model;
-        return await UpdateSettingsAsync(blogConfig.NotificationSettings,
+        return await UpdateSettingsAsync(model,
             EventType.SettingsNotificationUpdated, "Update Notification Settings", "Notification Settings");
     }
 
     [HttpPost("email/test")]
     public async Task<IActionResult> TestEmail()
     {
+        var settings = blogConfig.Capture();
         if (!emailCapabilityStatus.IsAvailable)
         {
             return CreateEmailCapabilityProblem();
         }
 
-        if (!blogConfig.NotificationSettings.EnableEmailSending)
+        if (!settings.NotificationSettings.EnableEmailSending)
         {
             return Problem(
                 detail: "Enable email sending in Notification settings before sending a test email.",
@@ -80,7 +77,7 @@ public class SettingsController(
 
         try
         {
-            await eventMediator.PublishAsync(new TestEmailEvent());
+            await eventMediator.PublishAsync(new TestEmailEvent { Snapshot = settings });
             return Ok(true);
         }
         catch (Exception e)
@@ -96,48 +93,14 @@ public class SettingsController(
     [HttpPost("subscription")]
     public async Task<IActionResult> Subscription(FeedSettings model)
     {
-        blogConfig.FeedSettings = model;
-        return await UpdateSettingsAsync(blogConfig.FeedSettings,
+        return await UpdateSettingsAsync(model,
             EventType.SettingsSubscriptionUpdated, "Update Subscription Settings", "Subscription Settings");
     }
 
     [HttpPost("watermark")]
-    public async Task<IActionResult> Image(ImageSettings model, IBlogImageStorage imageStorage)
+    public async Task<IActionResult> Image(ImageSettings model)
     {
-        blogConfig.ImageSettings = model;
-
-        if (model.EnableCDNRedirect)
-        {
-            if (blogConfig.GeneralSettings.AvatarUrl != null
-            && !blogConfig.GeneralSettings.AvatarUrl.StartsWith(model.CDNEndpoint))
-            {
-                try
-                {
-                    var avatarData = await queryMediator.QueryAsync(new GetAssetQuery(AssetId.AvatarBase64));
-
-                    if (!string.IsNullOrWhiteSpace(avatarData))
-                    {
-                        var avatarBytes = Convert.FromBase64String(avatarData);
-                        var fileName = $"avatar-{AssetId.AvatarBase64:N}.png";
-                        fileName = await imageStorage.InsertAsync(fileName, avatarBytes);
-                        blogConfig.GeneralSettings.AvatarUrl = blogConfig.ImageSettings.CDNEndpoint.CombineUrl(fileName);
-
-                        await SaveConfigAsync(blogConfig.GeneralSettings);
-                    }
-                }
-                catch (FormatException e)
-                {
-                    logger.LogError(e, "Error {Action}(), Invalid Base64 string", nameof(Image));
-                }
-            }
-        }
-        else
-        {
-            blogConfig.GeneralSettings.AvatarUrl = Url.Action("Avatar", "Assets");
-            await SaveConfigAsync(blogConfig.GeneralSettings);
-        }
-
-        return await UpdateSettingsAsync(blogConfig.ImageSettings,
+        return await UpdateSettingsAsync(model,
             EventType.SettingsImageUpdated, "Update Image Settings", "Image Settings",
             ActivityLogMetaData.Create(
                 ("EnableCDNRedirect", model.EnableCDNRedirect),
@@ -147,39 +110,14 @@ public class SettingsController(
     [HttpPost("advanced")]
     public async Task<IActionResult> Advanced(AdvancedSettings model)
     {
-        if (!string.IsNullOrWhiteSpace(model.HeadScripts) &&
-            !ScriptTagValidator.IsValidScriptBlock(model.HeadScripts))
-        {
-            ModelState.AddModelError(nameof(AdvancedSettings.HeadScripts),
-                "Only <script>...</script> blocks are allowed.");
-            return ValidationProblem(ModelState);
-        }
-
-        if (!string.IsNullOrWhiteSpace(model.FootScripts) &&
-            !ScriptTagValidator.IsValidScriptBlock(model.FootScripts))
-        {
-            ModelState.AddModelError(nameof(AdvancedSettings.FootScripts),
-                "Only <script>...</script> blocks are allowed.");
-            return ValidationProblem(ModelState);
-        }
-
-        blogConfig.AdvancedSettings = model;
-        return await UpdateSettingsAsync(blogConfig.AdvancedSettings,
+        return await UpdateSettingsAsync(model,
             EventType.SettingsAdvancedUpdated, "Update Advanced Settings", "Advanced Settings");
     }
 
     [HttpPost("appearance")]
-    [TypeFilter(typeof(ClearBlogCache), Arguments = [BlogCachePartition.General, "theme"])]
     public async Task<IActionResult> Appearance(AppearanceSettings model)
     {
-        if (model.EnableCustomCss && string.IsNullOrWhiteSpace(model.CssCode))
-        {
-            ModelState.AddModelError(nameof(AppearanceSettings.CssCode), "CSS Code is required");
-            return ValidationProblem(ModelState);
-        }
-
-        blogConfig.AppearanceSettings = model;
-        return await UpdateSettingsAsync(blogConfig.AppearanceSettings,
+        return await UpdateSettingsAsync(model,
             EventType.SettingsAppearanceUpdated, "Update Appearance Settings", "Appearance Settings",
             ActivityLogMetaData.Create(
                 ("ThemeId", model.ThemeId),
@@ -187,7 +125,7 @@ public class SettingsController(
     }
 
     [HttpGet("custom-menu")]
-    public async Task<IActionResult> CustomMenu() => Ok(blogConfig.CustomMenuSettings);
+    public async Task<IActionResult> CustomMenu() => Ok(blogConfig.Capture().CustomMenuSettings);
 
     [HttpPost("custom-menu")]
     public async Task<IActionResult> CustomMenu(CustomMenuSettingsJsonModel model)
@@ -198,10 +136,10 @@ public class SettingsController(
             return ValidationProblem(ModelState);
         }
 
-        Menu[] menus;
+        ImmutableList<Menu> menus;
         try
         {
-            menus = model.MenuJson.FromJson<Menu[]>();
+            menus = string.IsNullOrWhiteSpace(model.MenuJson) ? null : model.MenuJson.FromJson<ImmutableList<Menu>>();
         }
         catch (System.Text.Json.JsonException ex)
         {
@@ -210,19 +148,13 @@ public class SettingsController(
             return ValidationProblem(ModelState);
         }
 
-        if (menus is null)
-        {
-            ModelState.AddModelError(nameof(CustomMenuSettingsJsonModel.MenuJson), "Invalid JSON format for menus.");
-            return ValidationProblem(ModelState);
-        }
-
-        blogConfig.CustomMenuSettings = new()
+        var settings = new CustomMenuSettings
         {
             IsEnabled = model.IsEnabled,
             Menus = menus
         };
 
-        return await UpdateSettingsAsync(blogConfig.CustomMenuSettings,
+        return await UpdateSettingsAsync(settings,
             EventType.SettingsCustomMenuUpdated, "Update Custom Menu Settings", "Custom Menu Settings",
             ActivityLogMetaData.Create(("IsEnabled", model.IsEnabled)));
     }
@@ -237,7 +169,8 @@ public class SettingsController(
     [HttpPut("password/local")]
     public async Task<IActionResult> UpdateLocalAccountPassword(UpdateLocalAccountPasswordRequest request)
     {
-        var oldPasswordValid = blogConfig.LocalAccountSettings.PasswordHash == SecurityHelper.HashPassword(request.OldPassword.Trim(), blogConfig.LocalAccountSettings.PasswordSalt);
+        var account = accounts.Read();
+        var oldPasswordValid = account.PasswordHash == SecurityHelper.HashPassword(request.OldPassword.Trim(), account.PasswordSalt);
 
         if (!oldPasswordValid) return Conflict("Old password is incorrect.");
 
@@ -247,19 +180,20 @@ public class SettingsController(
             Username = request.NewUsername.Trim(),
             PasswordSalt = newSalt,
             PasswordHash = SecurityHelper.HashPassword(request.NewPassword, newSalt),
-            TotpSecret = blogConfig.LocalAccountSettings.TotpSecret,
-            IsTotpEnabled = blogConfig.LocalAccountSettings.IsTotpEnabled
+            TotpSecret = account.TotpSecret,
+            IsTotpEnabled = account.IsTotpEnabled
         };
 
-        return await UpdateSettingsAsync(newSettings,
-            EventType.SettingsPasswordUpdated, "Update Local Account Password", request.NewUsername,
+        await CommandMediator.SendAsync(new UpdateLocalAccountCommand(newSettings), HttpContext.RequestAborted);
+        await LogActivityAfterSaveAsync(logger, EventType.SettingsPasswordUpdated, "Update Local Account Password", request.NewUsername,
             ActivityLogMetaData.Create(("Username", request.NewUsername)));
+        return NoContent();
     }
 
     [HttpPut("totp/local/reset")]
     public async Task<IActionResult> ResetLocalAccountTotp(ResetLocalAccountTotpRequest request)
     {
-        var account = blogConfig.LocalAccountSettings;
+        var account = accounts.Read();
         var passwordValid = account.PasswordHash == SecurityHelper.HashPassword(request.CurrentPassword.Trim(), account.PasswordSalt);
 
         if (!passwordValid) return Conflict("Current password is incorrect.");
@@ -273,8 +207,8 @@ public class SettingsController(
             IsTotpEnabled = false
         };
 
-        await SaveConfigAsync(newSettings);
-        await LogActivityAsync(
+        await CommandMediator.SendAsync(new UpdateLocalAccountCommand(newSettings), HttpContext.RequestAborted);
+        await LogActivityAfterSaveAsync(logger,
             EventType.SettingsAuthenticatorReset,
             "Reset Local Account Authenticator",
             account.Username,
@@ -294,15 +228,9 @@ public class SettingsController(
         string targetName,
         object metadata = null) where T : IBlogSettings<T>
     {
-        await SaveConfigAsync(settings);
-        await LogActivityAsync(eventType, operation, targetName, metadata);
+        await CommandMediator.SendAsync(UpdateConfigurationCommand.Create(settings), HttpContext.RequestAborted);
+        await LogActivityAfterSaveAsync(logger, eventType, operation, targetName, metadata);
         return NoContent();
-    }
-
-    private async Task SaveConfigAsync<T>(T settings) where T : IBlogSettings<T>
-    {
-        var kvp = blogConfig.UpdateAsync(settings);
-        await CommandMediator.SendAsync(new UpdateConfigurationCommand(kvp.Key, kvp.Value));
     }
 
     private IActionResult CreateEmailCapabilityProblem()
@@ -320,7 +248,7 @@ public class SettingsController(
                 title: "Email notification configuration is invalid."),
 
             EmailCapabilityState.Disabled => Problem(
-                detail: "Set Email:OutboxWorker:Enabled to true before sending a test email.",
+                detail: "Set Email:Enabled to true before sending a test email.",
                 statusCode: StatusCodes.Status409Conflict,
                 title: "Email notifications are disabled."),
 

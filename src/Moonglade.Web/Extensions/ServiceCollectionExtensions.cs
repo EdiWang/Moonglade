@@ -21,7 +21,6 @@ using Moonglade.Web.Services;
 using Moonglade.Webmention;
 using System.Globalization;
 using System.IO.Compression;
-using System.Net.Http.Headers;
 using System.Text.Encodings.Web;
 using System.Text.Json.Serialization;
 using System.Text.Unicode;
@@ -36,6 +35,8 @@ public static class ServiceCollectionExtensions
         List<CultureInfo> cultures)
     {
         services.AddMoongladeLiteBus();
+        services.AddSingleton<PostCacheInvalidator>();
+        services.AddSingleton<ThemeCacheInvalidator>();
         services.AddHttpClient();
         services.AddOptions().AddHttpContextAccessor();
         services.AddMoongladeLocalization();
@@ -55,7 +56,7 @@ public static class ServiceCollectionExtensions
         services.AddMoongladeCoreServices(configuration);
         services.AddMoongladeDatabase(configuration);
         services.AddMoongladeInitializers();
-        services.AddSingleton<IImageUploadValidator, ImageUploadValidator>();
+        services.AddSingleton<ImageUploadValidator>();
 
         return services;
     }
@@ -137,6 +138,7 @@ public static class ServiceCollectionExtensions
             {
                 options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute());
                 options.Filters.Add<ProblemDetailsResultFilter>();
+                options.Filters.Add<BlogSettingsFilter>();
             })
             .AddJsonOptions(options => options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()));
 
@@ -269,7 +271,7 @@ public static class ServiceCollectionExtensions
             .ValidateOnStart();
 
         services.TryAddSingleton(TimeProvider.System);
-        services.AddSingleton<ICommentSubmissionGuard, CommentSubmissionGuard>();
+        services.AddSingleton<CommentSubmissionGuard>();
 
         return services;
     }
@@ -299,15 +301,6 @@ public static class ServiceCollectionExtensions
         services.AddSingleton<CannonService>();
         services.AddHostedService(sp => sp.GetRequiredService<CannonService>());
 
-        services.AddSingleton<UpdateCheckerState>();
-        services.AddHttpClient<IGitHubReleaseClient, GitHubReleaseClient>(client =>
-        {
-            client.BaseAddress = new Uri("https://api.github.com");
-            client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/vnd.github+json"));
-            client.DefaultRequestHeaders.UserAgent.Add(new ProductInfoHeaderValue("Moonglade", VersionHelper.AppVersionBasic));
-        });
-        services.AddHostedService<UpdateCheckService>();
-
         return services;
     }
 
@@ -335,10 +328,9 @@ public static class ServiceCollectionExtensions
 
     private static IServiceCollection AddMoongladeInitializers(this IServiceCollection services)
     {
-        services.AddTransient<ISiteIconBuilder, SiteIconBuilder>();
-        services.AddScoped<IMigrationManager, MigrationManager>();
-        services.AddScoped<IConfigInitializer, ConfigInitializer>();
-        services.AddScoped<IStartUpInitializer, StartUpInitializer>();
+        services.AddTransient<SiteIconBuilder>();
+        services.AddScoped<ConfigInitializer>();
+        services.AddScoped<StartUpInitializer>();
 
         return services;
     }

@@ -1,3 +1,4 @@
+using System.Text.Json.Serialization;
 using LiteBus.Events.Abstractions;
 using Moonglade.Configuration;
 using Moonglade.Email.Core;
@@ -10,7 +11,11 @@ public record CommentReplyEvent(
     string CommentContent,
     string Title,
     string ReplyContentHtml,
-    string PostLink) : IEvent;
+    string PostLink) : IEvent
+{
+    [JsonIgnore]
+    public BlogSettingsSnapshot Snapshot { get; init; }
+}
 
 public class CommentReplyNotificationHandler(
     IEmailNotificationQueue queue,
@@ -19,7 +24,8 @@ public class CommentReplyNotificationHandler(
 {
     public async Task HandleAsync(CommentReplyEvent notification, CancellationToken ct)
     {
-        if (!capabilityStatus.IsAvailable || !blogConfig.NotificationSettings.EnableEmailSending)
+        var settings = notification.Snapshot ?? blogConfig.Capture();
+        if (!capabilityStatus.IsAvailable || !settings.NotificationSettings.EnableEmailSending)
         {
             return;
         }

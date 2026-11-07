@@ -7,10 +7,6 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Cronos" Version="0.13.0" />
-	</ItemGroup>
-	
-	<ItemGroup>
 		<ProjectReference Include="..\Moonglade.Features\Moonglade.Features.csproj" />
 	</ItemGroup>
 
