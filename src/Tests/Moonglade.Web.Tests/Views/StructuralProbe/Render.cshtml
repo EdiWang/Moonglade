@@ -1,8 +1,0 @@
-@model SettingsSnapshotProbe
-@{
-    Layout = "~/Views/StructuralProbe/_SnapshotLayout.cshtml";
-}
-root:@Model.Feed.FeedItemCount:@Model.Menu.Menus![0]!.Title
-avatar:@Url.Action("Avatar", "Assets")
-@await Html.PartialAsync("~/Views/StructuralProbe/_SnapshotPartial.cshtml")
-@await Component.InvokeAsync("SnapshotProbe")

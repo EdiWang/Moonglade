@@ -13,7 +13,7 @@ public class UpdateConfigurationCommandTests
 {
     private readonly ConfigurationWriteGate _gate = new();
     [Fact]
-    public async Task Save_UpdatesDatabaseAndRuntimeFromDetachedSnapshot()
+    public async Task Save_UpdatesDatabaseAndRuntimeFromRetainedImmutableValue()
     {
         using var db = CreateDbContext();
         var config = new BlogConfig(new BlogSettingsSnapshot { GeneralSettings = General("Old") });
@@ -21,6 +21,7 @@ public class UpdateConfigurationCommandTests
         var original = config.Capture().GeneralSettings;
         var model = General("New");
         model = model with { Description = "Description" };
+        var submitted = model;
         var command = UpdateConfigurationCommand.Create(model);
         model = model with { SiteTitle = "Changed after dispatch" };
 
@@ -28,6 +29,8 @@ public class UpdateConfigurationCommandTests
 
         Assert.Equal("New", config.Capture().GeneralSettings.SiteTitle);
         Assert.Equal("Old", original.SiteTitle);
+        Assert.Same(submitted, command.Settings);
+        Assert.Same(submitted, config.Capture().GeneralSettings);
         Assert.NotSame(model, config.Capture().GeneralSettings);
         Assert.Equal(config.Capture().GeneralSettings.ToJson(), (await db.BlogConfiguration.SingleAsync(TestContext.Current.CancellationToken)).CfgValue);
         model = model with { Description = "Changed after save" };
@@ -50,17 +53,14 @@ public class UpdateConfigurationCommandTests
     }
 
     [Fact]
-    public async Task MissingPairedSetting_ChangesNeitherDatabaseNorRuntime()
+    public async Task MissingSetting_PreservesOtherRowsAndRuntime()
     {
         using var db = CreateDbContext();
         var config = new BlogConfig(new BlogSettingsSnapshot { GeneralSettings = General("Old") });
-        config.Publish(config.Capture() with { GeneralSettings = config.Capture().GeneralSettings with { AvatarUrl = "old.png" } });
         await SeedAsync(db, config.Capture().GeneralSettings);
         var originalGeneral = config.Capture().GeneralSettings;
         var originalImage = config.Capture().ImageSettings;
-        var general = General("New");
-        general = general with { AvatarUrl = "new.png" };
-        var command = UpdateConfigurationCommand.Create(general, CdnImage());
+        var command = UpdateConfigurationCommand.Create(CdnImage());
 
         await Assert.ThrowsAsync<InvalidOperationException>(() => Handler(db, config)
             .HandleAsync(command, TestContext.Current.CancellationToken));
@@ -69,27 +69,6 @@ public class UpdateConfigurationCommandTests
         Assert.Same(originalImage, config.Capture().ImageSettings);
         Assert.Equal(originalGeneral.ToJson(), (await db.BlogConfiguration.SingleAsync(TestContext.Current.CancellationToken)).CfgValue);
         Assert.False(db.ChangeTracker.HasChanges());
-    }
-
-    [Fact]
-    public async Task PairedSettings_AreSavedAndAppliedTogether()
-    {
-        using var db = CreateDbContext();
-        var config = new BlogConfig();
-        await SeedAsync(db, config.Capture().GeneralSettings);
-        await SeedAsync(db, config.Capture().ImageSettings);
-
-        var general = General("New");
-        general = general with { AvatarUrl = "https://cdn.example.com/avatar.png" };
-        await Handler(db, config).HandleAsync(UpdateConfigurationCommand.Create(general, CdnImage()),
-            TestContext.Current.CancellationToken);
-
-        Assert.True(config.Capture().ImageSettings.EnableCDNRedirect);
-        Assert.Equal("https://cdn.example.com/avatar.png", config.Capture().GeneralSettings.AvatarUrl);
-        var rows = await db.BlogConfiguration.ToDictionaryAsync(p => p.CfgKey, TestContext.Current.CancellationToken);
-        Assert.Equal(config.Capture().GeneralSettings.ToJson(), rows[nameof(GeneralSettings)].CfgValue);
-        Assert.Equal(config.Capture().ImageSettings.ToJson(), rows[nameof(ImageSettings)].CfgValue);
-        Assert.Equal(rows[nameof(GeneralSettings)].LastModifiedTimeUtc, rows[nameof(ImageSettings)].LastModifiedTimeUtc);
     }
 
     [Fact]
@@ -246,7 +225,7 @@ public class UpdateConfigurationCommandTests
     }
 
     [Fact]
-    public async Task PairedPublicationAndQueuedUnrelatedSave_RetainOldSnapshotsAndLatestGroups()
+    public async Task PublicationAndQueuedUnrelatedSave_RetainOldSnapshotsAndLatestGroups()
     {
         var ct = TestContext.Current.CancellationToken;
         var interceptor = new BlockingSaveInterceptor();
@@ -271,17 +250,16 @@ public class UpdateConfigurationCommandTests
             {
                 var published = config.Capture();
                 Assert.Equal("New", published.GeneralSettings.SiteTitle);
-                Assert.True(published.ImageSettings.EnableCDNRedirect);
-                Assert.Equal("https://cdn.example.com/avatar.png", published.GeneralSettings.AvatarUrl);
+                Assert.Same(retained.ImageSettings, published.ImageSettings);
             }).Returns(Task.CompletedTask);
         interceptor.Enabled = true;
         var firstSave = new UpdateConfigurationCommandHandler(firstDb, config, events.Object, _gate,
             NullLogger<UpdateConfigurationCommandHandler>.Instance).HandleAsync(UpdateConfigurationCommand.Create(
-            General("New") with { AvatarUrl = "https://cdn.example.com/avatar.png" }, CdnImage()), ct);
+            General("New")), ct);
         await interceptor.Committed.Task.WaitAsync(TimeSpan.FromSeconds(10), ct);
 
         Assert.Same(retained, config.Capture());
-        Assert.False(config.Capture().ImageSettings.EnableCDNRedirect);
+        Assert.Same(retained.ImageSettings, config.Capture().ImageSettings);
         var secondSave = Handler(secondDb, config).HandleAsync(queuedCommand, ct);
         var secondWasBlocked = !secondSave.IsCompleted;
         interceptor.Resume.SetResult();
@@ -292,7 +270,7 @@ public class UpdateConfigurationCommandTests
         var current = config.Capture();
         Assert.NotSame(retained, current);
         Assert.Equal("New", current.GeneralSettings.SiteTitle);
-        Assert.True(current.ImageSettings.EnableCDNRedirect);
+        Assert.Same(retained.ImageSettings, current.ImageSettings);
         Assert.Equal(7, current.FeedSettings.FeedItemCount);
         Assert.Equal("Old", retained.GeneralSettings.SiteTitle);
         Assert.False(retained.ImageSettings.EnableCDNRedirect);
@@ -305,7 +283,7 @@ public class UpdateConfigurationCommandTests
     }
 
     [Fact]
-    public async Task InvalidPairedSetting_DoesNotChangeEitherRowOrRuntime()
+    public async Task InvalidSetting_PreservesOtherRowsAndRuntime()
     {
         var ct = TestContext.Current.CancellationToken;
         using var db = CreateDbContext();
@@ -318,7 +296,7 @@ public class UpdateConfigurationCommandTests
         invalid = invalid with { CDNEndpoint = "http://invalid.example.com" };
 
         await Assert.ThrowsAsync<ValidationException>(() => Handler(db, config).HandleAsync(
-            UpdateConfigurationCommand.Create(General("New"), invalid), ct));
+            UpdateConfigurationCommand.Create(invalid), ct));
 
         Assert.Same(originalGeneral, config.Capture().GeneralSettings);
         Assert.Same(originalImage, config.Capture().ImageSettings);

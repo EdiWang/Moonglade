@@ -64,8 +64,7 @@ public class SettingsValidationTests
         config.LoadFromConfig(new Dictionary<string, string>());
         var runtime = property.GetValue(config.Capture());
         var value = InvalidJson(property.PropertyType, patch).FromJson(property.PropertyType);
-        var factory = typeof(UpdateConfigurationCommand).GetMethods().Single(method => method.Name == nameof(UpdateConfigurationCommand.Create)
-            && method.GetGenericArguments().Length == 1).MakeGenericMethod(property.PropertyType);
+        var factory = typeof(UpdateConfigurationCommand).GetMethod(nameof(UpdateConfigurationCommand.Create))!.MakeGenericMethod(property.PropertyType);
         var command = (UpdateConfigurationCommand)factory.Invoke(null, [value])!;
 
         var exception = await Assert.ThrowsAsync<ValidationException>(() => new UpdateConfigurationCommandHandler(

@@ -46,7 +46,7 @@ public partial class SettingsControllerTests
         Assert.IsType<NoContentResult>(result);
         Assert.Equal(enableLinks, blogConfig.Capture().CommentSettings.EnableMarkdownLinks);
         var update = commandMediator.Single<UpdateConfigurationCommand>();
-        Assert.Equal(enableLinks, update.Settings[nameof(CommentSettings)].FromJson<CommentSettings>().EnableMarkdownLinks);
+        Assert.Equal(enableLinks, Assert.IsType<CommentSettings>(update.Settings).EnableMarkdownLinks);
         Assert.Equal(EventType.SettingsCommentUpdated, commandMediator.Single<CreateActivityLogCommand>().EventType);
     }
 
@@ -68,7 +68,7 @@ public partial class SettingsControllerTests
         Assert.IsType<NoContentResult>(result);
         Assert.Equal(editor, blogConfig.Capture().ContentSettings.DefaultEditor);
         var update = commandMediator.Single<UpdateConfigurationCommand>();
-        Assert.Equal(editor, update.Settings[nameof(ContentSettings)].FromJson<ContentSettings>().DefaultEditor);
+        Assert.Equal(editor, Assert.IsType<ContentSettings>(update.Settings).DefaultEditor);
         Assert.Equal(EventType.SettingsContentUpdated, commandMediator.Single<CreateActivityLogCommand>().EventType);
     }
 
@@ -295,7 +295,7 @@ public partial class SettingsControllerTests
         Assert.Equal(originalRow.CfgValue, saved.CfgValue);
         Assert.Equal(originalRow.LastModifiedTimeUtc, saved.LastModifiedTimeUtc);
         Assert.Equal(image.ToJson(), blogConfig.Capture().ImageSettings.ToJson());
-        Assert.Equal(new[] { nameof(ImageSettings) }, mediator.Single<UpdateConfigurationCommand>().Settings.Keys);
+        Assert.IsType<ImageSettings>(mediator.Single<UpdateConfigurationCommand>().Settings);
     }
 
     [Fact]

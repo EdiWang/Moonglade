@@ -3,9 +3,10 @@
 ## Resume Here
 
 - Last reconciled: 2026-11-07, Asia/Taipei.
-- Committed application baseline: `4b3185757` (`Keep settings consistent per operation and render`), on `master`. Documentation cleanup was already uncommitted when the maintenance batch below started; preserve those edits and deletions.
+- Committed application baseline: `fe22d13ce` (`Simplify settings loading and cache invalidation`), on `master`. The working tree was clean when review items 2 and 3 started.
 - Reliability and structural implementation through S3 is complete and committed. Final functional acceptance is pending.
-- Maintenance review items 1, 4, 6, and the duplicate initialization-log wrapper are implemented and verified, but uncommitted. Removed ineffective legacy cache-key deletions, required an explicit snapshot in the feed data source, removed the ordinary loader's unused `isNew`, and inlined the initialization command call. Paired writes, S0 probes, and parsing/publication structure remain unchanged.
+- Maintenance review items 1, 4, 6, and the duplicate initialization-log wrapper are committed in `fe22d13ce`.
+- Review items 2 and 3 are implemented and verified, but uncommitted. Ordinary commands retain one immutable settings group without JSON round-trip copying. Useful S0 assertions now use production models/endpoints/pages; the parallel probes and test-only Razor fixtures are removed, and the Web test project uses the regular .NET SDK. Validation, write serialization, commit/publication ordering, actual snapshot regressions, and the unsupported-outer-transaction characterization remain. No commit is authorized.
 - Next acceptance batch: **S6**, defined in [the acceptance plan](SETTINGS_STRUCTURE_PLAN.md). S6 has not started and requires explicit authorization. This maintenance batch does not authorize S6 execution, commits, deployment, or production-data changes.
 - Retain this tracker and update status, verification, remaining issues, and the next action at every batch boundary. A new conversation should read this file, `AGENTS.md`, and the relevant engineering-reference sections first.
 - No design question is currently pending. Ask about new requirement, business, architecture, or recovery-policy choices, with a recommendation; continue independent authorized work while waiting.
@@ -15,12 +16,13 @@
 | Batch | Result | Commit |
 | --- | --- | --- |
 | B0-B6 | Reliability complete: safe startup/install, defaults, validation, activation/cache behavior, audit isolation, and failed-startup host protection. | Final reliability baseline `907ac2285` |
-| S0 | Binding, immutable-value, rendering, and commit-boundary compatibility checks complete. | `90e302d45` |
+| S0 | Compatibility exploration complete; production regression coverage now supersedes the candidate models and Razor fixtures. | Original probes `90e302d45` |
 | S1 | Account and installation history separated from ordinary preferences in code. | `8db04575d` |
 | S2 | Immutable ordinary values and atomic root publication; avatar CDN support removed. | `aa38e96f7` |
 | S3 | Operation/render capture propagation, reader migration, and configuration-dependent cache coherence complete. | `4b3185757` |
 | S4-S5 | Not applicable: uploaded avatars no longer have a CDN/file workflow. | No implementation required |
-| Maintenance | Approved review items 1, 4, 6 and duplicate log wrapper complete; focused tests and Web build passed, with provider tests skipped as recorded below. | Uncommitted |
+| Maintenance 1 | Review items 1, 4, 6 and duplicate log wrapper complete; focused tests and Web build passed, with provider tests skipped as recorded below. | `fe22d13ce` |
+| Maintenance 2 | Review items 2 and 3 complete; Configuration/Web regression tests and Web build passed as recorded below. | Uncommitted |
 | S6 | Final isolated-host/browser regression and acceptance; not started. | Await authorization |
 
 ## Rules To Preserve
@@ -38,7 +40,7 @@
 - Configuration owns nine ordinary groups; Auth owns accounts; Setup owns installation history and may reference Auth. Preserve the existing table, keys, and JSON. Physical separation or data migration requires a new decision.
 - `IBlogConfig` exposes only `Capture()`. Ordinary values and nested menus are init-only records with immutable lists. Capture once before asynchronous work and propagate the same root/group through related calls. Independent subsequent operations may capture new values; do not freeze the whole HTTP request.
 - Razor handlers, views, layouts, partials, and components share the ViewData capture. Preserve a capture already used to prepare page data. Internal command/query/event snapshot contexts are JSON-ignored and must not enter HTTP or durable email payloads.
-- Inside the shared process write gate, apply submitted groups to the latest root, validate, persist, publish once, then emit the established noncancelable change event. Preserve unrelated groups and timestamps for no-op saves. Same-group saves replace the whole group; later saves win. Failed/rejected writes do not publish.
+- Each ordinary command retains one immutable settings group. Inside the shared process write gate, validate it, apply it to the latest root, serialize once for persistence, save, publish once, then emit the established noncancelable change event. Preserve unrelated groups and timestamps for no-op saves. Same-group saves replace the whole group; later saves win. Failed/rejected writes do not publish.
 - Preserve model-owned validation: existing required/range/length/format and conditional rules, defined enums only, nonnegative feed count with zero unlimited, at most five menu entries, required titles/submenu URLs, and non-null entries/submenu lists. Disabled menus may be null. CSS is limited to 10,240 UTF-8 bytes; watermark text/font rules apply even when disabled. Blank notification display names and unknown themes retain their fallbacks; inactive legacy avatar URL data has no added length cap.
 - Saved account username/hash/salt must be nonblank; populated TOTP secrets must parse and enabled TOTP requires one. Generated-but-disabled setup is valid. Do not impose new-credential form syntax on saved accounts. Manifests require a non-minimum UTC installation time while retaining arbitrary, empty, or null versions.
 
@@ -52,7 +54,14 @@
 
 ## Verification Baseline
 
-Maintenance checks on 2026-11-07:
+Maintenance 2 checks on 2026-11-07:
+
+- `dotnet test --project src/Tests/Moonglade.Configuration.Tests/Moonglade.Configuration.Tests.csproj --no-restore`: **106 passed, 0 failed, 0 skipped**. This retains save failure/cancellation, validation, missing rows, no-op timestamps/events, retained immutable values, and queued unrelated-group publication checks.
+- `dotnet test --project src/Tests/Moonglade.Web.Tests/Moonglade.Web.Tests.csproj`: **366 passed, 0 failed, 0 skipped**, after restoring with the regular .NET SDK. Actual JSON/API/menu-limit/subscription-page assertions replace useful S0 coverage; production render/query concurrency and SQLite commit-boundary tests remain. The count change is expected: 37 experimental cases and one paired-write case were removed; five production cases were added across the two suites.
+- Total: **472 passed, 0 failed, 0 skipped**. `dotnet build src/Moonglade.Web/Moonglade.Web.csproj --no-restore`: **0 warnings, 0 errors**. `git diff --check` passed.
+- Full-solution, opt-in provider, and S6 browser/real-host acceptance were not rerun. No schema, settings JSON, protected-account behavior, deployment, or real data changed. No commit was created.
+
+Maintenance 1 checks on 2026-11-07:
 
 - Ran `dotnet test --project <path> --no-restore` for `src/Tests/Moonglade.Web.Tests/Moonglade.Web.Tests.csproj` (398 passed), `src/Tests/Moonglade.Configuration.Tests/Moonglade.Configuration.Tests.csproj` (107 passed), `src/Tests/Moonglade.Syndication.Tests/Moonglade.Syndication.Tests.csproj` (18 passed), and `src/Tests/Moonglade.Setup.Tests/Moonglade.Setup.Tests.csproj` (75 passed, 17 skipped). Total: **598 passed, 0 failed, 17 skipped**. The duplicate ordinary-loader true/false theory is now one case because its unused flag was removed.
 - Cache tests now warm production keys with captured-setting fingerprints/theme IDs and check active-generation isolation instead of requiring old General entries to be deleted. Existing concurrent query/render tests passed.

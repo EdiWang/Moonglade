@@ -131,19 +131,26 @@ public partial class PostCacheInvalidationTests
         var sitemapBefore = Assert.IsType<ContentHttpResult>(await SiteMapMapHandler.Handle(context, config, environment.Cache, environment.Invalidator, readDb));
         Assert.Contains("/post/", sitemapBefore.ResponseContent);
         Assert.DoesNotContain("canonical.example.com", sitemapBefore.ResponseContent);
-        var general = config.Capture().GeneralSettings.ToJson().FromJson<GeneralSettings>();
-        general = general with { SiteTitle = "Updated blog" };
-        general = general with { OwnerEmail = "changed@example.com" };
-        general = general with { CanonicalPrefix = "https://canonical.example.com" };
-        var image = ImageSettings.DefaultValue;
-        image = image with { EnableCDNRedirect = true };
-        image = image with { CDNEndpoint = "https://cdn.example.com" };
+        await SaveSetting(environment, config.Capture().GeneralSettings with
+        {
+            SiteTitle = "Updated blog",
+            OwnerEmail = "changed@example.com",
+            CanonicalPrefix = "https://canonical.example.com"
+        });
+        foreach (var atom in new[] { false, true })
+        {
+            var feed = await environment.ReadFeedAsync(atom, null);
+            Assert.Contains("Updated blog", feed);
+            Assert.Contains("/image/photo.png", feed);
+            Assert.DoesNotContain("https://cdn.example.com/photo.png", feed);
+        }
+        await SaveSetting(environment, ImageSettings.DefaultValue with
+        {
+            EnableCDNRedirect = true,
+            CDNEndpoint = "https://cdn.example.com"
+        });
 
-        using (var scope = environment.Services.CreateScope())
-            await scope.ServiceProvider.GetRequiredService<ICommandMediator>()
-                .SendAsync(UpdateConfigurationCommand.Create(general, image), TestContext.Current.CancellationToken);
-
-        Assert.Equal("2:rss", environment.Invalidator.GetFeedCacheKey("rss"));
+        Assert.Equal("3:rss", environment.Invalidator.GetFeedCacheKey("rss"));
         foreach (var atom in new[] { false, true })
             foreach (var category in new string?[] { null, "tech" })
             {

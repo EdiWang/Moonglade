@@ -2,30 +2,20 @@ using LiteBus.Commands.Abstractions;
 using LiteBus.Events.Abstractions;
 using Microsoft.Extensions.Logging;
 using Moonglade.Data;
-using System.Collections.ObjectModel;
-using System.Reflection;
 using System.ComponentModel.DataAnnotations;
 
 namespace Moonglade.Configuration;
 
 public record UpdateConfigurationCommand : ICommand
 {
-    public IReadOnlyDictionary<string, string> Settings { get; }
+    public object Settings { get; }
 
-    private UpdateConfigurationCommand(params KeyValuePair<string, string>[] settings) =>
-        Settings = new ReadOnlyDictionary<string, string>(settings.ToDictionary());
+    private UpdateConfigurationCommand(object settings) => Settings = settings;
 
-    public static UpdateConfigurationCommand Create<T>(T settings) where T : IBlogSettings<T> =>
-        new(Snapshot(settings));
-
-    public static UpdateConfigurationCommand Create<TFirst, TSecond>(TFirst first, TSecond second)
-        where TFirst : IBlogSettings<TFirst>
-        where TSecond : IBlogSettings<TSecond> => new(Snapshot(first), Snapshot(second));
-
-    private static KeyValuePair<string, string> Snapshot<T>(T settings) where T : IBlogSettings<T>
+    public static UpdateConfigurationCommand Create<T>(T settings) where T : IBlogSettings<T>
     {
         ArgumentNullException.ThrowIfNull(settings);
-        return new(typeof(T).Name, settings.ToJson());
+        return new(settings);
     }
 }
 
@@ -38,45 +28,27 @@ public class UpdateConfigurationCommandHandler(
 {
     public async Task HandleAsync(UpdateConfigurationCommand request, CancellationToken ct)
     {
-        var names = request.Settings.Keys.ToArray();
+        var settings = request.Settings;
+        var name = settings.GetType().Name;
         await gate.WaitAsync(ct);
         try
         {
-            var replacements = new List<(PropertyInfo Property, object Value)>();
-            foreach (var (name, json) in request.Settings)
-            {
-                var property = typeof(BlogSettingsSnapshot).GetProperty(name)
-                    ?? throw new InvalidOperationException($"Unknown blog setting '{name}'.");
-                var value = json.FromJson(property.PropertyType)
-                    ?? throw new InvalidOperationException($"Blog setting '{name}' cannot be null.");
-                Validator.ValidateObject(value, new ValidationContext(value), true);
-                replacements.Add((property, value));
-            }
+            var property = typeof(BlogSettingsSnapshot).GetProperty(name)
+                ?? throw new InvalidOperationException($"Unknown blog setting '{name}'.");
+            Validator.ValidateObject(settings, new ValidationContext(settings), true);
 
             var candidate = blogConfig.Capture() with { };
-            foreach (var (property, value) in replacements) property.SetValue(candidate, value);
+            property.SetValue(candidate, settings);
 
-            var entities = await db.BlogConfiguration
-                .Where(p => names.Contains(p.CfgKey))
-                .ToDictionaryAsync(p => p.CfgKey, ct);
-            foreach (var name in names)
+            var entity = await db.BlogConfiguration.SingleOrDefaultAsync(p => p.CfgKey == name, ct)
+                ?? throw new InvalidOperationException($"Configuration '{name}' was not found.");
+
+            var json = settings.ToJson();
+            var changed = entity.CfgValue != json;
+            if (changed)
             {
-                if (!entities.ContainsKey(name))
-                {
-                    throw new InvalidOperationException($"Configuration '{name}' was not found.");
-                }
-            }
-
-            var utcNow = DateTime.UtcNow;
-            var changedNames = new List<string>();
-            foreach (var (name, json) in request.Settings)
-            {
-                var entity = entities[name];
-                if (entity.CfgValue == json) continue;
-
                 entity.CfgValue = json;
-                entity.LastModifiedTimeUtc = utcNow;
-                changedNames.Add(name);
+                entity.LastModifiedTimeUtc = DateTime.UtcNow;
             }
 
             await db.SaveChangesAsync(ct);
@@ -84,14 +56,14 @@ public class UpdateConfigurationCommandHandler(
             blogConfig.Publish(candidate);
 
             // Commit and runtime publication must precede invalidation, even if the client disconnects.
-            if (changedNames.Count > 0)
-                await eventMediator.PublishAsync(new ConfigurationChangedEvent(changedNames.AsReadOnly()), CancellationToken.None);
+            if (changed)
+                await eventMediator.PublishAsync(new ConfigurationChangedEvent([name]), CancellationToken.None);
 
-            logger.LogInformation("Configuration updated successfully: {Names}", string.Join(", ", names));
+            logger.LogInformation("Configuration updated successfully: {Name}", name);
         }
         catch (Exception ex)
         {
-            logger.LogError(ex, "Failed to update configuration {Names}", string.Join(", ", names));
+            logger.LogError(ex, "Failed to update configuration {Name}", name);
             throw;
         }
         finally

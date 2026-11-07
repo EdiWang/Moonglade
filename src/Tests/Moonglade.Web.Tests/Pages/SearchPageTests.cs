@@ -27,6 +27,22 @@ namespace Moonglade.Web.Tests.Pages;
 public class SearchPageTests
 {
     [Fact]
+    public async Task SubscriptionPage_TagHelpersUseImmutableSettingMetadataAndSavedValue()
+    {
+        var config = CreateBlogConfig();
+        config.Publish(config.Capture() with { FeedSettings = new FeedSettings { FeedItemCount = 5 } });
+        using var app = await CreateTestApp(new SearchPageScenario(), config);
+        using var client = app.GetTestClient();
+
+        var html = await client.GetStringAsync("/admin/settings/subscription", TestContext.Current.CancellationToken);
+
+        Assert.Contains("Feed items</label>", html);
+        Assert.Contains("name=\"settings.FeedItemCount\"", html);
+        Assert.Contains("value=\"5\"", html);
+        Assert.Contains("data-val-range-min=\"0\"", html);
+    }
+
+    [Fact]
     public async Task RenderAndComponents_RetainHandlerCaptureAcrossPublication_AndRefreshOnNextRender()
     {
         var ct = TestContext.Current.CancellationToken;

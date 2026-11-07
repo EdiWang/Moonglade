@@ -53,8 +53,10 @@ public class SettingsValidationHttpTests
         Assert.Empty(store.Commands.OfType<Moonglade.ActivityLog.CreateActivityLogCommand>());
     }
 
-    [Fact]
-    public async Task TooManyParsedMenus_AreRejectedAtTheSharedWriteBoundary()
+    [Theory]
+    [InlineData(5, true)]
+    [InlineData(6, false)]
+    public async Task MenuLimit_IsValidatedAtTheSharedWriteBoundary(int count, bool valid)
     {
         using var store = new ConfigurationCommandRecorder();
         var config = Defaults();
@@ -63,14 +65,37 @@ public class SettingsValidationHttpTests
         var request = new CustomMenuSettingsJsonModel
         {
             IsEnabled = true,
-            MenuJson = Enumerable.Range(0, 6).Select(_ => new Menu { Title = "Link" }).ToArray().ToJson()
+            MenuJson = Enumerable.Range(0, count).Select(_ => new Menu { Title = "Link" }).ToArray().ToJson()
         };
 
         using var response = await client.PostAsJsonAsync("/api/settings/custom-menu", request, TestContext.Current.CancellationToken);
 
-        Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
-        Assert.Single(config.Capture().CustomMenuSettings.Menus);
-        Assert.Empty(store.Commands.OfType<Moonglade.ActivityLog.CreateActivityLogCommand>());
+        Assert.Equal(valid ? HttpStatusCode.NoContent : HttpStatusCode.BadRequest, response.StatusCode);
+        Assert.Equal(valid ? count : 1, config.Capture().CustomMenuSettings.Menus.Count);
+        if (!valid) Assert.Empty(store.Commands.OfType<Moonglade.ActivityLog.CreateActivityLogCommand>());
+    }
+
+    [Theory]
+    [InlineData("{}", 0, false)]
+    [InlineData("""{"feedItemCount":0,"useFullContent":false}""", 0, false)]
+    [InlineData("""{"feedItemCount":5,"useFullContent":true}""", 5, true)]
+    public async Task FeedRequest_BindsImmutableSettingsWithoutApplyingPersistedDefaults(string json, int count, bool full)
+    {
+        using var store = new ConfigurationCommandRecorder();
+        var config = Defaults();
+        var retained = config.Capture();
+        await using var app = await CreateApp(store, config);
+        using var client = app.GetTestClient();
+
+        using var response = await client.PostAsync("/api/settings/subscription", new StringContent(json, Encoding.UTF8, "application/json"),
+            TestContext.Current.CancellationToken);
+
+        Assert.Equal(HttpStatusCode.NoContent, response.StatusCode);
+        Assert.Equal(count, config.Capture().FeedSettings.FeedItemCount);
+        Assert.Equal(full, config.Capture().FeedSettings.UseFullContent);
+        Assert.Equal(20, retained.FeedSettings.FeedItemCount);
+        Assert.Equal(config.Capture().FeedSettings.ToJson(), (await store.Db.BlogConfiguration.AsNoTracking().SingleAsync(
+            row => row.CfgKey == nameof(FeedSettings), TestContext.Current.CancellationToken)).CfgValue);
     }
 
     [Fact]
