@@ -3,13 +3,14 @@
 ## Resume Here
 
 - Last reconciled: 2026-11-07, Asia/Taipei.
-- Committed application baseline: `cacdae4f1` (`Separate settings parsing from publication`), on `master`. The working tree was clean before automated acceptance.
-- Reliability and structural implementation through S3 is complete and committed. Final functional acceptance is pending.
+- S6 started from clean HEAD `d81240a86` (`Record automated settings acceptance`), on `master`; committed application baseline is `cacdae4f1`. The S6 scheduler fix, regression tests and acceptance records are uncommitted.
+- Reliability and structural implementation through S3 is complete. S6 technical verification passed within the agreed deployment scope; final user sign-off and temporary-file cleanup remain pending.
 - Maintenance review items 1, 4, 6, and the duplicate initialization-log wrapper are committed in `fe22d13ce`.
 - Review items 2 and 3 are committed in `701b3be04`. Ordinary commands retain one immutable settings group; production regression coverage supersedes the S0 candidate implementation.
 - Review item 5 is committed in `cacdae4f1`. Pure `BlogConfig.Parse` returns the snapshot and default JSON; initialization repairs once, then publishes the prepared snapshot/account without re-parsing. First-install transactions, commit verification, and the subsequent committed-data reload remain. No new loader interface, registry, or batch-write framework was added.
-- Authorized automated acceptance is complete: the full solution passed with PostgreSQL and SQL Server enabled, with no failed or skipped cases. Docker is available and the previous provider-verification gap is closed. This turn changed only acceptance records; no commit is authorized.
-- Next acceptance batch: **S6** real-host/browser checks, defined in [the acceptance plan](SETTINGS_STRUCTURE_PLAN.md). The user limited this acceptance run to both database providers and full automated tests; real-host/browser work still requires authorization. No commit, deployment, or production-data change is authorized.
+- **S6 technical checks passed:** full solution with both providers **1465 passed, 0 failed, 0 skipped**; isolated PostgreSQL host/Chrome checks passed. The user authorized fixing overdue scheduled posts missing immediate wake-up publication. The next-time query now includes overdue, nondeleted schedules with timestamps; five new regression cases and the rebuilt live-host reproduction passed.
+- The user accepted the existing root-path deployment limit. Full subpath hosting is outside this work; do not add forwarded-prefix or client-URL changes without a new decision. Local authentication/TOTP was exercised live; external OIDC sign-in was not provisioned.
+- Next actions: final user sign-off and cleanup of `C:/Users/Edi/AppData/Local/Temp/moonglade-s6-062e5864aadc`. Automatic approval review rejected deletion with "blocked by policy" after target verification. Containers/volumes/network, proxy and browser session are already removed; only that temporary directory remains. Do not print its test credentials. See [S6 evidence](SETTINGS_STRUCTURE_PLAN.md). No commit, deployment, or production-data change is authorized.
 - Retain this tracker and update status, verification, remaining issues, and the next action at every batch boundary. A new conversation should read this file, `AGENTS.md`, and the relevant engineering-reference sections first.
 - No design question is currently pending. Ask about new requirement, business, architecture, or recovery-policy choices, with a recommendation; continue independent authorized work while waiting.
 
@@ -26,8 +27,8 @@
 | Maintenance 1 | Review items 1, 4, 6 and duplicate log wrapper complete; focused tests and Web build passed, with provider tests skipped as recorded below. | `fe22d13ce` |
 | Maintenance 2 | Review items 2 and 3 complete; Configuration/Web regression tests and Web build passed as recorded below. | `701b3be04` |
 | Maintenance 3 | Review item 5 complete; full automated acceptance below includes the previously skipped database groups. | `cacdae4f1` |
-| Automated acceptance | Full solution with both providers: 1460 passed, 0 failed, 0 skipped. Web build passed; disposable containers cleaned up. | Application `cacdae4f1`; acceptance records uncommitted |
-| S6 | Final isolated-host/browser regression and acceptance; not started. | Await authorization |
+| Automated acceptance | Superseded by S6 final regression: 1465 passed with both providers, no failures/skips. | Earlier evidence `d81240a86` |
+| S6 | Technical verification passed; overdue-scheduler fix verified. User sign-off and policy-blocked temporary-directory cleanup pending. | Uncommitted; no commit authorized |
 
 ## Rules To Preserve
 
@@ -58,7 +59,7 @@
 
 ## Verification Baseline
 
-Automated acceptance on 2026-11-07, against `cacdae4f1`:
+S6 on 2026-11-07: `d81240a86` plus the uncommitted scheduler fix and five regression cases.
 
 ```powershell
 $env:MOONGLADE_TEST_CATEGORY_DATABASES = '1'
@@ -66,13 +67,13 @@ dotnet test --solution src/Moonglade.slnx --no-restore
 dotnet build src/Moonglade.Web/Moonglade.Web.csproj --no-restore
 ```
 
-- Full solution: **1460 passed, 0 failed, 0 skipped**, across all 15 test assemblies; reported test duration 42.312 seconds. The previously skipped opt-in database groups ran against disposable PostgreSQL 18 and SQL Server 2022 databases. This replaces the earlier focused runs and their unavailable-provider limitation.
-- Database coverage includes fresh/existing-empty-schema installation, repeated startup, installation rollback and retry, transient failure, lost commit acknowledgment, failed emptiness queries, preservation of existing content when protected state is missing/invalid, ordinary-group repair, valid partial JSON/timestamp preservation, and both manual upgrade suites.
-- Other regression coverage includes the pure parser, paused repair publication, single-group writes and event ordering, audit failures, local avatars, scheduler/restart rules, and paused feed/render/image/comment operations across publication.
-- Web build: **0 warnings, 0 errors**. Full test compilation reported three existing **CS8602** warnings in unchanged `src/Tests/Moonglade.BackgroundServices.Tests/CannonServiceTests.cs` (88/188/226). `git diff --check` passed.
-- Docker server version: 29.9.2. The test fixture removed its disposable containers; `docker ps -a --filter label=moonglade.category-tests=true` returned no containers afterward. No real blog data, image storage, or external service configuration was changed.
-- Diagnostic output is retained in the local temporary file `moonglade-settings-acceptance-602ec074da26485696996f9370329cbb.log`. No application code changed in this acceptance run; only these task records were updated. No commit or deployment was performed.
-- The user explicitly deferred S6 real-host/browser acceptance. Automated acceptance passed; it does not complete those remaining checks or imply final user sign-off.
+- Full solution: **1465 passed, 0 failed, 0 skipped**, across all 15 assemblies, 40.068 seconds. PostgreSQL 18 and SQL Server 2022 groups ran, including initialization rollback/retry/lost acknowledgment, existing-data preservation, partial JSON/timestamps and manual upgrade suites. Focused Features/Web suites passed 120/367 cases.
+- Web build: **0 warnings, 0 errors**. Full test compilation still reported three existing CS8602 warnings in unchanged `CannonServiceTests.cs` (88/188/226). `git diff --check` passed.
+- Real Chrome/HTTPS/PostgreSQL host checks passed all nine settings UI saves, validation errors, menus/defaults, next-render refresh, local sign-in/TOTP/password/session/reset/rate limits, avatar/settings isolation, article watermark/original/CDN/ETag behavior, Gravatar, feeds, sitemap/theme/tag caches, endpoint/sender-name restart rules and the fixed scheduler. Seven startup preservation/repair/failure scenarios passed. Fault/race scenarios reuse passing automated tests; see [detailed evidence](SETTINGS_STRUCTURE_PLAN.md).
+- Accepted limit: deployment at the URL root. URL helpers remain PathBase-aware, but a forwarded prefix alone does not configure full subpath hosting. This is documented in README and the engineering reference. No external OIDC tenant was exercised; live authentication used Local with required TOTP.
+- Ignored local evidence: `output/playwright/s6/final-tests.log`, `recovery-results.json`, `public.png`, `settings-general.png`. Enrollment snapshots and console artifacts were removed. Task-created containers/anonymous volumes/network, proxy and browser session were removed; shared Docker image caches remain.
+- Cleanup exception: automatic approval review blocked deletion of the verified temporary directory `C:/Users/Edi/AppData/Local/Temp/moonglade-s6-062e5864aadc`, returning only "blocked by policy". It still contains the isolated publish, synthetic images, scripts, database backup and credentials/certificate for destroyed test services. Do not print or reuse them. Manual or permitted cleanup and final user acceptance are still pending.
+- No production data, configuration, credentials, deployment or commit changed. Only the user-authorized scheduler fix and its tests/documents are in the working tree.
 
 ## References And Limits
 

@@ -21,6 +21,42 @@ namespace Moonglade.Web.Tests.Caching;
 public partial class PostCacheInvalidationTests
 {
     [Fact]
+    public async Task EnablingScheduler_WithRealQuery_PublishesOverduePostWithoutPollingDelay()
+    {
+        var ct = TestContext.Current.CancellationToken;
+        var publication = new ScheduledPublicationSignal();
+        using var environment = await TestEnvironment.CreateAsync(publication);
+        await SaveSetting(environment, new AdvancedSettings { EnablePostScheduler = false });
+        using (var scope = environment.Services.CreateScope())
+        {
+            var db = scope.ServiceProvider.GetRequiredService<BlogDbContext>();
+            var post = await db.Post.SingleAsync(ct);
+            post.PostStatus = PostStatus.Scheduled;
+            post.PubDateUtc = null;
+            post.RouteLink = null;
+            post.ScheduledPublishTimeUtc = DateTime.UtcNow.AddMinutes(-1);
+            await db.SaveChangesAsync(ct);
+        }
+        publication.Enabled = true;
+        using var worker = new ScheduledPublishService(environment.Services, NullLogger<ScheduledPublishService>.Instance,
+            environment.Services.GetRequiredService<ScheduledPublishWakeUp>(), environment.Services.GetRequiredService<IBlogConfig>());
+        await worker.StartAsync(ct);
+        try
+        {
+            await SaveSetting(environment, new AdvancedSettings { EnablePostScheduler = true });
+            await publication.Published.Task.WaitAsync(TimeSpan.FromSeconds(10), ct);
+        }
+        finally
+        {
+            await worker.StopAsync(ct);
+        }
+        using var verification = environment.Services.CreateScope();
+        var saved = await verification.ServiceProvider.GetRequiredService<BlogDbContext>().Post.SingleAsync(ct);
+        Assert.Equal(PostStatus.Published, saved.PostStatus);
+        Assert.NotNull(saved.PubDateUtc);
+    }
+
+    [Fact]
     public async Task SitemapCache_UsesCapturedCanonicalPrefixBeforePostCommitInvalidation()
     {
         using var environment = await TestEnvironment.CreateAsync();
@@ -283,5 +319,19 @@ public partial class PostCacheInvalidationTests
         public override ValueTask<InterceptionResult<int>> SavingChangesAsync(DbContextEventData eventData,
             InterceptionResult<int> result, CancellationToken cancellationToken = default) =>
             Enabled ? throw new DbUpdateException("Injected settings save failure.") : ValueTask.FromResult(result);
+    }
+
+    private sealed class ScheduledPublicationSignal : SaveChangesInterceptor
+    {
+        public bool Enabled { get; set; }
+        public TaskCompletionSource Published { get; } = new(TaskCreationOptions.RunContinuationsAsynchronously);
+
+        public override ValueTask<int> SavedChangesAsync(SaveChangesCompletedEventData eventData, int result,
+            CancellationToken cancellationToken = default)
+        {
+            if (Enabled && eventData.Context!.ChangeTracker.Entries<PostEntity>().Any(entry => entry.Entity.PostStatus == PostStatus.Published))
+                Published.TrySetResult();
+            return ValueTask.FromResult(result);
+        }
     }
 }

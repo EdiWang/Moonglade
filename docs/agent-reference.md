@@ -64,7 +64,7 @@ HTML email bodies encode ordinary mapped values. Only wrap the already-rendered 
 - Recycle, publish, and unpublish endpoints dispatch their feature commands directly from `PostController`, then use the inherited `LogActivityAsync` method. Keep the save workflow for its scheduling and notification coordination; do not add forwarding workflow commands for simple state operations.
 - Published posts generate a `RouteLink` based on publish date and slug. Do not casually change the published URL shape because old links, RSS/Atom, sitemap, search engines, and caches depend on it.
 - Article state writes use `PostEntityHelper.SetStatus` to assign `PostStatus`, `PubDateUtc`, `ScheduledPublishTimeUtc`, and `RouteLink` together. Only draft, scheduled, and published are valid write states; deletion remains an independent `IsDeleted` flag. Published writes clear scheduled time; draft and scheduled writes clear publication time and route. Callers choose timestamps: editing a published post preserves its publication date, manual publishing uses the current time, and scheduled publishing uses its actual execution time without changing `LastModifiedUtc`. Resolve creation slug conflicts and apply edited slugs before generating the route.
-- Scheduled publishing converts client local time to UTC and is handled by `ScheduledPublishWakeUp` / `ScheduledPublishService`. Persisted and cross-boundary timestamps should use UTC.
+- Scheduled publishing converts client local time to UTC and is handled by `ScheduledPublishWakeUp` / `ScheduledPublishService`. The next-time query includes overdue schedules and ignores deleted posts or missing schedule times, so enabling the worker dispatches already-due work without a five-minute polling delay. Persisted and cross-boundary timestamps should use UTC.
 - Pages, categories, tags, assets, recycle bin behavior, and related blog features live under the relevant feature folders in `Moonglade.Features`.
 
 ### Comments And Moderation
@@ -200,6 +200,8 @@ Moonglade consumes Moonglade.Editor through the `Moonglade.Editor.StaticAssets` 
 ## Local Runtime
 
 Use [Build & Run](../README.md#build--run) for commands, launch URLs, and the default local account; URLs come from `src/Moonglade.Web/Properties/launchSettings.json`. The TOTP bypass applies only in Development when `Authentication:Totp:Required=false`.
+
+The current host and client URLs assume deployment at the URL root. Forwarding `X-Forwarded-Prefix` alone does not mount a subpath. PathBase-aware URL-helper tests do not establish end-to-end subpath hosting support; that requires separate pipeline and client-URL work.
 
 ## Migration Verification
 

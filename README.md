@@ -89,6 +89,8 @@ dotnet run --project src/Moonglade.Web/Moonglade.Web.csproj
 
 Open `https://localhost:10210` or `https://localhost:10210/admin`. The default local account is `admin` / `admin123`; first sign-in requires scanning the authenticator QR code and entering its 6-digit TOTP code. For test commands and coverage guidance, see [Tests](src/Tests/README.md).
 
+Deploy the current application at the URL root. Hosting under a prefix such as `/blog` is not supported by forwarding `X-Forwarded-Prefix` alone; it requires additional host-pipeline and client-URL work.
+
 ## ⚙️ Configuration
 
 > Host settings use `src/Moonglade.Web/appsettings.json` and standard environment overrides (`:` becomes `__`). Persisted blog settings use `/admin/settings`.

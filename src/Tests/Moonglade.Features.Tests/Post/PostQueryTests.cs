@@ -16,6 +16,46 @@ public class PostQueryTests
         return new BlogDbContext(options);
     }
 
+    [Theory]
+    [InlineData(-60)]
+    [InlineData(0)]
+    [InlineData(60)]
+    public async Task NextScheduledTime_IncludesDueWorkAndIgnoresIneligiblePosts(int minutes)
+    {
+        using var db = CreateDbContext();
+        var expected = DateTime.UtcNow.AddMinutes(minutes);
+        var first = CreatePost(Guid.NewGuid(), "first", PostStatus.Scheduled, null);
+        first.ScheduledPublishTimeUtc = expected;
+        var later = CreatePost(Guid.NewGuid(), "later", PostStatus.Scheduled, null);
+        later.ScheduledPublishTimeUtc = expected.AddHours(1);
+        var deleted = CreatePost(Guid.NewGuid(), "deleted", PostStatus.Scheduled, null, isDeleted: true);
+        deleted.ScheduledPublishTimeUtc = expected.AddHours(-1);
+        var draft = CreatePost(Guid.NewGuid(), "draft", PostStatus.Draft, null);
+        draft.ScheduledPublishTimeUtc = expected.AddHours(-2);
+        db.Post.AddRange(first, later, deleted, draft, CreatePost(Guid.NewGuid(), "missing-time", PostStatus.Scheduled, null));
+        await db.SaveChangesAsync(TestContext.Current.CancellationToken);
+
+        var result = await new GetNextScheduledPostTimeQueryHandler(db).HandleAsync(new GetNextScheduledPostTimeQuery(),
+            TestContext.Current.CancellationToken);
+
+        Assert.Equal(expected, result);
+    }
+
+    [Fact]
+    public async Task NextScheduledTime_WithoutEligibleSchedules_ReturnsNull()
+    {
+        using var db = CreateDbContext();
+        var deleted = CreatePost(Guid.NewGuid(), "deleted", PostStatus.Scheduled, null, isDeleted: true);
+        deleted.ScheduledPublishTimeUtc = DateTime.UtcNow.AddMinutes(-1);
+        db.Post.AddRange(deleted, CreatePost(Guid.NewGuid(), "missing-time", PostStatus.Scheduled, null));
+        await db.SaveChangesAsync(TestContext.Current.CancellationToken);
+
+        var result = await new GetNextScheduledPostTimeQueryHandler(db).HandleAsync(new GetNextScheduledPostTimeQuery(),
+            TestContext.Current.CancellationToken);
+
+        Assert.Null(result);
+    }
+
     [Fact]
     public async Task ListPostsQuery_ReturnsOnlyPublishedNotDeletedPostsOrderedByPublishDate()
     {

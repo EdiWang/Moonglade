@@ -9,10 +9,9 @@ public class GetNextScheduledPostTimeQueryHandler(BlogDbContext db) :
 {
     public async Task<DateTime?> HandleAsync(GetNextScheduledPostTimeQuery request, CancellationToken ct)
     {
-        var now = DateTime.UtcNow;
         return await db.Post
             .AsNoTracking()
-            .Where(p => p.PostStatus == PostStatus.Scheduled && p.ScheduledPublishTimeUtc > now)
+            .Where(p => p.PostStatus == PostStatus.Scheduled && !p.IsDeleted && p.ScheduledPublishTimeUtc != null)
             .OrderBy(p => p.ScheduledPublishTimeUtc)
             .Select(p => p.ScheduledPublishTimeUtc)
             .FirstOrDefaultAsync(ct);
