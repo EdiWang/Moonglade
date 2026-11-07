@@ -22,6 +22,12 @@ public class FoafMapHandler
         LinkGenerator linkGenerator)
     {
         var settings = blogConfig.Capture();
+        if (!settings.AdvancedSettings.EnableFoaf)
+        {
+            httpContext.Response.StatusCode = StatusCodes.Status404NotFound;
+            return;
+        }
+
         var general = settings.GeneralSettings ?? throw new InvalidOperationException("GeneralSettings is null.");
 
         try

@@ -17,6 +17,11 @@ public class SiteMapMapHandler
         BlogDbContext db)
     {
         var settings = blogConfig.Capture();
+        if (!settings.AdvancedSettings.EnableSiteMap)
+        {
+            return Results.NotFound();
+        }
+
         var xml = await cache.GetOrCreateAsync(BlogCachePartition.General.ToString(), postCacheInvalidator.GetSiteMapCacheKey(settings), async () =>
         {
             var url = UrlHelper.ResolveRootUrl(httpContext, settings.GeneralSettings.CanonicalPrefix, true, true);

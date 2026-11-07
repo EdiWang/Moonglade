@@ -119,7 +119,7 @@ Successful changes invalidate affected server caches in the current process, inc
 | Watermarks and original-image retention | Future uploads; existing image files are not reprocessed. |
 | Notification switches | Future enqueue decisions; already queued email is retained. |
 | Notification sender display name | Application restart required, including when changing to/from the deployment fallback. |
-| FOAF and sitemap enable/disable | Application restart required in both directions. |
+| FOAF and sitemap enable/disable | Subsequent requests to the current instance. Disabled endpoints return HTTP 404. |
 | Scheduled publishing enable/disable | Saving wakes the worker and it rechecks before dispatching publication; publication already dispatched is not canceled. |
 
 Other rendering and operation settings apply to subsequent requests or operations. Server invalidation does not purge browser, CDN, proxy, or feed-reader caches; these can retain older responses under their existing cache rules.
