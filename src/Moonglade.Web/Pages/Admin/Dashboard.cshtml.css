@@ -135,9 +135,3 @@
 [data-bs-theme="dark"] .dashboard-panel {
     background-color: var(--bs-body-bg);
 }
-
-@media (max-width: 575.98px) {
-    .dashboard-count-grid {
-        grid-template-columns: 1fr;
-    }
-}

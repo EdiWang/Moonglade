@@ -48,7 +48,7 @@
                 <div class="col">
                     <label class="form-check-label">@SharedLocalizer["Enable custom menus"]</label>
                 </div>
-                <div class="col-md-5 text-end">
+                <div class="col-5 text-end">
                     <div class="form-check form-switch form-control-lg">
                         <input type="checkbox" x-model="settings.isEnabled" class="form-check-input" />
                     </div>
@@ -168,23 +168,23 @@
                     </div>
                     
                     <div class="row mb-3">
-                        <div class="col-md-8">
+                        <div class="col-8">
                             <label for="menu-icon" class="form-label">@SharedLocalizer["Icon"]</label>
                             <input type="text" class="form-control" id="menu-icon" x-model="currentMenuItem.icon" placeholder="bi-star">
                             <div class="form-text">@SharedLocalizer["Bootstrap Icons class name"]</div>
                         </div>
-                        <div class="col-md-4">
+                        <div class="col-4">
                             <label class="form-label">@SharedLocalizer["Preview"]</label>
                             <div><i id="icon-preview" :class="currentMenuItem.icon || 'bi-star'"></i></div>
                         </div>
                     </div>
                     
                     <div class="row mb-3">
-                        <div class="col-md-6">
+                        <div class="col-6">
                             <label for="menu-order" class="form-label">@SharedLocalizer["Display Order"]</label>
                             <input type="number" class="form-control" id="menu-order" x-model.number="currentMenuItem.displayOrder" min="1">
                         </div>
-                        <div class="col-md-6">
+                        <div class="col-6">
                             <div class="form-check form-switch mt-4">
                                 <input class="form-check-input" type="checkbox" id="menu-new-tab" x-model="currentMenuItem.isOpenInNewTab">
                                 <label class="form-check-label" for="menu-new-tab">

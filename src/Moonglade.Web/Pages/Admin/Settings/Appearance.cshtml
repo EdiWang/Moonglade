@@ -41,7 +41,7 @@
 <form id="form-settings" asp-controller="Settings" asp-action="Appearance">
     <div class="admin-settings-entry-container">
         <div class="row">
-            <div class="col-md-6">
+            <div class="col-6">
                 <h4 class="admin-subtitle fw-bold mb-2">
                     @SharedLocalizer["Theme"]
                 </h4>
@@ -51,7 +51,7 @@
                     <div class="row g-3">
                         @foreach (var theme in Themes.Where(p => p.ThemeType == ThemeType.System))
                         {
-                            <div class="col-md-4">
+                            <div class="col-4">
                                 <div class="theme-selector-container card @(ViewModel.ThemeId == theme.Id ? "active" : null)"
                                      style="border-color: @theme.CssRulesDictionary["--accent-color1"]"
                                      id="theme-selector-container-@theme.Id"
@@ -91,7 +91,7 @@
                     <div class="row g-3 mb-2">
                         @foreach (var theme in UserThemes)
                         {
-                            <div class="col-md-4" id="user-theme-col-@theme.Id">
+                            <div class="col-4" id="user-theme-col-@theme.Id">
                                 <div class="theme-selector-container card @(ViewModel.ThemeId == theme.Id ? "active" : null)"
                                      style="border-color: @theme.CssRulesDictionary["--accent-color1"]"
                                      id="theme-selector-container-@theme.Id"
@@ -141,7 +141,7 @@
                     }
                 </section>
             </div>
-            <div class="col-md-6">
+            <div class="col-6">
                 <h4 class="admin-subtitle fw-bold mb-2">
                     @SharedLocalizer["Custom CSS"]
                 </h4>
@@ -153,7 +153,7 @@
                     <div class="col">
                         <label asp-for="@ViewModel.EnableCustomCss" class="form-check-label"></label>
                     </div>
-                    <div class="col-md-5 text-end">
+                    <div class="col-5 text-end">
                         <div class="form-check form-switch form-control-lg">
                             <input type="hidden" name="EnableCustomCss" value="false">
                             <input type="checkbox" name="EnableCustomCss" value="true" data-setting-requires="CssCode" class="form-check-input" @(@ViewModel.EnableCustomCss ? "checked" : null) />

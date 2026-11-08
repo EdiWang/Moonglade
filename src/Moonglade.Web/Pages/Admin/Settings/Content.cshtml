@@ -21,7 +21,7 @@
 <form id="form-settings" asp-controller="Settings" asp-action="Content">
     <div class="admin-settings-entry-container">
         <div class="row">
-            <div class="col-md-6">
+            <div class="col-6">
                 <h4 class="admin-subtitle fw-bold mb-2">@SharedLocalizer["Editor"]</h4>
                 <div class="settings-entry row align-items-center py-3 px-2 rounded-3 border mb-3">
                     <div class="col-auto">
@@ -31,7 +31,7 @@
                         <label asp-for="@settings.DefaultEditor"></label>
                         <div class="form-text">@SharedLocalizer["Applies to new posts only."]</div>
                     </div>
-                    <div class="col-md-5">
+                    <div class="col-5">
                         <select asp-for="@settings.DefaultEditor" class="form-select">
                             <option value="Html">HTML</option>
                             <option value="Markdown">Markdown</option>
@@ -75,7 +75,7 @@
                     <div class="col">
                         <label asp-for="@settings.PostTitleAlignment" class="me-4"></label>
                     </div>
-                    <div class="col-md-5 text-end">
+                    <div class="col-5 text-end">
                         <div class="form-check form-check-inline">
                             @Html.RadioButtonFor(model => settings.PostTitleAlignment, PostTitleAlignment.Left, new { id = PostTitleAlignment.Left.ToString(), @class = "form-check-input" })
                             <label class="form-check-label" for="@PostTitleAlignment.Left">@SharedLocalizer["Left"]</label>
@@ -94,7 +94,7 @@
                     <div class="col">
                         <label asp-for="@settings.DocumentOutline" class="form-check-label"></label>
                     </div>
-                    <div class="col-md-5 text-end">
+                    <div class="col-5 text-end">
                         <div class="form-check form-switch form-control-lg">
                             <input type="hidden" name="DocumentOutline" value="false">
                             <input type="checkbox" name="DocumentOutline" value="true" class="form-check-input" @(settings.DocumentOutline ? "checked" : null)>
@@ -109,7 +109,7 @@
                     <div class="col">
                         <label asp-for="@settings.EnableViewCount" class="form-check-label"></label>
                     </div>
-                    <div class="col-md-5 text-end">
+                    <div class="col-5 text-end">
                         <div class="form-check form-switch form-control-lg">
                             <input type="hidden" name="EnableViewCount" value="false">
                             <input type="checkbox" name="EnableViewCount" value="true" class="form-check-input" @(settings.EnableViewCount ? "checked" : null)>
@@ -126,7 +126,7 @@
                             <label asp-for="@settings.ShowPostFooter" class="form-check-label"></label>
                             <div class="form-text">@SharedLocalizer["e.g. Your blog post license information."]</div>
                         </div>
-                        <div class="col-md-5 text-end">
+                        <div class="col-5 text-end">
                             <div class="form-check form-switch form-control-lg">
                                 <input type="hidden" name="ShowPostFooter" value="false">
                                 <input type="checkbox" name="ShowPostFooter" value="true" class="form-check-input" @(settings.ShowPostFooter ? "checked" : null)>
@@ -144,7 +144,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-md-6">
+            <div class="col-6">
                 <h4 class="admin-subtitle fw-bold mb-2">@SharedLocalizer["Call-out"]</h4>
 
                 <div class="rounded-3 border mb-2">
@@ -156,7 +156,7 @@
                             <label asp-for="@settings.ShowCalloutSection" class="form-check-label"></label>
                             <div class="form-text">@SharedLocalizer["The call-out section will display on top of every page in the website."]</div>
                         </div>
-                        <div class="col-md-5 text-end">
+                        <div class="col-5 text-end">
                             <div class="form-check form-switch form-control-lg">
                                 <input type="hidden" name="ShowCalloutSection" value="false">
                                 <input type="checkbox" name="ShowCalloutSection" value="true" class="form-check-input" @(settings.ShowCalloutSection ? "checked" : null)>

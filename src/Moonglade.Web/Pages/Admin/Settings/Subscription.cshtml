@@ -17,7 +17,7 @@
 <form id="form-settings" asp-controller="Settings" asp-action="Subscription" spellcheck="false">
     <div class="admin-settings-entry-container">
         <div class="row">
-            <div class="col-lg-6">
+            <div class="col-6">
                 <div class="settings-entry row align-items-center py-3 px-2 rounded-3 border mb-1">
                     <div class="col-auto">
                         <i class="bi-list-ol settings-entry-icon"></i>
@@ -26,7 +26,7 @@
                         <label asp-for="@settings.FeedItemCount"></label>
                         <div class="form-text">@SharedLocalizer["The number of entries to include in RSS/ATOM feed."]</div>
                     </div>
-                    <div class="col-md-5">
+                    <div class="col-5">
                         <input asp-for="@settings.FeedItemCount" data-setting-edit="" class="form-control" required />
                     </div>
                 </div>
@@ -38,7 +38,7 @@
                     <div class="col">
                         <label asp-for="@settings.UseFullContent" class="form-check-label"></label>
                     </div>
-                    <div class="col-md-5 text-end">
+                    <div class="col-5 text-end">
                         <div class="form-check form-switch form-control-lg">
                             <input type="hidden" name="UseFullContent" value="false">
                             <input type="checkbox" name="UseFullContent" value="true" class="form-check-input" @(@settings.UseFullContent ? "checked" : null) />

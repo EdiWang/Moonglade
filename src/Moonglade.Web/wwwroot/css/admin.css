@@ -133,10 +133,6 @@
     overflow: hidden;
 }
 
-.admin-body-wrapper.toggled .admin-nav {
-    margin-left: -15rem;
-}
-
 .textarea-code {
     font-family: 'Consolas';
     font-size: 12px;
@@ -490,29 +486,6 @@
     font-weight: 400;
     line-height: 1.55;
     text-align: center;
-}
-
-@media (max-width: 767.98px) {
-    .local-account-actions {
-        grid-template-columns: minmax(0, 1fr);
-        min-height: auto;
-        padding: 24px 0;
-    }
-
-    .local-account-action {
-        min-height: 220px;
-        padding: 24px;
-    }
-
-    .local-account-action-icon {
-        font-size: 1.6rem;
-        height: 56px;
-        width: 56px;
-    }
-
-    .local-account-action-title {
-        font-size: 1.12rem;
-    }
 }
 
 .tags-dropdown .tagify__dropdown__item {

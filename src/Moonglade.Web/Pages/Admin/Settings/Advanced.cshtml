@@ -19,7 +19,7 @@
 <form id="form-settings" asp-controller="Settings" asp-action="Advanced">
     <div class="admin-settings-entry-container">
         <div class="row">
-            <div class="col-md-6">
+            <div class="col-6">
                 <div class="mb-4">
                     <h4 class="admin-subtitle fw-bold mb-2">@SharedLocalizer["Advanced Settings"]</h4>
 
@@ -30,7 +30,7 @@
                         <div class="col">
                             <label asp-for="@settings.EnableWebmention" class="form-check-label"></label>
                         </div>
-                        <div class="col-md-4 text-end">
+                        <div class="col-4 text-end">
                             <div class="form-check form-switch form-control-lg">
                                 <input type="hidden" name="EnableWebmention" value="false">
                                 <input type="checkbox" name="EnableWebmention" value="true" class="form-check-input" @(settings.EnableWebmention ? "checked" : null)>
@@ -45,7 +45,7 @@
                         <div class="col">
                             <label asp-for="@settings.EnableSiteMap" class="form-check-label"></label>
                         </div>
-                        <div class="col-md-4 text-end">
+                        <div class="col-4 text-end">
                             <div class="form-check form-switch form-control-lg">
                                 <input type="hidden" name="EnableSiteMap" value="false">
                                 <input type="checkbox" name="EnableSiteMap" value="true" class="form-check-input" @(settings.EnableSiteMap ? "checked" : null)>
@@ -60,7 +60,7 @@
                         <div class="col">
                             <label class="form-check-label">@SharedLocalizer["Index Now"]</label>
                         </div>
-                        <div class="col-md-4 text-end">
+                        <div class="col-4 text-end">
                             @if (string.IsNullOrWhiteSpace(Configuration["IndexNow:ApiKey"]))
                             {
                                 <text>@SharedLocalizer["Not configured"]</text>
@@ -79,7 +79,7 @@
                         <div class="col">
                             <label asp-for="@settings.EnableOpenSearch" class="form-check-label"></label>
                         </div>
-                        <div class="col-md-4 text-end">
+                        <div class="col-4 text-end">
                             <div class="form-check form-switch form-control-lg">
                                 <input type="hidden" name="EnableOpenSearch" value="false">
                                 <input type="checkbox" name="EnableOpenSearch" value="true" class="form-check-input" @(settings.EnableOpenSearch ? "checked" : null)>
@@ -94,7 +94,7 @@
                         <div class="col">
                             <label asp-for="@settings.EnableFoaf" class="form-check-label"></label>
                         </div>
-                        <div class="col-md-4 text-end">
+                        <div class="col-4 text-end">
                             <div class="form-check form-switch form-control-lg">
                                 <input type="hidden" name="EnableFoaf" value="false">
                                 <input type="checkbox" name="EnableFoaf" value="true" class="form-check-input" @(settings.EnableFoaf ? "checked" : null)>
@@ -109,7 +109,7 @@
                         <div class="col">
                             <label asp-for="@settings.EnableOpml" class="form-check-label"></label>
                         </div>
-                        <div class="col-md-4 text-end">
+                        <div class="col-4 text-end">
                             <div class="form-check form-switch form-control-lg">
                                 <input type="hidden" name="EnableOpml" value="false">
                                 <input type="checkbox" name="EnableOpml" value="true" class="form-check-input" @(settings.EnableOpml ? "checked" : null)>
@@ -125,7 +125,7 @@
                             <label asp-for="@settings.EnablePostScheduler" class="form-check-label"></label>
                             <div class="form-text">@SharedLocalizer["Changes wake the scheduler. Publishing already in progress is not canceled."]</div>
                         </div>
-                        <div class="col-md-4 text-end">
+                        <div class="col-4 text-end">
                             <div class="form-check form-switch form-control-lg">
                                 <input type="hidden" name="EnablePostScheduler" value="false">
                                 <input type="checkbox" name="EnablePostScheduler" value="true" class="form-check-input" @(settings.EnablePostScheduler ? "checked" : null)>
@@ -140,7 +140,7 @@
                         <div class="col">
                             <label asp-for="@settings.WarnPostExternalLink" class="form-check-label"></label>
                         </div>
-                        <div class="col-md-4 text-end">
+                        <div class="col-4 text-end">
                             <div class="form-check form-switch form-control-lg">
                                 <input type="hidden" name="WarnPostExternalLink" value="false">
                                 <input type="checkbox" name="WarnPostExternalLink" value="true" class="form-check-input" @(settings.WarnPostExternalLink ? "checked" : null)>
@@ -155,7 +155,7 @@
                         <div class="col">
                             <label asp-for="@settings.WarnCommentExternalLink" class="form-check-label"></label>
                         </div>
-                        <div class="col-md-4 text-end">
+                        <div class="col-4 text-end">
                             <div class="form-check form-switch form-control-lg">
                                 <input type="hidden" name="WarnCommentExternalLink" value="false">
                                 <input type="checkbox" name="WarnCommentExternalLink" value="true" class="form-check-input" @(settings.WarnCommentExternalLink ? "checked" : null)>
@@ -170,7 +170,7 @@
                         <div class="col">
                             <label asp-for="@settings.EnableJsonLdBlogPosting" class="form-check-label"></label>
                         </div>
-                        <div class="col-md-4 text-end">
+                        <div class="col-4 text-end">
                             <div class="form-check form-switch form-control-lg">
                                 <input type="hidden" name="EnableJsonLdBlogPosting" value="false">
                                 <input type="checkbox" name="EnableJsonLdBlogPosting" value="true" class="form-check-input" @(settings.EnableJsonLdBlogPosting ? "checked" : null)>
@@ -179,7 +179,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-md-6">
+            <div class="col-6">
                 <div class="mb-3">
                     <h4 class="admin-subtitle fw-bold mb-2">@Html.DisplayNameFor(m => settings.RobotsTxtContent)</h4>
                     <div class="p-3 rounded-3 border mb-3">

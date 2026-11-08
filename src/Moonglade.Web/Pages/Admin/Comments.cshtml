@@ -87,7 +87,7 @@
                     <span x-text="item.username"></span>
                     <template x-if="item.email">
                         <span>
-                            (<a :href="`mailto:${item.email}`" class="d-none d-sm-inline" x-text="item.email"></a>)
+                            (<a :href="`mailto:${item.email}`" x-text="item.email"></a>)
                         </span>
                     </template>
                 </h6>
@@ -98,7 +98,7 @@
                     <span>
                         <time :data-utc-label="item.createTimeUtc" x-text="item.createTimeUtc"></time>
                     </span>
-                    <span class="text-muted d-none d-sm-inline">(<span x-text="item.ipAddress"></span>)</span>
+                    <span class="text-muted">(<span x-text="item.ipAddress"></span>)</span>
                 </small>
 
                 <div class="reply-ui mt-3" x-show="item.showReplyForm">

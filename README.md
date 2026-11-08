@@ -11,6 +11,8 @@ A public blog and authenticated admin portal provide:
 - **Site management:** runtime blog settings, widgets, themes, custom CSS, menus, image storage, site verification files, account settings, and data import/export.
 - **Discovery and interoperability:** RSS, Atom, OPML, OpenSearch, FOAF, sitemap, robots.txt, IndexNow, root-level site ownership verification files, reader-friendly markup, and health checks.
 
+The admin portal supports desktop browsers with a viewport at least 1440 CSS pixels wide.
+
 ## Repository Layout
 
 The solution is `src/Moonglade.slnx`. See the [engineering reference](docs/agent-reference.md#layers-and-project-responsibilities) for module responsibilities.

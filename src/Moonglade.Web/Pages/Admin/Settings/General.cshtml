@@ -35,7 +35,7 @@
 <form id="form-settings" asp-controller="Settings" asp-action="General" spellcheck="false">
     <div class="admin-settings-entry-container">
         <div class="row">
-            <div class="col-md-6">
+            <div class="col-6">
                 <div class="mb-3">
                     <h4 class="admin-subtitle fw-bold mb-2">@SharedLocalizer["Blog Identity"]</h4>
 
@@ -46,7 +46,7 @@
                         <div class="col">
                             <label asp-for="@ViewModel.SiteTitle"></label>
                         </div>
-                        <div class="col-md-5 text-end">
+                        <div class="col-5 text-end">
                             <input asp-for="@ViewModel.SiteTitle" data-setting-edit="" class="form-control" required />
                         </div>
                     </div>
@@ -58,7 +58,7 @@
                         <div class="col">
                             <label asp-for="@ViewModel.LogoText"></label>
                         </div>
-                        <div class="col-md-5 text-end">
+                        <div class="col-5 text-end">
                             <input asp-for="@ViewModel.LogoText" data-setting-edit="" class="form-control" required />
                         </div>
                     </div>
@@ -70,7 +70,7 @@
                         <div class="col">
                             <label asp-for="@ViewModel.MetaKeyword"></label>
                         </div>
-                        <div class="col-md-5 text-end">
+                        <div class="col-5 text-end">
                             <input asp-for="@ViewModel.MetaKeyword" data-setting-edit="" class="form-control" required />
                         </div>
                     </div>
@@ -84,7 +84,7 @@
                             <label>@SharedLocalizer["Favicon"]</label>
                         </div>
 
-                        <div class="col-md-5 text-end">
+                        <div class="col-5 text-end">
                             <img src="@Url.Action("SiteIconOrigin", "Assets")" class="blogadmin-siteicon" />
                             <a class="btn btn-sm btn-outline-accent" href="#" data-bs-toggle="modal" data-bs-target="#siteiconmodal">@SharedLocalizer["Change"]</a>
                         </div>
@@ -98,7 +98,7 @@
                             <label asp-for="@ViewModel.CanonicalPrefix"></label>
                             <div class="form-text">@SharedLocalizer["Set a primary domain if your website binds to multiple domian names."]</div>
                         </div>
-                        <div class="col-md-5 text-end">
+                        <div class="col-5 text-end">
                             <input asp-for="@ViewModel.CanonicalPrefix" data-setting-edit="" class="form-control" />
                         </div>
                     </div>
@@ -111,7 +111,7 @@
                             <label for="DefaultLanguageCode">@SharedLocalizer["Default language"]</label>
                             <div class="form-text">@SharedLocalizer["Blog will use this language for SEO by default unless specified in blog post."]</div>
                         </div>
-                        <div class="col-md-5 text-end">
+                        <div class="col-5 text-end">
                             <select class="form-select" asp-for="@ViewModel.DefaultLanguageCode" asp-items="@langList"></select>
                         </div>
                     </div>
@@ -124,7 +124,7 @@
                             <label asp-for="@ViewModel.Copyright"></label>
                             <div class="form-text">@Html.Raw(@SharedLocalizer["Use [c] for copyright mark: &copy;, [year] for current year."])</div>
                         </div>
-                        <div class="col-md-5 text-end">
+                        <div class="col-5 text-end">
                             <input asp-for="@ViewModel.Copyright" data-setting-edit="" class="form-control" required />
                         </div>
                     </div>
@@ -142,7 +142,7 @@
                             <div class="col">
                                 <label asp-for="@snapshot.GeneralSettings.UseDublinCoreMetaData" class="form-check-label"></label>
                             </div>
-                            <div class="col-md-5 text-end">
+                            <div class="col-5 text-end">
                                 <div class="form-check form-switch form-control-lg">
                                     <input type="hidden" name="UseDublinCoreMetaData" value="false">
                                     <input type="checkbox" name="UseDublinCoreMetaData" value="true" class="form-check-input" @(snapshot.GeneralSettings.UseDublinCoreMetaData ? "checked" : null)>
@@ -157,14 +157,14 @@
                             <div class="col">
                                 <label asp-for="@snapshot.GeneralSettings.DcLicenseUrl"></label>
                             </div>
-                            <div class="col-md-5 text-end">
+                            <div class="col-5 text-end">
                                 <input asp-for="@snapshot.GeneralSettings.DcLicenseUrl" data-setting-edit="" class="form-control" />
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="col-md-6">
+            <div class="col-6">
                 <div class="mb-3">
                     <h4 class="admin-subtitle fw-bold mb-2">
                         @SharedLocalizer["Side Bar"]
@@ -177,7 +177,7 @@
                             <label asp-for="@ViewModel.SideBarOption" class="me-4"></label>
                         </div>
 
-                        <div class="col-md-5 text-end">
+                        <div class="col-5 text-end">
                             <div class="form-check form-check-inline">
                                 @Html.RadioButton(
                                 nameof(ViewModel.SideBarOption),
@@ -216,7 +216,7 @@
                             <div class="col">
                                 <label asp-for="@ViewModel.WidgetsProfile" class="form-check-label"></label>
                             </div>
-                            <div class="col-md-5 text-end">
+                            <div class="col-5 text-end">
                                 <div class="form-check form-switch form-control-lg">
                                     <input type="hidden" name="WidgetsProfile" value="false">
                                     <input type="checkbox" name="WidgetsProfile" value="true" class="form-check-input" @(ViewModel.WidgetsProfile ? "checked" : null)>
@@ -226,13 +226,13 @@
 
                         <div class="border-top py-3 px-2">
                             <div class="row">
-                                <div class="col-md-2 col-sm-4">
+                                <div class="col-2">
                                     <div class="mb-3">
                                         <img src="@avatarUrl" class="img-thumbnail img-fluid blogadmin-avatar" />
                                     </div>
                                     <a class="btn w-100 btn-sm btn-outline-accent" href="#" data-bs-toggle="modal" data-bs-target="#avatarmodal">@SharedLocalizer["Change"]</a>
                                 </div>
-                                <div class="col-md-10 col-sm-8">
+                                <div class="col-10">
                                     <div class="row mb-2 gap-0">
                                         <div class="col">
                                             <label class="form-label" asp-for="@ViewModel.OwnerName"></label>
@@ -262,7 +262,7 @@
                                 <label asp-for="@ViewModel.UseGravatarAsProfilePicture" class="form-check-label"></label>
                                 <div class="form-text">@SharedLocalizer["Please make sure you have setup Gravatar with your email address"]</div>
                             </div>
-                            <div class="col-md-5 text-end">
+                            <div class="col-5 text-end">
                                 <div class="form-check form-switch form-control-lg">
                                     <input type="hidden" name="UseGravatarAsProfilePicture" value="false">
                                     <input type="checkbox" name="UseGravatarAsProfilePicture" value="true" class="form-check-input" @(ViewModel.UseGravatarAsProfilePicture ? "checked" : null)>
@@ -290,7 +290,7 @@
                             <div class="col">
                                 <label asp-for="@ViewModel.WidgetsCategoryList" class="form-check-label"></label>
                             </div>
-                            <div class="col-md-5 text-end">
+                            <div class="col-5 text-end">
                                 <div class="form-check form-switch form-control-lg">
                                     <input type="hidden" name="WidgetsCategoryList" value="false">
                                     <input type="checkbox" name="WidgetsCategoryList" value="true" class="form-check-input" @(ViewModel.WidgetsCategoryList ? "checked" : null)>
@@ -305,7 +305,7 @@
                             <div class="col">
                                 <label asp-for="@ViewModel.WidgetsSubscriptionButtons" class="form-check-label"></label>
                             </div>
-                            <div class="col-md-5 text-end">
+                            <div class="col-5 text-end">
                                 <div class="form-check form-switch form-control-lg">
                                     <input type="hidden" name="WidgetsSubscriptionButtons" value="false">
                                     <input type="checkbox" name="WidgetsSubscriptionButtons" value="true" class="form-check-input" @(ViewModel.WidgetsSubscriptionButtons ? "checked" : null)>

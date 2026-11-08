@@ -27,7 +27,7 @@
         @snapshot.GeneralSettings.SiteTitle @SharedLocalizer["Admin"] @(ViewBag.Title != null ? $"- {ViewBag.Title}" : null)
     </title>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     @await RenderSectionAsync("meta", false)
     <link rel="start" title="@snapshot.GeneralSettings.SiteTitle" href="~/" />
     <partial name="_Favicons" />
@@ -35,7 +35,6 @@
     <link href="~/lib/bootstrap-icons/bootstrap-icons.min.css" rel="stylesheet" />
     <link href="~/fonts/font.css" rel="stylesheet" />
     <link href="~/css/base.css" rel="stylesheet" />
-    <link href="~/css/rwd.css" rel="stylesheet" />
     <link href="~/css/admin.css" rel="stylesheet" />
     @if (!string.IsNullOrEmpty(themeCss))
     {
@@ -47,16 +46,11 @@
 </head>
 
 <body class="admin-body bg-gray-1">
-    <nav class="admin-navbar navbar navbar-expand-lg navbar-moonglade" data-bs-theme="dark">
+    <nav class="admin-navbar navbar navbar-expand navbar-moonglade" data-bs-theme="dark">
         <a class="navbar-brand font-sairas" asp-page="/Admin/Dashboard">
             @snapshot.GeneralSettings.SiteTitle
         </a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
-                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-
-        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <div class="navbar-collapse">
             @if (!string.IsNullOrEmpty(adminBackUrl))
             {
                 <ul class="navbar-nav me-auto">

@@ -32,7 +32,7 @@
       asp-action="Notification">
     <div class="admin-settings-entry-container">
         <div class="row">
-            <div class="col-md-6">
+            <div class="col-6">
                 <div>
                     <h4 class="admin-subtitle fw-bold mb-2">@SharedLocalizer["Email Options"]</h4>
 
@@ -107,7 +107,7 @@
                         <div class="col">
                             @SharedLocalizer["Send Test Email"]
                         </div>
-                        <div class="col-md-5 text-end">
+                        <div class="col-5 text-end">
                             <button type="button"
                                     id="a-send-test-mail"
                                     class="btn btn-sm btn-outline-accent"
@@ -118,7 +118,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-md-6">
+            <div class="col-6">
                 <div>
                     <h4 class="admin-subtitle fw-bold mb-2">@SharedLocalizer["Notification Options"]</h4>
 
@@ -129,7 +129,7 @@
                         <div class="col">
                             <label asp-for="@settings.EnableEmailSending" class="form-check-label"></label>
                         </div>
-                        <div class="col-md-5 text-end">
+                        <div class="col-5 text-end">
                             <div class="form-check form-switch form-control-lg">
                                 <input type="hidden" name="EnableEmailSending" value="false">
                                 <input type="checkbox" name="EnableEmailSending" value="true" class="form-check-input" @(settings.EnableEmailSending ? "checked" : null)>
@@ -144,7 +144,7 @@
                         <div class="col">
                             <label asp-for="@settings.SendEmailOnNewComment" class="form-check-label"></label>
                         </div>
-                        <div class="col-md-5 text-end">
+                        <div class="col-5 text-end">
                             <div class="form-check form-switch form-control-lg">
                                 <input type="hidden" name="SendEmailOnNewComment" value="false">
                                 <input type="checkbox" name="SendEmailOnNewComment" value="true" class="form-check-input" @(settings.SendEmailOnNewComment ? "checked" : null)>
@@ -159,7 +159,7 @@
                         <div class="col">
                             <label asp-for="@settings.SendEmailOnCommentReply" class="form-check-label"></label>
                         </div>
-                        <div class="col-md-5 text-end">
+                        <div class="col-5 text-end">
                             <div class="form-check form-switch form-control-lg">
                                 <input type="hidden" name="SendEmailOnCommentReply" value="false">
                                 <input type="checkbox" name="SendEmailOnCommentReply" value="true" class="form-check-input" @(settings.SendEmailOnCommentReply ? "checked" : null)>

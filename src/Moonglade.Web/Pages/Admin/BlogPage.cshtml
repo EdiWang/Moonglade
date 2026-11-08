@@ -34,7 +34,7 @@
     </div>
 </div>
 
-<div x-show="!isLoading && hasPages" class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4">
+<div x-show="!isLoading && hasPages" class="row row-cols-4 g-4">
     <template x-for="page in sortedPages" :key="page.id">
         <div class="col">
             <div class="card shadow-sm mb-4" :id="`card-${page.id}`">

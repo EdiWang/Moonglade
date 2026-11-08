@@ -17,7 +17,7 @@
 <form id="form-settings" asp-controller="Settings" asp-action="Comment">
     <div class="admin-settings-entry-container">
         <div class="row">
-            <div class="col-md-6">
+            <div class="col-6">
                 <h4 class="admin-subtitle fw-bold mb-2">@SharedLocalizer["Comments"]</h4>
 
                 <div class="settings-entry row align-items-center py-3 px-2 rounded-3 border mb-1">
@@ -27,7 +27,7 @@
                     <div class="col">
                         <label asp-for="@settings.EnableComments" class="form-check-label"></label>
                     </div>
-                    <div class="col-md-5 text-end">
+                    <div class="col-5 text-end">
                         <div class="form-check form-switch form-control-lg">
                             <input type="hidden" name="EnableComments" value="false">
                             <input type="checkbox" name="EnableComments" value="true" class="form-check-input" @(settings.EnableComments ? "checked" : null)>
@@ -42,7 +42,7 @@
                     <div class="col">
                         <label asp-for="@settings.CommentProvider" class="me-4"></label>
                     </div>
-                    <div class="col-md-5 text-end">
+                    <div class="col-5 text-end">
                         <div class="form-check form-check-inline">
                             @Html.RadioButtonFor(model => settings.CommentProvider, CommentProvider.BuiltIn, new
                             {
@@ -82,7 +82,7 @@
                     <div class="col">
                         <label asp-for="@settings.EnableCommentSectionOnMobile" class="form-check-label"></label>
                     </div>
-                    <div class="col-md-5 text-end">
+                    <div class="col-5 text-end">
                         <div class="form-check form-switch form-control-lg">
                             <input type="hidden" name="EnableCommentSectionOnMobile" value="false">
                             <input type="checkbox" name="EnableCommentSectionOnMobile" value="true" class="form-check-input" @(settings.EnableCommentSectionOnMobile ? "checked" : null)>
@@ -99,7 +99,7 @@
                         <div class="col">
                             <label asp-for="@settings.EnableMarkdownLinks" class="form-check-label"></label>
                         </div>
-                        <div class="col-md-5 text-end">
+                        <div class="col-5 text-end">
                             <div class="form-check form-switch form-control-lg">
                                 <input type="hidden" name="EnableMarkdownLinks" value="false">
                                 <input type="checkbox" id="settings_EnableMarkdownLinks" name="EnableMarkdownLinks" value="true" class="form-check-input" @(settings.EnableMarkdownLinks ? "checked" : null)>
@@ -114,7 +114,7 @@
                         <div class="col">
                             <label asp-for="@settings.CommentOrder" class="me-4"></label>
                         </div>
-                        <div class="col-md-5 text-end">
+                        <div class="col-5 text-end">
                             <div class="form-check form-check-inline">
                                 @Html.RadioButtonFor(model => settings.CommentOrder, CommentOrder.OldToNew, new { id = CommentOrder.OldToNew.ToString(), @class = "form-check-input" })
                                 <label class="form-check-label" for="@CommentOrder.OldToNew">@SharedLocalizer["Old to new"]</label>
@@ -133,7 +133,7 @@
                         <div class="col">
                             <label asp-for="@settings.EnableGravatar" class="form-check-label"></label>
                         </div>
-                        <div class="col-md-5 text-end">
+                        <div class="col-5 text-end">
                             <div class="form-check form-switch form-control-lg">
                                 <input type="hidden" name="EnableGravatar" value="false">
                                 <input type="checkbox" name="EnableGravatar" value="true" class="form-check-input" @(settings.EnableGravatar ? "checked" : null)>
@@ -154,7 +154,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-md-6">
+            <div class="col-6">
                 <h4 class="admin-subtitle fw-bold mb-2">@SharedLocalizer["Moderation"]</h4>
 
                 <div class="settings-entry row align-items-center py-3 px-2 rounded-3 border mb-1">
@@ -164,7 +164,7 @@
                     <div class="col">
                         <label asp-for="@settings.RequireCommentReview" class="form-check-label"></label>
                     </div>
-                    <div class="col-md-5 text-end">
+                    <div class="col-5 text-end">
                         <div class="form-check form-switch form-control-lg">
                             <input type="hidden" name="RequireCommentReview" value="false">
                             <input type="checkbox" name="RequireCommentReview" value="true" class="form-check-input" @(settings.RequireCommentReview ? "checked" : null)>
@@ -184,7 +184,7 @@
                             </div>
                             <div class="form-text">@SharedLocalizer["Word filter only applies when comment review is disabled."]</div>
                         </div>
-                        <div class="col-md-5 text-end">
+                        <div class="col-5 text-end">
                             <div class="form-check form-switch form-control-lg">
                                 <input type="hidden" name="EnableWordFilter" value="false">
                                 <input type="checkbox" name="EnableWordFilter" value="true" class="form-check-input" @(settings.EnableWordFilter ? "checked" : null)>
@@ -200,7 +200,7 @@
                             <label asp-for="@settings.WordFilterMode" class="me-4"></label>
                             <div class="form-text">@SharedLocalizer["Blocked words will be masked as * in content."]</div>
                         </div>
-                        <div class="col-md-5 text-end">
+                        <div class="col-5 text-end">
                             <div class="form-check form-check-inline">
                                 @Html.RadioButtonFor(model => settings.WordFilterMode, WordFilterMode.Mask, new { id = WordFilterMode.Mask.ToString(), @class = "form-check-input" })
                                 <label class="form-check-label" for="@WordFilterMode.Mask">@SharedLocalizer["Mask Word"]</label>
@@ -220,7 +220,7 @@
                             <label asp-for="@settings.WordFilterKeywords"></label>
                             <div class="form-text">@SharedLocalizer["Separate keywords with |"]</div>
                         </div>
-                        <div class="col-md-5">
+                        <div class="col-5">
                             <input asp-for="@settings.WordFilterKeywords" data-setting-edit="" class="form-control" spellcheck="false" maxlength="4096" />
                         </div>
                     </div>

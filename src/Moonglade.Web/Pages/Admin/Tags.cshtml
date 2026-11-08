@@ -17,7 +17,7 @@
 </div>
 
 @section admintoolbar {
-    <div class="admin-toolbar pb-2 border-bottom mb-3 d-flex flex-shrink-0 flex-column flex-md-row align-items-start align-items-md-center gap-2">
+    <div class="admin-toolbar pb-2 border-bottom mb-3 d-flex flex-shrink-0 align-items-center gap-2">
         <a x-on:click="initCreateTag()" class="btn btn-outline-accent" role="button">
             <i class="bi-plus-lg"></i>
             @SharedLocalizer["New"]
@@ -26,7 +26,7 @@
         <input x-model="tagFilter"
                x-on:input="filterTags()"
                type="text"
-               class="form-control admin-tags-filter ms-md-auto"
+               class="form-control admin-tags-filter ms-auto"
                maxlength="32"
                placeholder="@SharedLocalizer["Filter"]"
                aria-label="@SharedLocalizer["Filter tags"]">
@@ -113,7 +113,7 @@
                     @SharedLocalizer["Please provide a valid tag name."]
                 </div>
             </div>
-            <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+            <div class="d-flex gap-2 justify-content-end">
                 <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="offcanvas">
                     @SharedLocalizer["Cancel"]
                 </button>

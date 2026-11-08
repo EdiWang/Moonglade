@@ -17,7 +17,7 @@
 <form id="form-settings" asp-controller="Settings" asp-action="Image">
     <div class="admin-settings-entry-container">
         <div class="row">
-            <div class="col-lg-6">
+            <div class="col-6">
                 <h4 class="admin-subtitle fw-bold mb-2">
                     CDN
                 </h4>
@@ -30,7 +30,7 @@
                         <div class="col">
                             <label asp-for="@settings.EnableCDNRedirect" class="form-check-label"></label>
                         </div>
-                        <div class="col-md-5 text-end">
+                        <div class="col-5 text-end">
                             <div class="form-check form-switch form-control-lg">
                                 <input type="hidden" name="EnableCDNRedirect" value="false">
                                 <input type="checkbox" name="EnableCDNRedirect" value="true" data-setting-requires="CDNEndpoint" class="form-check-input" @(settings.EnableCDNRedirect ? "checked" : null)>
@@ -46,13 +46,13 @@
                             <label asp-for="@settings.CDNEndpoint"></label>
                             <div class="form-text">@SharedLocalizer["e.g. https://cdn.edi.wang/ediwang-images"]</div>
                         </div>
-                        <div class="col-md-5">
+                        <div class="col-5">
                             <input asp-for="@settings.CDNEndpoint" data-setting-edit="" class="form-control" />
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="col-lg-6">
+            <div class="col-6">
                 <h4 class="admin-subtitle fw-bold mb-2">
                     @SharedLocalizer["Watermark"]
                 </h4>
@@ -67,7 +67,7 @@
                             @SharedLocalizer["Watermark will be placed at the right bottom corner of the image"]
                         </div>
                     </div>
-                    <div class="col-md-5 text-end">
+                    <div class="col-5 text-end">
                         <div class="form-check form-switch form-control-lg">
                             <input type="hidden" name="IsWatermarkEnabled" value="false">
                             <input type="checkbox" name="IsWatermarkEnabled" value="true" class="form-check-input" @(settings.IsWatermarkEnabled ? "checked" : null)>
@@ -148,7 +148,7 @@
                     <div class="col">
                         <label asp-for="@settings.WatermarkFontSize"></label>
                     </div>
-                    <div class="col-md-5">
+                    <div class="col-5">
                         <input asp-for="@settings.WatermarkFontSize" data-setting-edit="" min="8" max="32" class="form-control" required />
                     </div>
                 </div>
