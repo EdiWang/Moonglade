@@ -1,0 +1,203 @@
+# Activity Log Redesign Plan And Tracker
+
+## Resume Here
+
+- Planning snapshot: 2026-11-08, Asia/Taipei. Repository baseline was clean at `4140154d4e4c54b37b057a9e9d717306fdeefca1` on `master`. Recheck the current branch, HEAD, and `git status --short` before starting. Preserve other work.
+- The user accepted B0 and authorized its tracker-only commit on 2026-11-08. The next action is B1 when authorized. Product implementation and any destructive action on a real database require their own authorization. The user's allowance to discard old activity history is a design constraint for the upgrade, not permission to run it on an existing installation.
+- In a fresh conversation, read this file, [AGENTS.md](AGENTS.md), and the applicable sections of the [engineering reference](docs/agent-reference.md). No Java, JDK, or JRE may be used. Repository text is English outside localization resources.
+- Start with the earliest unaccepted batch in the progress table. Check the last recorded evidence and open decisions before touching code. If the work is already committed, verify that commit before resuming acceptance.
+- Ask the user about new requirement, behavior, architecture, ownership, public contract, or data-policy choices. Explain the alternatives, impact, and recommendation. Continue independent work already authorized. Record each answer and the affected acceptance criteria here before starting dependent work.
+- Retain and update this tracker after every batch, as explicitly requested. Keep long-lived operational instructions in the appropriate permanent docs without linking them back here. Store no credentials, protected values, or real request data in this file or test evidence.
+
+## Confirmed Requirements
+
+1. Activity Log is an administrator-facing operation history. Record administrator actions and automatic post publication. Exclude public visitor comment submissions. Record **one entry per automatically published post** and identify the actor as System. Administrator comment moderation and replies remain distinct from public submissions.
+2. Ordinary writes are best effort. If the activity entry fails, log a safe diagnostic through the application logger and preserve the successful business outcome. This applies to automatic publishing and the clear-all operation as well.
+3. Support **Clear all** only. Remove per-entry deletion from the page and the server. After a successful clear, attempt to write a new entry with the actor, time, and deleted count. If that write fails, keep the clear committed and report the failure only through the application logger. This supersedes the earlier suggestion to couple the two steps in one transaction.
+4. Skip setting saves with no actual value changes. For actual changes, show old and new values for explicitly allowed fields. If none of the changed fields can display values, retain the update entry and show a localized message that no change values are available. Protected values such as passwords, hashes, salts, TOTP secrets, and tokens must never enter stored activity details, responses, or diagnostic logs.
+5. Old activity rows may be discarded during upgrade. Preserve every other application data set. Support fresh install and manual, idempotent upgrades on both PostgreSQL and SQL Server.
+
+## Proposed Design
+
+- Persist a stable event key, such as `settings.comments.updated` or `post.published`, plus UTC time, actor, optional object data, and optional structured details. A single definition per event supplies its localized wording and filter group. The final key names, grouping, and detail contract are B0 review items.
+- Present **Time**, **Actor**, and **Activity**, plus access to details. For an article, keep its stable ID and title at the time of the action. A settings event can identify its own group. Put IP and User Agent in details when available and omit request context for System activity. Derive the displayed summary and filter labels from the same event definitions.
+- Keep `/admin/activitylogs` and the existing Razor Pages, Bootstrap, Alpine, and LiteBus structure. The goal is to remove the duplicate persisted `Operation` and enum-derived display text. Identify compatibility needs for `/api/activitylog` and its numeric filter values before changing the API contract.
+- Compare effective typed settings from the actual save operation. Use the same pre-change and saved values inside the configuration write boundary, including for partial saves, concurrent saves, and legacy JSON normalization. Return or pass only the approved field-level differences to the activity writer after a successful save. Preserve configuration validation, snapshot publication, timestamps, cache invalidation, and the existing account sign-out behavior.
+- Continue to use the existing activity module and provider-neutral EF mappings. An exact event inventory, a field-by-field details allowlist, and the publishing handoff are reviewable outputs of B0. Examples in this file do not approve any particular field, wire format, or new administrator event.
+
+## Starting Points
+
+| Area | What to inspect |
+| --- | --- |
+| Write and read model | [`Moonglade.ActivityLog`](src/Moonglade.ActivityLog), [`ActivityLogEntity`](src/Moonglade.Data/Entities/ActivityLogEntity.cs), [`ActivityLogConfiguration`](src/Moonglade.Data/Configurations/ActivityLogConfiguration.cs), and [`BlogDbContext`](src/Moonglade.Data/BlogDbContext.cs). Today the writer stores numeric `EventId`, free-form `Operation`, `TargetName`, and optional JSON. The query derives filter groups from numeric ranges. |
+| HTTP and UI | [`ActivityLogController`](src/Moonglade.Web/Controllers/ActivityLogController.cs), [`ActivityLogs.cshtml`](src/Moonglade.Web/Pages/Admin/ActivityLogs.cshtml), [`admin.activitylogs.mjs`](src/Moonglade.Web/wwwroot/js/app/admin.activitylogs.mjs), and Web resources. Preserve the administrator authorization and antiforgery checks. The current detail view displays raw JSON, and the clear and individual-delete routes each write a separate activity entry. |
+| Activity producers | [`BlogControllerBase`](src/Moonglade.Web/Controllers/BlogControllerBase.cs), controller callers, and [`PostManagementCommands`](src/Moonglade.Web/Commands/PostManagementCommands.cs). Inventory all `CreateActivityLogCommand`, `LogActivityAsync`, and `LogActivityAfterSaveAsync` call sites, including callers in tests. [`CommentController`](src/Moonglade.Web/Controllers/CommentController.cs) explicitly passes a visitor name for public comment activity today. |
+| Settings and protected account operations | [`SettingsController`](src/Moonglade.Web/Controllers/SettingsController.cs) and [`UpdateConfigurationCommand`](src/Moonglade.Configuration/UpdateConfigurationCommand.cs). Both full and partial saves use the shared configuration gate. Current settings activity contains selected after-values or no metadata. Use the existing failure and concurrency tests as the baseline. |
+| Scheduled publishing | [`ScheduledPublishService`](src/Moonglade.BackgroundServices/ScheduledPublishService.cs) and [`PublishScheduledPostCommand`](src/Moonglade.Features/Post/PublishScheduledPostCommand.cs). The worker currently receives only a count. Identify the successfully published posts from the write path and preserve scheduler wake-up, cache invalidation, and the existing publication behavior. |
+| Installation and manual upgrade | [`StartUpInitializer`](src/Moonglade.Setup/StartUpInitializer.cs) checks the log table when determining database emptiness. The DbContext also clears it during application data cleanup. Follow [database script rules](database/README.md) and [migration verification](docs/agent-reference.md#migration-verification). PostgreSQL uses `activity_log` and snake_case columns after its naming upgrade. SQL Server uses PascalCase. |
+
+## Batch Workflow
+
+1. Record the starting commit, batch dependencies, working tree status, test environment, and any open question. Inspect the affected callers and tests. Keep the change local to the batch.
+2. Run the specified checks on disposable data. Record exact commands, results, counts or representative scenarios, and any skips. A failing or unavailable required check keeps the batch open unless the user accepts the specific gap. Run `git diff --check` and inspect `git status --short` before committing and finishing.
+3. Record the completed changes and test evidence in this tracker and include the tracker update in the authorized batch commit. Record the implementation commit ID and acceptance evidence in a subsequent tracker update. Mark the batch **Awaiting acceptance** until the user confirms the result, then record the decision and mark it **Accepted**. Do not advance a dependent batch without acceptance unless the user changes the gate.
+4. Leave the next action, any blocker, and the rollback point in the progress row. Commits must build and run together with their own test fixtures. B2 introduces a manual schema prerequisite for existing installations. B5 covers integrated acceptance. Deployment requires separate authorization.
+
+## B0 — Baseline And Design Review
+
+**Depends on** authorization to start the delivery plan. No application changes.
+
+- Inventory existing producers, event grouping, settings fields, API callers, localized UI resources, and relevant tests. List which administrator events carry forward and which existing visitor event is excluded. Recommend whether to add any newly discovered administrator events and ask before expanding coverage.
+- Present a reviewable event inventory, settings allowlist by group, and API compatibility plan. Check whether the authenticated endpoints have consumers beyond the repository before proposing any response or filter change. Record known consumers or the limits of that check.
+- Describe the scheduler result boundary and propose how to identify committed posts without adding a dependency in the wrong direction. Confirm the proposed schema and two-provider cutover, including what the upgrade discards and how rollback works.
+- **Test** the current Web and Configuration projects and run a Web build. If feasible, capture the existing Activity Log behavior on an isolated host with synthetic data. Record baseline failures and avoid mixing unrelated fixes into this task.
+- **Commit** the reviewed decisions and baseline evidence in the tracker, once authorized.
+- **Accept when** the user approves the inventory, allowlist, and any contract or ownership choices raised by the review. Record the authorized implementation scope and point to the next batch.
+
+## B1 — Clear-Only Management And Visitor Exclusion
+
+**Depends on** B0 acceptance. Keep the existing storage model for this batch.
+
+- Remove the single-entry delete API, handler, UI control, and related strings. Keep the protected Clear all action with confirmation. Record its deleted count after the delete completes. Isolate post-clear activity failures so the response still reports that the clear succeeded. An unsuccessful delete must not produce a successful-clear entry.
+- Stop public comment submissions from writing activity entries. Preserve comment validation, moderation, persistence, and notifications. Keep administrator comment activity.
+- **Test** Web HTTP and controller behavior for successful clear and the remaining entry, failed clear, failed activity dispatch or persistence after clear, authorization and antiforgery, and successful public comment submission with its ordinary side effects. Exercise the management flow on a disposable host and confirm cancellation from the UI leaves the history intact.
+- **Commit** clear-only behavior, visitor exclusion, affected tests and localization, and tracker evidence as one batch.
+- **Accept when** the user can clear seeded history and see the new clear entry on success, with no per-entry control. Show fault-test evidence that a failed activity write leaves the clear committed. Show that a visitor comment still works without producing an activity entry.
+
+## B2 — Canonical Event Model, Read View, And Database Cutover
+
+**Depends on** B1 acceptance. Update all active writers, readers, storage mappings, test fixtures, resources, and the UI together to avoid a partial contract cutover.
+
+- Replace persisted duplicate wording with the approved event key. Use the same definitions for filter groups, activity text, and detail headings. Keep meaningful targets and existing approved details. Render the concise table and a readable detail view, with an intentional empty state when details are absent. Preserve date filtering, pagination, local display of UTC times, and clear-only behavior.
+- Add guarded manual upgrades for PostgreSQL and SQL Server and document prerequisites in `database/README.md` and the appropriate upgrade guide. Discard legacy activity rows only while transitioning the old schema. A second run against the upgraded schema must preserve activity rows written after the first run. Fresh databases must get the final schema through normal setup.
+- **Test** Web and Setup projects, Web build, relevant Node tests, and both providers. On each provider, verify fresh initialization and an upgrade from the supported old schema seeded with legacy activity and unrelated data. Check a second run after inserting a new activity row, assert unrelated data is preserved, and exercise listing, filtering, detail, and clear against the new schema.
+- **Commit** the coordinated cutover, both upgrade scripts, docs, and verification evidence together. Record the previous application commit and the database restore requirement for rollback.
+- **Accept when** the new list shows a single activity description per row and filters still identify the event precisely. The upgrade loses only permitted legacy activity rows, and reruns preserve new entries on both providers. Demonstrate the UI using a disposable host.
+
+## B3 — Setting Changes
+
+**Depends on** B2 acceptance and the B0 allowlist and ownership decisions.
+
+- Connect the settings save outcome to activity logging. Cover full and partial updates, the exact effective before and after values from that save, no-op suppression, and real changes with no permitted values to show. Keep credential actions as explicit events with safe details. Preserve current behavior for failed validation, persistence, cache events, and sign-out unless a change is separately approved.
+- **Test** Configuration and Web projects and Web build. Cover allowlisted values, non-allowlisted or protected values, no-op saves, overlapping partial saves, and post-save activity failure. Verify the successful save and runtime configuration separately from the activity entry.
+- **Commit** settings changes, tests, and progress evidence.
+- **Accept when** an administrator can inspect a real safe change, see no row for a no-op, and see an update without values for a restricted-only change.
+
+## B4 — Automatic Publication
+
+**Depends on** B2 acceptance and the B0 publishing handoff decision. B3 has no code dependency on this batch. The proposed delivery order puts B4 after B3 acceptance.
+
+- Emit one System activity for each post actually published by the scheduler. Use a stable post ID and the title at publication. Preserve the existing scheduled-selection rules, publication timestamps, and cache updates. An activity write failure must not change the publication outcome, and a subsequent scheduler pass over already published posts must not produce repeat entries.
+- **Test** Features and Web projects and Web build. Exercise a scheduler pass with multiple due posts plus ineligible posts, a subsequent pass, and failure to write an activity entry. Verify the publication and cache outcomes separately from the activity entries.
+- **Commit** scheduler changes, tests, and progress evidence.
+- **Accept when** multiple automatic publications produce individual System entries and each details view identifies the intended article.
+
+## B5 — Integrated Acceptance And Handoff
+
+**Depends on** B3 and B4 acceptance. No deployment is in scope.
+
+- Run the full solution and relevant Node tests, the Web build, and required provider suites. Use an isolated host and synthetic data for browser acceptance. Verify fresh setup, upgraded setup, settings changes, System publishing, visitor exclusion, filters, detail, localization, administrator access, and clear-all success and failure behavior. Record what was checked through the UI versus by fault injection.
+- Review the documented upgrade order, backup/rollback, and the cutover limits. Confirm no production or external service was contacted. Resolve regressions in the owning batch, retest, and repeat affected acceptance before final sign-off.
+- **Commit** final verification records and any needed durable documentation corrections in the authorized closeout commit.
+- **Accept when** the user signs off on the integrated result and any explicitly documented verification gap. Retain this tracker and record the final commit and next action. Applying scripts, deploying, or changing a real database requires separate authorization.
+
+## Verification Commands
+
+From the repository root. For provider checks, use the repository's disposable fixtures with Docker. `MOONGLADE_TEST_CATEGORY_DATABASES=1` currently enables the existing provider fixture. If the activity upgrade tests use a different opt-in, record the exact command in the B2 evidence. Merely enabling the existing fixture does not exercise a new activity upgrade.
+
+```powershell
+dotnet build src/Moonglade.Web/Moonglade.Web.csproj
+dotnet test --project src/Tests/Moonglade.Web.Tests/Moonglade.Web.Tests.csproj
+dotnet test --project src/Tests/Moonglade.Configuration.Tests/Moonglade.Configuration.Tests.csproj
+dotnet test --project src/Tests/Moonglade.Features.Tests/Moonglade.Features.Tests.csproj
+dotnet test --project src/Tests/Moonglade.Setup.Tests/Moonglade.Setup.Tests.csproj
+node --test src/Tests/Moonglade.Web.Tests/JavaScript/*.mjs
+dotnet test --solution src/Moonglade.slnx
+git diff --check
+```
+
+## Progress
+
+| Batch | Status | Tests and acceptance | Commit | Next action |
+| --- | --- | --- | --- | --- |
+| Planning | Complete | The user requested B0 execution. | Included in B0 | See B0 evidence below. |
+| B0 | Accepted | User approved the review package on 2026-11-08. Web 370 passed, Configuration 102 passed, Web build clean. Isolated browser baseline unavailable. | Tracker introduction commit (`git log --diff-filter=A -1 -- ACTIVITY_LOG_PLAN.md`) | B0 closed. |
+| B1 | Not started | Pending | — | Start when the user authorizes B1. |
+| B2 | Not started | Pending | — | Wait for B1 acceptance. |
+| B3 | Not started | Pending | — | Wait for B2 acceptance and relevant B0 decisions. |
+| B4 | Not started | Pending | — | Wait for B3 acceptance. |
+| B5 | Not started | Pending | — | Wait for B3 and B4 acceptance. |
+
+### Batch Evidence To Append
+
+For each batch, record the date, starting commit, decisions and their source, implementation commit, commands and outcomes, disposable provider or host details, acceptance evidence, unresolved risks, rollback point, and next action. Keep partial results if work stops mid-batch. Distinguish technical verification from user acceptance.
+
+## B0 Evidence And Review Package
+
+### Baseline
+
+- 2026-11-08, Asia/Taipei. Started on `master` at `4140154d4e4c54b37b057a9e9d717306fdeefca1` with only this tracker untracked. SDK `10.0.403`. No application code, production configuration, or database data changed. The starting commit remains the rollback point for application code.
+- `dotnet test --project src/Tests/Moonglade.Web.Tests/Moonglade.Web.Tests.csproj` passed 370 tests, zero failures or skips. Existing coverage includes the activity controller, settings and avatar activity-failure isolation, and post cache invalidation.
+- `dotnet test --project src/Tests/Moonglade.Configuration.Tests/Moonglade.Configuration.Tests.csproj` passed 102 tests, zero failures or skips. Existing coverage includes concurrent configuration updates and persistence/publication ordering.
+- `dotnet build src/Moonglade.Web/Moonglade.Web.csproj` succeeded with zero warnings or errors. No live baseline host was started. `docker info` could not connect to the Docker Desktop Linux engine. The user's screenshot is the visual baseline. No provider migration or browser acceptance was performed in B0.
+
+### Proposed Event Inventory
+
+Keys in each row use the shown prefix followed by one of the listed suffixes. Groups and labels are explicit and localized, including `zh-Hans`, `zh-Hant`, `de-DE`, and `ja-JP`. Old enum numbers are listed for compatibility review.
+
+| Filter group | Legacy IDs | Proposed keys |
+| --- | --- | --- |
+| Posts | 200–209 | `post.` + `schedule.cancelled`, `schedule.postponed`, `restored`, `permanently-deleted`, `recycle-bin.cleared`, `created`, `updated`, `deleted`, `published`, `unpublished` |
+| Posts | New in B4 | `post.automatically-published`, one per committed article and shown as System |
+| Pages | 400–405 | `page.` + `created`, `updated`, `deleted`, `restored`, `permanently-deleted`, `recycle-bin.cleared` |
+| Categories | 100–102 | `category.` + `created`, `updated`, `deleted` |
+| Comments | 301–303 | `comment.` + `approval-toggled`, `deleted`, `replied` |
+| Tags | 600–602 | `tag.` + `created`, `updated`, `deleted` |
+| Themes | 700–701 | `theme.` + `created`, `deleted` |
+| Settings | 800–808 | `settings.` + `general.updated`, `content.updated`, `comments.updated`, `notifications.updated`, `subscription.updated`, `images.updated`, `advanced.updated`, `appearance.updated`, `custom-menu.updated` |
+| Account | 809, 830 | `account.` + `password.updated`, `authenticator.reset` |
+| Images | 810 | `image.uploaded` |
+| Site assets | 820–825 | `asset.` + `avatar.updated`, `site-icon.updated`, `verification-file.created`, `verification-file.updated`, `verification-file.deleted`, `verification-file.toggled` |
+| Widgets | 850–852 | `widget.` + `created`, `updated`, `deleted` |
+| Activity log | 901 | `activity-log.cleared` |
+
+- Remove visitor `CommentCreated` (300) and individual `ActivityLogDeleted` (900). `Default` (0) has no producer. Carry forward the 49 remaining produced types and add the automatic-publication type in B4. Keep the current distinction between editor saves and explicit publish/unpublish actions. No new administrator producers are proposed for gaps such as Webmention moderation, test email, or authentication sessions.
+- Carry forward useful identifiers, display names, counts, status flags and other small structured values. Use IDs and captured titles where available from the operation result, with a safe ID fallback when no display name is available. The recommendation is to omit copied comment reply bodies, category notes, and site verification `ContentBytes` from new entries. Retain the verification filename, ID when available, and ordinary status/type information. Render names and details as plain text.
+
+### Proposed Settings Value Allowlist
+
+Only the fields below may have values stored. All other changes still count toward the decision to log a settings update. A mixed update shows allowed differences without naming or disclosing restricted fields. A restricted-only update shows the localized empty-values explanation. Treat booleans, numbers and enum choices as typed data with localized display labels. Display approved short public labels as plain text.
+
+| Settings group | Exact proposed fields |
+| --- | --- |
+| General | `LogoText`, `SiteTitle`, `SideBarOption`, `WidgetsProfile`, `HotTagAmount`, `WidgetsCategoryList`, `WidgetsSubscriptionButtons`, `UseGravatarAsProfilePicture`, `DefaultLanguageCode`, `UseDublinCoreMetaData` |
+| Content | `DefaultEditor`, `PostListPageSize`, `PostTitleAlignment`, `ShowCalloutSection`, `ShowPostFooter`, `DocumentOutline`, `EnableViewCount`, `MaximumPageNumbersToDisplay` |
+| Comments | `CommentProvider`, `CommentOrder`, `EnableComments`, `EnableGravatar`, `EnableMarkdownLinks`, `RequireCommentReview`, `CloseCommentAfterDays`, `EnableWordFilter`, `WordFilterMode`, `EnableCommentSectionOnMobile` |
+| Notifications | `EnableEmailSending`, `SendEmailOnCommentReply`, `SendEmailOnNewComment` |
+| Subscription (`FeedSettings`) | `FeedItemCount`, `UseFullContent` |
+| Images | `IsWatermarkEnabled`, `KeepOriginImage`, `WatermarkFontSize`, `WatermarkColorA`, `WatermarkSkipPixel`, `EnableCDNRedirect` |
+| Advanced | `EnableWebmention`, `EnableOpenSearch`, `EnableFoaf`, `EnableOpml`, `EnableSiteMap`, `EnablePostScheduler`, `WarnPostExternalLink`, `WarnCommentExternalLink`, `EnableJsonLdBlogPosting` |
+| Appearance | `ThemeId`, `EnableCustomCss` |
+| Custom menu | `IsEnabled` |
+
+- Excluded examples include email addresses and display names, URLs, custom markup and scripts, filter keywords, watermark text, robots text, CSS, the menu graph, and legacy `AvatarUrl`. Account and installation settings are outside this allowlist. Existing password and authenticator actions remain named events without protected values.
+- Configuration owns the effective comparison under `ConfigurationWriteGate`, using structural equality for nested menu data and typed values for ordinary fields. Keep it separate from the existing raw persisted-JSON equality test that governs timestamp/cache behavior. Propose a small internal save outcome carrying an effective-change flag and only safe projected differences for Web to record. Preserve existing HTTP settings responses and existing account behavior.
+
+### Proposed API And Storage Contract
+
+- Repository search found one runtime client, the admin page module `admin.activitylogs.mjs`, and controller tests. No tracked integration or documentation was found that calls these routes. Deployment logs and off-repository clients were unavailable, so confirm whether any scripts or integrations need the current contract.
+- The user confirmed there are no external consumers. Keep the admin page and API route paths, pagination/date inputs, authorization, and antiforgery. Update UI and endpoints together in B2. `/eventtypes` returns grouped `{ key, label }` entries. `/list` uses repeated `eventKeys` string filters and returns event key, localized summary, actor, and time. `/{id}/metadata` returns a structured detail object with contextual fields and optional settings changes. An existing row with no extra details has a successful response and an empty state. An unknown ID returns 404. Validate unsupported filter keys rather than silently dropping them. `DELETE /clear` retains its existing success response. B1 removes `DELETE /{id}` as already agreed.
+- The coordinated cutover removes the numeric `eventTypes` filter, stringified metadata, and superseded list fields without a compatibility adapter.
+- Keep the existing activity table and generated long ID. Proposed columns are required `EventKey`, UTC occurrence time, and actor kind, plus optional actor display snapshot, target ID, target display snapshot, IP, User Agent, and structured details serialized as JSON text. Use explicit Administrator/System actor kinds so a login name cannot be mistaken for automation. Keep targets detached from live entities so records survive target deletion. Use a deterministic newest-first order by time then ID. Event definitions stay in `Moonglade.ActivityLog`, with presentation/localization in Web.
+- For B2, stop the old host before the manual upgrade. Use the installed provider schema after any required PostgreSQL category ID and naming scripts. Verify a recognizable legacy shape, then clear only the old activity rows and change only the activity table in a transaction. A complete new shape is a no-op, including after new rows are written. Reject unknown or partial shapes before deleting rows. Test fresh install, both provider upgrades, and a second run. Document a pre-upgrade backup and rollback to the matching old application and schema. A whole-database restore after reopening writes can discard unrelated post-upgrade changes. No production upgrade or restore is authorized by this plan.
+
+### Proposed Scheduled Publication Handoff
+
+- Features already owns selection and database persistence. It returns only an EF affected-entry count to `ScheduledPublishService`, after dispatching `PostChangedEvent`. Returning a list from the existing command is smaller on the happy path, but a cache-event exception after commit would prevent the worker from getting those posts.
+- Recommend a dedicated in-process notification from Features for committed scheduled posts, carrying only ID, captured title and publication UTC time. Attempt the existing cache notification as today. Attempt the activity handoff after that attempt even if the cache notification fails, while preserving the original cache error behavior. Web handles the notification and writes per-post System entries through the existing ActivityLog writer. Isolate dispatch and individual activity-write errors and keep them outside the publishing transaction. Features keeps no dependency on ActivityLog or Web. Use the existing process only. No queue, durable delivery, or multi-host coordination is proposed.
+- Add `Moonglade.BackgroundServices.Tests` to B4's focused checks alongside Features and Web. Verify committed posts with an activity failure, a second scheduler pass, and a failed post-commit cache notification. Preserve the current publication and cache semantics throughout.
+
+### B0 Decision Status
+
+- On 2026-11-08 the user accepted B0 and authorized committing this tracker. The user explicitly approved the field-by-field settings allowlist and confirmed no external Activity Log API consumers. The accepted review package carries forward existing administrator events, adds one entry per automatically published post, omits the proposed copied metadata, and confines the manual schema upgrade to the activity table. See the sections above for the accepted API contract, storage cutover, and scheduled handoff.
+- B1 remains unstarted. No implementation or real database operation was authorized by B0 sign-off.
