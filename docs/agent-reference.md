@@ -159,6 +159,7 @@ HTML email bodies encode ordinary mapped values. Only wrap the already-rendered 
 - The repository uses LiteBus 7.0.0 with a command/query/event style.
 - Commands mutate state and are usually named `CreateXCommand`, `UpdateXCommand`, or `DeleteXCommand`, with matching `*Handler` classes in the same or nearby files.
 - Queries read state and are usually named `GetXQuery`, `ListXQuery`, or `CountXQuery`.
+- The Activity Log event-types endpoint reads the immutable `ActivityEvents.All` catalog directly, orders canonical groups and keys with `StringComparer.Ordinal`, then localizes labels. Persisted history list and detail reads remain LiteBus queries; do not sort filter options by localized text.
 - Events trigger side effects such as email, Webmention, IndexNow, or background notifications.
 
 ### EF Core

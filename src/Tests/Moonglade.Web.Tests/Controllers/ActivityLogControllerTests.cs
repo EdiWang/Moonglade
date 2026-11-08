@@ -27,20 +27,23 @@ public class ActivityLogControllerTests
     [Fact]
     public async Task GetEventTypes_ReturnsOkWithEventTypes()
     {
-        var expected = new List<ActivityEventDefinition> { ActivityEvents.Get(ActivityEvents.PostCreated) };
-
-        _queryMediator
-            .Setup(x => x.QueryAsync(It.IsAny<GetEventTypesQuery>(), It.IsAny<QueryMediationSettings>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync(expected);
-
         var controller = CreateController();
 
         var result = await controller.GetEventTypes();
 
         var okResult = Assert.IsType<OkObjectResult>(result);
-        var group = Assert.Single(Assert.IsType<List<ActivityEventGroup>>(okResult.Value));
-        Assert.Equal("Posts", group.Label);
-        Assert.Equal(new ActivityEventOption("post.created", "Post created"), Assert.Single(group.Items));
+        var groups = Assert.IsType<List<ActivityEventGroup>>(okResult.Value);
+        Assert.Equal(new[] { "Account", "Activity log", "Categories", "Comments", "Images", "Pages", "Posts",
+            "Settings", "Site assets", "Tags", "Themes", "Widgets" }, groups.Select(group => group.Label));
+        Assert.Equal(50, groups.Sum(group => group.Items.Count));
+        foreach (var group in groups)
+        {
+            var expected = ActivityEvents.All.Where(definition => definition.Group == group.Label)
+                .OrderBy(definition => definition.Key, StringComparer.Ordinal)
+                .Select(definition => new ActivityEventOption(definition.Key, definition.Label));
+            Assert.Equal(expected, group.Items);
+        }
+        _queryMediator.VerifyNoOtherCalls();
     }
 
     [Fact]

@@ -157,9 +157,21 @@ public partial class ActivityLogHttpTests
         {
             CultureInfo.CurrentUICulture = CultureInfo.GetCultureInfo(culture);
             var localizer = scope.ServiceProvider.GetRequiredService<IStringLocalizer<Program>>();
-            var expectedGroups = ActivityEvents.All.Select(item => localizer[item.Group].Value).Distinct().Order().ToArray();
-            Assert.Equal(expectedGroups, filters.RootElement.EnumerateArray()
-                .Select(group => group.GetProperty("label").GetString()).Order().ToArray());
+            var expectedGroups = ActivityEvents.All.GroupBy(definition => definition.Group)
+                .OrderBy(group => group.Key, StringComparer.Ordinal).ToArray();
+            var actualGroups = filters.RootElement.EnumerateArray().ToArray();
+            Assert.Equal(expectedGroups.Select(group => localizer[group.Key].Value),
+                actualGroups.Select(group => group.GetProperty("label").GetString()));
+            for (var index = 0; index < expectedGroups.Length; index++)
+            {
+                var group = actualGroups[index];
+                Assert.Equal(["items", "label"], group.EnumerateObject().Select(property => property.Name).Order().ToArray());
+                var options = group.GetProperty("items").EnumerateArray().ToArray();
+                Assert.Equal(expectedGroups[index].OrderBy(definition => definition.Key, StringComparer.Ordinal)
+                    .Select(definition => definition.Key), options.Select(option => option.GetProperty("key").GetString()));
+                Assert.All(options, option => Assert.Equal(["key", "label"],
+                    option.EnumerateObject().Select(property => property.Name).Order().ToArray()));
+            }
             foreach (var item in items)
             {
                 var key = item.GetProperty("eventKey").GetString()!;

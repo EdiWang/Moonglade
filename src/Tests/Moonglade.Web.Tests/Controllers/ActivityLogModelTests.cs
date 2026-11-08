@@ -13,7 +13,7 @@ namespace Moonglade.Web.Tests.Controllers;
 public partial class ActivityLogModelTests
 {
     [Fact]
-    public async Task Catalog_All50ActiveEvents_HaveExactUniqueKeysGroupsAndLabels()
+    public void Catalog_All50ActiveEvents_HaveExactUniqueKeysGroupsAndLabels()
     {
         (string Key, string Group, string Label)[] expected =
         [
@@ -68,8 +68,7 @@ public partial class ActivityLogModelTests
             ("widget.deleted", "Widgets", "Widget deleted"),
             ("activity-log.cleared", "Activity log", "Activity log cleared")
         ];
-        var actual = await new GetEventTypesQueryHandler().HandleAsync(new GetEventTypesQuery(),
-            TestContext.Current.CancellationToken);
+        var actual = ActivityEvents.All;
         Assert.Equal(50, actual.Count);
         Assert.Equal(expected.OrderBy(item => item.Key), actual.Select(item => (item.Key, item.Group, item.Label)).OrderBy(item => item.Key));
         Assert.Equal(50, actual.Select(item => item.Key).Distinct(StringComparer.Ordinal).Count());

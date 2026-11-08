@@ -19,15 +19,17 @@ public class ActivityLogController(
     IStringLocalizer<Program> localizer) : BlogControllerBase(commandMediator, logger)
 {
     [HttpGet("eventtypes")]
-    public async Task<IActionResult> GetEventTypes()
+    public Task<IActionResult> GetEventTypes()
     {
-        var eventTypes = await queryMediator.QueryAsync(new GetEventTypesQuery());
-        var groups = eventTypes.GroupBy(definition => definition.Group)
+        var groups = ActivityEvents.All
+            .OrderBy(definition => definition.Group, StringComparer.Ordinal)
+            .ThenBy(definition => definition.Key, StringComparer.Ordinal)
+            .GroupBy(definition => definition.Group)
             .Select(group => new ActivityEventGroup(
                 localizer[group.Key].Value,
                 group.Select(definition => new ActivityEventOption(definition.Key, localizer[definition.Label].Value)).ToList()))
             .ToList();
-        return Ok(groups);
+        return Task.FromResult<IActionResult>(Ok(groups));
     }
 
     [HttpGet("list")]
