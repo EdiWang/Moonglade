@@ -71,12 +71,8 @@ public class ActivityLogController(
 
         if (log == null) return NotFound();
 
-        var changes = log.Details.TryGetValue(ActivityLogSettingChange.DetailsKey, out var settingChanges)
-            ? settingChanges.EnumerateArray().Select(change => new ActivityLogDetailChange(
-                change.GetProperty("Key").GetString()!,
-                localizer[DetailLabel(change.GetProperty("Key").GetString()!)].Value,
-                change.GetProperty("OldValue"), change.GetProperty("NewValue"))).ToList()
-            : null;
+        var changes = log.SettingChanges?.Select(change => new ActivityLogDetailChange(
+            change.Key, localizer[DetailLabel(change.Key)].Value, change.OldValue, change.NewValue)).ToList();
         return Ok(new ActivityLogDetail(
             log.Id, log.EventKey, localizer[ActivityEvents.Get(log.EventKey).Label].Value,
             log.EventTimeUtc, log.ActorKind, Actor(log),

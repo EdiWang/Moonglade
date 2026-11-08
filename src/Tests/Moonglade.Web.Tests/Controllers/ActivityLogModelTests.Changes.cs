@@ -44,14 +44,23 @@ public partial class ActivityLogModelTests
         var row = Assert.Single(await store.ReadLogsAsync(ct));
         var result = (await new GetMetaDataByActivityLogIdQueryHandler(db).HandleAsync(new(row.Id), ct))!;
         var actual = result.Details["Changes"].EnumerateArray().ToArray();
+        var typed = Assert.IsAssignableFrom<IReadOnlyList<ActivityLogSettingChangeDetail>>(result.SettingChanges);
         Assert.Equal(changes.Length, actual.Length);
+        Assert.Equal(changes.Select(change => change.Key), typed.Select(change => change.Key));
         for (var index = 0; index < changes.Length; index++)
         {
             Assert.Equal(changes[index].Key, actual[index].GetProperty("Key").GetString());
             AssertScalar(changes[index].OldValue, actual[index].GetProperty("OldValue"));
             AssertScalar(changes[index].NewValue, actual[index].GetProperty("NewValue"));
+            AssertScalar(changes[index].OldValue, typed[index].OldValue);
+            AssertScalar(changes[index].NewValue, typed[index].NewValue);
         }
         Assert.Equal(["Changes"], result.Details.Keys);
+        var list = Assert.IsAssignableFrom<IList<ActivityLogSettingChangeDetail>>(typed);
+        Assert.Throws<NotSupportedException>(() => list.Clear());
+        var serialized = JsonSerializer.SerializeToElement(result, JsonSerializerOptions.Web);
+        Assert.False(serialized.TryGetProperty("settingChanges", out _));
+        Assert.True(JsonElement.DeepEquals(result.Details["Changes"], serialized.GetProperty("details").GetProperty("Changes")));
     }
 
     [Theory]
@@ -85,14 +94,54 @@ public partial class ActivityLogModelTests
         var row = Assert.Single(await store.ReadLogsAsync(ct));
         var result = (await new GetMetaDataByActivityLogIdQueryHandler(db).HandleAsync(new(row.Id), ct))!;
         var actual = result.Details["Changes"].EnumerateArray().ToArray();
+        var typed = Assert.IsAssignableFrom<IReadOnlyList<ActivityLogSettingChangeDetail>>(result.SettingChanges);
         Assert.Equal(changes.Length, actual.Length);
-        if (scenario == "empty") Assert.Equal("""{"Changes":[]}""", row.Details);
+        Assert.Equal(changes.Length, typed.Count);
+        if (scenario == "empty")
+        {
+            Assert.Equal("""{"Changes":[]}""", row.Details);
+            Assert.Empty(typed);
+        }
         else
         {
             var change = Assert.Single(actual);
             Assert.Equal(changes[0].Key, change.GetProperty("Key").GetString());
             AssertScalar(changes[0].OldValue, change.GetProperty("OldValue"));
             AssertScalar(changes[0].NewValue, change.GetProperty("NewValue"));
+            var typedChange = Assert.Single(typed);
+            Assert.Equal(changes[0].Key, typedChange.Key);
+            AssertScalar(changes[0].OldValue, typedChange.OldValue);
+            AssertScalar(changes[0].NewValue, typedChange.NewValue);
+        }
+    }
+
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public async Task SettingChanges_OrdinaryDetails_HaveNoChangeEnvelopeAndPreserveFields(bool hasDetails)
+    {
+        var ct = TestContext.Current.CancellationToken;
+        await using var store = await ActivityLogTestStore.CreateAsync(ct: ct);
+        using var scope = store.Services.CreateScope();
+        var db = scope.ServiceProvider.GetRequiredService<BlogDbContext>();
+        await Writer(db, store).HandleAsync(new CreateActivityLogCommand(ActivityEvents.ActivityLogsCleared,
+            ActivityActorKind.Administrator, "admin",
+            Details: hasDetails ? ActivityLogDetails.Create(("DeletedCount", 3)) : null), ct);
+
+        var row = Assert.Single(await store.ReadLogsAsync(ct));
+        var result = (await new GetMetaDataByActivityLogIdQueryHandler(db).HandleAsync(new(row.Id), ct))!;
+
+        Assert.Null(result.SettingChanges);
+        if (hasDetails)
+        {
+            var field = Assert.Single(result.Details);
+            Assert.Equal("DeletedCount", field.Key);
+            Assert.Equal(JsonValueKind.Number, field.Value.ValueKind);
+            Assert.Equal(3, field.Value.GetInt32());
+        }
+        else
+        {
+            Assert.Empty(result.Details);
         }
     }
 
@@ -225,6 +274,10 @@ public partial class ActivityLogModelTests
 
         Assert.DoesNotContain("B3-PROTECTED-PAYLOAD", exception.Message);
         Assert.DoesNotContain("PasswordHash", exception.Message);
+        var listException = await Assert.ThrowsAsync<InvalidDataException>(() =>
+            new ListActivityLogsQueryHandler(db).HandleAsync(new(), ct));
+        Assert.DoesNotContain("B3-PROTECTED-PAYLOAD", listException.Message);
+        Assert.DoesNotContain("PasswordHash", listException.Message);
         Assert.Equal(json, (await db.ActivityLog.AsNoTracking().SingleAsync(ct)).Details);
     }
 

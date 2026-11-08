@@ -2,14 +2,14 @@
 
 ## Current status
 
-B0 and B1 were accepted by the user on 2026-11-08. The user committed B1 as `4bd7c3a5b825a4c3dab0de44289070bf6f97aa1c` and authorized B2. B2 dispatch consolidation and the separately implemented trace-diagnostic enhancement are complete and verified; B2 user acceptance and local commit authorization remain pending. Its changes are uncommitted on that B1 SHA. The verified B0 baseline remains `1f5584223de01a1b7da1078268c54c6412b8f7d5`. Recheck the current checkout before relying on either SHA. B3, schema changes, and deployment remain unauthorized.
+B0 through B2 were accepted by the user on 2026-11-08. The user committed B2 as `4ac5e79b7292953fc685f9f94ab15bcf1672b2ab` and authorized B3. B3 implementation and automated verification are complete; its uncommitted typed-reader extraction preserves stored details, HTTP contracts and malformed-list rejection. B3 user acceptance, local commit authorization and interactive browser acceptance remain pending. The verified B0 baseline remains `1f5584223de01a1b7da1078268c54c6412b8f7d5`. Recheck the current checkout before relying on either SHA. B4, schema changes, and deployment remain unauthorized.
 
 | Batch | Depends on | Status | Test evidence | Commit | User acceptance |
 | --- | --- | --- | --- | --- | --- |
 | B0. Confirm the baseline | Implementation authorization | Accepted | Configuration 310/310; Web 634/634; Activity Log Node 14/14; no failures or skips | None required | User confirmed B0 on 2026-11-08 |
 | B1. Share the ordinary settings audit policy | B0 | Accepted | Configuration 310/310; Web 634/634; Web build 0 warnings/errors; no test failures/skips | `4bd7c3a5b825a4c3dab0de44289070bf6f97aa1c` (user-created) | User accepted B1 on 2026-11-08 |
-| B2. Reuse audit dispatch and correlate failures | B1 accepted | Implemented and verified; awaiting acceptance | Focused 22/22; complete Web 640/640; Web build 0 warnings/errors; no final failures/skips | Not authorized; changes uncommitted | Pending |
-| B3. Return typed setting changes from the detail reader | B2 accepted | Pending | Pending | Pending | Pending |
+| B2. Reuse audit dispatch and correlate failures | B1 accepted | Accepted | Focused 22/22; complete Web 640/640; Web build 0 warnings/errors; no final failures/skips | `4ac5e79b7292953fc685f9f94ab15bcf1672b2ab` (user-created) | User accepted B2 on 2026-11-08 |
+| B3. Return typed setting changes from the detail reader | B2 accepted | Implemented and verified; awaiting acceptance | Focused 48/48; complete Web 642/642; Node 14/14; Web build 0 warnings/errors; no failures/skips | Not authorized; changes uncommitted | Pending; browser acceptance separate |
 | B4. Read the event catalog directly | B3 accepted | Pending | Pending | Pending | Pending |
 | B5. Verify the combined result | B4 accepted | Pending | Pending | None required unless follow-up changes are approved | Pending |
 
@@ -138,13 +138,43 @@ dotnet test --project src\Tests\Moonglade.Web.Tests\Moonglade.Web.Tests.csproj -
 
 - Test changes add six trace/no-trace theory cases to the original full-suite total; existing failure assertions remain meaningful and the scheduled tests explicitly assert no trace metadata. No tests were removed or skipped.
 - Documentation disposition: updated the Configuration section of `docs/agent-reference.md` for the shared guard, trace-only metadata, cancellation contracts and diagnostic ownership, and updated this retained plan. No README, deployment, configuration, dependency, or schema documentation changes were needed.
-- Limits and next gate: automated data was synthetic InMemory/SQLite only. Provider-database, migration, full-solution, Node and browser checks were not run for B2. No new commit/push was created. Await B2 user acceptance and local commit authorization; do not start B3.
+- Limits and acceptance: automated data was synthetic InMemory/SQLite only. Provider-database, migration, full-solution, Node and browser checks were not run for B2. The user subsequently committed B2 as `4ac5e79b7292953fc685f9f94ab15bcf1672b2ab`, accepted it and authorized B3. No agent-created commit or push was performed.
 
 ## B3. Return typed setting changes from the detail reader
 
 - Have [ActivityLogDetails](../src/Moonglade.ActivityLog/ActivityLogDetails.cs) yield validated typed setting changes so [ActivityLogController](../src/Moonglade.Web/Controllers/ActivityLogController.cs) can localize them without reading the persisted `Key`, `OldValue`, and `NewValue` properties again. Preserve ordinary detail fields, scalar JSON types, field ordering, and the distinction between no change envelope and an empty one. Keep existing localized label keys. A future label consolidation that changes the visible text requires a separate decision.
 - Run the Web suite, Web build, and Activity Log browser-module tests. Verify valid stored rows, restricted-only empty changes, wrong shape, missing keys, duplicate keys, disallowed values, and the existing list failure on malformed stored data. Compare the detail payload and localized labels in all supported cultures through the HTTP fixtures. In browser acceptance, check a setting detail and an ordinary event in the existing offcanvas.
 - Acceptance evidence includes a focused commit and equivalent list/detail API results and presentation for existing history, with malformed stored details still rejected safely.
+
+### B3 implementation evidence (2026-11-08)
+
+- Starting scope: clean `master` at the user-created, accepted B2 commit `4ac5e79b7292953fc685f9f94ab15bcf1672b2ab`. Its passing complete Web suite (640 cases) and standalone build provide the unchanged baseline. No branch switch, commit, push, deployment, or real-database operation was performed.
+- Structural change: `ActivityLogDetails.ReadSettingChanges` retains the existing shared write/read validation and returns an ordered read-only list of `ActivityLogSettingChangeDetail` records. Old/new values remain detached `JsonElement` scalars, cloned before the parsing document is disposed. The internal parser returns both the original details dictionary and the validated typed list in one pass.
+- Compatibility: the existing `ActivityLogItem.Details` property, raw `Changes` JSON, write model, query types and response DTOs are retained. The additive init-only `ActivityLogItem.SettingChanges` property is JSON-ignored; it does not alter serialized read-model or HTTP shapes. Existing public symbols and nullable annotations are unchanged. Both affected projects target `net10.0`, with no API manifest, conditional compilation, package-validation gate or partial production declaration governing the changed surface.
+- Web now localizes `log.SettingChanges` without enumerating raw stored change members again. Ordinary events retain `changes: null`; restricted-only settings events retain `changes: []`. Fields, scalar types, ordering, event/field keys and all existing localization resource keys are unchanged. List and detail queries still use the same `FromEntity` validation, so malformed rows fail on both paths without exposing their contents.
+- Focused test changes are confined to `ActivityLogModelTests.Changes.cs`: strengthen the independent nine-group/51-field and scalar-boundary reader matrices for typed values, order, read-only lists, disposed-document safety and unchanged raw serialization; add two ordinary-event cases; extend all 24 malformed-envelope cases to verify list rejection as well as detail rejection. No tests or edge-case data were removed, weakened or skipped. Final complete-suite total increased by exactly the two ordinary-event cases.
+
+| Executed command (repository root) | Result | Exit code |
+| --- | --- | --- |
+| `dotnet build src\Moonglade.Web\Moonglade.Web.csproj` | Build succeeded; 0 warnings, 0 errors | 0 |
+| `dotnet test --project src\Tests\Moonglade.Web.Tests\Moonglade.Web.Tests.csproj` | Passed: 642, Failed: 0, Skipped: 0 | 0 |
+| `node --test src\Tests\Moonglade.Web.Tests\JavaScript\ActivityLogTests.mjs` | Passed: 14, Failed: 0, Skipped: 0 | 0 |
+
+The focused reader/HTTP selection passed 48 cases, with no failures/skips and exit 0:
+
+```powershell
+dotnet test --project src\Tests\Moonglade.Web.Tests\Moonglade.Web.Tests.csproj --filter-method '*SettingChanges_All51B0Fields_AreExactEventAllowlistAndPersistTypedValues' '*SettingChanges_EmptyAndScalarBoundaries_RoundTripWithoutLosingTypes' '*SettingChanges_OrdinaryDetails_HaveNoChangeEnvelopeAndPreserveFields' '*SettingChanges_InvalidStoredEnvelope_ThrowsSafeFailureBeforeReadExposure' '*SettingDetails_All51LabelsAreLocalizedAndOldNewValuesRemainTypedPlainText' '*RestrictedOnlyHttp_HasEmptyChangesWhileNonSettingsKeepFields'
+```
+
+| Requirement | Evidence |
+| --- | --- |
+| Validated typed changes retain 51 independent field expectations, order, detached scalar values and raw compatibility | `ActivityLogModelTests.SettingChanges_All51B0Fields_AreExactEventAllowlistAndPersistTypedValues`; `SettingChanges_EmptyAndScalarBoundaries_RoundTripWithoutLosingTypes` |
+| Ordinary events have no change envelope; restricted-only events have an intentional empty one | `ActivityLogModelTests.SettingChanges_OrdinaryDetails_HaveNoChangeEnvelopeAndPreserveFields`; existing `ActivityLogHttpTests.RestrictedOnlyHttp_HasEmptyChangesWhileNonSettingsKeepFields` |
+| Wrong shapes, missing/repeated/disallowed keys and nonscalar values fail safely on detail and list reads | `ActivityLogModelTests.SettingChanges_InvalidStoredEnvelope_ThrowsSafeFailureBeforeReadExposure` (24 stored-shape cases); existing `Detail_InvalidStoredFieldsOrShapes_FailsExplicitlyWithoutEchoingPayload` |
+| HTTP detail field order, labels in all five cultures and plain-text presentation remain unchanged | Existing `ActivityLogHttpTests.SettingDetails_All51LabelsAreLocalizedAndOldNewValuesRemainTypedPlainText` and full-suite non-settings writer-to-HTTP fixtures; actual Activity Log Node module's typed-change, empty-envelope, offcanvas and enum-label cases |
+
+- Review and documentation: reviewed the focused production/test diff and its concrete assertions. Confirmed no edits to event keys/allowlists, writer failure behavior, configuration/Data/provider/schema code, localization resources or frontend assets. Updated `docs/agent-reference.md` with typed-read ownership and compatibility invariants, and this retained tracking record; no README or deployment changes were needed.
+- Limits and next gate: tests used synthetic InMemory/SQLite and TestServer data only. No provider-database, migration or full-solution run was performed. Node and compiled-page/HTTP evidence are not interactive browser acceptance. A disposable browser-acceptance host/database remains unconfirmed; no existing developer host was launched or used. No new commit/push was created. Await B3 acceptance and local commit authorization; do not start B4.
 
 ## B4. Read the event catalog directly
 
@@ -171,3 +201,5 @@ dotnet test --project src\Tests\Moonglade.Web.Tests\Moonglade.Web.Tests.csproj -
 | 2026-11-08 | B1 implemented and verified | Shared immutable Configuration field policy now feeds both the projector and the canonical ActivityLog settings events through the approved one-way reference. All nine groups/51 fields retain exact B0 spelling/order. Configuration 310 passed, Web 634 passed, both without failures/skips; standalone Web build passed without warnings/errors. Independent tests and HTTP/write/history boundaries are unchanged. Engineering reference updated. Await local commit authorization and B1 acceptance; do not start B2. |
 | 2026-11-08 | B1 acceptance / B2 authorization | User explicitly accepted B1 and requested B2. Starting checkout is clean on `master` at the user-created B1 commit `4bd7c3a5b825a4c3dab0de44289070bf6f97aa1c`. Reuse its passing Web baseline. Separate behavior-preserving dispatch consolidation from the already authorized trace-diagnostic enhancement; keep commits and B3 pending. |
 | 2026-11-08 | B2 implemented and verified | Shared Web guard replaces redundant controller/post/scheduled dispatch handling. Separate diagnostic enhancement propagates JSON-ignored request trace metadata to safe writer/guard diagnostics without persistence or duplicate errors. Structural Web run retained 634 passing cases; final focused selection passed 22 and complete Web suite passed 640, all final exit 0/no failures/skips; both Web builds had 0 warnings/errors. Engineering reference and tracking record updated. Changes remain uncommitted; await B2 acceptance and local commit authorization before B3. |
+| 2026-11-08 | B2 acceptance / B3 authorization | User accepted B2 and requested B3. Starting checkout is clean on `master` at the user-created B2 commit `4ac5e79b7292953fc685f9f94ab15bcf1672b2ab`. Reuse its passing Web baseline; implement only typed validated detail reading and localization, preserving storage/HTTP/list-failure contracts. New commits and B4 remain pending. |
+| 2026-11-08 | B3 implemented and verified | Typed read-only detached changes now come from ActivityLogDetails; the Web controller only localizes them. Existing raw details, serialized contracts, all five culture labels and malformed-list failures are preserved. Focused reader/HTTP 48 passed; complete Web 642 passed; Activity Log Node 14 passed, all exit 0 without failures/skips. Standalone Web build had 0 warnings/errors. Engineering reference and tracking record updated. Changes remain uncommitted; browser acceptance is unclaimed. Await B3 acceptance and local commit authorization; do not start B4. |
