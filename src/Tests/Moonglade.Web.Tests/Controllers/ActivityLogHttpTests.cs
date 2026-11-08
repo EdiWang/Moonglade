@@ -133,7 +133,8 @@ public partial class ActivityLogHttpTests
             {
                 EventKey = definition.Key, EventTimeUtc = new DateTime(2026, 3, 1, 0, 0, 0, DateTimeKind.Utc),
                 ActorKind = ActivityActorKind.Administrator, ActorDisplayName = "admin",
-                TargetId = "captured-id", TargetDisplayName = target, Details = "{}"
+                TargetId = "captured-id", TargetDisplayName = target,
+                Details = definition.SettingKeys is null ? null : """{"Changes":[]}"""
             });
         await db.SaveChangesAsync(ct);
         using var client = fixture.App.GetTestClient();

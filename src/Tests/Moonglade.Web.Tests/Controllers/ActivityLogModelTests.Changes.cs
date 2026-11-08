@@ -109,6 +109,7 @@ public partial class ActivityLogModelTests
     [InlineData("new-object")]
     [InlineData("untyped-list")]
     [InlineData("null-envelope")]
+    [InlineData("missing-envelope")]
     [InlineData("non-settings-event")]
     public async Task SettingChanges_InvalidWriterInput_RejectsBeforePersistenceAndLogsNoProtectedContents(string scenario)
     {
@@ -137,7 +138,7 @@ public partial class ActivityLogModelTests
         db.Add(unrelated);
         await Writer(db, store).HandleAsync(new CreateActivityLogCommand(
             scenario == "non-settings-event" ? ActivityEvents.PostCreated : ActivityEvents.SettingsGeneralUpdated,
-            ActivityActorKind.Administrator, "admin", Details: ActivityLogDetails.Create(("Changes", changes))), ct);
+            ActivityActorKind.Administrator, "admin", Details: scenario == "missing-envelope" ? null : ActivityLogDetails.Create(("Changes", changes))), ct);
 
         Assert.Empty(await store.ReadLogsAsync(ct));
         Assert.Empty(db.ChangeTracker.Entries<ActivityLogEntity>());
@@ -153,6 +154,8 @@ public partial class ActivityLogModelTests
     [Theory]
     [InlineData("malformed")]
     [InlineData("null-root")]
+    [InlineData("missing-envelope")]
+    [InlineData("empty-root")]
     [InlineData("array-root")]
     [InlineData("unknown-root")]
     [InlineData("duplicate-root")]
@@ -184,6 +187,8 @@ public partial class ActivityLogModelTests
         {
             "malformed" => """{"Changes":[B3-PROTECTED-PAYLOAD""",
             "null-root" => "null",
+            "missing-envelope" => null,
+            "empty-root" => "{}",
             "array-root" => "[]",
             "unknown-root" => """{"PasswordHash":"B3-PROTECTED-PAYLOAD"}""",
             "duplicate-root" => $$"""{"Changes":[{{valid}}],"Changes":[]}""",
@@ -219,29 +224,6 @@ public partial class ActivityLogModelTests
         Assert.DoesNotContain("B3-PROTECTED-PAYLOAD", exception.Message);
         Assert.DoesNotContain("PasswordHash", exception.Message);
         Assert.Equal(json, (await db.ActivityLog.AsNoTracking().SingleAsync(ct)).Details);
-    }
-
-    [Theory]
-    [InlineData(ActivityEvents.SettingsGeneralUpdated, "SiteTitle")]
-    [InlineData(ActivityEvents.SettingsCommentUpdated, "EnableComments")]
-    [InlineData(ActivityEvents.SettingsImageUpdated, "EnableCDNRedirect")]
-    [InlineData(ActivityEvents.SettingsAppearanceUpdated, "ThemeId")]
-    [InlineData(ActivityEvents.SettingsCustomMenuUpdated, "IsEnabled")]
-    public async Task LegacyB2ScalarSettingsDetails_RemainReadableWithoutInventedBeforeValues(string eventKey, string key)
-    {
-        var ct = TestContext.Current.CancellationToken;
-        await using var store = await ActivityLogTestStore.CreateAsync(ct: ct);
-        using var scope = store.Services.CreateScope();
-        var db = scope.ServiceProvider.GetRequiredService<BlogDbContext>();
-        object value = key switch { "SiteTitle" => "Legacy title", "ThemeId" => 100, _ => true };
-
-        await Writer(db, store).HandleAsync(new CreateActivityLogCommand(eventKey, ActivityActorKind.Administrator, "admin",
-            Details: ActivityLogDetails.Create((key, value))), ct);
-
-        var row = Assert.Single(await store.ReadLogsAsync(ct));
-        var result = (await new GetMetaDataByActivityLogIdQueryHandler(db).HandleAsync(new(row.Id), ct))!;
-        Assert.Equal([key], result.Details.Keys);
-        AssertScalar(value, result.Details[key]);
     }
 
     private static void AssertScalar(object? expected, JsonElement actual) =>

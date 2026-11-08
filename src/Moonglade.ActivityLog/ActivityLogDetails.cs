@@ -24,7 +24,12 @@ public static class ActivityLogDetails
 
     internal static string? Serialize(ActivityEventDefinition definition, IReadOnlyDictionary<string, object?>? details)
     {
-        if (details is null || details.Count == 0) return null;
+        if (details is null || details.Count == 0)
+        {
+            if (definition.SettingKeys is not null)
+                throw new ArgumentException("Settings activity requires a change envelope.");
+            return null;
+        }
 
         var safe = new Dictionary<string, JsonElement>(StringComparer.Ordinal);
         foreach (var (key, value) in details)
@@ -54,7 +59,12 @@ public static class ActivityLogDetails
 
     internal static IReadOnlyDictionary<string, JsonElement> Parse(ActivityEventDefinition definition, string? details)
     {
-        if (string.IsNullOrWhiteSpace(details)) return new Dictionary<string, JsonElement>();
+        if (string.IsNullOrWhiteSpace(details))
+        {
+            if (definition.SettingKeys is not null)
+                throw new InvalidDataException("Settings activity requires a change envelope.");
+            return new Dictionary<string, JsonElement>();
+        }
 
         try
         {
@@ -71,6 +81,8 @@ public static class ActivityLogDetails
                 else if (!IsSafeJson(field.Value))
                     throw new InvalidDataException("Stored activity details contain an unsupported value.");
             }
+            if (definition.SettingKeys is not null && values.Count == 0)
+                throw new InvalidDataException("Settings activity requires a change envelope.");
             return values;
         }
         catch (JsonException)

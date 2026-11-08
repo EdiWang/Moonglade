@@ -324,7 +324,7 @@ test('activityLogManager clear confirmation flow', async t => {
         assert.deepEqual(events, ['detail-show', 'format']);
     });
 
-    await t.test('B3 empty changes are intentional while legacy null missing or invalid shapes are not settings changes', () => {
+    await t.test('empty changes are intentional while non-settings details have no change table', () => {
         const { manager } = createManager();
         manager.currentDetail = { fields: [], changes: [] };
         assert.equal(manager.hasSettingsChanges, true);

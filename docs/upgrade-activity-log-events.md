@@ -6,10 +6,10 @@ manual schema prerequisite for existing installations, not an automatic startup
 migration. Do not run the new application against the legacy schema or the old
 application against the new schema.
 
-**The one-time legacy cutover permanently deletes all existing activity history.**
-It does not translate legacy rows or retain their metadata. This destructive
-exception applies only to activity history; posts, categories, settings, comments,
-and every other application data set must remain unchanged.
+**The release starts with an empty activity history.** The legacy schema upgrade
+permanently deletes all existing activity rows. An installation that already ran
+a preview with the new schema needs the separate one-time reset below. Preserve
+posts, categories, settings, comments, and all other application data.
 
 ## Prerequisites and Order
 
@@ -76,6 +76,19 @@ legacy history size. An error, lock timeout, or unsuccessful DDL rolls back the
 transaction. Keep the host stopped, inspect the cause, and retry the complete
 script only after resolving it. Do not remove guards or switch to `TRUNCATE` or
 `CASCADE` to force an upgrade through.
+
+## Reset an Already-Upgraded Preview
+
+If this installation already ran a pre-release build with the canonical activity
+schema, complete the same stop, backup, and verification steps above. The guarded
+schema script leaves an already-upgraded table untouched. After confirming that
+the script succeeded and that you are connected to the intended database, clear
+that installation's pre-release history once, before starting the release.
+
+On PostgreSQL, run `DELETE FROM public.activity_log;`. On SQL Server, run
+`DELETE FROM dbo.ActivityLog;`. Verify the activity table is empty. This reset is
+only for the release cutover of an already-upgraded preview. On subsequent
+schema-script reruns, preserve the history written by the release.
 
 ## Exact Supported Shapes
 

@@ -92,26 +92,26 @@ public static class ActivityEvents
         Define(TagDeleted, "Tags", "Tag deleted", "TagId"),
         Define(ThemeCreated, "Themes", "Theme created", "ThemeId", "AccentColor"),
         Define(ThemeDeleted, "Themes", "Theme deleted", "ThemeId"),
-        DefineSettings(SettingsGeneralUpdated, "General settings updated", ["SiteTitle", "LogoText"],
+        DefineSettings(SettingsGeneralUpdated, "General settings updated",
             "LogoText", "SiteTitle", "SideBarOption", "WidgetsProfile", "HotTagAmount", "WidgetsCategoryList",
             "WidgetsSubscriptionButtons", "UseGravatarAsProfilePicture", "DefaultLanguageCode", "UseDublinCoreMetaData"),
-        DefineSettings(SettingsContentUpdated, "Content settings updated", [],
+        DefineSettings(SettingsContentUpdated, "Content settings updated",
             "DefaultEditor", "PostListPageSize", "PostTitleAlignment", "ShowCalloutSection", "ShowPostFooter",
             "DocumentOutline", "EnableViewCount", "MaximumPageNumbersToDisplay"),
-        DefineSettings(SettingsCommentUpdated, "Comment settings updated", ["EnableComments", "RequireCommentReview"],
+        DefineSettings(SettingsCommentUpdated, "Comment settings updated",
             "CommentProvider", "CommentOrder", "EnableComments", "EnableGravatar", "EnableMarkdownLinks",
             "RequireCommentReview", "CloseCommentAfterDays", "EnableWordFilter", "WordFilterMode", "EnableCommentSectionOnMobile"),
-        DefineSettings(SettingsNotificationUpdated, "Notification settings updated", [],
+        DefineSettings(SettingsNotificationUpdated, "Notification settings updated",
             "EnableEmailSending", "SendEmailOnCommentReply", "SendEmailOnNewComment"),
-        DefineSettings(SettingsSubscriptionUpdated, "Subscription settings updated", [], "FeedItemCount", "UseFullContent"),
-        DefineSettings(SettingsImageUpdated, "Image settings updated", ["EnableCDNRedirect", "IsWatermarkEnabled"],
+        DefineSettings(SettingsSubscriptionUpdated, "Subscription settings updated", "FeedItemCount", "UseFullContent"),
+        DefineSettings(SettingsImageUpdated, "Image settings updated",
             "IsWatermarkEnabled", "KeepOriginImage", "WatermarkFontSize", "WatermarkColorA", "WatermarkSkipPixel", "EnableCDNRedirect"),
-        DefineSettings(SettingsAdvancedUpdated, "Advanced settings updated", [],
+        DefineSettings(SettingsAdvancedUpdated, "Advanced settings updated",
             "EnableWebmention", "EnableOpenSearch", "EnableFoaf", "EnableOpml", "EnableSiteMap", "EnablePostScheduler",
             "WarnPostExternalLink", "WarnCommentExternalLink", "EnableJsonLdBlogPosting"),
-        DefineSettings(SettingsAppearanceUpdated, "Appearance settings updated", ["ThemeId", "EnableCustomCss"],
+        DefineSettings(SettingsAppearanceUpdated, "Appearance settings updated",
             "ThemeId", "EnableCustomCss"),
-        DefineSettings(SettingsCustomMenuUpdated, "Custom menu settings updated", ["IsEnabled"], "IsEnabled"),
+        DefineSettings(SettingsCustomMenuUpdated, "Custom menu settings updated", "IsEnabled"),
         Define(SettingsPasswordUpdated, "Account", "Account password updated", "Username"),
         Define(SettingsAuthenticatorReset, "Account", "Account authenticator reset", "Username"),
         Define(ImageUploaded, "Images", "Image uploaded", "FileName", "FileSize", "SkipWatermark"),
@@ -138,8 +138,8 @@ public static class ActivityEvents
     private static ActivityEventDefinition Define(string key, string group, string label, params string[] detailKeys) =>
         new(key, group, label, detailKeys.ToFrozenSet(StringComparer.Ordinal));
 
-    private static ActivityEventDefinition DefineSettings(string key, string label, string[] legacyDetailKeys, params string[] settingKeys) =>
+    private static ActivityEventDefinition DefineSettings(string key, string label, params string[] settingKeys) =>
         new(key, "Settings", label,
-            legacyDetailKeys.Append(ActivityLogSettingChange.DetailsKey).ToFrozenSet(StringComparer.Ordinal),
+            new[] { ActivityLogSettingChange.DetailsKey }.ToFrozenSet(StringComparer.Ordinal),
             settingKeys.ToFrozenSet(StringComparer.Ordinal));
 }

@@ -166,7 +166,7 @@ public partial class ActivityLogHttpTests
     }
 
     [Fact]
-    public async Task RestrictedOnlyHttp_HasEmptyChangesWhileLegacyAndNonSettingsKeepFields()
+    public async Task RestrictedOnlyHttp_HasEmptyChangesWhileNonSettingsKeepFields()
     {
         var ct = TestContext.Current.CancellationToken;
         await using var fixture = await ActivityLogHttpFixture.CreateAsync(0, ct, includeSettings: true);
@@ -184,18 +184,13 @@ public partial class ActivityLogHttpTests
         Assert.DoesNotContain("B3-private", metadata.RootElement.GetRawText());
         using var scope = fixture.App.Services.CreateScope();
         var db = scope.ServiceProvider.GetRequiredService<BlogDbContext>();
-        var legacy = new ActivityLogEntity { EventKey = ActivityEvents.SettingsGeneralUpdated, EventTimeUtc = DateTime.UtcNow,
-            ActorKind = ActivityActorKind.Administrator, Details = """{"SiteTitle":"Legacy title"}""" };
         var ordinary = new ActivityLogEntity { EventKey = ActivityEvents.ActivityLogsCleared, EventTimeUtc = DateTime.UtcNow,
             ActorKind = ActivityActorKind.Administrator, Details = """{"DeletedCount":3}""" };
-        db.AddRange(legacy, ordinary);
+        db.Add(ordinary);
         await db.SaveChangesAsync(ct);
-        foreach (var item in new[] { legacy, ordinary })
-        {
-            using var detail = JsonDocument.Parse(await client.GetStringAsync($"/api/activitylog/{item.Id}/metadata", ct));
-            Assert.Equal(JsonValueKind.Null, detail.RootElement.GetProperty("changes").ValueKind);
-            Assert.Single(detail.RootElement.GetProperty("fields").EnumerateArray());
-        }
+        using var detail = JsonDocument.Parse(await client.GetStringAsync($"/api/activitylog/{ordinary.Id}/metadata", ct));
+        Assert.Equal(JsonValueKind.Null, detail.RootElement.GetProperty("changes").ValueKind);
+        Assert.Single(detail.RootElement.GetProperty("fields").EnumerateArray());
     }
 
     [Fact]

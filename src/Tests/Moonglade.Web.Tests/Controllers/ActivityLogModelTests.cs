@@ -81,7 +81,7 @@ public partial class ActivityLogModelTests
         Assert.Equal(["CommentId"], ActivityEvents.Get("comment.replied").DetailKeys.ToArray());
         Assert.Equal(["PostId"], ActivityEvents.Get("post.automatically-published").DetailKeys.ToArray());
         Assert.Equal(["DeletedCount"], ActivityEvents.Get("activity-log.cleared").DetailKeys.ToArray());
-        Assert.Equal(["Changes", "EnableComments", "RequireCommentReview"], ActivityEvents.Get("settings.comments.updated").DetailKeys.Order().ToArray());
+        Assert.Equal(["Changes"], ActivityEvents.Get("settings.comments.updated").DetailKeys.ToArray());
     }
 
     [Fact]
