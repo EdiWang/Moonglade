@@ -3,6 +3,7 @@
 @{
     ViewBag.Title = "Tags";
     ViewBag.XData = "tagManager";
+    ViewBag.ScrollAdminBody = true;
 }
 
 @section scripts {
@@ -16,7 +17,7 @@
 </div>
 
 @section admintoolbar {
-    <div class="admin-toolbar pb-2 border-bottom mb-3 d-flex flex-column flex-md-row align-items-start align-items-md-center gap-2">
+    <div class="admin-toolbar pb-2 border-bottom mb-3 d-flex flex-shrink-0 flex-column flex-md-row align-items-start align-items-md-center gap-2">
         <a x-on:click="initCreateTag()" class="btn btn-outline-accent" role="button">
             <i class="bi-plus-lg"></i>
             @SharedLocalizer["New"]

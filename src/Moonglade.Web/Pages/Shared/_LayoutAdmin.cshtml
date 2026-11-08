@@ -11,6 +11,7 @@
 
     bool clientPreferDarkMode = Helper.IsClientPreferDarkMode(Context);
     bool hideAdminSidebar = ViewBag.HideAdminSidebar == true;
+    bool scrollAdminBody = ViewBag.ScrollAdminBody == true;
     string adminBackUrl = ViewBag.AdminBackUrl as string;
 
     var themeCss = await Cache.GetOrCreateAsync(BlogCachePartition.General.ToString(), ThemeCache.GetCacheKey(snapshot.AppearanceSettings.ThemeId), async () =>
@@ -114,10 +115,11 @@
     {
         <div class="d-flex admin-body-wrapper">
             <partial name="_AsideAdmin" />
-            <main class="admin-main p-3" tabindex="0" x-data="@ViewBag.XData">
+            <main class="admin-main p-3 @(scrollAdminBody ? "d-flex flex-column overflow-hidden" : null)"
+                  tabindex="@(scrollAdminBody ? null : "0")" x-data="@ViewBag.XData">
                 @await RenderSectionAsync("admintoolbar", false)
 
-                <div class="admin-main-body">
+                <div class="admin-main-body @(scrollAdminBody ? "overflow-auto" : null)" tabindex="@(scrollAdminBody ? "0" : null)">
                     @RenderBody()
                 </div>
             </main>
