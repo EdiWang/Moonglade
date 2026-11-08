@@ -1,4 +1,4 @@
-﻿@page "/admin/settings/notification"
+@page "/admin/settings/notification"
 @{
     var snapshot = ViewData.CaptureSettings(SettingsReader);
 }
@@ -68,10 +68,10 @@
                             <i class="bi-send settings-entry-icon"></i>
                         </div>
                         <div class="col">
-                            <label>@SharedLocalizer["Sender Address"]</label>
+                            @SharedLocalizer["Sender Address"]
                         </div>
-                        <div class="col-6">
-                            <input readonly="readonly" class="form-control" spellcheck="false" value="@(string.IsNullOrWhiteSpace(pageState.SenderAddress) ? SharedLocalizer["Not configured"] : pageState.SenderAddress)" />
+                        <div class="col-6 text-body-secondary text-break">
+                            @(string.IsNullOrWhiteSpace(pageState.SenderAddress) ? SharedLocalizer["Not configured"] : pageState.SenderAddress)
                         </div>
                     </div>
 
@@ -80,10 +80,10 @@
                             <i class="bi-inboxes settings-entry-icon"></i>
                         </div>
                         <div class="col">
-                            <label>@SharedLocalizer["Email Notifications"]</label>
+                            @SharedLocalizer["Email Notifications"]
                         </div>
-                        <div class="col-6">
-                            <input readonly="readonly" class="form-control" spellcheck="false" value="@(pageState.EmailEnabled ? SharedLocalizer["Enabled"] : SharedLocalizer["Disabled"])" />
+                        <div class="col-6 text-body-secondary">
+                            @(pageState.EmailEnabled ? SharedLocalizer["Enabled"] : SharedLocalizer["Disabled"])
                         </div>
                     </div>
 
