@@ -1,4 +1,4 @@
-﻿@page "/admin/settings/content"
+@page "/admin/settings/content"
 @{
     var snapshot = ViewData.CaptureSettings(SettingsReader);
 }
@@ -6,8 +6,12 @@
     var settings = snapshot.ContentSettings;
 }
 
+@section head {
+    <link href="~/_content/Moonglade.Editor.StaticAssets/moonglade-editor/moonglade-editor.css" rel="stylesheet" asp-append-version="true" />
+}
+
 @section scripts {
-    <script type="module" src="~/js/app/admin.settings.content.mjs"></script>
+    <script type="module" src="~/js/app/admin.settings.content.editor.mjs" asp-append-version="true"></script>
 }
 
 @section admintoolbar {
