@@ -1,4 +1,4 @@
-﻿@page "/admin/activitylogs"
+@page "/admin/activitylogs"
 @{
     ViewBag.Title = "Activity Logs";
     ViewBag.XData = "activityLogManager";
@@ -87,9 +87,9 @@
                         </td>
                         <td class="text-end">
                             <button class="btn btn-outline-primary btn-sm" 
-                                    x-on:click="showDetail(log.id)"
-                                    title="@SharedLocalizer["Detail"]">
-                                <i class="bi-info-circle"></i>
+                                    x-on:click="showDetail(log.id, $event.currentTarget)" aria-controls="detailCanvas"
+                                    aria-label="@SharedLocalizer["Detail"]" title="@SharedLocalizer["Detail"]">
+                                <i class="bi-info-circle" aria-hidden="true"></i>
                             </button>
                         </td>
                     </tr>
@@ -194,92 +194,88 @@
     </div>
 </div>
 
-<!-- Detail Modal -->
-<div class="modal fade" id="detailModal" tabindex="-1" aria-labelledby="detailModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="detailModalLabel">
-                    <span x-text="currentDetail?.heading"></span>
-                </h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+<div class="offcanvas offcanvas-end" tabindex="-1" id="detailCanvas" x-ref="detailCanvas"
+     aria-labelledby="detailCanvasLabel" style="--bs-offcanvas-width: 480px;">
+    <div class="offcanvas-header border-bottom">
+        <h5 class="offcanvas-title text-break" id="detailCanvasLabel" x-text="currentDetail?.heading"></h5>
+        <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="@SharedLocalizer["Close"]"></button>
+    </div>
+    <div class="offcanvas-body text-break">
+        <dl class="d-grid gap-3 mb-0">
+            <div>
+                <dt class="small text-body-secondary">@SharedLocalizer["Time"]</dt>
+                <dd class="mb-0"><time :data-utc-label="currentDetail?.eventTimeUtc" x-text="currentDetail?.eventTimeUtc"></time></dd>
             </div>
-            <div class="modal-body">
-                <dl class="row text-break">
-                    <dt class="col-sm-3">@SharedLocalizer["Time"]</dt>
-                    <dd class="col-sm-9"><time :data-utc-label="currentDetail?.eventTimeUtc" x-text="currentDetail?.eventTimeUtc"></time></dd>
-                    <dt class="col-sm-3">@SharedLocalizer["Actor"]</dt>
-                    <dd class="col-sm-9" x-text="currentDetail?.actor"></dd>
-                    <dt class="col-sm-3">@SharedLocalizer["Actor type"]</dt>
-                    <dd class="col-sm-9" x-text="currentDetail?.actorKind === 'System' ? '@SharedLocalizer["System"]' : '@SharedLocalizer["Administrator"]'"></dd>
-                </dl>
-                <dl class="row text-break" x-show="hasDetailContext">
-                    <template x-if="currentDetail?.targetDisplayName">
-                        <div class="row mb-2">
-                            <dt class="col-sm-3">@SharedLocalizer["Target"]</dt>
-                            <dd class="col-sm-9" x-text="currentDetail.targetDisplayName"></dd>
-                        </div>
-                    </template>
-                    <template x-if="currentDetail?.targetId">
-                        <div class="row mb-2">
-                            <dt class="col-sm-3">@SharedLocalizer["Target ID"]</dt>
-                            <dd class="col-sm-9" x-text="currentDetail.targetId"></dd>
-                        </div>
-                    </template>
-                    <template x-if="currentDetail?.ipAddress">
-                        <div class="row mb-2">
-                            <dt class="col-sm-3">@SharedLocalizer["IP Address"]</dt>
-                            <dd class="col-sm-9" x-text="currentDetail.ipAddress"></dd>
-                        </div>
-                    </template>
-                    <template x-if="currentDetail?.userAgent">
-                        <div class="row mb-2">
-                            <dt class="col-sm-3">@SharedLocalizer["User Agent"]</dt>
-                            <dd class="col-sm-9" x-text="currentDetail.userAgent"></dd>
-                        </div>
-                    </template>
-                </dl>
-                <dl class="row text-break" x-show="currentDetail?.fields?.length">
-                    <template x-for="field in currentDetail?.fields ?? []" :key="field.key">
-                        <div class="row mb-2">
-                            <dt class="col-sm-3" x-text="field.label"></dt>
-                            <dd class="col-sm-9" x-text="formatDetailValue(field.value, field.key)"></dd>
-                        </div>
-                    </template>
-                </dl>
-                <div x-show="hasSettingsChanges">
-                    <h6>@SharedLocalizer["Settings changes"]</h6>
-                    <div class="table-responsive" x-show="currentDetail?.changes?.length">
-                        <table class="table table-sm text-break">
-                            <thead>
-                                <tr>
-                                    <th>@SharedLocalizer["Setting"]</th>
-                                    <th>@SharedLocalizer["Previous value"]</th>
-                                    <th>@SharedLocalizer["New value"]</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <template x-for="change in currentDetail?.changes ?? []" :key="change.key">
-                                    <tr>
-                                        <th scope="row" x-text="change.label"></th>
-                                        <td x-text="formatDetailValue(change.oldValue, change.key)"></td>
-                                        <td x-text="formatDetailValue(change.newValue, change.key)"></td>
-                                    </tr>
-                                </template>
-                            </tbody>
-                        </table>
-                    </div>
-                    <p class="text-muted mb-0" x-show="!currentDetail?.changes?.length">
-                        @SharedLocalizer["No change values are available for this update."]
-                    </p>
+            <div>
+                <dt class="small text-body-secondary">@SharedLocalizer["Actor"]</dt>
+                <dd class="mb-0" x-text="currentDetail?.actor"></dd>
+            </div>
+            <div>
+                <dt class="small text-body-secondary">@SharedLocalizer["Actor type"]</dt>
+                <dd class="mb-0" x-text="currentDetail?.actorKind === 'System' ? '@SharedLocalizer["System"]' : '@SharedLocalizer["Administrator"]'"></dd>
+            </div>
+        </dl>
+        <dl class="d-grid gap-3 border-top pt-3 mt-3 mb-0" x-show.important="hasDetailContext">
+            <template x-if="currentDetail?.targetDisplayName">
+                <div>
+                    <dt class="small text-body-secondary">@SharedLocalizer["Target"]</dt>
+                    <dd class="mb-0" x-text="currentDetail.targetDisplayName"></dd>
                 </div>
-                <p class="text-muted mb-0" x-show="!hasSettingsChanges && !hasDetailContext && !currentDetail?.fields?.length">
-                    @SharedLocalizer["No additional activity details are available."]
-                </p>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">@SharedLocalizer["Close"]</button>
-            </div>
-        </div>
+            </template>
+            <template x-if="currentDetail?.targetId">
+                <div>
+                    <dt class="small text-body-secondary">@SharedLocalizer["Target ID"]</dt>
+                    <dd class="mb-0" x-text="currentDetail.targetId"></dd>
+                </div>
+            </template>
+            <template x-if="currentDetail?.ipAddress">
+                <div>
+                    <dt class="small text-body-secondary">@SharedLocalizer["IP Address"]</dt>
+                    <dd class="mb-0 mt-1"><code class="d-block rounded bg-body-tertiary p-2 text-body" x-text="currentDetail.ipAddress"></code></dd>
+                </div>
+            </template>
+            <template x-if="currentDetail?.userAgent">
+                <div>
+                    <dt class="small text-body-secondary">@SharedLocalizer["User Agent"]</dt>
+                    <dd class="mb-0 mt-1"><code class="d-block rounded bg-body-tertiary p-2 text-body" x-text="currentDetail.userAgent"></code></dd>
+                </div>
+            </template>
+        </dl>
+        <dl class="d-grid gap-3 border-top pt-3 mt-3 mb-0" x-show.important="currentDetail?.fields?.length">
+            <template x-for="field in currentDetail?.fields ?? []" :key="field.key">
+                <div>
+                    <dt class="small text-body-secondary" x-text="field.label"></dt>
+                    <dd class="mb-0" x-text="formatDetailValue(field.value, field.key)"></dd>
+                </div>
+            </template>
+        </dl>
+        <section class="border-top pt-3 mt-3" x-show="hasSettingsChanges">
+            <h6>@SharedLocalizer["Settings changes"]</h6>
+            <dl class="d-grid gap-3 mb-0" x-show.important="currentDetail?.changes?.length">
+                <template x-for="change in currentDetail?.changes ?? []" :key="change.key">
+                    <div class="rounded border p-3">
+                        <dt x-text="change.label"></dt>
+                        <dd class="mb-0 mt-2">
+                            <dl class="d-grid gap-2 mb-0">
+                                <div>
+                                    <dt class="small text-body-secondary">@SharedLocalizer["Previous value"]</dt>
+                                    <dd class="mb-0" x-text="formatDetailValue(change.oldValue, change.key)"></dd>
+                                </div>
+                                <div>
+                                    <dt class="small text-body-secondary">@SharedLocalizer["New value"]</dt>
+                                    <dd class="mb-0" x-text="formatDetailValue(change.newValue, change.key)"></dd>
+                                </div>
+                            </dl>
+                        </dd>
+                    </div>
+                </template>
+            </dl>
+            <p class="text-muted mb-0" x-show="!currentDetail?.changes?.length">
+                @SharedLocalizer["No change values are available for this update."]
+            </p>
+        </section>
+        <p class="text-muted mt-3 mb-0" x-show="!hasSettingsChanges && !hasDetailContext && !currentDetail?.fields?.length">
+            @SharedLocalizer["No additional activity details are available."]
+        </p>
     </div>
 </div>

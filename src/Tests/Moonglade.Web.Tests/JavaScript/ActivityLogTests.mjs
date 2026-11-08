@@ -237,19 +237,21 @@ test('activityLogManager clear confirmation flow', async t => {
         assert.equal(events.filter(item => item === 'filter-hide').length, 2);
     });
 
-    await t.test('structured detail loads supplied heading context and typed values as plain text', async () => {
+    await t.test('detail opens the offcanvas and restores focus when closed', async () => {
         const { manager, events } = createManager();
         const detail = { id: 42, eventKey: 'post.created', heading: 'Localized heading',
             targetId: 'snapshot-id', targetDisplayName: '<title>', ipAddress: '192.0.2.50', userAgent: '<agent>',
             fields: [{ key: 'PostStatus', label: 'Status', value: 'Published' }] };
-        manager.detailModal = { show: () => events.push('detail-show') };
+        manager.detailCanvas = { show: () => events.push('detail-show') };
+        manager.$refs = { detailCanvas: new EventTarget() };
         globalThis.b1Activity.fetch = async (url, method) => {
             assert.equal(url, '/api/activitylog/42/metadata');
             assert.equal(method, 'GET');
             assert.equal(manager.currentDetail, null);
             return detail;
         };
-        await manager.showDetail(42);
+        await manager.showDetail(42, { focus: () => events.push('detail-focus') });
+        manager.$refs.detailCanvas.dispatchEvent(new Event('hidden.bs.offcanvas'));
         assert.strictEqual(manager.currentDetail, detail);
         assert.equal(manager.currentDetail.heading, 'Localized heading');
         assert.equal(manager.hasDetailContext, true);
@@ -265,12 +267,12 @@ test('activityLogManager clear confirmation flow', async t => {
         assert.equal(manager.formatDetailValue(undefined, 'Slug'), '\u2014');
         assert.equal(manager.formatDetailValue(['<script>', 7, false, null], 'CommentIds'), '<script>, 7, no, \u2014');
         assert.equal(manager.formatDetailValue('<script>alert(1)</script>', 'Slug'), '<script>alert(1)</script>');
-        assert.deepEqual(events, ['detail-show', 'format']);
+        assert.deepEqual(events, ['detail-show', 'format', 'detail-focus']);
     });
 
     await t.test('empty details remain a successful detail and context detection distinguishes each optional field', async () => {
         const { manager } = createManager();
-        manager.detailModal = { show() {} };
+        manager.detailCanvas = { show() {} };
         globalThis.b1Activity.fetch = async () => ({ id: 44, heading: 'Post created', fields: [] });
         await manager.showDetail(44);
         assert.equal(manager.currentDetail.id, 44);
@@ -290,7 +292,7 @@ test('activityLogManager clear confirmation flow', async t => {
         const { manager, events } = createManager();
         const failure = new Error('Synthetic detail failed');
         manager.currentDetail = { id: 1, heading: 'Stale' };
-        manager.detailModal = { show: () => assert.fail('Failed detail must not open modal.') };
+        manager.detailCanvas = { show: () => assert.fail('Failed detail must not open the offcanvas.') };
         globalThis.b1Activity.fetch = async () => { throw failure; };
         await manager.showDetail(55);
         assert.equal(manager.currentDetail, null);
@@ -305,7 +307,7 @@ test('activityLogManager clear confirmation flow', async t => {
             { key: 'FeedItemCount', label: 'Feed items', oldValue: 0, newValue: 2147483647 },
             { key: 'SiteTitle', label: 'Nullable title', oldValue: null, newValue: '' }
         ];
-        manager.detailModal = { show: () => events.push('detail-show') };
+        manager.detailCanvas = { show: () => events.push('detail-show') };
         globalThis.b1Activity.fetch = async () => ({ id: 101, fields: [], changes });
 
         await manager.showDetail(101);

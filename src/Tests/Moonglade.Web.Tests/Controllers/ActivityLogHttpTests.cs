@@ -77,7 +77,7 @@ public partial class ActivityLogHttpTests
         var html = await page.Content.ReadAsStringAsync(ct);
         Assert.Contains("x-on:click=\"clearAllLogs()\"", html);
         Assert.Contains("data-confirm-clear-all-logs=", html);
-        Assert.Contains("x-on:click=\"showDetail(log.id)\"", html);
+        Assert.Contains("x-on:click=\"showDetail(log.id, $event.currentTarget)\" aria-controls=\"detailCanvas\"", html);
         Assert.Contains("x-text=\"log.summary\"", html);
         Assert.Contains("x-text=\"formatDetailValue(field.value, field.key)\"", html);
         Assert.Contains("/js/app/admin.activitylogs.mjs", html);
@@ -484,6 +484,9 @@ public partial class ActivityLogHttpTests
             Assert.Contains("x-text=\"field.label\"", template);
             Assert.Contains("x-text=\"formatDetailValue(field.value, field.key)\"", template);
             Assert.DoesNotContain("x-html=", template);
+            Assert.Contains("class=\"offcanvas offcanvas-end\" tabindex=\"-1\" id=\"detailCanvas\"", html);
+            Assert.Matches("<code[^>]*x-text=\"currentDetail.ipAddress\"[^>]*></code>", html);
+            Assert.Matches("<code[^>]*x-text=\"currentDetail.userAgent\"[^>]*></code>", html);
         }
         finally { CultureInfo.CurrentUICulture = originalCulture; }
     }

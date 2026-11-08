@@ -12,14 +12,14 @@ Alpine.data('activityLogManager', () => withPagination(10, {
     selectedEventKeys: [],
     startDate: '',
     endDate: '',
-    detailModal: null,
+    detailCanvas: null,
     filterCanvas: null,
     currentDetail: null,
 
     async init() {
         this.initPageFromUrl();
 
-        this.detailModal = new bootstrap.Modal(document.getElementById('detailModal'));
+        this.detailCanvas = new bootstrap.Offcanvas(this.$refs.detailCanvas);
         this.filterCanvas = new bootstrap.Offcanvas(this.$refs.filterCanvas);
 
         await this.loadEventTypes();
@@ -110,11 +110,14 @@ Alpine.data('activityLogManager', () => withPagination(10, {
         });
     },
 
-    async showDetail(logId) {
+    async showDetail(logId, trigger) {
         this.currentDetail = null;
         try {
             this.currentDetail = await fetch2(`/api/activitylog/${logId}/metadata`, 'GET');
-            this.detailModal.show();
+            if (trigger) {
+                this.$refs.detailCanvas.addEventListener('hidden.bs.offcanvas', () => trigger.focus(), { once: true });
+            }
+            this.detailCanvas.show();
             this.$nextTick(() => formatUtcTime());
         } catch (err) {
             error(err);
