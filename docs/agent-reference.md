@@ -75,7 +75,7 @@ HTML email bodies encode ordinary mapped values. Only wrap the already-rendered 
 - Built-in comment creation is also protected by host-level `CommentRateLimit` settings that partition requests by client IP and post ID.
 - Built-in comment creation checks `CommentSubmissionGuard` honeypot and elapsed-time fields before dispatching the create command.
 - Content moderation is abstracted in `Moonglade.Moderation` and supports local keyword filtering. Do not put moderation behavior directly in controllers.
-- Comments, replies, and Webmentions can trigger activity logs and email notifications. Email notification handlers should enqueue to the database outbox; external delivery belongs in `EmailOutboxWorker` instead of request handlers.
+- Administrator comment moderation and replies produce activity logs; public comment submissions do not. Comments, replies, and Webmentions can trigger email notifications. Email notification handlers should enqueue to the database outbox; external delivery belongs in `EmailOutboxWorker` instead of request handlers.
 
 ### Configuration
 

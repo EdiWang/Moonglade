@@ -5,12 +5,17 @@ using LiteBus.Queries.Abstractions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Moonglade.ActivityLog;
 using Moonglade.Configuration;
 using Moonglade.Data.DTO;
+using Moonglade.Data;
+using Moonglade.Data.Entities;
 using Moonglade.Email;
+using Moonglade.Email.Core;
 using Moonglade.Features.Comment;
 using Moonglade.Moderation;
 using Moonglade.Web.Configuration;
@@ -21,6 +26,7 @@ using Moq;
 using System.Net;
 using System.Reflection;
 using System.Security.Claims;
+using System.Text.Json;
 
 namespace Moonglade.Web.Tests.Controllers;
 
@@ -149,7 +155,7 @@ public class CommentControllerTests
     }
 
     [Fact]
-    public async Task Create_WhenMaskFilterEnabled_MasksRequestAndWritesActivityLog()
+    public async Task Create_WhenMaskFilterEnabled_DispatchesMaskedPayloadWithoutVisitorAudit()
     {
         var postId = Guid.NewGuid();
         var request = CreateCommentRequest();
@@ -184,20 +190,114 @@ public class CommentControllerTests
         Assert.Equal("masked-content", command.Payload.Content);
         Assert.Equal("127.0.0.1", command.IpAddress);
 
-        var activityCommand = _commandMediator.Single<CreateActivityLogCommand>();
-        Assert.Equal(EventType.CommentCreated, activityCommand.EventType);
-        Assert.Equal(comment.Username, activityCommand.ActorId);
-        Assert.Equal("Create Comment", activityCommand.Operation);
-        Assert.Equal(comment.PostTitle, activityCommand.TargetName);
-        Assert.Equal("127.0.0.1", activityCommand.IpAddress);
-        Assert.Equal("unit-test-agent", activityCommand.UserAgent);
-        Assert.NotNull(activityCommand.MetaData);
-        Assert.Equal(comment.Id, ActivityLogMetaDataAssert.Value<Guid>(activityCommand, "CommentId"));
-        Assert.Equal(comment.Username, ActivityLogMetaDataAssert.Value<string>(activityCommand, nameof(comment.Username)));
-        Assert.Equal(postId, ActivityLogMetaDataAssert.Value<Guid>(activityCommand, "PostId"));
+        Assert.Single(_commandMediator.Commands);
+        Assert.Empty(_commandMediator.Commands.OfType<CreateActivityLogCommand>());
         _eventMediator.Verify(
             x => x.PublishAsync(It.IsAny<IEvent>(), It.IsAny<EventMediationSettings>(), It.IsAny<CancellationToken>()),
             Times.Never);
+    }
+
+    [Theory]
+    [InlineData(false, true)]
+    [InlineData(true, true)]
+    [InlineData(false, false)]
+    public async Task Create_WithRealPersistence_PreservesModerationReviewAndOutboxWithoutAudit(bool review, bool notify)
+    {
+        var ct = TestContext.Current.CancellationToken;
+        await using var store = await ActivityLogTestStore.CreateAsync(1, ct);
+        var historical = Assert.Single(await store.ReadLogsAsync(ct));
+        store.Config.Publish(store.Config.Capture() with
+        {
+            GeneralSettings = store.Config.Capture().GeneralSettings with { OwnerEmail = "owner@example.com" },
+            CommentSettings = store.Config.Capture().CommentSettings with
+            {
+                EnableComments = true,
+                RequireCommentReview = review,
+                CloseCommentAfterDays = 0,
+                EnableWordFilter = true,
+                WordFilterMode = WordFilterMode.Mask,
+                WordFilterKeywords = "bad"
+            },
+            NotificationSettings = new NotificationSettings { EnableEmailSending = true, SendEmailOnNewComment = notify }
+        });
+        using var scope = store.Services.CreateScope();
+        var services = scope.ServiceProvider;
+        var db = services.GetRequiredService<BlogDbContext>();
+        var postId = Guid.NewGuid();
+        var published = new DateTime(2026, 11, 1, 12, 0, 0, DateTimeKind.Utc);
+        db.Post.Add(new PostEntity
+        {
+            Id = postId,
+            Title = "Synthetic public post",
+            Slug = "synthetic-public-post",
+            Author = "Admin",
+            PostContent = "Public content",
+            ContentAbstract = "Public abstract",
+            PostStatus = PostStatus.Published,
+            PubDateUtc = published,
+            CreateTimeUtc = published,
+            LastModifiedUtc = published,
+            RouteLink = "2026/11/1/synthetic-public-post",
+            ContentLanguageCode = "en-us",
+            ContentType = "html",
+            CommentEnabled = true
+        });
+        await db.SaveChangesAsync(ct);
+        var guardOptions = new Mock<IOptionsMonitor<CommentSubmissionGuardOptions>>();
+        guardOptions.SetupGet(value => value.CurrentValue).Returns(new CommentSubmissionGuardOptions());
+        var controller = new CommentController(
+            services.GetRequiredService<ICommandMediator>(), services.GetRequiredService<IQueryMediator>(),
+            new MoongladeModeratorService(Mock.Of<IModerationKeywordProvider>()), store.Config,
+            new CommentSubmissionGuard(guardOptions.Object, TimeProvider.System),
+            services.GetRequiredService<IEventMediator>(), Mock.Of<ILogger<CommentController>>())
+        {
+            ControllerContext = new ControllerContext
+            {
+                HttpContext = new DefaultHttpContext
+                {
+                    Connection = { RemoteIpAddress = IPAddress.Parse("192.0.2.40") }
+                }
+            }
+        };
+        var request = CreateCommentRequest();
+        request.Username = "bad reader";
+        request.Content = "A bad comment";
+        var before = DateTime.UtcNow;
+
+        var response = Assert.IsType<OkObjectResult>(await controller.Create(postId, request));
+
+        Assert.Equal(review, response.Value!.GetType().GetProperty("RequireCommentReview")!.GetValue(response.Value));
+        var comment = await db.Comment.AsNoTracking().SingleAsync(ct);
+        Assert.Equal(postId, comment.PostId);
+        Assert.Equal(!review, comment.IsApproved);
+        Assert.Equal(review ? "bad reader" : "*** reader", comment.Username);
+        Assert.Equal(review ? "A bad comment" : "A *** comment", comment.CommentContent);
+        Assert.Equal("reader@example.com", comment.Email);
+        Assert.Equal("192.0.2.40", comment.IPAddress);
+        Assert.Equal(DateTimeKind.Utc, comment.CreateTimeUtc.Kind);
+        Assert.InRange(comment.CreateTimeUtc, before, DateTime.UtcNow);
+        var audit = Assert.Single(await store.ReadLogsAsync(ct));
+        Assert.Equal((historical.Id, historical.EventId, historical.Operation, historical.MetaData),
+            (audit.Id, audit.EventId, audit.Operation, audit.MetaData));
+        var outbox = await db.EmailOutboxMessage.AsNoTracking().ToListAsync(ct);
+        if (!notify)
+        {
+            Assert.Empty(outbox);
+            return;
+        }
+        var mail = Assert.Single(outbox);
+        Assert.Equal(MessageTypes.NewCommentNotification, mail.MessageType);
+        Assert.Equal("owner@example.com", mail.DistributionList);
+        Assert.Equal(EmailOutboxMessageStatus.Pending, mail.Status);
+        Assert.Equal(0, mail.AttemptCount);
+        Assert.Equal(DateTimeKind.Utc, mail.CreatedTimeUtc.Kind);
+        var payload = JsonSerializer.Deserialize<NewCommentPayload>(mail.MessageBody)!;
+        Assert.Equal(review ? "bad reader" : "*** reader", payload.Username);
+        Assert.Equal("reader@example.com", payload.Email);
+        Assert.Equal("192.0.2.40", payload.IpAddress);
+        Assert.Equal("Synthetic public post", payload.PostTitle);
+        Assert.Equal(review ? "<p>A bad comment</p>\n" : "<p>A *** comment</p>\n",
+            payload.CommentContent);
     }
 
     [Fact]

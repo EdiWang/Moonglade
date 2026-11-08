@@ -1386,9 +1386,6 @@
   <data name="Are you sure you want to clear all activity logs? This action will be recorded." xml:space="preserve">
     <value>Möchten Sie wirklich alle Aktivitätsprotokolle löschen? Diese Aktion wird protokolliert.</value>
   </data>
-  <data name="Are you sure you want to delete this activity log?" xml:space="preserve">
-    <value>Möchten Sie dieses Aktivitätsprotokoll wirklich löschen?</value>
-  </data>
   <data name="Are you sure you want to remove this button?" xml:space="preserve">
     <value>Möchten Sie diese Schaltfläche wirklich entfernen?</value>
   </data>
@@ -1580,9 +1577,6 @@
   </data>
   <data name="Local account is not secure. It&apos;s recommended to use {0} for authentication. Click {1} to configure." xml:space="preserve">
     <value>Das lokale Konto ist nicht sicher. Für die Authentifizierung wird {0} empfohlen. Klicken Sie zum Konfigurieren auf {1}.</value>
-  </data>
-  <data name="Log deleted" xml:space="preserve">
-    <value>Protokoll gelöscht</value>
   </data>
   <data name="Activity logs are cleared" xml:space="preserve">
     <value>Aktivitätsprotokolle wurden gelöscht</value>

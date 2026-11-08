@@ -35,9 +35,10 @@ public class CreateActivityLogCommandHandler(
 
     public async Task HandleAsync(CreateActivityLogCommand request, CancellationToken ct)
     {
+        ActivityLogEntity? entity = null;
         try
         {
-            var entity = new ActivityLogEntity
+            entity = new ActivityLogEntity
             {
                 EventId = (int)request.EventType,
                 EventTimeUtc = DateTime.UtcNow,
@@ -57,6 +58,11 @@ public class CreateActivityLogCommandHandler(
         }
         catch (Exception e)
         {
+            if (entity is not null)
+            {
+                db.Entry(entity).State = EntityState.Detached;
+            }
+
             // Log the error but do not throw, as we don't want to block the main operation due to logging failure
             logger.LogError(e, "Failed to create activity log: {Operation} on {TargetName} by {ActorId}",
                 request.Operation, request.TargetName, request.ActorId);

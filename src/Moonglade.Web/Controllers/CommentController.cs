@@ -56,16 +56,6 @@ public class CommentController(
             return ValidationProblem(ModelState);
         }
 
-        await LogActivityAsync(
-            EventType.CommentCreated,
-            "Create Comment",
-            item.PostTitle,
-            ActivityLogMetaData.Create(
-                ("CommentId", item.Id),
-                ("Username", item.Username),
-                ("PostId", postId)),
-            username: item.Username);
-
         // Send email notification
         if (settings.NotificationSettings.SendEmailOnNewComment)
         {

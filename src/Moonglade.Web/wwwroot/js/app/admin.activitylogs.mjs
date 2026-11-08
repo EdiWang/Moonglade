@@ -88,20 +88,6 @@ Alpine.data('activityLogManager', () => withPagination(10, {
         this.filterCanvas.hide();
     },
 
-    deleteLog(logId) {
-        showDeleteConfirmModal(getLocalizedString('confirmDeleteLog'), async () => {
-            try {
-                await fetch2(`/api/activitylog/${logId}`, 'DELETE');
-                await this.loadData();
-                success(getLocalizedString('logDeleted'));
-            } catch (err) {
-                error(err);
-            } finally {
-                hideConfirmModal();
-            }
-        });
-    },
-
     clearAllLogs() {
         showDeleteConfirmModal(getLocalizedString('confirmClearAllLogs'), async () => {
             try {

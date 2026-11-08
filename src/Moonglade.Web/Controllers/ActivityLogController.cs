@@ -9,7 +9,8 @@ namespace Moonglade.Web.Controllers;
 [Route("api/[controller]")]
 public class ActivityLogController(
     IQueryMediator queryMediator,
-    ICommandMediator commandMediator) : BlogControllerBase(commandMediator)
+    ICommandMediator commandMediator,
+    ILogger<ActivityLogController> logger) : BlogControllerBase(commandMediator)
 {
     [HttpGet("eventtypes")]
     public async Task<IActionResult> GetEventTypes()
@@ -48,27 +49,13 @@ public class ActivityLogController(
         return Ok(metadata);
     }
 
-    [HttpDelete("{id:long}")]
-    public async Task<IActionResult> Delete([NotEmpty] long id)
-    {
-        var oc = await CommandMediator.SendAsync(new DeleteActivityLogCommand(id));
-        if (oc == OperationCode.ObjectNotFound) return NotFound();
-
-        await LogActivityAsync(
-            EventType.ActivityLogDeleted,
-            "Delete Activity Log",
-            $"Activity Log #{id}",
-            ActivityLogMetaData.Create(("ActivityLogId", id)));
-
-        return NoContent();
-    }
-
     [HttpDelete("clear")]
     public async Task<IActionResult> Clear()
     {
         var deletedCount = await CommandMediator.SendAsync(new ClearActivityLogsCommand());
 
-        await LogActivityAsync(
+        await LogActivityAfterSaveAsync(
+            logger,
             EventType.ActivityLogsCleared,
             "Clear Activity Logs",
             "Activity Logs",

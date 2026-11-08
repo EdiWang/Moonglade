@@ -25,9 +25,7 @@
 }
 
 <div id="localizedStrings" style="display:none"
-     data-log-deleted="@SharedLocalizer["Log deleted"]"
      data-logs-cleared="@SharedLocalizer["Activity logs are cleared"]"
-     data-confirm-delete-log="@SharedLocalizer["Are you sure you want to delete this activity log?"]"
      data-confirm-clear-all-logs="@SharedLocalizer["Are you sure you want to clear all activity logs? This action will be recorded."]">
 </div>
 
@@ -84,11 +82,6 @@
                                     x-on:click="showDetail(log.id, log.operation)"
                                     title="Detail">
                                 <i class="bi-info-circle"></i>
-                            </button>
-                            <button class="btn btn-outline-danger btn-sm" 
-                                    x-on:click="deleteLog(log.id)"
-                                    title="Delete">
-                                <i class="bi-trash"></i>
                             </button>
                         </td>
                     </tr>

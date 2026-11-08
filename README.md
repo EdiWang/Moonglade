@@ -9,6 +9,7 @@ A public blog and authenticated admin portal provide:
 - **Content publishing:** posts, drafts, scheduled posts, Markdown Mermaid diagrams, pages, featured/outdated flags, archives, recycle bin behavior, and route links for published posts.
 - **Reader interaction:** comments, replies, Webmentions, comment moderation, view counts, and optional email notifications.
 - **Site management:** runtime blog settings, widgets, themes, custom CSS, menus, image storage, site verification files, account settings, and data import/export.
+- **Activity history:** administrator operations with **Clear all** management only; public comment submissions are excluded. After clearing, the application attempts to record the administrator, time, and deleted count. A failed activity write is logged without undoing the clear.
 - **Discovery and interoperability:** RSS, Atom, OPML, OpenSearch, FOAF, sitemap, robots.txt, IndexNow, root-level site ownership verification files, reader-friendly markup, and health checks.
 
 The admin portal supports desktop browsers with a viewport at least 1440 CSS pixels wide.

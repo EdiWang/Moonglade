@@ -1386,9 +1386,6 @@
   <data name="Are you sure you want to clear all activity logs? This action will be recorded." xml:space="preserve">
     <value>確定要清除所有活動記錄嗎？此操作將被記錄。</value>
   </data>
-  <data name="Are you sure you want to delete this activity log?" xml:space="preserve">
-    <value>確定要刪除此活動記錄嗎？</value>
-  </data>
   <data name="Are you sure you want to remove this button?" xml:space="preserve">
     <value>確定要移除此按鈕嗎？</value>
   </data>
@@ -1580,9 +1577,6 @@
   </data>
   <data name="Local account is not secure. It&apos;s recommended to use {0} for authentication. Click {1} to configure." xml:space="preserve">
     <value>本機帳戶不夠安全。建議使用 {0} 進行驗證。點選 {1} 進行設定。</value>
-  </data>
-  <data name="Log deleted" xml:space="preserve">
-    <value>記錄已刪除</value>
   </data>
   <data name="Activity logs are cleared" xml:space="preserve">
     <value>活動記錄已清除</value>

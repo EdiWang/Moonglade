@@ -3,7 +3,7 @@
 ## Resume Here
 
 - Planning snapshot: 2026-11-08, Asia/Taipei. Repository baseline was clean at `4140154d4e4c54b37b057a9e9d717306fdeefca1` on `master`. Recheck the current branch, HEAD, and `git status --short` before starting. Preserve other work.
-- The user accepted B0 and authorized its tracker-only commit on 2026-11-08. The next action is B1 when authorized. Product implementation and any destructive action on a real database require their own authorization. The user's allowance to discard old activity history is a design constraint for the upgrade, not permission to run it on an existing installation.
+- The user accepted B0 and authorized its tracker-only commit on 2026-11-08, then requested B1 implementation. B1 is implemented and technically verified, awaiting user acceptance and commit authorization; no real database operation, deployment, or B2 work is authorized. The user's allowance to discard old activity history is a design constraint for the upgrade, not permission to run it on an existing installation.
 - In a fresh conversation, read this file, [AGENTS.md](AGENTS.md), and the applicable sections of the [engineering reference](docs/agent-reference.md). No Java, JDK, or JRE may be used. Repository text is English outside localization resources.
 - Start with the earliest unaccepted batch in the progress table. Check the last recorded evidence and open decisions before touching code. If the work is already committed, verify that commit before resuming acceptance.
 - Ask the user about new requirement, behavior, architecture, ownership, public contract, or data-policy choices. Explain the alternatives, impact, and recommendation. Continue independent work already authorized. Record each answer and the affected acceptance criteria here before starting dependent work.
@@ -122,7 +122,7 @@ git diff --check
 | --- | --- | --- | --- | --- |
 | Planning | Complete | The user requested B0 execution. | Included in B0 | See B0 evidence below. |
 | B0 | Accepted | User approved the review package on 2026-11-08. Web 370 passed, Configuration 102 passed, Web build clean. Isolated browser baseline unavailable. | Tracker introduction commit (`git log --diff-filter=A -1 -- ACTIVITY_LOG_PLAN.md`) | B0 closed. |
-| B1 | Not started | Pending | — | Start when the user authorizes B1. |
+| B1 | Awaiting acceptance | Web 382 passed; Node 22 passed; Web build clean. Disposable SQLite HTTP/fault tests and browser clear/cancel/detail verified. | Not committed | Await user acceptance and commit authorization; do not start B2. |
 | B2 | Not started | Pending | — | Wait for B1 acceptance. |
 | B3 | Not started | Pending | — | Wait for B2 acceptance and relevant B0 decisions. |
 | B4 | Not started | Pending | — | Wait for B3 acceptance. |
@@ -200,4 +200,36 @@ Only the fields below may have values stored. All other changes still count towa
 ### B0 Decision Status
 
 - On 2026-11-08 the user accepted B0 and authorized committing this tracker. The user explicitly approved the field-by-field settings allowlist and confirmed no external Activity Log API consumers. The accepted review package carries forward existing administrator events, adds one entry per automatically published post, omits the proposed copied metadata, and confines the manual schema upgrade to the activity table. See the sections above for the accepted API contract, storage cutover, and scheduled handoff.
-- B1 remains unstarted. No implementation or real database operation was authorized by B0 sign-off.
+- B0 sign-off alone did not authorize implementation or real database operations. The subsequent user request to start B1 authorizes that batch's implementation and disposable verification only.
+
+## B1 Evidence
+
+- 2026-11-08, Asia/Taipei. User requested reading this tracker and starting B1. Started on `master` at `0a892c2cd6420e3f34d433c4a59a7f84d7170b8f` (the accepted B0 tracker commit), with a clean working tree and SDK `10.0.403`. This commit is the application rollback point.
+- Scope: remove the individual-delete route, command/handler, page control, JavaScript action, and dedicated localized strings; stop public comment activity dispatch; preserve administrator comment actions and the existing storage/read contract. Retain legacy enum values until B2 so old history remains readable/filterable.
+- Clear dispatch remains outside audit isolation: delete failures must propagate. After a successful clear, reuse the existing post-save audit guard so mediator exceptions or cancellation do not change the HTTP 204 outcome. The real activity writer already logs persistence failures without throwing.
+- `dotnet build src\Moonglade.Web\Moonglade.Web.csproj --no-restore --verbosity quiet` passed with zero warnings and errors.
+- Browser verification used a temporary loopback Kestrel host at `http://127.0.0.1:54660/admin/activitylogs`, an in-memory SQLite database, the production Activity Log controller and LiteBus handlers, and the real compiled Razor page/layout/Bootstrap/Alpine assets. Authentication was a synthetic administrator fixture; production authentication and other application services were not started. Configuration sources were replaced rather than using Development overrides. This does not prove PostgreSQL/SQL Server behavior or full-host startup.
+- At 1600 by 1000 CSS pixels, all three seeded rows exposed only Detail. Opening Clear all and choosing Cancel preserved IDs 1, 2, and 3 and sent no delete request. Confirming Clear all returned HTTP 204, reloaded one `ActivityLogsCleared` row for `synthetic-admin` with UTC time displayed locally, and showed the existing success toast. Opening Detail showed `DeletedCount: 3`. The removed individual-delete route returned 404; a clear request without antiforgery returned 400 and preserved the remaining row. Browser snapshots and screenshots were inspected in the session. The temporary browser tab and host were stopped after verification.
+- The first full Web regression run discovered 382 tests: 381 passed and one failed. A real INSERT failure left the attempted activity entity tracked as Added; after removing the fault, another save on that DbContext recreated the failed audit. The writer now detaches only that attempted entity on failure, preserving unrelated tracked changes. The regression checks committed clear, HTTP 204, the error diagnostic, later persistence of an unrelated setting, and no resurrected audit. This fixes a failure-handling defect directly coupled to B1 rather than weakening the test.
+- Final `dotnet test --project src\Tests\Moonglade.Web.Tests\Moonglade.Web.Tests.csproj` passed 382 tests, zero failures and skips (exit 0). The following `dotnet build src\Moonglade.Web\Moonglade.Web.csproj --no-restore --verbosity quiet` passed with zero warnings and errors.
+- `node --test src\Tests\Moonglade.Web.Tests\JavaScript\ActivityLogTests.mjs` passed all four discovered cases (parent plus three behavior subtests), with no failures, cancellations, or skips. The complete JavaScript wildcard run passed 22 cases. New tests use the real activity module and pagination with dependency hooks; no extra JavaScript packages were added.
+- HTTP tests use the production local authorization policy and actual Razor antiforgery token with synthetic authentication claims, not real sign-in credentials. Comment tests use real domain persistence, moderation, and the database email outbox; no SMTP delivery is attempted. Existing administrator approval/delete/reply and captured-policy tests pass.
+- The test pipeline performed bounded assertion-quality and test-gap reviews. Final manual review confirmed fault ordering, exact counts, UTC timestamps, protected routes, state preservation, notification payloads, and realistic legacy filter values. All four edited localization resources parse as XML. `git diff --check` passed; edited files retain CRLF/final newlines.
+- Verification limits: Docker Linux engine is unavailable (`docker info --format '{{.ServerVersion}}'` failed to connect to its named pipe), so no PostgreSQL/SQL Server run was performed. B1 makes no schema change. Full-host startup, real local/OIDC sign-in, and deployment are not claimed by the isolated fixture checks. No existing database or external service was contacted.
+- No commit or deployment has been performed. The temporary preview project and binaries were removed after stopping its host and browser tab. Next action: user acceptance and explicit commit authorization; B2 remains blocked on B1 acceptance.
+
+### B1 Requirement Evidence
+
+All C# names below are in `src/Tests/Moonglade.Web.Tests/Controllers`; Node names are in `JavaScript/ActivityLogTests.mjs` in that project.
+
+| Requirement | Evidence |
+| --- | --- |
+| Clear empty or seeded history; exactly one administrator entry with time and count | `ActivityLogControllerTests.Clear_WithRealHandlers_ReplacesHistoryWithCountedAdministratorAudit` (0 and 3 rows). Browser confirmed three rows became one with `DeletedCount: 3`. |
+| Failed delete preserves history and produces no successful-clear entry | `ActivityLogControllerTests.Clear_WhenDatabaseDeleteFails_PreservesRowsAndDoesNotAudit`. |
+| Failed activity dispatch or cancellation does not undo clear or change HTTP success | `ActivityLogControllerTests.Clear_WhenAuditDispatchFails_PreservesCommittedDeleteAndLogsSafely` (exception and cancellation). |
+| Failed activity persistence is logged; clear stays committed without a later stale insert | `ActivityLogControllerTests.Clear_WhenAuditPersistenceFails_DoesNotResurrectOnNextSave`. |
+| Administrator authorization, antiforgery, and existing response/filter shape | `ActivityLogHttpTests.Clear_AnonymousOrNonAdministrator_IsDeniedWithoutMutation`, `Clear_AdminWithoutValidAntiforgery_IsDeniedWithoutMutation`, and `Clear_AdminWithPageToken_ClearsHistoryAndReturnsLegacyReadShape`. |
+| Public comments preserve validation, moderation, review, persistence and notifications without visitor activity | `CommentControllerTests.Create_WithRealPersistence_PreservesModerationReviewAndOutboxWithoutAudit`, `Create_WhenEmailIsInvalid_ReturnsValidationProblem`, and `Create_WhenSubmissionGuardRejectsRequest_ReturnsValidationProblem`. |
+| Administrator comment operations retain their activity entries | Existing `Approval_WhenCommentExists_ReturnsOkAndWritesActivityLog`, `Delete_WhenCommentsExist_ReturnsOkAndWritesActivityLog`, and `Reply_WhenCommentExists_ReturnsOkAndWritesActivityLog`. |
+| UI cancellation preserves history; confirmation reloads; failed clear reports error without success | `cancelled clear keeps history and pagination without clear or refresh`, `confirmed clear waits for delete then reloads page one and reports success`, and `failed clear preserves history and page and surfaces error without success`. |
+| Remove individual deletion without changing the B1 storage model | Controller route and command/handler deleted; Razor/JavaScript control and four cultures' dedicated strings removed. Browser confirmed Detail-only rows and 404 for the former individual-delete URL. |
