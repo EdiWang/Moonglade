@@ -182,7 +182,7 @@ public class SettingsController(
         };
 
         var changes = saved.Changes.Select(change => new ActivityLogSettingChange(change.Key, change.OldValue, change.NewValue)).ToArray();
-        await LogActivityAfterSaveAsync(logger, eventKey, null,
+        await LogActivityAsync(eventKey, null,
             ActivityLogDetails.Create((ActivityLogSettingChange.DetailsKey, changes)));
         return NoContent();
     }
@@ -246,7 +246,7 @@ public class SettingsController(
         };
 
         await CommandMediator.SendAsync(new UpdateLocalAccountCommand(newSettings), HttpContext.RequestAborted);
-        await LogActivityAfterSaveAsync(logger, ActivityEvents.SettingsPasswordUpdated, newSettings.Username);
+        await LogActivityAsync(ActivityEvents.SettingsPasswordUpdated, newSettings.Username);
         return NoContent();
     }
 
@@ -268,7 +268,7 @@ public class SettingsController(
         };
 
         await CommandMediator.SendAsync(new UpdateLocalAccountCommand(newSettings), HttpContext.RequestAborted);
-        await LogActivityAfterSaveAsync(logger,
+        await LogActivityAsync(
             ActivityEvents.SettingsAuthenticatorReset,
             account.Username);
 

@@ -3,6 +3,7 @@
 using LiteBus.Commands.Abstractions;
 using Moonglade.ActivityLog;
 using Moonglade.Data.Entities;
+using Moonglade.Web.Services;
 
 namespace Moonglade.Web.Controllers;
 
@@ -17,18 +18,11 @@ public abstract class BlogControllerBase(ICommandMediator commandMediator, ILogg
         string? targetDisplayName,
         IReadOnlyDictionary<string, object?>? details = null,
         string? targetId = null) =>
-        LogActivityAfterSaveAsync(logger, eventKey, targetDisplayName, details, targetId);
-
-    protected async Task LogActivityAfterSaveAsync(
-        ILogger activityLogger,
-        string eventKey,
-        string? targetDisplayName,
-        IReadOnlyDictionary<string, object?>? details = null,
-        string? targetId = null)
-    {
-        try
-        {
-            await CommandMediator.SendAsync(new CreateActivityLogCommand(
+        ActivityLogDispatcher.SendAsync(
+            CommandMediator,
+            logger,
+            eventKey,
+            () => new CreateActivityLogCommand(
                 eventKey,
                 ActivityActorKind.Administrator,
                 User.Identity?.Name,
@@ -36,13 +30,7 @@ public abstract class BlogControllerBase(ICommandMediator commandMediator, ILogg
                 targetDisplayName,
                 details,
                 HttpContext.Connection.RemoteIpAddress?.ToString(),
-                Request.Headers.UserAgent.ToString()));
-        }
-        catch (Exception exception)
-        {
-            activityLogger.LogError(
-                "Changes saved, but activity logging failed for {EventKey}. Failure type: {FailureType}. Trace identifier: {TraceIdentifier}",
-                ActivityEvents.IsSupported(eventKey) ? eventKey : "(unsupported)", exception.GetType().Name, HttpContext.TraceIdentifier);
-        }
-    }
+                Request.Headers.UserAgent.ToString()),
+            ActivityLogDispatchSource.Controller,
+            HttpContext.TraceIdentifier);
 }

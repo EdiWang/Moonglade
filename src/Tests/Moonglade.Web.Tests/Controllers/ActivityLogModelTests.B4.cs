@@ -72,15 +72,18 @@ public partial class ActivityLogModelTests
     }
 
     [Theory]
-    [InlineData("insert-failure")]
-    [InlineData("caller-cancellation")]
-    public async Task Writer_SuppliedUtcWriteFailsOrCancels_DetachesActivityAndLogsOnlySafeFailureType(string scenario)
+    [InlineData("insert-failure", false)]
+    [InlineData("insert-failure", true)]
+    [InlineData("caller-cancellation", false)]
+    [InlineData("caller-cancellation", true)]
+    public async Task Writer_SuppliedUtcWriteFailsOrCancels_DetachesActivityAndLogsOnlySafeFailureType(string scenario, bool includeTrace)
     {
         var ct = TestContext.Current.CancellationToken;
         await using var store = await ActivityLogTestStore.CreateAsync(ct: ct);
         using var scope = store.Services.CreateScope();
         var db = scope.ServiceProvider.GetRequiredService<BlogDbContext>();
         const string secret = "B4-PRIVATE-WRITER-TITLE-AND-EXCEPTION";
+        const string trace = "b2-writer-trace";
         var pending = new BlogConfigurationEntity { CfgKey = "B4-failed-writer", CfgValue = "retained", LastModifiedTimeUtc = DateTime.UtcNow };
         db.Add(pending);
         using var cancellation = CancellationTokenSource.CreateLinkedTokenSource(ct);
@@ -91,7 +94,10 @@ public partial class ActivityLogModelTests
 
         await Writer(db, store).HandleAsync(new CreateActivityLogCommand(ActivityEvents.PostAutomaticallyPublished,
             ActivityActorKind.System, null, Guid.NewGuid().ToString(), secret,
-            EventTimeUtc: new DateTime(2026, 1, 1, 0, 0, 0, DateTimeKind.Utc)), cancellation.Token);
+            EventTimeUtc: new DateTime(2026, 1, 1, 0, 0, 0, DateTimeKind.Utc))
+        {
+            TraceIdentifier = includeTrace ? trace : null
+        }, cancellation.Token);
 
         Assert.Empty(await store.ReadLogsAsync(ct));
         Assert.Empty(db.ChangeTracker.Entries<ActivityLogEntity>());
@@ -100,6 +106,14 @@ public partial class ActivityLogModelTests
         Assert.Null(diagnostic.Arguments[3]);
         Assert.Equal(LogLevel.Error, diagnostic.Arguments[0]);
         var fields = Assert.IsAssignableFrom<IEnumerable<KeyValuePair<string, object?>>>(diagnostic.Arguments[2]);
+        Assert.Equal(includeTrace ? ["EventKey", "FailureType", "TraceIdentifier", "{OriginalFormat}"] :
+            new[] { "EventKey", "FailureType", "{OriginalFormat}" }, fields.Select(field => field.Key).ToArray());
+        Assert.Contains(fields, field => field.Key == "EventKey" && Equals(field.Value, "post.automatically-published"));
+        if (includeTrace)
+            Assert.Contains(fields, field => field.Key == "TraceIdentifier" && Equals(field.Value, trace));
+        else
+            Assert.Contains(fields, field => field.Key == "{OriginalFormat}" &&
+                Equals(field.Value, "Activity logging failed for {EventKey}. Failure type: {FailureType}"));
         var failureType = Assert.IsType<string>(fields.Single(field => field.Key == "FailureType").Value);
         if (scenario == "insert-failure") Assert.Equal(nameof(DbUpdateException), failureType);
         else Assert.Contains(failureType, new[] { nameof(OperationCanceledException), nameof(TaskCanceledException) });

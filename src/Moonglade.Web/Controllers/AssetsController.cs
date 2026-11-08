@@ -71,7 +71,7 @@ public class AssetsController(
         await eventMediator.PublishAsync(new SaveAssetEvent(AssetId.AvatarBase64, base64Img));
         logger.LogInformation("Avatar image updated successfully.");
 
-        await LogActivityAfterSaveAsync(logger,
+        await LogActivityAsync(
             ActivityEvents.AvatarUpdated,
             "Avatar Image",
             targetId: AssetId.AvatarBase64.ToString());

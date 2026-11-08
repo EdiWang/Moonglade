@@ -205,7 +205,10 @@ public class PostController(
             User.Identity?.Name ?? string.Empty,
             HttpContext.Connection.RemoteIpAddress?.ToString() ?? string.Empty,
             Request.Headers.UserAgent.ToString(),
-            UrlHelper.ResolveRootUrl(HttpContext, null, removeTailSlash: true));
+            UrlHelper.ResolveRootUrl(HttpContext, null, removeTailSlash: true))
+        {
+            TraceIdentifier = HttpContext.TraceIdentifier
+        };
     }
 
     private static string GetScheduleValidationMessage(ScheduledPublishTimeResolutionStatus status) => status switch

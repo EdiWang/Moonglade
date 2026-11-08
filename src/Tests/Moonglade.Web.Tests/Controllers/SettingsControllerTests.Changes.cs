@@ -1,16 +1,24 @@
 using Edi.CacheAside.InMemory;
+using LiteBus.Commands.Abstractions;
 using LiteBus.Events.Abstractions;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using Moonglade.ActivityLog;
+using Moonglade.Auth;
 using Moonglade.BackgroundServices;
 using Moonglade.Configuration;
+using Moonglade.Data;
+using Moonglade.Data.Entities;
 using Moonglade.Web.Controllers;
 using Moonglade.Web.Handlers;
 using Moonglade.Web.Tests.TestSupport;
 using Moq;
+using System.Net;
+using System.Security.Claims;
 using System.Text.Json;
 
 namespace Moonglade.Web.Tests.Controllers;
@@ -143,41 +151,120 @@ public partial class SettingsControllerTests
     }
 
     [Theory]
-    [InlineData(false)]
-    [InlineData(true)]
-    public async Task AuditInsertFailure_KeepsCommittedSettingsTimestampAndCacheWithoutResurrection(bool patch)
+    [InlineData(false, false)]
+    [InlineData(false, true)]
+    [InlineData(true, false)]
+    [InlineData(true, true)]
+    public async Task AuditInsertFailure_KeepsCommittedSettingsTimestampAndCacheWithoutResurrection(bool patch, bool includeTrace)
     {
         var ct = TestContext.Current.CancellationToken;
-        var config = new BlogConfig(BlogConfig.Parse(new Dictionary<string, string>()).Snapshot);
-        using var mediator = new ConfigurationCommandRecorder { PersistActivityLogs = true };
-        var controller = CreateController(config, mediator, new Mock<IAuthenticationService>());
-        var time = (await mediator.Db.BlogConfiguration.SingleAsync(row => row.CfgKey == nameof(GeneralSettings), ct)).LastModifiedTimeUtc;
-        await mediator.Db.Database.ExecuteSqlRawAsync(
+        await using var store = await ActivityLogTestStore.CreateAsync(ct: ct);
+        using var databaseScope = store.Services.CreateScope();
+        var db = databaseScope.ServiceProvider.GetRequiredService<BlogDbContext>();
+        var services = new ServiceCollection();
+        store.ConfigureServices(services);
+        // LiteBus creates handler scopes; share this context to exercise failed-row cleanup and unrelated tracked work.
+        services.AddSingleton(db);
+        using var provider = services.BuildServiceProvider();
+        using var scope = provider.CreateScope();
+        var config = store.Config;
+        var time = new DateTime(2026, 1, 1, 0, 0, 0, DateTimeKind.Utc);
+        db.BlogConfiguration.Add(new BlogConfigurationEntity
+        {
+            CfgKey = nameof(GeneralSettings),
+            CfgValue = config.Capture().GeneralSettings.ToJson(),
+            LastModifiedTimeUtc = time
+        });
+        await db.SaveChangesAsync(ct);
+        var logger = new Mock<ILogger<SettingsController>>();
+        const string trace = "b2-settings-insert-trace";
+        var controller = new SettingsController(config, logger.Object,
+            scope.ServiceProvider.GetRequiredService<IEventMediator>(),
+            scope.ServiceProvider.GetRequiredService<Moonglade.Email.Core.EmailCapabilityStatus>(),
+            Mock.Of<ILocalAccountReader>(), scope.ServiceProvider.GetRequiredService<ICommandMediator>())
+        {
+            ControllerContext = new ControllerContext
+            {
+                HttpContext = new DefaultHttpContext
+                {
+                    RequestServices = scope.ServiceProvider,
+                    TraceIdentifier = includeTrace ? trace : string.Empty,
+                    User = new ClaimsPrincipal(new ClaimsIdentity([new Claim(ClaimTypes.Name, "B2-private-actor")], "TestAuth"))
+                }
+            }
+        };
+        controller.HttpContext.Connection.RemoteIpAddress = IPAddress.Parse("192.0.2.123");
+        controller.Request.Headers.UserAgent = "B2-private-agent";
+        var caches = scope.ServiceProvider.GetRequiredService<PostCacheInvalidator>();
+        var feedKey = caches.GetFeedCacheKey("rss");
+        var sitemapKey = caches.SiteMapCacheKey;
+        var themes = scope.ServiceProvider.GetRequiredService<ThemeCacheInvalidator>();
+        var themeKey = themes.GetCacheKey(100);
+        await db.Database.ExecuteSqlRawAsync(
             "CREATE TRIGGER reject_b3_activity BEFORE INSERT ON ActivityLog BEGIN SELECT RAISE(ABORT, 'B3-private-insert-error'); END;", ct);
-        var after = config.Capture().GeneralSettings with { SiteTitle = "Saved title" };
-
-        Assert.IsType<NoContentResult>(await SaveController(controller, "general", after, patch));
-
-        Assert.Equal("Saved title", config.Capture().GeneralSettings.SiteTitle);
-        Assert.Equal(after.ToJson(), await ReadStoredSettings(mediator, nameof(GeneralSettings)));
-        var savedTime = (await mediator.Db.BlogConfiguration.SingleAsync(row => row.CfgKey == nameof(GeneralSettings), ct)).LastModifiedTimeUtc;
-        Assert.True(savedTime >= time);
-        Assert.Single(Mock.Get(mediator.EventMediator).Invocations);
-        Assert.Empty(await mediator.Db.ActivityLog.AsNoTracking().ToListAsync(ct));
-        Assert.Empty(mediator.Db.ChangeTracker.Entries<Moonglade.Data.Entities.ActivityLogEntity>());
-        var diagnostic = Assert.Single(mediator.ActivityLogger.Invocations, call => call.Arguments[0] is Microsoft.Extensions.Logging.LogLevel.Error);
-        Assert.Null(diagnostic.Arguments[3]);
-        Assert.DoesNotContain("B3-private", diagnostic.Arguments[2]!.ToString());
-        await mediator.Db.Database.ExecuteSqlRawAsync("DROP TRIGGER reject_b3_activity;", ct);
-        mediator.Db.BlogConfiguration.Add(new Moonglade.Data.Entities.BlogConfigurationEntity
+        var after = config.Capture().GeneralSettings with
+        {
+            SiteTitle = "Saved title",
+            OwnerEmail = "B2-private@example.invalid",
+            Description = "B2-private-description"
+        };
+        var pending = new BlogConfigurationEntity
         {
             CfgKey = "B3Unrelated",
             CfgValue = "preserved",
             LastModifiedTimeUtc = DateTime.UtcNow
-        });
-        await mediator.Db.SaveChangesAsync(ct);
-        Assert.Empty(await mediator.Db.ActivityLog.AsNoTracking().ToListAsync(ct));
-        Assert.Equal(savedTime, (await mediator.Db.BlogConfiguration.SingleAsync(row => row.CfgKey == nameof(GeneralSettings), ct)).LastModifiedTimeUtc);
+        };
+        var stagePending = true;
+        db.SavedChanges += (_, _) =>
+        {
+            if (!stagePending) return;
+            stagePending = false;
+            db.BlogConfiguration.Add(pending);
+        };
+
+        Assert.IsType<NoContentResult>(await SaveController(controller, "general", after, patch));
+
+        Assert.Equal("Saved title", config.Capture().GeneralSettings.SiteTitle);
+        var saved = await db.BlogConfiguration.AsNoTracking().SingleAsync(row => row.CfgKey == nameof(GeneralSettings), ct);
+        Assert.Equal(after.ToJson(), saved.CfgValue);
+        var savedTime = saved.LastModifiedTimeUtc;
+        Assert.True(savedTime > time);
+        Assert.NotEqual(feedKey, caches.GetFeedCacheKey("rss"));
+        Assert.NotEqual(sitemapKey, caches.SiteMapCacheKey);
+        Assert.Equal(themeKey, themes.GetCacheKey(100));
+        Assert.Empty(await store.ReadLogsAsync(ct));
+        Assert.Empty(db.ChangeTracker.Entries<ActivityLogEntity>());
+        Assert.Equal(EntityState.Added, db.Entry(pending).State);
+        Assert.False(await db.BlogConfiguration.AsNoTracking().AnyAsync(row => row.CfgKey == "B3Unrelated", ct));
+        var diagnostic = Assert.Single(store.WriterLogger.Invocations, call => Equals(call.Arguments[0], LogLevel.Error));
+        Assert.Null(diagnostic.Arguments[3]);
+        var fields = Assert.IsAssignableFrom<IReadOnlyList<KeyValuePair<string, object?>>>(diagnostic.Arguments[2]);
+        Assert.Equal(includeTrace ? ["EventKey", "FailureType", "TraceIdentifier", "{OriginalFormat}"] :
+            new[] { "EventKey", "FailureType", "{OriginalFormat}" }, fields.Select(field => field.Key).ToArray());
+        Assert.Contains(fields, field => field.Key == "EventKey" && Equals(field.Value, "settings.general.updated"));
+        Assert.Contains(fields, field => field.Key == "FailureType" && Equals(field.Value, nameof(DbUpdateException)));
+        if (includeTrace)
+            Assert.Contains(fields, field => field.Key == "TraceIdentifier" && Equals(field.Value, trace));
+        else
+            Assert.Contains(fields, field => field.Key == "{OriginalFormat}" &&
+                Equals(field.Value, "Activity logging failed for {EventKey}. Failure type: {FailureType}"));
+        var diagnosticText = diagnostic.Arguments[2]!.ToString()!;
+        foreach (var excluded in new[] { "B3-private", "B2-private", "Saved title", "192.0.2.123" })
+            Assert.DoesNotContain(excluded, diagnosticText);
+        Assert.DoesNotContain(logger.Invocations, call => Equals(call.Arguments[0], LogLevel.Error));
+        await db.Database.ExecuteSqlRawAsync("DROP TRIGGER reject_b3_activity;", ct);
+        await db.SaveChangesAsync(ct);
+        Assert.Equal("preserved", (await db.BlogConfiguration.AsNoTracking().SingleAsync(row => row.CfgKey == "B3Unrelated", ct)).CfgValue);
+        Assert.Empty(await store.ReadLogsAsync(ct));
+        Assert.Equal(savedTime, (await db.BlogConfiguration.AsNoTracking().SingleAsync(row => row.CfgKey == nameof(GeneralSettings), ct)).LastModifiedTimeUtc);
+
+        Assert.IsType<NoContentResult>(await SaveController(controller, "general", after with { SiteTitle = "Later title" }, patch));
+        var laterActivity = Assert.Single(await store.ReadLogsAsync(ct));
+        Assert.Equal("""{"Changes":[{"Key":"SiteTitle","OldValue":"Saved title","NewValue":"Later title"}]}""", laterActivity.Details);
+        Assert.DoesNotContain(trace, laterActivity.Details);
+        Assert.DoesNotContain("B2-private", laterActivity.Details);
+        Assert.Single(store.WriterLogger.Invocations, call => Equals(call.Arguments[0], LogLevel.Error));
+        Assert.DoesNotContain(logger.Invocations, call => Equals(call.Arguments[0], LogLevel.Error));
     }
 
     [Theory]

@@ -2,6 +2,7 @@ using LiteBus.Commands.Abstractions;
 using Microsoft.Extensions.Logging;
 using Moonglade.Data;
 using Moonglade.Data.Entities;
+using System.Text.Json.Serialization;
 
 namespace Moonglade.ActivityLog;
 
@@ -14,7 +15,11 @@ public record CreateActivityLogCommand(
     IReadOnlyDictionary<string, object?>? Details = null,
     string? IpAddress = null,
     string? UserAgent = null,
-    DateTime? EventTimeUtc = null) : ICommand;
+    DateTime? EventTimeUtc = null) : ICommand
+{
+    [JsonIgnore]
+    public string? TraceIdentifier { get; init; }
+}
 
 public class CreateActivityLogCommandHandler(
     BlogDbContext db,
@@ -64,8 +69,17 @@ public class CreateActivityLogCommandHandler(
                 db.Entry(entity).State = EntityState.Detached;
             }
 
-            logger.LogError("Activity logging failed for {EventKey}. Failure type: {FailureType}",
-                ActivityEvents.IsSupported(request.EventKey) ? request.EventKey : "(unsupported)", e.GetType().Name);
+            var safeEventKey = ActivityEvents.IsSupported(request.EventKey) ? request.EventKey : "(unsupported)";
+            if (string.IsNullOrEmpty(request.TraceIdentifier))
+            {
+                logger.LogError("Activity logging failed for {EventKey}. Failure type: {FailureType}",
+                    safeEventKey, e.GetType().Name);
+            }
+            else
+            {
+                logger.LogError("Activity logging failed for {EventKey}. Failure type: {FailureType}. Trace identifier: {TraceIdentifier}",
+                    safeEventKey, e.GetType().Name, request.TraceIdentifier);
+            }
         }
     }
 }

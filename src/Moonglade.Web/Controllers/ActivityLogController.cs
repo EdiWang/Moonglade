@@ -92,8 +92,7 @@ public class ActivityLogController(
     {
         var deletedCount = await CommandMediator.SendAsync(new ClearActivityLogsCommand());
 
-        await LogActivityAfterSaveAsync(
-            logger,
+        await LogActivityAsync(
             ActivityEvents.ActivityLogsCleared,
             null,
             ActivityLogDetails.Create(("DeletedCount", deletedCount)));

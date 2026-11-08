@@ -305,6 +305,7 @@ public class PostControllerTests
         };
         controller.Request.Scheme = "https";
         controller.Request.Host = new HostString("example.com");
+        controller.HttpContext.TraceIdentifier = "b2-http-post-trace";
 
         var result = await controller.CreateOrEdit(new PostEditRequest
         {
@@ -319,6 +320,10 @@ public class PostControllerTests
             new DateTime(2030, 1, 1, 12, 0, 0, DateTimeKind.Utc),
             dispatchedCommand.Payload.ScheduledPublishTimeUtc);
         Assert.Equal(DateTimeKind.Utc, dispatchedCommand.Payload.ScheduledPublishTimeUtc!.Value.Kind);
+        Assert.Equal("b2-http-post-trace", dispatchedCommand.Context.TraceIdentifier);
+        var serializedContext = JsonSerializer.Serialize(dispatchedCommand.Context, JsonSerializerOptions.Web);
+        Assert.DoesNotContain("traceIdentifier", serializedContext);
+        Assert.DoesNotContain("b2-http-post-trace", serializedContext);
     }
     private static PostController CreateStateChangeController(ICommandMediator commandMediator)
     {

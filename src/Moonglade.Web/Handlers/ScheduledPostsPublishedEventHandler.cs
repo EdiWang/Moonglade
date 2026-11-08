@@ -3,6 +3,7 @@ using LiteBus.Events.Abstractions;
 using Moonglade.ActivityLog;
 using Moonglade.Data.Entities;
 using Moonglade.Features.Post;
+using Moonglade.Web.Services;
 
 namespace Moonglade.Web.Handlers;
 
@@ -14,9 +15,11 @@ public class ScheduledPostsPublishedEventHandler(
     {
         foreach (var post in request.Posts)
         {
-            try
-            {
-                await commandMediator.SendAsync(new CreateActivityLogCommand(
+            await ActivityLogDispatcher.SendAsync(
+                commandMediator,
+                logger,
+                ActivityEvents.PostAutomaticallyPublished,
+                () => new CreateActivityLogCommand(
                     ActivityEvents.PostAutomaticallyPublished,
                     ActivityActorKind.System,
                     null,
@@ -24,14 +27,8 @@ public class ScheduledPostsPublishedEventHandler(
                     post.Title,
                     ActivityLogDetails.Create(("PostId", post.PostId)),
                     EventTimeUtc: post.PublishedTimeUtc),
-                    cancellationToken: CancellationToken.None);
-            }
-            catch (Exception exception)
-            {
-                logger.LogError(
-                    "Scheduled publication activity logging failed for {EventKey}. Failure type: {FailureType}",
-                    ActivityEvents.PostAutomaticallyPublished, exception.GetType().Name);
-            }
+                ActivityLogDispatchSource.ScheduledPublication,
+                ct: CancellationToken.None);
         }
     }
 }

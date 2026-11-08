@@ -45,6 +45,7 @@ public class ScheduledPostsPublishedEventHandlerTests
             Assert.Null(command.ActorDisplayName);
             Assert.Null(command.IpAddress);
             Assert.Null(command.UserAgent);
+            Assert.Null(command.TraceIdentifier);
             Assert.Equal(CapturedTitle, command.TargetDisplayName);
             Assert.Equal(Occurrence.AddSeconds(index), command.EventTimeUtc);
             var detail = Assert.Single(command.Details!);
@@ -82,6 +83,10 @@ public class ScheduledPostsPublishedEventHandlerTests
         var diagnostic = Assert.Single(logger.Invocations, invocation => invocation.Method.Name == "Log");
         Assert.Equal(LogLevel.Error, diagnostic.Arguments[0]);
         Assert.Null(diagnostic.Arguments[3]);
+        var fields = Assert.IsAssignableFrom<IReadOnlyList<KeyValuePair<string, object?>>>(diagnostic.Arguments[2]);
+        Assert.Equal(["EventKey", "FailureType", "{OriginalFormat}"], fields.Select(field => field.Key).ToArray());
+        Assert.Contains(fields, field => field.Key == "{OriginalFormat}" &&
+            Equals(field.Value, "Scheduled publication activity logging failed for {EventKey}. Failure type: {FailureType}"));
         var text = diagnostic.Arguments[2]!.ToString()!;
         Assert.Contains("post.automatically-published", text);
         Assert.Contains(failure.GetType().Name, text);
