@@ -26,6 +26,11 @@
 
 <div id="localizedStrings" style="display:none"
      data-logs-cleared="@SharedLocalizer["Activity logs are cleared"]"
+     data-yes="@SharedLocalizer["Yes"]"
+     data-no="@SharedLocalizer["No"]"
+     data-draft="@SharedLocalizer["Draft"]"
+     data-published="@SharedLocalizer["Published"]"
+     data-scheduled="@SharedLocalizer["Scheduled"]"
      data-confirm-clear-all-logs="@SharedLocalizer["Are you sure you want to clear all activity logs? This action will be recorded."]">
 </div>
 
@@ -47,12 +52,9 @@
         <table class="table table-hover table-striped align-middle">
             <thead class="table-light">
                 <tr>
-                    <th>@SharedLocalizer["Event Type"]</th>
-                    <th>@SharedLocalizer["Operation"]</th>
-                    <th>@SharedLocalizer["Target"]</th>
-                    <th>@SharedLocalizer["Actor"]</th>
-                    <th>@SharedLocalizer["IP Address"]</th>
                     <th>@SharedLocalizer["Time"]</th>
+                    <th>@SharedLocalizer["Actor"]</th>
+                    <th>@SharedLocalizer["Activity"]</th>
                     <th class="text-end">@SharedLocalizer["Actions"]</th>
                 </tr>
             </thead>
@@ -60,27 +62,20 @@
                 <template x-for="log in logs" :key="log.id">
                     <tr :id="`log-${log.id}`">
                         <td>
-                            <span class="badge bg-secondary" x-text="getEventTypeName(log.eventType)"></span>
-                        </td>
-                        <td>
-                            <strong x-text="log.operation"></strong>
-                        </td>
-                        <td>
-                            <span class="text-muted" x-text="log.targetName"></span>
-                        </td>
-                        <td>
-                            <span x-text="log.actorId || 'System'"></span>
-                        </td>
-                        <td>
-                            <span class="text-muted" x-text="log.ipAddress"></span>
-                        </td>
-                        <td>
                             <time :data-utc-label="log.eventTimeUtc" x-text="log.eventTimeUtc"></time>
+                        </td>
+                        <td>
+                            <i :class="log.actorKind === 'System' ? 'bi-gear' : 'bi-person'"
+                               :title="log.actorKind === 'System' ? '@SharedLocalizer["System"]' : '@SharedLocalizer["Administrator"]'"></i>
+                            <span x-text="log.actor"></span>
+                        </td>
+                        <td>
+                            <span x-text="log.summary"></span>
                         </td>
                         <td class="text-end">
                             <button class="btn btn-outline-primary btn-sm" 
-                                    x-on:click="showDetail(log.id, log.operation)"
-                                    title="Detail">
+                                    x-on:click="showDetail(log.id)"
+                                    title="@SharedLocalizer["Detail"]">
                                 <i class="bi-info-circle"></i>
                             </button>
                         </td>
@@ -140,17 +135,17 @@
                         <h6 class="mb-0 fw-semibold">@SharedLocalizer["Event Types"]</h6>
                     </div>
                     <div class="card-body flex-grow-1 overflow-auto">
-                        <template x-for="group in eventTypeGroups" :key="group.category">
+                        <template x-for="group in eventTypeGroups" :key="group.label">
                             <div class="mb-3">
-                                <div class="text-muted small fw-semibold text-uppercase mb-2" x-text="group.category"></div>
-                                <template x-for="item in group.items" :key="item.value">
+                                <div class="text-muted small fw-semibold text-uppercase mb-2" x-text="group.label"></div>
+                                <template x-for="item in group.items" :key="item.key">
                                     <div class="form-check mb-1">
                                         <input class="form-check-input" type="checkbox"
-                                               :id="`evt-${item.value}`"
-                                               :value="item.value"
-                                               :checked="selectedEventTypes.includes(String(item.value))"
-                                               x-on:change="toggleEventType(String(item.value))">
-                                        <label class="form-check-label" :for="`evt-${item.value}`" x-text="item.name"></label>
+                                               :id="`evt-${item.key}`"
+                                               :value="item.key"
+                                               :checked="selectedEventKeys.includes(item.key)"
+                                               x-on:change="toggleEventKey(item.key)">
+                                        <label class="form-check-label" :for="`evt-${item.key}`" x-text="item.label"></label>
                                     </div>
                                 </template>
                             </div>
@@ -192,13 +187,56 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="detailModalLabel">
-                    @SharedLocalizer["Activity Log Detail"] - <span x-text="currentLogOperation"></span>
+                    <span x-text="currentDetail?.heading"></span>
                 </h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <h6>@SharedLocalizer["Metadata"]</h6>
-                <pre class="bg-light p-3 rounded" style="max-height: 400px; overflow-y: auto;"><code x-text="currentMetadata ? JSON.stringify(JSON.parse(currentMetadata), null, 2) : 'No metadata'"></code></pre>
+                <dl class="row text-break">
+                    <dt class="col-sm-3">@SharedLocalizer["Time"]</dt>
+                    <dd class="col-sm-9"><time :data-utc-label="currentDetail?.eventTimeUtc" x-text="currentDetail?.eventTimeUtc"></time></dd>
+                    <dt class="col-sm-3">@SharedLocalizer["Actor"]</dt>
+                    <dd class="col-sm-9" x-text="currentDetail?.actor"></dd>
+                    <dt class="col-sm-3">@SharedLocalizer["Actor type"]</dt>
+                    <dd class="col-sm-9" x-text="currentDetail?.actorKind === 'System' ? '@SharedLocalizer["System"]' : '@SharedLocalizer["Administrator"]'"></dd>
+                </dl>
+                <dl class="row text-break" x-show="hasDetailContext">
+                    <template x-if="currentDetail?.targetDisplayName">
+                        <div class="row mb-2">
+                            <dt class="col-sm-3">@SharedLocalizer["Target"]</dt>
+                            <dd class="col-sm-9" x-text="currentDetail.targetDisplayName"></dd>
+                        </div>
+                    </template>
+                    <template x-if="currentDetail?.targetId">
+                        <div class="row mb-2">
+                            <dt class="col-sm-3">@SharedLocalizer["Target ID"]</dt>
+                            <dd class="col-sm-9" x-text="currentDetail.targetId"></dd>
+                        </div>
+                    </template>
+                    <template x-if="currentDetail?.ipAddress">
+                        <div class="row mb-2">
+                            <dt class="col-sm-3">@SharedLocalizer["IP Address"]</dt>
+                            <dd class="col-sm-9" x-text="currentDetail.ipAddress"></dd>
+                        </div>
+                    </template>
+                    <template x-if="currentDetail?.userAgent">
+                        <div class="row mb-2">
+                            <dt class="col-sm-3">@SharedLocalizer["User Agent"]</dt>
+                            <dd class="col-sm-9" x-text="currentDetail.userAgent"></dd>
+                        </div>
+                    </template>
+                </dl>
+                <dl class="row text-break" x-show="currentDetail?.fields?.length">
+                    <template x-for="field in currentDetail?.fields ?? []" :key="field.key">
+                        <div class="row mb-2">
+                            <dt class="col-sm-3" x-text="field.label"></dt>
+                            <dd class="col-sm-9" x-text="formatDetailValue(field.value, field.key)"></dd>
+                        </div>
+                    </template>
+                </dl>
+                <p class="text-muted mb-0" x-show="!hasDetailContext && !currentDetail?.fields?.length">
+                    @SharedLocalizer["No additional activity details are available."]
+                </p>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">@SharedLocalizer["Close"]</button>

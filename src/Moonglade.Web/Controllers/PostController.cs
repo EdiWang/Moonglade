@@ -17,7 +17,8 @@ public class PostController(
     ICommandMediator commandMediator,
     IQueryMediator queryMediator,
     IBlogConfig blogConfig,
-    IStringLocalizer<Program> localizer) : BlogControllerBase(commandMediator)
+    IStringLocalizer<Program> localizer,
+    ILogger<PostController> logger) : BlogControllerBase(commandMediator, logger)
 {
     [HttpGet("list")]
     public async Task<IActionResult> List(
@@ -76,10 +77,10 @@ public class PostController(
         await CommandMediator.SendAsync(new DeletePostCommand(postId, SoftDelete: true));
 
         await LogActivityAsync(
-            EventType.PostDeleted,
-            "Delete Post (Move to Recycle Bin)",
+            ActivityEvents.PostDeleted,
             $"Post #{postId}",
-            ActivityLogMetaData.Create(("PostId", postId)));
+            ActivityLogDetails.Create(("PostId", postId)),
+            targetId: postId.ToString());
 
         return NoContent();
     }
@@ -90,10 +91,10 @@ public class PostController(
         await CommandMediator.SendAsync(new PublishPostCommand(postId));
 
         await LogActivityAsync(
-            EventType.PostPublished,
-            "Publish Post",
+            ActivityEvents.PostPublished,
             $"Post #{postId}",
-            ActivityLogMetaData.Create(("PostId", postId)));
+            ActivityLogDetails.Create(("PostId", postId)),
+            targetId: postId.ToString());
 
         return NoContent();
     }
@@ -104,10 +105,10 @@ public class PostController(
         await CommandMediator.SendAsync(new UnpublishPostCommand(postId));
 
         await LogActivityAsync(
-            EventType.PostUnpublished,
-            "Unpublish Post",
+            ActivityEvents.PostUnpublished,
             $"Post #{postId}",
-            ActivityLogMetaData.Create(("PostId", postId)));
+            ActivityLogDetails.Create(("PostId", postId)),
+            targetId: postId.ToString());
 
         return NoContent();
     }

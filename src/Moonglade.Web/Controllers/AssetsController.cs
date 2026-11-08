@@ -14,7 +14,7 @@ public class AssetsController(
     IWebHostEnvironment env,
     ILogger<AssetsController> logger,
     SiteIconBuilder siteIconBuilder,
-    ICommandMediator commandMediator) : BlogControllerBase(commandMediator)
+    ICommandMediator commandMediator) : BlogControllerBase(commandMediator, logger)
 {
     [AllowAnonymous]
     [HttpGet("avatar")]
@@ -72,9 +72,9 @@ public class AssetsController(
         logger.LogInformation("Avatar image updated successfully.");
 
         await LogActivityAfterSaveAsync(logger,
-            EventType.AvatarUpdated,
-            "Update Avatar",
-            "Avatar Image");
+            ActivityEvents.AvatarUpdated,
+            "Avatar Image",
+            targetId: AssetId.AvatarBase64.ToString());
 
         return Ok();
     }
@@ -145,10 +145,10 @@ public class AssetsController(
         logger.LogInformation("Site icon image updated successfully.");
 
         await LogActivityAsync(
-            EventType.SiteIconUpdated,
-            "Update Site Icon",
+            ActivityEvents.SiteIconUpdated,
             "Site Icon",
-            ActivityLogMetaData.Create(("ImageSize", $"{bmp.Width}x{bmp.Height}")));
+            ActivityLogDetails.Create(("ImageSize", $"{bmp.Width}x{bmp.Height}")),
+            targetId: AssetId.SiteIconBase64.ToString());
 
         return NoContent();
     }

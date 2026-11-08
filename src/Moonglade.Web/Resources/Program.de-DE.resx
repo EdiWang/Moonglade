@@ -2004,4 +2004,69 @@
   <data name="Changes wake the scheduler. Publishing already in progress is not canceled." xml:space="preserve">
     <value>Änderungen wecken den Zeitplaner. Bereits laufende Veröffentlichungen werden nicht abgebrochen.</value>
   </data>
+  <data name="Account authenticator reset" xml:space="preserve"><value>Konto-Authentifikator zurückgesetzt</value></data>
+  <data name="Account password updated" xml:space="preserve"><value>Kontopasswort aktualisiert</value></data>
+  <data name="Activity" xml:space="preserve"><value>Aktivität</value></data>
+  <data name="Activity log" xml:space="preserve"><value>Aktivitätsprotokoll</value></data>
+  <data name="Activity log cleared" xml:space="preserve"><value>Aktivitätsprotokoll geleert</value></data>
+  <data name="Actor type" xml:space="preserve"><value>Akteurtyp</value></data>
+  <data name="Administrator" xml:space="preserve"><value>Administrator</value></data>
+  <data name="Advanced settings updated" xml:space="preserve"><value>Erweiterte Einstellungen aktualisiert</value></data>
+  <data name="Appearance settings updated" xml:space="preserve"><value>Darstellungseinstellungen aktualisiert</value></data>
+  <data name="Avatar updated" xml:space="preserve"><value>Avatar aktualisiert</value></data>
+  <data name="Category ID" xml:space="preserve"><value>Kategorie-ID</value></data>
+  <data name="Comment approval toggled" xml:space="preserve"><value>Kommentarfreigabe umgeschaltet</value></data>
+  <data name="Comment ID" xml:space="preserve"><value>Kommentar-ID</value></data>
+  <data name="Comment IDs" xml:space="preserve"><value>Kommentar-IDs</value></data>
+  <data name="Comment replied to" xml:space="preserve"><value>Kommentar beantwortet</value></data>
+  <data name="Comment settings updated" xml:space="preserve"><value>Kommentareinstellungen aktualisiert</value></data>
+  <data name="Content settings updated" xml:space="preserve"><value>Inhaltseinstellungen aktualisiert</value></data>
+  <data name="Count" xml:space="preserve"><value>Anzahl</value></data>
+  <data name="Custom menu settings updated" xml:space="preserve"><value>Einstellungen des benutzerdefinierten Menüs aktualisiert</value></data>
+  <data name="Deleted count" xml:space="preserve"><value>Anzahl gelöschter Einträge</value></data>
+  <data name="Detail" xml:space="preserve"><value>Details</value></data>
+  <data name="Enable CDN redirect" xml:space="preserve"><value>CDN-Weiterleitung aktivieren</value></data>
+  <data name="Enable watermark" xml:space="preserve"><value>Wasserzeichen aktivieren</value></data>
+  <data name="File ID" xml:space="preserve"><value>Datei-ID</value></data>
+  <data name="File size" xml:space="preserve"><value>Dateigröße</value></data>
+  <data name="General settings updated" xml:space="preserve"><value>Allgemeine Einstellungen aktualisiert</value></data>
+  <data name="Hours" xml:space="preserve"><value>Stunden</value></data>
+  <data name="Image dimensions" xml:space="preserve"><value>Bildabmessungen</value></data>
+  <data name="Image settings updated" xml:space="preserve"><value>Bildeinstellungen aktualisiert</value></data>
+  <data name="Image uploaded" xml:space="preserve"><value>Bild hochgeladen</value></data>
+  <data name="Images" xml:space="preserve"><value>Bilder</value></data>
+  <data name="No additional activity details are available." xml:space="preserve"><value>Keine weiteren Aktivitätsdetails verfügbar.</value></data>
+  <data name="Notification settings updated" xml:space="preserve"><value>Benachrichtigungseinstellungen aktualisiert</value></data>
+  <data name="Page created" xml:space="preserve"><value>Seite erstellt</value></data>
+  <data name="Page ID" xml:space="preserve"><value>Seiten-ID</value></data>
+  <data name="Page moved to recycle bin" xml:space="preserve"><value>Seite in den Papierkorb verschoben</value></data>
+  <data name="Page permanently deleted" xml:space="preserve"><value>Seite endgültig gelöscht</value></data>
+  <data name="Page recycle bin cleared" xml:space="preserve"><value>Seitenpapierkorb geleert</value></data>
+  <data name="Page updated" xml:space="preserve"><value>Seite aktualisiert</value></data>
+  <data name="Post created" xml:space="preserve"><value>Beitrag erstellt</value></data>
+  <data name="Post ID" xml:space="preserve"><value>Beitrags-ID</value></data>
+  <data name="Post moved to recycle bin" xml:space="preserve"><value>Beitrag in den Papierkorb verschoben</value></data>
+  <data name="Post permanently deleted" xml:space="preserve"><value>Beitrag endgültig gelöscht</value></data>
+  <data name="Post recycle bin cleared" xml:space="preserve"><value>Beitragspapierkorb geleert</value></data>
+  <data name="Post schedule cancelled" xml:space="preserve"><value>Beitragsplanung abgebrochen</value></data>
+  <data name="Post schedule postponed" xml:space="preserve"><value>Beitragsplanung verschoben</value></data>
+  <data name="Post status" xml:space="preserve"><value>Beitragsstatus</value></data>
+  <data name="Post updated" xml:space="preserve"><value>Beitrag aktualisiert</value></data>
+  <data name="Previous file name" xml:space="preserve"><value>Vorheriger Dateiname</value></data>
+  <data name="Require comment review" xml:space="preserve"><value>Kommentarprüfung erforderlich</value></data>
+  <data name="Site assets" xml:space="preserve"><value>Website-Ressourcen</value></data>
+  <data name="Site icon updated" xml:space="preserve"><value>Website-Symbol aktualisiert</value></data>
+  <data name="Site title" xml:space="preserve"><value>Website-Titel</value></data>
+  <data name="Skip watermark" xml:space="preserve"><value>Wasserzeichen überspringen</value></data>
+  <data name="Subscription settings updated" xml:space="preserve"><value>Abonnementeinstellungen aktualisiert</value></data>
+  <data name="Tag created" xml:space="preserve"><value>Tag erstellt</value></data>
+  <data name="Tag ID" xml:space="preserve"><value>Tag-ID</value></data>
+  <data name="Target ID" xml:space="preserve"><value>Ziel-ID</value></data>
+  <data name="Theme created" xml:space="preserve"><value>Design erstellt</value></data>
+  <data name="Theme deleted" xml:space="preserve"><value>Design gelöscht</value></data>
+  <data name="Theme ID" xml:space="preserve"><value>Design-ID</value></data>
+  <data name="Themes" xml:space="preserve"><value>Designs</value></data>
+  <data name="User Agent" xml:space="preserve"><value>User-Agent</value></data>
+  <data name="Verification file toggled" xml:space="preserve"><value>Verifizierungsdatei umgeschaltet</value></data>
+  <data name="Widget ID" xml:space="preserve"><value>Widget-ID</value></data>
 </root>

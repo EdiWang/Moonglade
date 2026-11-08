@@ -49,7 +49,9 @@ Settings cache tests in `PostCacheInvalidationTests.Settings.cs` warm real RSS/A
 
 Settings and avatar audit tests inject dispatch exceptions and cancellation after real SQLite saves, asserting successful responses, actual persisted/runtime values, safe contextual Error logs, and authenticator-reset sign-outs. Separate faults cover validation, settings/asset database writes, cache events, and sign-out, ensuring they are not swallowed by audit isolation. HTTP tests cover all ordinary settings routes, including image settings without a storage-service dependency. Site-icon and post-controller regressions preserve their excluded audit contracts. Avatar tests preserve asset/audit failures while asserting that settings JSON/timestamps and the captured root remain unchanged, even with image CDN enabled. A real LiteBus discovery test verifies avatar asset persistence. Image endpoint/storage tests cover article-image delivery.
 
-Activity Log tests use SQLite and real handlers to verify clear-only management, exact deleted counts and UTC administrator entries, delete failures, and post-clear dispatch/cancellation/persistence failures. A failed activity insert must not reappear on a later save in the same context or discard unrelated tracked changes. HTTP tests use the real compiled ActivityLogs page, local administrator authorization policy, and antiforgery tokens with synthetic authentication claims. Public comment tests preserve moderation, review, persistence, and actual email outbox enqueueing without visitor activity entries. Node tests exercise confirmed, cancelled, and failed clear flows.
+Activity Log tests pin all 49 canonical event keys, groups, and labels. SQLite writer/read tests cover UTC, generated IDs, captured targets surviving deletion, typed scalar/flat-array/enum details, string limits, explicit System actors, rejected restricted details, deterministic time/ID ordering, pagination, and inclusive date/key filters. A failed activity insert must not reappear on a later save in the same context or discard unrelated tracked changes. Clear-only tests retain exact deleted counts and delete/dispatch/cancellation/persistence failure isolation. HTTP tests use the real compiled ActivityLogs page, local administrator authorization policy, and antiforgery tokens with synthetic authentication claims. They verify the canonical grouped filters/list/detail contracts, empty-detail 200 versus missing-row 404, obsolete numeric-filter rejection, five-culture catalog presentation, and safe actor/target fallbacks. Public comment tests preserve moderation, review, persistence, and actual email outbox enqueueing without visitor activity entries. Node tests import the actual module to exercise string-key/date filters, supplied summaries, structured typed details and empty context, pagination, and confirmed/cancelled/failed clear flows.
+
+`ActivityLogDatabaseTests` uses the existing opt-in disposable PostgreSQL and SQL Server fixture. It verifies fresh `EnsureCreated`/seed schemas, the standard nine-column legacy upgrade, preservation of unrelated data and newly written rows on rerun, identity continuity, invalid-schema rejection before deletion, and real writer/list/filter/detail/clear handlers. The fixture reconnects after the standalone SQL upgrade, matching the application's new database session. Only uniquely named disposable Docker databases are used.
 
 Manual upgrade tests for category IDs and PostgreSQL naming use opt-in disposable database containers. See [Migration Verification](../../docs/agent-reference.md#migration-verification) for prerequisites and limits; ordinary runs explicitly skip those relational groups.
 
@@ -75,3 +77,12 @@ Web JavaScript behavior tests use Node.js's built-in test runner without additio
 ```powershell
 node --test src\Tests\Moonglade.Web.Tests\JavaScript\*.mjs
 ```
+
+To run only the activity schema cutover scenarios on both providers:
+
+```powershell
+$env:MOONGLADE_TEST_CATEGORY_DATABASES = '1'
+dotnet test --project src/Tests/Moonglade.Setup.Tests/Moonglade.Setup.Tests.csproj --filter-class '*ActivityLogDatabaseTests'
+```
+
+With that opt-in enabled, omitting `--filter-class` also runs the remaining Setup provider scenarios. Docker must be running; ordinary runs without the opt-in explicitly skip the provider group.

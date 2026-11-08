@@ -1,59 +1,48 @@
+#nullable enable
+
 using LiteBus.Commands.Abstractions;
 using Moonglade.ActivityLog;
+using Moonglade.Data.Entities;
 
 namespace Moonglade.Web.Controllers;
 
-/// <summary>
-/// Base controller that provides common functionality for blog API controllers
-/// </summary>
 [Authorize(Policy = BlogAuthSchemas.AdministratorPolicy)]
 [ApiController]
-public abstract class BlogControllerBase(ICommandMediator commandMediator) : ControllerBase
+public abstract class BlogControllerBase(ICommandMediator commandMediator, ILogger logger) : ControllerBase
 {
     protected readonly ICommandMediator CommandMediator = commandMediator;
 
+    protected Task LogActivityAsync(
+        string eventKey,
+        string? targetDisplayName,
+        IReadOnlyDictionary<string, object?>? details = null,
+        string? targetId = null) =>
+        LogActivityAfterSaveAsync(logger, eventKey, targetDisplayName, details, targetId);
+
     protected async Task LogActivityAfterSaveAsync(
-        ILogger logger,
-        EventType eventType,
-        string operation,
-        string targetName,
-        object metadata = null)
+        ILogger activityLogger,
+        string eventKey,
+        string? targetDisplayName,
+        IReadOnlyDictionary<string, object?>? details = null,
+        string? targetId = null)
     {
         try
         {
-            await LogActivityAsync(eventType, operation, targetName, metadata);
+            await CommandMediator.SendAsync(new CreateActivityLogCommand(
+                eventKey,
+                ActivityActorKind.Administrator,
+                User.Identity?.Name,
+                targetId,
+                targetDisplayName,
+                details,
+                HttpContext.Connection.RemoteIpAddress?.ToString(),
+                Request.Headers.UserAgent.ToString()));
         }
         catch (Exception exception)
         {
-            logger.LogError(exception,
-                "Changes saved, but activity logging failed for {EventType} ({Operation}). Trace identifier: {TraceIdentifier}",
-                eventType, operation, HttpContext.TraceIdentifier);
+            activityLogger.LogError(
+                "Changes saved, but activity logging failed for {EventKey}. Failure type: {FailureType}. Trace identifier: {TraceIdentifier}",
+                ActivityEvents.IsSupported(eventKey) ? eventKey : "(unsupported)", exception.GetType().Name, HttpContext.TraceIdentifier);
         }
-    }
-
-    /// <summary>
-    /// Records an activity log entry
-    /// </summary>
-    /// <param name="eventType">The type of event</param>
-    /// <param name="operation">Description of the operation</param>
-    /// <param name="targetName">Name of the target entity</param>
-    /// <param name="metaData">Additional metadata</param>
-    /// <param name="username">Optional username to log. If null, uses User.Identity.Name</param>
-    protected async Task LogActivityAsync(
-        EventType eventType,
-        string operation,
-        string targetName,
-        object metaData = null,
-        string username = null)
-    {
-        await CommandMediator.SendAsync(new CreateActivityLogCommand(
-            eventType,
-            username ?? User.Identity?.Name,
-            operation,
-            targetName,
-            metaData,
-            HttpContext.Connection.RemoteIpAddress?.ToString(),
-            Request.Headers.UserAgent.ToString()
-        ));
     }
 }

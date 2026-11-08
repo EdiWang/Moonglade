@@ -1,3 +1,5 @@
+#nullable enable annotations
+
 using Edi.PasswordGenerator;
 using LiteBus.Commands.Abstractions;
 using LiteBus.Events.Abstractions;
@@ -19,7 +21,7 @@ public class SettingsController(
         IEventMediator eventMediator,
         EmailCapabilityStatus emailCapabilityStatus,
         ILocalAccountReader accounts,
-        ICommandMediator commandMediator) : BlogControllerBase(commandMediator)
+        ICommandMediator commandMediator) : BlogControllerBase(commandMediator, logger)
 {
     [HttpPost("general")]
     public async Task<IActionResult> General(GeneralSettings model)
@@ -163,26 +165,26 @@ public class SettingsController(
 
     private async Task<IActionResult> CompleteSettingsSaveAsync(object settings)
     {
-        var (eventType, groupName, metadata) = settings switch
+        (string EventKey, string GroupName, IReadOnlyDictionary<string, object?>? Details) activity = settings switch
         {
-            GeneralSettings model => (EventType.SettingsGeneralUpdated, "General",
-                ActivityLogMetaData.Create(("SiteTitle", model.SiteTitle), ("LogoText", model.LogoText))),
-            CommentSettings model => (EventType.SettingsCommentUpdated, "Comment",
-                ActivityLogMetaData.Create(("EnableComments", model.EnableComments), ("RequireCommentReview", model.RequireCommentReview))),
-            ImageSettings model => (EventType.SettingsImageUpdated, "Image",
-                ActivityLogMetaData.Create(("EnableCDNRedirect", model.EnableCDNRedirect), ("IsWatermarkEnabled", model.IsWatermarkEnabled))),
-            AppearanceSettings model => (EventType.SettingsAppearanceUpdated, "Appearance",
-                ActivityLogMetaData.Create(("ThemeId", model.ThemeId), ("EnableCustomCss", model.EnableCustomCss))),
-            ContentSettings => (EventType.SettingsContentUpdated, "Content", null),
-            NotificationSettings => (EventType.SettingsNotificationUpdated, "Notification", null),
-            FeedSettings => (EventType.SettingsSubscriptionUpdated, "Subscription", null),
-            AdvancedSettings => (EventType.SettingsAdvancedUpdated, "Advanced", null),
-            CustomMenuSettings model => (EventType.SettingsCustomMenuUpdated, "Custom Menu",
-                ActivityLogMetaData.Create(("IsEnabled", model.IsEnabled))),
+            GeneralSettings model => (ActivityEvents.SettingsGeneralUpdated, "General",
+                ActivityLogDetails.Create(("SiteTitle", model.SiteTitle), ("LogoText", model.LogoText))),
+            CommentSettings model => (ActivityEvents.SettingsCommentUpdated, "Comment",
+                ActivityLogDetails.Create(("EnableComments", model.EnableComments), ("RequireCommentReview", model.RequireCommentReview))),
+            ImageSettings model => (ActivityEvents.SettingsImageUpdated, "Image",
+                ActivityLogDetails.Create(("EnableCDNRedirect", model.EnableCDNRedirect), ("IsWatermarkEnabled", model.IsWatermarkEnabled))),
+            AppearanceSettings model => (ActivityEvents.SettingsAppearanceUpdated, "Appearance",
+                ActivityLogDetails.Create(("ThemeId", model.ThemeId), ("EnableCustomCss", model.EnableCustomCss))),
+            ContentSettings => (ActivityEvents.SettingsContentUpdated, "Content", null),
+            NotificationSettings => (ActivityEvents.SettingsNotificationUpdated, "Notification", null),
+            FeedSettings => (ActivityEvents.SettingsSubscriptionUpdated, "Subscription", null),
+            AdvancedSettings => (ActivityEvents.SettingsAdvancedUpdated, "Advanced", null),
+            CustomMenuSettings model => (ActivityEvents.SettingsCustomMenuUpdated, "Custom Menu",
+                ActivityLogDetails.Create(("IsEnabled", model.IsEnabled))),
             _ => throw new InvalidOperationException("Unexpected settings type.")
         };
 
-        await LogActivityAfterSaveAsync(logger, eventType, $"Update {groupName} Settings", $"{groupName} Settings", metadata);
+        await LogActivityAfterSaveAsync(logger, activity.EventKey, $"{activity.GroupName} Settings", activity.Details);
         return NoContent();
     }
 
@@ -245,8 +247,7 @@ public class SettingsController(
         };
 
         await CommandMediator.SendAsync(new UpdateLocalAccountCommand(newSettings), HttpContext.RequestAborted);
-        await LogActivityAfterSaveAsync(logger, EventType.SettingsPasswordUpdated, "Update Local Account Password", request.NewUsername,
-            ActivityLogMetaData.Create(("Username", request.NewUsername)));
+        await LogActivityAfterSaveAsync(logger, ActivityEvents.SettingsPasswordUpdated, newSettings.Username);
         return NoContent();
     }
 
@@ -269,10 +270,8 @@ public class SettingsController(
 
         await CommandMediator.SendAsync(new UpdateLocalAccountCommand(newSettings), HttpContext.RequestAborted);
         await LogActivityAfterSaveAsync(logger,
-            EventType.SettingsAuthenticatorReset,
-            "Reset Local Account Authenticator",
-            account.Username,
-            ActivityLogMetaData.Create(("Username", account.Username)));
+            ActivityEvents.SettingsAuthenticatorReset,
+            account.Username);
 
         await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
         await HttpContext.SignOutAsync(BlogAuthSchemas.LocalAccountSetup);

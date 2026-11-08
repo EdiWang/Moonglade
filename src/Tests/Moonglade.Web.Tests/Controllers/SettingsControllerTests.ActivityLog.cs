@@ -44,10 +44,10 @@ public partial class SettingsControllerTests
         Assert.Equal(expectedJson, await ReadStoredSettings(mediator, key));
         Assert.Collection(mediator.Commands,
             command => Assert.IsType<UpdateConfigurationCommand>(command),
-            command => Assert.Equal(general ? EventType.SettingsGeneralUpdated : EventType.SettingsContentUpdated,
-                Assert.IsType<CreateActivityLogCommand>(command).EventType));
+            command => Assert.Equal(general ? ActivityEvents.SettingsGeneralUpdated : ActivityEvents.SettingsContentUpdated,
+                Assert.IsType<CreateActivityLogCommand>(command).EventKey));
         AssertAuditFailure(logger, controller, failure,
-            general ? EventType.SettingsGeneralUpdated : EventType.SettingsContentUpdated, site.SiteTitle);
+            general ? ActivityEvents.SettingsGeneralUpdated : ActivityEvents.SettingsContentUpdated, site.SiteTitle);
     }
 
     [Fact]
@@ -70,7 +70,7 @@ public partial class SettingsControllerTests
         Assert.Same(original, config.Capture().GeneralSettings);
         Assert.Equal(original.ToJson(), await ReadStoredSettings(mediator, nameof(GeneralSettings)));
         Assert.Equal(image.ToJson(), await ReadStoredSettings(mediator, nameof(ImageSettings)));
-        AssertAuditFailure(logger, controller, failure, EventType.SettingsImageUpdated, image.CDNEndpoint);
+        AssertAuditFailure(logger, controller, failure, ActivityEvents.SettingsImageUpdated, image.CDNEndpoint);
     }
 
     [Fact]
@@ -101,7 +101,7 @@ public partial class SettingsControllerTests
         Assert.True(saved.IsTotpEnabled);
         Assert.Equal(saved.ToJson(), mediator.Accounts.Read().ToJson());
         authentication.Verify(p => p.SignOutAsync(It.IsAny<HttpContext>(), It.IsAny<string>(), It.IsAny<AuthenticationProperties>()), Times.Never);
-        AssertAuditFailure(logger, controller, failure, EventType.SettingsPasswordUpdated,
+        AssertAuditFailure(logger, controller, failure, ActivityEvents.SettingsPasswordUpdated,
             request.OldPassword, request.NewPassword, request.NewUsername, saved.PasswordHash, saved.PasswordSalt, saved.TotpSecret);
     }
 
@@ -134,7 +134,7 @@ public partial class SettingsControllerTests
         foreach (var scheme in new[] { CookieAuthenticationDefaults.AuthenticationScheme, BlogAuthSchemas.LocalAccountSetup, BlogAuthSchemas.LocalAccountTwoFactor })
             authentication.Verify(p => p.SignOutAsync(controller.HttpContext, scheme, null), Times.Once);
         authentication.VerifyNoOtherCalls();
-        AssertAuditFailure(logger, controller, failure, EventType.SettingsAuthenticatorReset,
+        AssertAuditFailure(logger, controller, failure, ActivityEvents.SettingsAuthenticatorReset,
             "Password1", original.PasswordHash, original.PasswordSalt, original.TotpSecret, original.Username);
     }
 
@@ -259,13 +259,14 @@ public partial class SettingsControllerTests
         (await mediator.Db.BlogConfiguration.AsNoTracking().SingleAsync(p => p.CfgKey == key, TestContext.Current.CancellationToken)).CfgValue;
 
     private static void AssertAuditFailure(Mock<ILogger<SettingsController>> logger, SettingsController controller,
-        Exception failure, EventType eventType, params string[] excludedValues)
+        Exception failure, string eventKey, params string[] excludedValues)
     {
         var invocation = Assert.Single(logger.Invocations, p => p.Method.Name == nameof(ILogger.Log));
         Assert.Equal(LogLevel.Error, invocation.Arguments[0]);
-        Assert.Same(failure, invocation.Arguments[3]);
+        Assert.Null(invocation.Arguments[3]);
         var state = Assert.IsAssignableFrom<IReadOnlyList<KeyValuePair<string, object?>>>(invocation.Arguments[2]);
-        Assert.Contains(state, p => p.Key == "EventType" && Equals(p.Value, eventType));
+        Assert.Contains(state, p => p.Key == "EventKey" && Equals(p.Value, eventKey));
+        Assert.Contains(state, p => p.Key == "FailureType" && Equals(p.Value, failure.GetType().Name));
         Assert.Contains(state, p => p.Key == "TraceIdentifier" && Equals(p.Value, controller.HttpContext.TraceIdentifier));
         var message = invocation.Arguments[2]?.ToString() ?? string.Empty;
         Assert.Contains("saved", message, StringComparison.OrdinalIgnoreCase);

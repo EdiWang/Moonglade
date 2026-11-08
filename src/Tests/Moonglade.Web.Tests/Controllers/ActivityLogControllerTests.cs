@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Localization;
 using Moonglade.ActivityLog;
 using Moonglade.Data;
 using Moonglade.Data.Entities;
@@ -26,21 +27,7 @@ public class ActivityLogControllerTests
     [Fact]
     public async Task GetEventTypes_ReturnsOkWithEventTypes()
     {
-        var expected = new List<EventTypeGroup>
-        {
-            new()
-            {
-                Category = "Post",
-                Items =
-                [
-                    new EventTypeItem
-                    {
-                        Value = (int)EventType.PostCreated,
-                        Name = "Post Created"
-                    }
-                ]
-            }
-        };
+        var expected = new List<ActivityEventDefinition> { ActivityEvents.Get(ActivityEvents.PostCreated) };
 
         _queryMediator
             .Setup(x => x.QueryAsync(It.IsAny<GetEventTypesQuery>(), It.IsAny<QueryMediationSettings>(), It.IsAny<CancellationToken>()))
@@ -51,11 +38,13 @@ public class ActivityLogControllerTests
         var result = await controller.GetEventTypes();
 
         var okResult = Assert.IsType<OkObjectResult>(result);
-        Assert.Same(expected, okResult.Value);
+        var group = Assert.Single(Assert.IsType<List<ActivityEventGroup>>(okResult.Value));
+        Assert.Equal("Posts", group.Label);
+        Assert.Equal(new ActivityEventOption("post.created", "Post created"), Assert.Single(group.Items));
     }
 
     [Fact]
-    public async Task List_NormalizesPagingAndMapsEventTypes()
+    public async Task List_NormalizesPagingAndMapsCanonicalKeysAndSummary()
     {
         var startTimeUtc = DateTime.UtcNow.AddDays(-2);
         var endTimeUtc = DateTime.UtcNow;
@@ -64,11 +53,11 @@ public class ActivityLogControllerTests
             new()
             {
                 Id = 1,
-                EventType = EventType.PostCreated,
+                EventKey = ActivityEvents.PostCreated,
                 EventTimeUtc = DateTime.UtcNow,
-                ActorId = "tester",
-                Operation = "Create Post",
-                TargetName = "Hello"
+                ActorKind = ActivityActorKind.Administrator,
+                ActorDisplayName = "tester",
+                TargetDisplayName = "Hello"
             }
         };
 
@@ -78,15 +67,15 @@ public class ActivityLogControllerTests
 
         var controller = CreateController();
 
-        var result = await controller.List(0, 200, [(int)EventType.PostCreated, (int)EventType.CommentDeleted], startTimeUtc, endTimeUtc);
+        var result = await controller.List(0, 200, [ActivityEvents.PostCreated, ActivityEvents.CommentDeleted], startTimeUtc, endTimeUtc);
 
         _queryMediator.Verify(
             x => x.QueryAsync(
                 It.Is<ListActivityLogsQuery>(query =>
                     query.PageIndex == 1 &&
                     query.PageSize == 100 &&
-                    query.EventTypes != null &&
-                    query.EventTypes.SequenceEqual(new[] { EventType.PostCreated, EventType.CommentDeleted }) &&
+                    query.EventKeys != null &&
+                    query.EventKeys.SequenceEqual(new[] { ActivityEvents.PostCreated, ActivityEvents.CommentDeleted }) &&
                     query.StartTimeUtc == startTimeUtc &&
                     query.EndTimeUtc == endTimeUtc),
                 It.IsAny<QueryMediationSettings>(),
@@ -94,8 +83,12 @@ public class ActivityLogControllerTests
             Times.Once);
 
         var okResult = Assert.IsType<OkObjectResult>(result);
-        var pagedResult = Assert.IsType<PagedResult<ActivityLogItem>>(okResult.Value);
-        Assert.Single(pagedResult.Items);
+        var pagedResult = Assert.IsType<PagedResult<ActivityLogListItem>>(okResult.Value);
+        var item = Assert.Single(pagedResult.Items);
+        Assert.Equal("post.created", item.EventKey);
+        Assert.Equal("Post created: Hello", item.Summary);
+        Assert.Equal("tester", item.Actor);
+        Assert.Equal(ActivityActorKind.Administrator, item.ActorKind);
         Assert.Equal(1, pagedResult.PageNumber);
         Assert.Equal(100, pagedResult.PageSize);
         Assert.Equal(25, pagedResult.TotalItemCount);
@@ -106,7 +99,7 @@ public class ActivityLogControllerTests
     {
         _queryMediator
             .Setup(x => x.QueryAsync(It.IsAny<GetMetaDataByActivityLogIdQuery>(), It.IsAny<QueryMediationSettings>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync((string)null!);
+            .ReturnsAsync((ActivityLogItem)null!);
 
         var controller = CreateController();
 
@@ -115,21 +108,82 @@ public class ActivityLogControllerTests
         Assert.IsType<NotFoundResult>(result);
     }
 
-    [Fact]
-    public async Task GetMetadata_WhenMetadataExists_ReturnsOk()
+    [Theory]
+    [InlineData(null)]
+    [InlineData("")]
+    [InlineData("   ")]
+    public async Task List_BlankAdministratorSnapshot_UsesLocalizedAdministratorFallback(string? actor)
     {
-        const string metadata = "{\"ActivityLogId\":42}";
+        var log = new ActivityLogItem
+        {
+            Id = 7, EventKey = ActivityEvents.PostCreated, EventTimeUtc = DateTime.UtcNow,
+            ActorKind = ActivityActorKind.Administrator, ActorDisplayName = actor
+        };
+        _queryMediator.Setup(mediator => mediator.QueryAsync(It.IsAny<ListActivityLogsQuery>(),
+                It.IsAny<QueryMediationSettings>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync((new List<ActivityLogItem> { log }, 1));
+        var result = await CreateController().List();
+        var item = Assert.Single(Assert.IsType<PagedResult<ActivityLogListItem>>(Assert.IsType<OkObjectResult>(result).Value).Items);
+        Assert.Equal("Administrator", item.Actor);
+        Assert.Equal(ActivityActorKind.Administrator, item.ActorKind);
+        Assert.Equal("Post created", item.Summary);
+    }
+
+    [Theory]
+    [InlineData(null, "stable-id", "Post created: stable-id")]
+    [InlineData("", "stable-id", "Post created: stable-id")]
+    [InlineData("   ", "stable-id", "Post created: stable-id")]
+    [InlineData("Captured title", "stable-id", "Post created: Captured title")]
+    [InlineData(null, "   ", "Post created")]
+    public async Task List_MissingTargetDisplay_UsesSafeStableIdAndPrefersCapturedTitle(string? display, string? id, string expected)
+    {
+        var log = new ActivityLogItem
+        {
+            Id = 7, EventKey = ActivityEvents.PostCreated, EventTimeUtc = DateTime.UtcNow,
+            ActorKind = ActivityActorKind.Administrator, ActorDisplayName = "admin", TargetId = id, TargetDisplayName = display
+        };
+        _queryMediator.Setup(mediator => mediator.QueryAsync(It.IsAny<ListActivityLogsQuery>(),
+                It.IsAny<QueryMediationSettings>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync((new List<ActivityLogItem> { log }, 1));
+        var result = await CreateController().List();
+        var item = Assert.Single(Assert.IsType<PagedResult<ActivityLogListItem>>(Assert.IsType<OkObjectResult>(result).Value).Items);
+        Assert.Equal(expected, item.Summary);
+        Assert.Equal("post.created", item.EventKey);
+        Assert.Equal("admin", item.Actor);
+    }
+
+    [Fact]
+    public async Task GetMetadata_WhenExistingRowHasNoDetails_ReturnsContextAndEmptyFields()
+    {
+        var log = new ActivityLogItem
+        {
+            Id = 42,
+            EventKey = ActivityEvents.PostCreated,
+            EventTimeUtc = new DateTime(2026, 1, 1, 0, 0, 0, DateTimeKind.Utc),
+            ActorKind = ActivityActorKind.Administrator,
+            ActorDisplayName = "admin",
+            TargetId = "captured-id",
+            TargetDisplayName = "Captured title"
+        };
 
         _queryMediator
             .Setup(x => x.QueryAsync(It.IsAny<GetMetaDataByActivityLogIdQuery>(), It.IsAny<QueryMediationSettings>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync(metadata);
+            .ReturnsAsync(log);
 
         var controller = CreateController();
 
         var result = await controller.GetMetadata(42);
 
         var okResult = Assert.IsType<OkObjectResult>(result);
-        Assert.Equal(metadata, okResult.Value);
+        var detail = Assert.IsType<ActivityLogDetail>(okResult.Value);
+        Assert.Equal(42, detail.Id);
+        Assert.Equal("Post created", detail.Heading);
+        Assert.Equal("post.created", detail.EventKey);
+        Assert.Equal(log.EventTimeUtc, detail.EventTimeUtc);
+        Assert.Equal("captured-id", detail.TargetId);
+        Assert.Equal("Captured title", detail.TargetDisplayName);
+        Assert.Equal("admin", detail.Actor);
+        Assert.Empty(detail.Fields);
     }
 
     [Theory]
@@ -146,15 +200,15 @@ public class ActivityLogControllerTests
         Assert.IsType<NoContentResult>(await controller.Clear());
 
         var row = Assert.Single(await store.ReadLogsAsync(ct));
-        Assert.Equal((int)EventType.ActivityLogsCleared, row.EventId);
-        Assert.Equal("admin", row.ActorId);
-        Assert.Equal("Clear Activity Logs", row.Operation);
-        Assert.Equal("Activity Logs", row.TargetName);
+        Assert.Equal(ActivityEvents.ActivityLogsCleared, row.EventKey);
+        Assert.Equal(ActivityActorKind.Administrator, row.ActorKind);
+        Assert.Equal("admin", row.ActorDisplayName);
+        Assert.Null(row.TargetDisplayName);
         Assert.Equal("192.0.2.25", row.IpAddress);
         Assert.Equal("private-agent-marker", row.UserAgent);
-        Assert.Equal(DateTimeKind.Utc, row.EventTimeUtc!.Value.Kind);
-        Assert.InRange(row.EventTimeUtc.Value, before, DateTime.UtcNow);
-        using var metadata = JsonDocument.Parse(row.MetaData);
+        Assert.Equal(DateTimeKind.Utc, row.EventTimeUtc.Kind);
+        Assert.InRange(row.EventTimeUtc, before, DateTime.UtcNow);
+        using var metadata = JsonDocument.Parse(row.Details!);
         Assert.Equal(historyCount, metadata.RootElement.GetProperty("DeletedCount").GetInt32());
     }
 
@@ -174,8 +228,8 @@ public class ActivityLogControllerTests
 
         Assert.Contains("synthetic delete failure", exception.Message);
         var remaining = await store.ReadLogsAsync(ct);
-        Assert.Equal(original.Select(row => (row.Id, row.Operation, row.EventId)),
-            remaining.Select(row => (row.Id, row.Operation, row.EventId)));
+        Assert.Equal(original.Select(row => (row.Id, row.TargetDisplayName, row.EventKey)),
+            remaining.Select(row => (row.Id, row.TargetDisplayName, row.EventKey)));
         Assert.Empty(store.ControllerLogger.Invocations);
         Assert.Empty(store.WriterLogger.Invocations);
     }
@@ -214,10 +268,10 @@ public class ActivityLogControllerTests
         Assert.Equal(cancellation, auditCancellation.IsCancellationRequested);
         var diagnostic = Assert.Single(store.ControllerLogger.Invocations);
         Assert.Equal(LogLevel.Error, diagnostic.Arguments[0]);
-        Assert.Same(failure, diagnostic.Arguments[3]);
+        Assert.Null(diagnostic.Arguments[3]);
         var state = Assert.IsAssignableFrom<IEnumerable<KeyValuePair<string, object>>>(diagnostic.Arguments[2]);
-        Assert.Contains(state, value => value.Key == "EventType" && Equals(value.Value, EventType.ActivityLogsCleared));
-        Assert.Contains(state, value => value.Key == "Operation" && Equals(value.Value, "Clear Activity Logs"));
+        Assert.Contains(state, value => value.Key == "EventKey" && Equals(value.Value, ActivityEvents.ActivityLogsCleared));
+        Assert.Contains(state, value => value.Key == "FailureType" && Equals(value.Value, failure.GetType().Name));
         Assert.Contains(state, value => value.Key == "TraceIdentifier" && Equals(value.Value, "b1-clear-trace"));
         var message = diagnostic.Arguments[2]!.ToString()!;
         Assert.DoesNotContain("private-agent-marker", message);
@@ -255,8 +309,8 @@ public class ActivityLogControllerTests
         Assert.Empty(await store.ReadLogsAsync(ct));
         var diagnostic = Assert.Single(store.WriterLogger.Invocations);
         Assert.Equal(LogLevel.Error, diagnostic.Arguments[0]);
-        var failure = Assert.IsType<DbUpdateException>(diagnostic.Arguments[3]);
-        Assert.Contains("synthetic insert failure", failure.InnerException!.Message);
+        Assert.Null(diagnostic.Arguments[3]);
+        Assert.Contains("DbUpdateException", diagnostic.Arguments[2]!.ToString());
         Assert.Empty(await db.BlogConfiguration.AsNoTracking().ToListAsync(ct));
         await db.Database.ExecuteSqlRawAsync("DROP TRIGGER fail_audit;", ct);
         await db.SaveChangesAsync(ct);
@@ -277,13 +331,13 @@ public class ActivityLogControllerTests
         Assert.IsType<ClearActivityLogsCommand>(_commandMediator.Commands[0]);
 
         var activityCommand = _commandMediator.Single<CreateActivityLogCommand>();
-        Assert.Equal(EventType.ActivityLogsCleared, activityCommand.EventType);
-        Assert.Equal("admin", activityCommand.ActorId);
-        Assert.Equal("Clear Activity Logs", activityCommand.Operation);
-        Assert.Equal("Activity Logs", activityCommand.TargetName);
+        Assert.Equal(ActivityEvents.ActivityLogsCleared, activityCommand.EventKey);
+        Assert.Equal(ActivityActorKind.Administrator, activityCommand.ActorKind);
+        Assert.Equal("admin", activityCommand.ActorDisplayName);
+        Assert.Null(activityCommand.TargetDisplayName);
         Assert.Equal("127.0.0.1", activityCommand.IpAddress);
         Assert.Equal("unit-test-agent", activityCommand.UserAgent);
-        Assert.NotNull(activityCommand.MetaData);
+        Assert.NotNull(activityCommand.Details);
         Assert.Equal(7, ActivityLogMetaDataAssert.Value<int>(activityCommand, "DeletedCount"));
     }
 
@@ -292,7 +346,8 @@ public class ActivityLogControllerTests
         IPAddress? remoteIpAddress = null,
         string? userAgent = null)
     {
-        var controller = new ActivityLogController(_queryMediator.Object, _commandMediator, Mock.Of<ILogger<ActivityLogController>>());
+        var controller = new ActivityLogController(_queryMediator.Object, _commandMediator,
+            Mock.Of<ILogger<ActivityLogController>>(), Localizer());
         var httpContext = new DefaultHttpContext();
 
         if (!string.IsNullOrWhiteSpace(username))
@@ -322,7 +377,7 @@ public class ActivityLogControllerTests
     private static ActivityLogController RealController(IServiceProvider services, ICommandMediator? mediator = null) =>
         new(services.GetRequiredService<IQueryMediator>(),
             mediator ?? services.GetRequiredService<ICommandMediator>(),
-            services.GetRequiredService<ILogger<ActivityLogController>>())
+            services.GetRequiredService<ILogger<ActivityLogController>>(), Localizer())
         {
             ControllerContext = new ControllerContext
             {
@@ -335,6 +390,14 @@ public class ActivityLogControllerTests
                 }
             }
         };
+
+    private static IStringLocalizer<Program> Localizer()
+    {
+        var localizer = new Mock<IStringLocalizer<Program>>();
+        localizer.Setup(value => value[It.IsAny<string>()])
+            .Returns((string key) => new LocalizedString(key, key));
+        return localizer.Object;
+    }
 
     private sealed class RecordingCommandMediator : ICommandMediator
     {

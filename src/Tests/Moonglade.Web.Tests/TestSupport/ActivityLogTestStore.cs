@@ -40,12 +40,13 @@ public sealed class ActivityLogTestStore : IAsyncDisposable
         for (var index = 0; index < historyCount; index++)
             db.ActivityLog.Add(new ActivityLogEntity
             {
-                EventId = (int)(index % 2 == 0 ? EventType.PostCreated : EventType.CommentCreated),
+                EventKey = index % 2 == 0 ? ActivityEvents.PostCreated : ActivityEvents.CommentDeleted,
                 EventTimeUtc = new DateTime(2026, 1, 1, 12, 0, 0, DateTimeKind.Utc).AddMinutes(index),
-                ActorId = "historical-admin",
-                Operation = $"Historical operation {index}",
-                TargetName = $"Historical target {index}",
-                MetaData = "{}",
+                ActorKind = ActivityActorKind.Administrator,
+                ActorDisplayName = "historical-admin",
+                TargetId = $"snapshot-{index}",
+                TargetDisplayName = $"Historical target {index}",
+                Details = "{}",
                 IpAddress = "192.0.2.10",
                 UserAgent = "historical-agent"
             });

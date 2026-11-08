@@ -2004,4 +2004,69 @@
   <data name="Changes wake the scheduler. Publishing already in progress is not canceled." xml:space="preserve">
     <value>變更會喚醒定時發佈工作。已經開始的發佈不會被取消。</value>
   </data>
+  <data name="Account authenticator reset" xml:space="preserve"><value>帳戶驗證器已重設</value></data>
+  <data name="Account password updated" xml:space="preserve"><value>帳戶密碼已更新</value></data>
+  <data name="Activity" xml:space="preserve"><value>活動</value></data>
+  <data name="Activity log" xml:space="preserve"><value>活動記錄</value></data>
+  <data name="Activity log cleared" xml:space="preserve"><value>活動記錄已清空</value></data>
+  <data name="Actor type" xml:space="preserve"><value>操作者類型</value></data>
+  <data name="Administrator" xml:space="preserve"><value>管理員</value></data>
+  <data name="Advanced settings updated" xml:space="preserve"><value>進階設定已更新</value></data>
+  <data name="Appearance settings updated" xml:space="preserve"><value>外觀設定已更新</value></data>
+  <data name="Avatar updated" xml:space="preserve"><value>頭像已更新</value></data>
+  <data name="Category ID" xml:space="preserve"><value>分類 ID</value></data>
+  <data name="Comment approval toggled" xml:space="preserve"><value>評論審核狀態已切換</value></data>
+  <data name="Comment ID" xml:space="preserve"><value>評論 ID</value></data>
+  <data name="Comment IDs" xml:space="preserve"><value>評論 ID 清單</value></data>
+  <data name="Comment replied to" xml:space="preserve"><value>評論已回覆</value></data>
+  <data name="Comment settings updated" xml:space="preserve"><value>評論設定已更新</value></data>
+  <data name="Content settings updated" xml:space="preserve"><value>內容設定已更新</value></data>
+  <data name="Count" xml:space="preserve"><value>數量</value></data>
+  <data name="Custom menu settings updated" xml:space="preserve"><value>自訂選單設定已更新</value></data>
+  <data name="Deleted count" xml:space="preserve"><value>刪除數量</value></data>
+  <data name="Detail" xml:space="preserve"><value>詳細資訊</value></data>
+  <data name="Enable CDN redirect" xml:space="preserve"><value>啟用 CDN 重新導向</value></data>
+  <data name="Enable watermark" xml:space="preserve"><value>啟用浮水印</value></data>
+  <data name="File ID" xml:space="preserve"><value>檔案 ID</value></data>
+  <data name="File size" xml:space="preserve"><value>檔案大小</value></data>
+  <data name="General settings updated" xml:space="preserve"><value>一般設定已更新</value></data>
+  <data name="Hours" xml:space="preserve"><value>小時數</value></data>
+  <data name="Image dimensions" xml:space="preserve"><value>影像尺寸</value></data>
+  <data name="Image settings updated" xml:space="preserve"><value>影像設定已更新</value></data>
+  <data name="Image uploaded" xml:space="preserve"><value>影像已上傳</value></data>
+  <data name="Images" xml:space="preserve"><value>影像</value></data>
+  <data name="No additional activity details are available." xml:space="preserve"><value>沒有其他活動詳細資訊。</value></data>
+  <data name="Notification settings updated" xml:space="preserve"><value>通知設定已更新</value></data>
+  <data name="Page created" xml:space="preserve"><value>頁面已建立</value></data>
+  <data name="Page ID" xml:space="preserve"><value>頁面 ID</value></data>
+  <data name="Page moved to recycle bin" xml:space="preserve"><value>頁面已移至資源回收筒</value></data>
+  <data name="Page permanently deleted" xml:space="preserve"><value>頁面已永久刪除</value></data>
+  <data name="Page recycle bin cleared" xml:space="preserve"><value>頁面資源回收筒已清空</value></data>
+  <data name="Page updated" xml:space="preserve"><value>頁面已更新</value></data>
+  <data name="Post created" xml:space="preserve"><value>文章已建立</value></data>
+  <data name="Post ID" xml:space="preserve"><value>文章 ID</value></data>
+  <data name="Post moved to recycle bin" xml:space="preserve"><value>文章已移至資源回收筒</value></data>
+  <data name="Post permanently deleted" xml:space="preserve"><value>文章已永久刪除</value></data>
+  <data name="Post recycle bin cleared" xml:space="preserve"><value>文章資源回收筒已清空</value></data>
+  <data name="Post schedule cancelled" xml:space="preserve"><value>文章發佈排程已取消</value></data>
+  <data name="Post schedule postponed" xml:space="preserve"><value>文章發佈排程已延後</value></data>
+  <data name="Post status" xml:space="preserve"><value>文章狀態</value></data>
+  <data name="Post updated" xml:space="preserve"><value>文章已更新</value></data>
+  <data name="Previous file name" xml:space="preserve"><value>原檔案名稱</value></data>
+  <data name="Require comment review" xml:space="preserve"><value>要求審核評論</value></data>
+  <data name="Site assets" xml:space="preserve"><value>網站資源</value></data>
+  <data name="Site icon updated" xml:space="preserve"><value>網站圖示已更新</value></data>
+  <data name="Site title" xml:space="preserve"><value>網站標題</value></data>
+  <data name="Skip watermark" xml:space="preserve"><value>略過浮水印</value></data>
+  <data name="Subscription settings updated" xml:space="preserve"><value>訂閱設定已更新</value></data>
+  <data name="Tag created" xml:space="preserve"><value>標籤已建立</value></data>
+  <data name="Tag ID" xml:space="preserve"><value>標籤 ID</value></data>
+  <data name="Target ID" xml:space="preserve"><value>目標 ID</value></data>
+  <data name="Theme created" xml:space="preserve"><value>佈景主題已建立</value></data>
+  <data name="Theme deleted" xml:space="preserve"><value>佈景主題已刪除</value></data>
+  <data name="Theme ID" xml:space="preserve"><value>佈景主題 ID</value></data>
+  <data name="Themes" xml:space="preserve"><value>佈景主題</value></data>
+  <data name="User Agent" xml:space="preserve"><value>使用者代理程式</value></data>
+  <data name="Verification file toggled" xml:space="preserve"><value>驗證檔案狀態已切換</value></data>
+  <data name="Widget ID" xml:space="preserve"><value>小工具 ID</value></data>
 </root>

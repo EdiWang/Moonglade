@@ -661,7 +661,7 @@
     <value>購読する</value>
   </data>
   <data name="System" xml:space="preserve">
-    <value>制</value>
+    <value>システム</value>
   </data>
   <data name="Tag name" xml:space="preserve">
     <value>タグ名</value>
@@ -2004,4 +2004,69 @@
   <data name="Changes wake the scheduler. Publishing already in progress is not canceled." xml:space="preserve">
     <value>変更するとスケジューラーが起動します。すでに開始した公開処理は取り消されません。</value>
   </data>
+  <data name="Account authenticator reset" xml:space="preserve"><value>アカウントの認証アプリをリセットしました</value></data>
+  <data name="Account password updated" xml:space="preserve"><value>アカウントのパスワードを更新しました</value></data>
+  <data name="Activity" xml:space="preserve"><value>操作</value></data>
+  <data name="Activity log" xml:space="preserve"><value>操作ログ</value></data>
+  <data name="Activity log cleared" xml:space="preserve"><value>操作ログを消去しました</value></data>
+  <data name="Actor type" xml:space="preserve"><value>操作者の種類</value></data>
+  <data name="Administrator" xml:space="preserve"><value>管理者</value></data>
+  <data name="Advanced settings updated" xml:space="preserve"><value>詳細設定を更新しました</value></data>
+  <data name="Appearance settings updated" xml:space="preserve"><value>外観設定を更新しました</value></data>
+  <data name="Avatar updated" xml:space="preserve"><value>アバターを更新しました</value></data>
+  <data name="Category ID" xml:space="preserve"><value>カテゴリ ID</value></data>
+  <data name="Comment approval toggled" xml:space="preserve"><value>コメントの承認状態を切り替えました</value></data>
+  <data name="Comment ID" xml:space="preserve"><value>コメント ID</value></data>
+  <data name="Comment IDs" xml:space="preserve"><value>コメント ID 一覧</value></data>
+  <data name="Comment replied to" xml:space="preserve"><value>コメントに返信しました</value></data>
+  <data name="Comment settings updated" xml:space="preserve"><value>コメント設定を更新しました</value></data>
+  <data name="Content settings updated" xml:space="preserve"><value>コンテンツ設定を更新しました</value></data>
+  <data name="Count" xml:space="preserve"><value>件数</value></data>
+  <data name="Custom menu settings updated" xml:space="preserve"><value>カスタムメニュー設定を更新しました</value></data>
+  <data name="Deleted count" xml:space="preserve"><value>削除件数</value></data>
+  <data name="Detail" xml:space="preserve"><value>詳細</value></data>
+  <data name="Enable CDN redirect" xml:space="preserve"><value>CDN リダイレクトを有効にする</value></data>
+  <data name="Enable watermark" xml:space="preserve"><value>透かしを有効にする</value></data>
+  <data name="File ID" xml:space="preserve"><value>ファイル ID</value></data>
+  <data name="File size" xml:space="preserve"><value>ファイルサイズ</value></data>
+  <data name="General settings updated" xml:space="preserve"><value>一般設定を更新しました</value></data>
+  <data name="Hours" xml:space="preserve"><value>時間数</value></data>
+  <data name="Image dimensions" xml:space="preserve"><value>画像サイズ</value></data>
+  <data name="Image settings updated" xml:space="preserve"><value>画像設定を更新しました</value></data>
+  <data name="Image uploaded" xml:space="preserve"><value>画像をアップロードしました</value></data>
+  <data name="Images" xml:space="preserve"><value>画像</value></data>
+  <data name="No additional activity details are available." xml:space="preserve"><value>追加の操作詳細はありません。</value></data>
+  <data name="Notification settings updated" xml:space="preserve"><value>通知設定を更新しました</value></data>
+  <data name="Page created" xml:space="preserve"><value>ページを作成しました</value></data>
+  <data name="Page ID" xml:space="preserve"><value>ページ ID</value></data>
+  <data name="Page moved to recycle bin" xml:space="preserve"><value>ページをゴミ箱に移動しました</value></data>
+  <data name="Page permanently deleted" xml:space="preserve"><value>ページを完全に削除しました</value></data>
+  <data name="Page recycle bin cleared" xml:space="preserve"><value>ページのゴミ箱を空にしました</value></data>
+  <data name="Page updated" xml:space="preserve"><value>ページを更新しました</value></data>
+  <data name="Post created" xml:space="preserve"><value>記事を作成しました</value></data>
+  <data name="Post ID" xml:space="preserve"><value>記事 ID</value></data>
+  <data name="Post moved to recycle bin" xml:space="preserve"><value>記事をゴミ箱に移動しました</value></data>
+  <data name="Post permanently deleted" xml:space="preserve"><value>記事を完全に削除しました</value></data>
+  <data name="Post recycle bin cleared" xml:space="preserve"><value>記事のゴミ箱を空にしました</value></data>
+  <data name="Post schedule cancelled" xml:space="preserve"><value>記事の公開予約を取り消しました</value></data>
+  <data name="Post schedule postponed" xml:space="preserve"><value>記事の公開予約を延期しました</value></data>
+  <data name="Post status" xml:space="preserve"><value>記事の状態</value></data>
+  <data name="Post updated" xml:space="preserve"><value>記事を更新しました</value></data>
+  <data name="Previous file name" xml:space="preserve"><value>以前のファイル名</value></data>
+  <data name="Require comment review" xml:space="preserve"><value>コメントの審査を必須にする</value></data>
+  <data name="Site assets" xml:space="preserve"><value>サイトのリソース</value></data>
+  <data name="Site icon updated" xml:space="preserve"><value>サイトアイコンを更新しました</value></data>
+  <data name="Site title" xml:space="preserve"><value>サイトタイトル</value></data>
+  <data name="Skip watermark" xml:space="preserve"><value>透かしを省略する</value></data>
+  <data name="Subscription settings updated" xml:space="preserve"><value>購読設定を更新しました</value></data>
+  <data name="Tag created" xml:space="preserve"><value>タグを作成しました</value></data>
+  <data name="Tag ID" xml:space="preserve"><value>タグ ID</value></data>
+  <data name="Target ID" xml:space="preserve"><value>対象 ID</value></data>
+  <data name="Theme created" xml:space="preserve"><value>テーマを作成しました</value></data>
+  <data name="Theme deleted" xml:space="preserve"><value>テーマを削除しました</value></data>
+  <data name="Theme ID" xml:space="preserve"><value>テーマ ID</value></data>
+  <data name="Themes" xml:space="preserve"><value>テーマ</value></data>
+  <data name="User Agent" xml:space="preserve"><value>ユーザーエージェント</value></data>
+  <data name="Verification file toggled" xml:space="preserve"><value>検証ファイルの状態を切り替えました</value></data>
+  <data name="Widget ID" xml:space="preserve"><value>ウィジェット ID</value></data>
 </root>

@@ -9,13 +9,12 @@ Alpine.data('activityLogManager', () => withPagination(10, {
     logs: [],
     eventTypeGroups: [],
     isLoading: true,
-    selectedEventTypes: [],
+    selectedEventKeys: [],
     startDate: '',
     endDate: '',
     detailModal: null,
     filterCanvas: null,
-    currentMetadata: null,
-    currentLogOperation: '',
+    currentDetail: null,
 
     async init() {
         this.initPageFromUrl();
@@ -43,8 +42,8 @@ Alpine.data('activityLogManager', () => withPagination(10, {
                 pageSize: this.pageSize
             });
 
-            if (this.selectedEventTypes.length > 0) {
-                this.selectedEventTypes.forEach(et => params.append('eventTypes', et));
+            if (this.selectedEventKeys.length > 0) {
+                this.selectedEventKeys.forEach(key => params.append('eventKeys', key));
             }
 
             if (this.startDate) {
@@ -79,7 +78,7 @@ Alpine.data('activityLogManager', () => withPagination(10, {
     },
 
     async clearFilter() {
-        this.selectedEventTypes = [];
+        this.selectedEventKeys = [];
         this.startDate = '';
         this.endDate = '';
         this.currentPage = 1;
@@ -103,11 +102,12 @@ Alpine.data('activityLogManager', () => withPagination(10, {
         });
     },
 
-    async showDetail(logId, operation) {
-        this.currentLogOperation = operation;
+    async showDetail(logId) {
+        this.currentDetail = null;
         try {
-            this.currentMetadata = await fetch2(`/api/activitylog/${logId}/metadata`, 'GET');
+            this.currentDetail = await fetch2(`/api/activitylog/${logId}/metadata`, 'GET');
             this.detailModal.show();
+            this.$nextTick(() => formatUtcTime());
         } catch (err) {
             error(err);
         }
@@ -121,33 +121,34 @@ Alpine.data('activityLogManager', () => withPagination(10, {
         this.filterCanvas.show();
     },
 
-    toggleEventType(value) {
-        const index = this.selectedEventTypes.indexOf(value);
+    toggleEventKey(value) {
+        const index = this.selectedEventKeys.indexOf(value);
         if (index === -1) {
-            this.selectedEventTypes.push(value);
+            this.selectedEventKeys.push(value);
         } else {
-            this.selectedEventTypes.splice(index, 1);
+            this.selectedEventKeys.splice(index, 1);
         }
     },
 
     get activeFilterCount() {
-        let count = this.selectedEventTypes.length;
+        let count = this.selectedEventKeys.length;
         if (this.startDate) count++;
         if (this.endDate) count++;
         return count;
     },
 
-    getEventTypeName(eventType) {
-        // eventType from API is a string (enum name like "PostCreated")
-        // We need to match it with the item.name after converting from camelCase
-        for (const group of this.eventTypeGroups) {
-            const item = group.items.find(i => {
-                // Convert "Post Created" back to "PostCreated" and compare
-                const enumName = i.name.replace(/\s+/g, '');
-                return enumName === eventType;
-            });
-            if (item) return item.name;
+    get hasDetailContext() {
+        const detail = this.currentDetail;
+        return !!(detail?.targetId || detail?.targetDisplayName || detail?.ipAddress || detail?.userAgent);
+    },
+
+    formatDetailValue(value, key) {
+        if (value === null || value === undefined) return '\u2014';
+        if (typeof value === 'boolean') return getLocalizedString(value ? 'yes' : 'no');
+        if (Array.isArray(value)) return value.map(item => this.formatDetailValue(item, key)).join(', ');
+        if (key === 'PostStatus' && ['Draft', 'Published', 'Scheduled'].includes(value)) {
+            return getLocalizedString(value.toLowerCase());
         }
-        return 'Unknown';
+        return String(value);
     }
 }, [10, 20, 30, 40, 50]));

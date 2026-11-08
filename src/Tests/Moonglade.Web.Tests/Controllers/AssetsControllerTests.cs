@@ -131,10 +131,10 @@ public partial class AssetsControllerTests : IDisposable
             Times.Once);
 
         var activityCommand = _commandMediator.Single<CreateActivityLogCommand>();
-        Assert.Equal(EventType.AvatarUpdated, activityCommand.EventType);
-        Assert.Equal("admin", activityCommand.ActorId);
-        Assert.Equal("Update Avatar", activityCommand.Operation);
-        Assert.Equal("Avatar Image", activityCommand.TargetName);
+        Assert.Equal(ActivityEvents.AvatarUpdated, activityCommand.EventKey);
+        Assert.Equal("admin", activityCommand.ActorDisplayName);
+        Assert.Equal("Avatar Image", activityCommand.TargetDisplayName);
+        Assert.Equal(AssetId.AvatarBase64.ToString(), activityCommand.TargetId);
         Assert.Equal("127.0.0.1", activityCommand.IpAddress);
         Assert.Equal("unit-test-agent", activityCommand.UserAgent);
     }
@@ -280,13 +280,13 @@ public partial class AssetsControllerTests : IDisposable
         Assert.Equal(32, bitmap.Height);
 
         var activityCommand = _commandMediator.Single<CreateActivityLogCommand>();
-        Assert.Equal(EventType.SiteIconUpdated, activityCommand.EventType);
-        Assert.Equal("admin", activityCommand.ActorId);
-        Assert.Equal("Update Site Icon", activityCommand.Operation);
-        Assert.Equal("Site Icon", activityCommand.TargetName);
+        Assert.Equal(ActivityEvents.SiteIconUpdated, activityCommand.EventKey);
+        Assert.Equal("admin", activityCommand.ActorDisplayName);
+        Assert.Equal("Site Icon", activityCommand.TargetDisplayName);
+        Assert.Equal(AssetId.SiteIconBase64.ToString(), activityCommand.TargetId);
         Assert.Equal("127.0.0.1", activityCommand.IpAddress);
         Assert.Equal("unit-test-agent", activityCommand.UserAgent);
-        Assert.NotNull(activityCommand.MetaData);
+        Assert.NotNull(activityCommand.Details);
         Assert.Equal("64x64", ActivityLogMetaDataAssert.Value<string>(activityCommand, "ImageSize"));
     }
 

@@ -92,6 +92,13 @@ public class StartUpInitializerTests
             if (property.PropertyType == typeof(DateTime) || property.PropertyType == typeof(DateTime?))
                 property.SetValue(entity, DateTime.UtcNow.AddDays(-1));
         }
+        if (entity is ActivityLogEntity activity)
+        {
+            activity.EventKey = "post.created";
+            activity.ActorKind = ActivityActorKind.Administrator;
+            activity.ActorDisplayName = "Preserved administrator";
+            activity.Details = "{}";
+        }
         db.Add(entity);
         await db.SaveChangesAsync(ct);
         var entry = db.Entry(entity);

@@ -43,6 +43,7 @@ public sealed class ActivityLogHttpFixture(WebApplication app, ActivityLogTestSt
             EnvironmentName = "Testing"
         });
         builder.WebHost.UseTestServer();
+        builder.Configuration.Sources.Clear();
         builder.Logging.ClearProviders();
         store.ConfigureServices(builder.Services);
         builder.Services.AddLocalization(options => options.ResourcesPath = "Resources");
@@ -68,6 +69,10 @@ public sealed class ActivityLogHttpFixture(WebApplication app, ActivityLogTestSt
             .ConfigureApplicationPartManager(manager => manager.FeatureProviders.Add(new ActivityOnlyFeatureProvider()));
         builder.Services.AddRazorPages(options => options.Conventions.AuthorizeFolder("/Admin", BlogAuthSchemas.AdministratorPolicy));
         var app = builder.Build();
+        app.UseRequestLocalization(new RequestLocalizationOptions()
+            .SetDefaultCulture("en-US")
+            .AddSupportedCultures("en-US", "zh-Hans", "zh-Hant", "de-DE", "ja-JP")
+            .AddSupportedUICultures("en-US", "zh-Hans", "zh-Hant", "de-DE", "ja-JP"));
         app.Use((context, next) =>
         {
             context.Connection.RemoteIpAddress = IPAddress.Parse("192.0.2.25");

@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Localization;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Moonglade.ActivityLog;
 using Moonglade.Configuration;
@@ -25,11 +26,11 @@ namespace Moonglade.Web.Tests.Controllers;
 public class PostControllerTests
 {
     [Theory]
-    [InlineData("recycle", EventType.PostDeleted, "Delete Post (Move to Recycle Bin)")]
-    [InlineData("publish", EventType.PostPublished, "Publish Post")]
-    [InlineData("unpublish", EventType.PostUnpublished, "Unpublish Post")]
+    [InlineData("recycle", ActivityEvents.PostDeleted)]
+    [InlineData("publish", ActivityEvents.PostPublished)]
+    [InlineData("unpublish", ActivityEvents.PostUnpublished)]
     public async Task StateChange_DispatchesFeatureCommandThenActivityLog(
-        string operation, EventType eventType, string logOperation)
+        string operation, string eventKey)
     {
         var commands = new List<ICommand>();
         var commandMediator = new Mock<ICommandMediator>();
@@ -54,13 +55,14 @@ public class PostControllerTests
         };
         Assert.Equal(expectedCommand, commands[0]);
         var activity = Assert.IsType<CreateActivityLogCommand>(commands[1]);
-        Assert.Equal(eventType, activity.EventType);
-        Assert.Equal(logOperation, activity.Operation);
-        Assert.Equal($"Post #{postId}", activity.TargetName);
-        Assert.Equal("admin", activity.ActorId);
+        Assert.Equal(eventKey, activity.EventKey);
+        Assert.Equal($"Post #{postId}", activity.TargetDisplayName);
+        Assert.Equal(postId.ToString(), activity.TargetId);
+        Assert.Equal(ActivityActorKind.Administrator, activity.ActorKind);
+        Assert.Equal("admin", activity.ActorDisplayName);
         Assert.Equal("192.0.2.1", activity.IpAddress);
         Assert.Equal("post-controller-test", activity.UserAgent);
-        var metadata = Assert.IsAssignableFrom<IReadOnlyDictionary<string, object?>>(activity.MetaData);
+        var metadata = Assert.IsAssignableFrom<IReadOnlyDictionary<string, object?>>(activity.Details);
         Assert.Equal(postId, Assert.Single(metadata).Value);
         Assert.True(metadata.ContainsKey("PostId"));
     }
@@ -88,7 +90,7 @@ public class PostControllerTests
     }
 
     [Fact]
-    public async Task StateChange_WhenActivityDispatchFails_StillPropagatesFailure()
+    public async Task StateChange_WhenActivityDispatchFails_PreservesSuccessfulBusinessResponse()
     {
         var commandMediator = new Mock<ICommandMediator>();
         commandMediator.Setup(mediator => mediator.SendAsync(
@@ -101,7 +103,7 @@ public class PostControllerTests
         var controller = CreateStateChangeController(commandMediator.Object);
         var postId = Guid.NewGuid();
 
-        Assert.Same(failure, await Assert.ThrowsAsync<InvalidOperationException>(() => controller.Publish(postId)));
+        Assert.IsType<NoContentResult>(await controller.Publish(postId));
 
         commandMediator.Verify(mediator => mediator.SendAsync(
             It.Is<PublishPostCommand>(command => command.Id == postId), It.IsAny<CommandMediationSettings>(), It.IsAny<CancellationToken>()), Times.Once);
@@ -119,7 +121,7 @@ public class PostControllerTests
                 new CategoryEntity { Id = 101, DisplayName = "Cloud", Slug = "other", Note = "Other" }
             ]);
         var controller = new PostController(Mock.Of<ICommandMediator>(), queryMediator.Object,
-            new BlogConfig(), Mock.Of<IStringLocalizer<Program>>());
+            new BlogConfig(), Mock.Of<IStringLocalizer<Program>>(), Mock.Of<ILogger<PostController>>());
 
         var result = await controller.GetMeta(Options.Create(new RequestLocalizationOptions()));
         var metadata = Assert.IsType<PostEditorMeta>(Assert.IsType<OkObjectResult>(result).Value);
@@ -141,7 +143,7 @@ public class PostControllerTests
         queryMediator.Setup(mediator => mediator.QueryAsync(It.Is<GetPostByIdQuery>(query => query.Id == postId),
             It.IsAny<QueryMediationSettings>(), It.IsAny<CancellationToken>())).ReturnsAsync(post);
         var controller = new PostController(Mock.Of<ICommandMediator>(), queryMediator.Object,
-            new BlogConfig(), Mock.Of<IStringLocalizer<Program>>());
+            new BlogConfig(), Mock.Of<IStringLocalizer<Program>>(), Mock.Of<ILogger<PostController>>());
 
         var result = await controller.GetPost(postId);
         var detail = Assert.IsType<PostEditDetail>(Assert.IsType<OkObjectResult>(result).Value);
@@ -167,7 +169,7 @@ public class PostControllerTests
             Mock.Of<ICommandMediator>(),
             queryMediator.Object,
             blogConfig,
-            Mock.Of<IStringLocalizer<Program>>());
+            Mock.Of<IStringLocalizer<Program>>(), Mock.Of<ILogger<PostController>>());
         var localizationOptions = Options.Create(new RequestLocalizationOptions());
 
         var initialResult = await controller.GetMeta(localizationOptions);
@@ -222,7 +224,7 @@ public class PostControllerTests
             Mock.Of<ICommandMediator>(),
             queryMediator.Object,
             new BlogConfig(),
-            Mock.Of<IStringLocalizer<Program>>());
+            Mock.Of<IStringLocalizer<Program>>(), Mock.Of<ILogger<PostController>>());
 
         var result = await controller.GetPost(postId);
 
@@ -251,7 +253,7 @@ public class PostControllerTests
             commandMediator.Object,
             Mock.Of<IQueryMediator>(),
             new BlogConfig(),
-            localizer.Object)
+            localizer.Object, Mock.Of<ILogger<PostController>>())
         {
             ControllerContext = new ControllerContext
             {
@@ -294,7 +296,7 @@ public class PostControllerTests
             commandMediator.Object,
             Mock.Of<IQueryMediator>(),
             new BlogConfig(),
-            Mock.Of<IStringLocalizer<Program>>())
+            Mock.Of<IStringLocalizer<Program>>(), Mock.Of<ILogger<PostController>>())
         {
             ControllerContext = new ControllerContext
             {
@@ -324,7 +326,7 @@ public class PostControllerTests
             commandMediator,
             Mock.Of<IQueryMediator>(),
             new BlogConfig(),
-            Mock.Of<IStringLocalizer<Program>>())
+            Mock.Of<IStringLocalizer<Program>>(), Mock.Of<ILogger<PostController>>())
         {
             ControllerContext = new ControllerContext { HttpContext = new DefaultHttpContext() }
         };

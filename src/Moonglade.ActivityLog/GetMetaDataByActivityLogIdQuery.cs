@@ -3,12 +3,12 @@ using Moonglade.Data;
 
 namespace Moonglade.ActivityLog;
 
-public record GetMetaDataByActivityLogIdQuery(long ActivityLogId) : IQuery<string?>;
+public record GetMetaDataByActivityLogIdQuery(long ActivityLogId) : IQuery<ActivityLogItem?>;
 
 public class GetMetaDataByActivityLogIdQueryHandler(BlogDbContext db)
-    : IQueryHandler<GetMetaDataByActivityLogIdQuery, string?>
+    : IQueryHandler<GetMetaDataByActivityLogIdQuery, ActivityLogItem?>
 {
-    public async Task<string?> HandleAsync(GetMetaDataByActivityLogIdQuery request, CancellationToken ct)
+    public async Task<ActivityLogItem?> HandleAsync(GetMetaDataByActivityLogIdQuery request, CancellationToken ct)
     {
         if (request.ActivityLogId <= 0)
         {
@@ -16,8 +16,8 @@ public class GetMetaDataByActivityLogIdQueryHandler(BlogDbContext db)
                 $"{nameof(request.ActivityLogId)} must be greater than 0, current value: {request.ActivityLogId}.");
         }
 
-        var entity = await db.ActivityLog.FindAsync([request.ActivityLogId], ct);
+        var entity = await db.ActivityLog.AsNoTracking().SingleOrDefaultAsync(e => e.Id == request.ActivityLogId, ct);
 
-        return entity?.MetaData;
+        return entity is null ? null : ActivityLogItem.FromEntity(entity);
     }
 }

@@ -56,12 +56,12 @@ public partial class AssetsControllerTests
         Assert.Equal(rowsBefore.Select(row => (row.CfgKey, row.CfgValue, row.LastModifiedTimeUtc)),
             rowsAfter.Select(row => (row.CfgKey, row.CfgValue, row.LastModifiedTimeUtc)));
         var audit = Assert.IsType<CreateActivityLogCommand>(Assert.Single(mediator.Commands));
-        Assert.Equal(EventType.AvatarUpdated, audit.EventType);
-        Assert.Equal("Update Avatar", audit.Operation);
-        Assert.Equal("Avatar Image", audit.TargetName);
-        Assert.Equal("avatar-admin", audit.ActorId);
-        Assert.Null(audit.MetaData);
-        AssertAvatarAuditFailure(logger, controller, failure, base64, OriginalAvatarUrl, audit.ActorId);
+        Assert.Equal(ActivityEvents.AvatarUpdated, audit.EventKey);
+        Assert.Equal("Avatar Image", audit.TargetDisplayName);
+        Assert.Equal(AssetId.AvatarBase64.ToString(), audit.TargetId);
+        Assert.Equal("avatar-admin", audit.ActorDisplayName);
+        Assert.Null(audit.Details);
+        AssertAvatarAuditFailure(logger, controller, failure, base64, OriginalAvatarUrl, audit.ActorDisplayName!);
     }
 
     [Theory]
@@ -133,7 +133,7 @@ public partial class AssetsControllerTests
     }
 
     [Fact]
-    public async Task UpdateSiteIcon_WhenAuditFails_StillPropagatesFailureAfterSavingAssetAndRegeneratingIcons()
+    public async Task UpdateSiteIcon_WhenAuditFails_PreservesSuccessAfterSavingAssetAndRegeneratingIcons()
     {
         var config = CreateAvatarConfig();
         using var mediator = new ConfigurationCommandRecorder();
@@ -145,7 +145,7 @@ public partial class AssetsControllerTests
         var controller = CreateController(commandMediator: mediator, logger: logger.Object);
         var base64 = Convert.ToBase64String(CreatePngBytes(64, 64));
 
-        Assert.Same(failure, await Assert.ThrowsAsync<InvalidOperationException>(() => controller.UpdateSiteIcon(base64)));
+        Assert.IsType<NoContentResult>(await controller.UpdateSiteIcon(base64));
 
         Assert.Equal(base64, (await mediator.Db.BlogAsset.AsNoTracking().SingleAsync(
             p => p.Id == AssetId.SiteIconBase64, TestContext.Current.CancellationToken)).Base64Data);
@@ -153,9 +153,9 @@ public partial class AssetsControllerTests
         Assert.Equal(32, bitmap.Width);
         Assert.Equal(32, bitmap.Height);
         Assert.Equal(SKColors.Blue, bitmap.GetPixel(16, 16));
-        Assert.Equal(EventType.SiteIconUpdated, Assert.IsType<CreateActivityLogCommand>(Assert.Single(mediator.Commands)).EventType);
+        Assert.Equal(ActivityEvents.SiteIconUpdated, Assert.IsType<CreateActivityLogCommand>(Assert.Single(mediator.Commands)).EventKey);
         Assert.Equal(OriginalAvatarUrl, (await ReadAvatarGeneralSettings(mediator)).AvatarUrl);
-        AssertNoAssetAuditError(logger);
+        AssertAvatarAuditFailure(logger, controller, failure, base64, OriginalAvatarUrl);
     }
 
     private void ConfigureAssetHandler(ConfigurationCommandRecorder mediator)
@@ -188,11 +188,11 @@ public partial class AssetsControllerTests
     {
         var invocation = Assert.Single(logger.Invocations,
             p => p.Method.Name == nameof(ILogger.Log) && Equals(p.Arguments[0], LogLevel.Error));
-        Assert.Same(failure, invocation.Arguments[3]);
+        Assert.Null(invocation.Arguments[3]);
         var state = Assert.IsAssignableFrom<IReadOnlyList<KeyValuePair<string, object?>>>(invocation.Arguments[2]);
-        Assert.Equal(new[] { "EventType", "Operation", "TraceIdentifier", "{OriginalFormat}" }, state.Select(p => p.Key));
-        Assert.Contains(state, p => p.Key == "EventType" && Equals(p.Value, EventType.AvatarUpdated));
-        Assert.Contains(state, p => p.Key == "Operation" && Equals(p.Value, "Update Avatar"));
+        Assert.Equal(new[] { "EventKey", "FailureType", "TraceIdentifier", "{OriginalFormat}" }, state.Select(p => p.Key));
+        Assert.Contains(state, p => p.Key == "EventKey" && ActivityEvents.IsSupported(p.Value?.ToString()));
+        Assert.Contains(state, p => p.Key == "FailureType" && Equals(p.Value, failure.GetType().Name));
         Assert.Contains(state, p => p.Key == "TraceIdentifier" && Equals(p.Value, controller.HttpContext.TraceIdentifier));
         var message = invocation.Arguments[2]?.ToString() ?? string.Empty;
         Assert.Contains("Changes saved, but activity logging failed", message);

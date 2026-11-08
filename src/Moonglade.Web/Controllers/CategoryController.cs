@@ -3,13 +3,15 @@ using LiteBus.Queries.Abstractions;
 using Moonglade.ActivityLog;
 using Moonglade.Features.Category;
 using System.ComponentModel.DataAnnotations;
+using System.Globalization;
 
 namespace Moonglade.Web.Controllers;
 
 [Route("api/[controller]")]
 public class CategoryController(
     IQueryMediator queryMediator,
-    ICommandMediator commandMediator) : BlogControllerBase(commandMediator)
+    ICommandMediator commandMediator,
+    ILogger<CategoryController> logger) : BlogControllerBase(commandMediator, logger)
 {
     [HttpGet("{id:int}")]
     public async Task<IActionResult> Get([Range(1, int.MaxValue)] int id)
@@ -33,12 +35,9 @@ public class CategoryController(
         await CommandMediator.SendAsync(command);
 
         await LogActivityAsync(
-            EventType.CategoryCreated,
-            "Create Category",
+            ActivityEvents.CategoryCreated,
             command.DisplayName,
-            ActivityLogMetaData.Create(
-                ("Slug", command.Slug),
-                ("Note", command.Note)));
+            ActivityLogDetails.Create(("Slug", command.Slug)));
 
         return Created(string.Empty, command);
     }
@@ -51,13 +50,12 @@ public class CategoryController(
         if (oc == OperationCode.ObjectNotFound) return NotFound();
 
         await LogActivityAsync(
-            EventType.CategoryUpdated,
-            "Update Category",
+            ActivityEvents.CategoryUpdated,
             command.DisplayName,
-            ActivityLogMetaData.Create(
+            ActivityLogDetails.Create(
                 ("Id", command.Id),
-                ("Slug", command.Slug),
-                ("Note", command.Note)));
+                ("Slug", command.Slug)),
+            targetId: id.ToString(CultureInfo.InvariantCulture));
 
         return NoContent();
     }
@@ -69,10 +67,10 @@ public class CategoryController(
         if (oc == OperationCode.ObjectNotFound) return NotFound();
 
         await LogActivityAsync(
-            EventType.CategoryDeleted,
-            "Delete Category",
-            id.ToString(),
-            ActivityLogMetaData.Create(("CategoryId", id)));
+            ActivityEvents.CategoryDeleted,
+            id.ToString(CultureInfo.InvariantCulture),
+            ActivityLogDetails.Create(("CategoryId", id)),
+            targetId: id.ToString(CultureInfo.InvariantCulture));
 
         return NoContent();
     }

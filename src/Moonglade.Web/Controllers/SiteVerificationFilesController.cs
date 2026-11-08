@@ -11,7 +11,8 @@ namespace Moonglade.Web.Controllers;
 public class SiteVerificationFilesController(
     ICacheAside cache,
     IQueryMediator queryMediator,
-    ICommandMediator commandMediator) : BlogControllerBase(commandMediator)
+    ICommandMediator commandMediator,
+    ILogger<SiteVerificationFilesController> logger) : BlogControllerBase(commandMediator, logger)
 {
     [HttpGet("list")]
     public async Task<IActionResult> List()
@@ -50,14 +51,13 @@ public class SiteVerificationFilesController(
         RemoveVerificationFileCache(result.File.FileName);
 
         await LogActivityAsync(
-            EventType.SiteVerificationFileCreated,
-            "Create Site Verification File",
+            ActivityEvents.SiteVerificationFileCreated,
             result.File.FileName,
-            ActivityLogMetaData.Create(
+            ActivityLogDetails.Create(
                 ("FileName", result.File.FileName),
                 ("ContentType", result.File.ContentType),
-                ("ContentBytes", result.File.ContentBytes),
-                ("IsEnabled", result.File.IsEnabled)));
+                ("IsEnabled", result.File.IsEnabled)),
+            targetId: result.File.Id.ToString());
 
         return Created($"/{result.File.FileName}", result.File);
     }
@@ -88,16 +88,15 @@ public class SiteVerificationFilesController(
         RemoveVerificationFileCache(result.File.FileName);
 
         await LogActivityAsync(
-            EventType.SiteVerificationFileUpdated,
-            "Update Site Verification File",
+            ActivityEvents.SiteVerificationFileUpdated,
             result.File.FileName,
-            ActivityLogMetaData.Create(
+            ActivityLogDetails.Create(
                 ("FileId", id),
                 ("OldFileName", existingFile.FileName),
                 ("FileName", result.File.FileName),
                 ("ContentType", result.File.ContentType),
-                ("ContentBytes", result.File.ContentBytes),
-                ("IsEnabled", result.File.IsEnabled)));
+                ("IsEnabled", result.File.IsEnabled)),
+            targetId: result.File.Id.ToString());
 
         return Ok(result.File);
     }
@@ -114,13 +113,13 @@ public class SiteVerificationFilesController(
         RemoveVerificationFileCache(existingFile.FileName);
 
         await LogActivityAsync(
-            EventType.SiteVerificationFileToggled,
-            "Toggle Site Verification File",
+            ActivityEvents.SiteVerificationFileToggled,
             existingFile.FileName,
-            ActivityLogMetaData.Create(
+            ActivityLogDetails.Create(
                 ("FileId", id),
                 ("FileName", existingFile.FileName),
-                ("IsEnabled", request.IsEnabled)));
+                ("IsEnabled", request.IsEnabled)),
+            targetId: id.ToString());
 
         return NoContent();
     }
@@ -137,14 +136,13 @@ public class SiteVerificationFilesController(
         RemoveVerificationFileCache(existingFile.FileName);
 
         await LogActivityAsync(
-            EventType.SiteVerificationFileDeleted,
-            "Delete Site Verification File",
+            ActivityEvents.SiteVerificationFileDeleted,
             existingFile.FileName,
-            ActivityLogMetaData.Create(
+            ActivityLogDetails.Create(
                 ("FileId", id),
                 ("FileName", existingFile.FileName),
-                ("ContentType", existingFile.ContentType),
-                ("ContentBytes", existingFile.ContentBytes)));
+                ("ContentType", existingFile.ContentType)),
+            targetId: id.ToString());
 
         return NoContent();
     }

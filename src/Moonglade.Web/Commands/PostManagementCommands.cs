@@ -1,7 +1,10 @@
+#nullable enable annotations
+
 using LiteBus.Commands.Abstractions;
 using Moonglade.ActivityLog;
 using Moonglade.BackgroundServices;
 using Moonglade.Data.DTO;
+using Moonglade.Data.Entities;
 using Moonglade.Features.Post;
 using Moonglade.IndexNow.Client;
 using Moonglade.Webmention;
@@ -48,6 +51,7 @@ public class SavePostCommandHandler(
         {
             var model = request.Payload;
             var isNewPost = model.PostId == Guid.Empty;
+            var postTitle = model.Title;
 
             var wakeScheduledPublisher = PrepareScheduledPost(model);
 
@@ -63,14 +67,15 @@ public class SavePostCommandHandler(
 
             await PostActivityLogger.LogAsync(
                 commandMediator,
+                logger,
                 request.Context,
-                isNewPost ? EventType.PostCreated : EventType.PostUpdated,
-                isNewPost ? "Create Post" : "Update Post",
-                model.Title,
-                ActivityLogMetaData.Create(
+                isNewPost ? ActivityEvents.PostCreated : ActivityEvents.PostUpdated,
+                postTitle,
+                ActivityLogDetails.Create(
                     ("PostId", postEntity.Id),
                     ("Slug", postEntity.RouteLink),
                     ("PostStatus", model.PostStatus)),
+                postEntity.Id.ToString(),
                 ct);
 
             if (model.PostStatus == PostStatus.Published)
@@ -157,20 +162,30 @@ file static class PostActivityLogger
 {
     public static async Task LogAsync(
         ICommandMediator commandMediator,
+        ILogger logger,
         PostOperationContext context,
-        EventType eventType,
-        string operation,
-        string targetName,
-        object metaData,
+        string eventKey,
+        string targetDisplayName,
+        IReadOnlyDictionary<string, object?> details,
+        string targetId,
         CancellationToken ct)
     {
-        await commandMediator.SendAsync(new CreateActivityLogCommand(
-            eventType,
-            context.ActorId,
-            operation,
-            targetName,
-            metaData,
-            context.IpAddress,
-            context.UserAgent), ct);
+        try
+        {
+            await commandMediator.SendAsync(new CreateActivityLogCommand(
+                eventKey,
+                ActivityActorKind.Administrator,
+                context.ActorId,
+                TargetId: targetId,
+                TargetDisplayName: targetDisplayName,
+                Details: details,
+                IpAddress: context.IpAddress,
+                UserAgent: context.UserAgent), ct);
+        }
+        catch (Exception ex)
+        {
+            logger.LogError("Post was saved, but activity logging failed for event {EventKey}. Failure type: {FailureType}.",
+                eventKey, ex.GetType().Name);
+        }
     }
 }

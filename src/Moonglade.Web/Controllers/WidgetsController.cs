@@ -9,7 +9,8 @@ namespace Moonglade.Web.Controllers;
 public class WidgetsController(
     ICacheAside cache,
     IQueryMediator queryMediator,
-    ICommandMediator commandMediator) : BlogControllerBase(commandMediator)
+    ICommandMediator commandMediator,
+    ILogger<WidgetsController> logger) : BlogControllerBase(commandMediator, logger)
 {
     [HttpGet("{id:guid}")]
     public async Task<IActionResult> Get([NotEmpty] Guid id)
@@ -30,14 +31,14 @@ public class WidgetsController(
     [HttpPost]
     public async Task<IActionResult> Create(EditWidgetRequest request)
     {
-        await CommandMediator.SendAsync(new CreateWidgetCommand(request));
+        var id = await CommandMediator.SendAsync(new CreateWidgetCommand(request));
         cache.Remove(BlogCachePartition.General.ToString(), "widgets");
 
         await LogActivityAsync(
-            EventType.WidgetCreated,
-            "Create Widget",
+            ActivityEvents.WidgetCreated,
             request.Title,
-            ActivityLogMetaData.Create(("WidgetType", request.WidgetType)));
+            ActivityLogDetails.Create(("WidgetType", request.WidgetType)),
+            targetId: id.ToString());
 
         return Created();
     }
@@ -49,12 +50,12 @@ public class WidgetsController(
         cache.Remove(BlogCachePartition.General.ToString(), "widgets");
 
         await LogActivityAsync(
-            EventType.WidgetUpdated,
-            "Update Widget",
+            ActivityEvents.WidgetUpdated,
             request.Title,
-            ActivityLogMetaData.Create(
+            ActivityLogDetails.Create(
                 ("WidgetId", id),
-                ("WidgetType", request.WidgetType)));
+                ("WidgetType", request.WidgetType)),
+            targetId: id.ToString());
 
         return NoContent();
     }
@@ -66,10 +67,10 @@ public class WidgetsController(
         cache.Remove(BlogCachePartition.General.ToString(), "widgets");
 
         await LogActivityAsync(
-            EventType.WidgetDeleted,
-            "Delete Widget",
+            ActivityEvents.WidgetDeleted,
             $"Widget #{id}",
-            ActivityLogMetaData.Create(("WidgetId", id)));
+            ActivityLogDetails.Create(("WidgetId", id)),
+            targetId: id.ToString());
 
         return NoContent();
     }

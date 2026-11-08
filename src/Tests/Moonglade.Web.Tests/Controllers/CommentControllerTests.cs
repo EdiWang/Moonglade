@@ -277,8 +277,8 @@ public class CommentControllerTests
         Assert.Equal(DateTimeKind.Utc, comment.CreateTimeUtc.Kind);
         Assert.InRange(comment.CreateTimeUtc, before, DateTime.UtcNow);
         var audit = Assert.Single(await store.ReadLogsAsync(ct));
-        Assert.Equal((historical.Id, historical.EventId, historical.Operation, historical.MetaData),
-            (audit.Id, audit.EventId, audit.Operation, audit.MetaData));
+        Assert.Equal((historical.Id, historical.EventKey, historical.TargetDisplayName, historical.Details),
+            (audit.Id, audit.EventKey, audit.TargetDisplayName, audit.Details));
         var outbox = await db.EmailOutboxMessage.AsNoTracking().ToListAsync(ct);
         if (!notify)
         {
@@ -365,13 +365,13 @@ public class CommentControllerTests
         Assert.Equal(commentId, _commandMediator.Single<ToggleApprovalCommand>().CommentIds.Single());
 
         var activityCommand = _commandMediator.Single<CreateActivityLogCommand>();
-        Assert.Equal(EventType.CommentApprovalToggled, activityCommand.EventType);
-        Assert.Equal("admin", activityCommand.ActorId);
-        Assert.Equal("Toggle Comment Approval", activityCommand.Operation);
-        Assert.Equal($"Comment #{commentId}", activityCommand.TargetName);
+        Assert.Equal(ActivityEvents.CommentApprovalToggled, activityCommand.EventKey);
+        Assert.Equal("admin", activityCommand.ActorDisplayName);
+        Assert.Equal(commentId.ToString(), activityCommand.TargetId);
+        Assert.Equal($"Comment #{commentId}", activityCommand.TargetDisplayName);
         Assert.Equal("127.0.0.1", activityCommand.IpAddress);
         Assert.Equal("unit-test-agent", activityCommand.UserAgent);
-        Assert.NotNull(activityCommand.MetaData);
+        Assert.NotNull(activityCommand.Details);
         Assert.Equal(commentId, ActivityLogMetaDataAssert.Value<Guid>(activityCommand, "CommentId"));
     }
 
@@ -402,13 +402,12 @@ public class CommentControllerTests
         Assert.Same(commentIds, _commandMediator.Single<DeleteCommentsCommand>().Ids);
 
         var activityCommand = _commandMediator.Single<CreateActivityLogCommand>();
-        Assert.Equal(EventType.CommentDeleted, activityCommand.EventType);
-        Assert.Equal("admin", activityCommand.ActorId);
-        Assert.Equal("Delete Comments", activityCommand.Operation);
-        Assert.Equal("2 comment(s)", activityCommand.TargetName);
+        Assert.Equal(ActivityEvents.CommentDeleted, activityCommand.EventKey);
+        Assert.Equal("admin", activityCommand.ActorDisplayName);
+        Assert.Equal("2 comment(s)", activityCommand.TargetDisplayName);
         Assert.Equal("127.0.0.1", activityCommand.IpAddress);
         Assert.Equal("unit-test-agent", activityCommand.UserAgent);
-        Assert.NotNull(activityCommand.MetaData);
+        Assert.NotNull(activityCommand.Details);
         Assert.Same(commentIds, ActivityLogMetaDataAssert.Value<Guid[]>(activityCommand, "CommentIds"));
     }
 
@@ -596,15 +595,15 @@ public class CommentControllerTests
         Assert.Equal("Thanks", command.ReplyContent);
 
         var activityCommand = _commandMediator.Single<CreateActivityLogCommand>();
-        Assert.Equal(EventType.CommentReplied, activityCommand.EventType);
-        Assert.Equal("admin", activityCommand.ActorId);
-        Assert.Equal("Reply to Comment", activityCommand.Operation);
-        Assert.Equal(reply.Title, activityCommand.TargetName);
+        Assert.Equal(ActivityEvents.CommentReplied, activityCommand.EventKey);
+        Assert.Equal("admin", activityCommand.ActorDisplayName);
+        Assert.Equal(reply.Title, activityCommand.TargetDisplayName);
+        Assert.Equal(commentId.ToString(), activityCommand.TargetId);
         Assert.Equal("127.0.0.1", activityCommand.IpAddress);
         Assert.Equal("unit-test-agent", activityCommand.UserAgent);
-        Assert.NotNull(activityCommand.MetaData);
+        Assert.NotNull(activityCommand.Details);
         Assert.Equal(commentId, ActivityLogMetaDataAssert.Value<Guid>(activityCommand, "CommentId"));
-        Assert.Equal("Thanks", ActivityLogMetaDataAssert.Value<string>(activityCommand, "ReplyContent"));
+        Assert.Equal(["CommentId"], activityCommand.Details.Keys.ToArray());
         _eventMediator.Verify(
             x => x.PublishAsync(It.IsAny<IEvent>(), It.IsAny<EventMediationSettings>(), It.IsAny<CancellationToken>()),
             Times.Never);

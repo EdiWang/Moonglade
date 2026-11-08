@@ -47,7 +47,7 @@ public partial class SettingsControllerTests
         Assert.Equal(enableLinks, blogConfig.Capture().CommentSettings.EnableMarkdownLinks);
         var update = commandMediator.Single<UpdateConfigurationCommand>();
         Assert.Equal(enableLinks, Assert.IsType<CommentSettings>(update.Settings).EnableMarkdownLinks);
-        Assert.Equal(EventType.SettingsCommentUpdated, commandMediator.Single<CreateActivityLogCommand>().EventType);
+        Assert.Equal(ActivityEvents.SettingsCommentUpdated, commandMediator.Single<CreateActivityLogCommand>().EventKey);
     }
 
     [Theory]
@@ -69,7 +69,7 @@ public partial class SettingsControllerTests
         Assert.Equal(editor, blogConfig.Capture().ContentSettings.DefaultEditor);
         var update = commandMediator.Single<UpdateConfigurationCommand>();
         Assert.Equal(editor, Assert.IsType<ContentSettings>(update.Settings).DefaultEditor);
-        Assert.Equal(EventType.SettingsContentUpdated, commandMediator.Single<CreateActivityLogCommand>().EventType);
+        Assert.Equal(ActivityEvents.SettingsContentUpdated, commandMediator.Single<CreateActivityLogCommand>().EventKey);
     }
 
     private static readonly JsonSerializerOptions JsonOptions = new()
@@ -233,8 +233,8 @@ public partial class SettingsControllerTests
         Assert.False(settings.IsTotpEnabled);
 
         var activityLog = commandMediator.Single<CreateActivityLogCommand>();
-        Assert.Equal(EventType.SettingsAuthenticatorReset, activityLog.EventType);
-        Assert.Equal(account.Username, activityLog.TargetName);
+        Assert.Equal(ActivityEvents.SettingsAuthenticatorReset, activityLog.EventKey);
+        Assert.Equal(account.Username, activityLog.TargetDisplayName);
 
         authenticationService.Verify(
             x => x.SignOutAsync(controller.HttpContext, CookieAuthenticationDefaults.AuthenticationScheme, null),

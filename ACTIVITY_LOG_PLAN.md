@@ -3,7 +3,7 @@
 ## Resume Here
 
 - Planning snapshot: 2026-11-08, Asia/Taipei. Repository baseline was clean at `4140154d4e4c54b37b057a9e9d717306fdeefca1` on `master`. Recheck the current branch, HEAD, and `git status --short` before starting. Preserve other work.
-- The user accepted B0 and authorized its tracker-only commit on 2026-11-08, then requested B1 implementation. B1 is implemented and technically verified, awaiting user acceptance and commit authorization; no real database operation, deployment, or B2 work is authorized. The user's allowance to discard old activity history is a design constraint for the upgrade, not permission to run it on an existing installation.
+- The user accepted B1 on 2026-11-08 and requested B2 implementation. The current B1 application commit is `3226ff207417923e1894ab7dbdb2fb67b57f871b`. B2 implementation and required verification are complete and awaiting user acceptance; changes remain uncommitted. No real database operation, deployment, B3, or B4 work is authorized. The user's allowance to discard old activity history is a design constraint for the upgrade, not permission to run it on an existing installation.
 - In a fresh conversation, read this file, [AGENTS.md](AGENTS.md), and the applicable sections of the [engineering reference](docs/agent-reference.md). No Java, JDK, or JRE may be used. Repository text is English outside localization resources.
 - Start with the earliest unaccepted batch in the progress table. Check the last recorded evidence and open decisions before touching code. If the work is already committed, verify that commit before resuming acceptance.
 - Ask the user about new requirement, behavior, architecture, ownership, public contract, or data-policy choices. Explain the alternatives, impact, and recommendation. Continue independent work already authorized. Record each answer and the affected acceptance criteria here before starting dependent work.
@@ -122,8 +122,8 @@ git diff --check
 | --- | --- | --- | --- | --- |
 | Planning | Complete | The user requested B0 execution. | Included in B0 | See B0 evidence below. |
 | B0 | Accepted | User approved the review package on 2026-11-08. Web 370 passed, Configuration 102 passed, Web build clean. Isolated browser baseline unavailable. | Tracker introduction commit (`git log --diff-filter=A -1 -- ACTIVITY_LOG_PLAN.md`) | B0 closed. |
-| B1 | Awaiting acceptance | Web 382 passed; Node 22 passed; Web build clean. Disposable SQLite HTTP/fault tests and browser clear/cancel/detail verified. | Not committed | Await user acceptance and commit authorization; do not start B2. |
-| B2 | Not started | Pending | — | Wait for B1 acceptance. |
+| B1 | Accepted | User accepted B1 on 2026-11-08. Web 382 passed; Node 22 passed; Web build clean; SQLite HTTP/fault and browser verification complete. | `3226ff207417923e1894ab7dbdb2fb67b57f871b` | B1 closed. |
+| B2 | Awaiting acceptance | Web 461, Setup 160 with both-provider opt-in, activity provider subset 10, Node 28; zero failures/skips. Web build clean; disposable browser complete. | Not committed | Wait for user acceptance and separate commit authorization. B3/B4 remain gated. |
 | B3 | Not started | Pending | — | Wait for B2 acceptance and relevant B0 decisions. |
 | B4 | Not started | Pending | — | Wait for B3 acceptance. |
 | B5 | Not started | Pending | — | Wait for B3 and B4 acceptance. |
@@ -217,6 +217,7 @@ Only the fields below may have values stored. All other changes still count towa
 - The test pipeline performed bounded assertion-quality and test-gap reviews. Final manual review confirmed fault ordering, exact counts, UTC timestamps, protected routes, state preservation, notification payloads, and realistic legacy filter values. All four edited localization resources parse as XML. `git diff --check` passed; edited files retain CRLF/final newlines.
 - Verification limits: Docker Linux engine is unavailable (`docker info --format '{{.ServerVersion}}'` failed to connect to its named pipe), so no PostgreSQL/SQL Server run was performed. B1 makes no schema change. Full-host startup, real local/OIDC sign-in, and deployment are not claimed by the isolated fixture checks. No existing database or external service was contacted.
 - No commit or deployment has been performed. The temporary preview project and binaries were removed after stopping its host and browser tab. Next action: user acceptance and explicit commit authorization; B2 remains blocked on B1 acceptance.
+- Subsequent acceptance: the user confirmed B1 acceptance and requested B2 on 2026-11-08. At B2 start, the checkout was clean on `master` at `3226ff207417923e1894ab7dbdb2fb67b57f871b` (`Make activity history clear-only and resilient`). The existing commit was observed, not created by the B2 session.
 
 ### B1 Requirement Evidence
 
@@ -233,3 +234,49 @@ All C# names below are in `src/Tests/Moonglade.Web.Tests/Controllers`; Node name
 | Administrator comment operations retain their activity entries | Existing `Approval_WhenCommentExists_ReturnsOkAndWritesActivityLog`, `Delete_WhenCommentsExist_ReturnsOkAndWritesActivityLog`, and `Reply_WhenCommentExists_ReturnsOkAndWritesActivityLog`. |
 | UI cancellation preserves history; confirmation reloads; failed clear reports error without success | `cancelled clear keeps history and pagination without clear or refresh`, `confirmed clear waits for delete then reloads page one and reports success`, and `failed clear preserves history and page and surfaces error without success`. |
 | Remove individual deletion without changing the B1 storage model | Controller route and command/handler deleted; Razor/JavaScript control and four cultures' dedicated strings removed. Browser confirmed Detail-only rows and 404 for the former individual-delete URL. |
+
+## B2 Evidence
+
+- 2026-11-08, Asia/Taipei. User accepted B1 and authorized proceeding to B2. Started from a clean `master` at `3226ff207417923e1894ab7dbdb2fb67b57f871b`; this is the pre-cutover application rollback point. Existing installations additionally require restoring the matching pre-upgrade activity schema/history backup to roll back.
+- B2 implements the accepted stable key catalog for the 49 existing administrator events, explicit Administrator/System actor kinds, detached target snapshots, UTC occurrence time, and approved structured details. The automatic-publication producer remains B4 work; settings comparisons and no-op suppression remain B3 work.
+- All active producers, readers, DTOs, Razor, JavaScript filters, localized labels, and fixtures switch together. Existing API paths stay; numeric `eventTypes` is rejected in favor of repeated `eventKeys`, and metadata becomes a structured object rather than JSON text. Empty-details rows remain distinguishable from nonexistent rows. Missing target display names fall back to safe IDs; unnamed administrators use the localized Administrator label.
+- Ordinary activity dispatch/persistence is best effort. Diagnostics identify the canonical event, failure type, and available HTTP trace, without logging target values, request context, protected details, or potentially sensitive exception messages. Failed inserts remain detached without clearing unrelated tracked changes.
+- SQL cutover is manual, transaction-protected, and legacy-shape-only. Old activity rows may be discarded once; a recognized final shape must preserve subsequent history on rerun. Both providers must reject missing/unknown/partial shapes before deleting rows. No real database upgrade or deployment has been performed.
+- Docker initially had no available Linux engine. The user chose to start Docker Desktop and complete both provider checks rather than defer verification. A subsequent `docker info --format '{{.ServerVersion}}'` succeeded with server `29.9.2`. Actual disposable PostgreSQL/SQL Server activity checks passed **10/10, zero failures/skips**. This is not authorization to apply scripts to an existing installation.
+- Both providers verified fresh ten-column schemas and UTC handling, the supported nine-column legacy cutover, preservation of real synthetic post/category/configuration sentinels, identity continuation, post-cutover rerun preservation, listing/filter/detail/clear, and rejection of unknown/partial/wrong-length schemas. Tests reconnect after the standalone SQL Server maintenance session to model a fresh application connection and its normal affected-row counts.
+- Browser verification used the actual compiled Razor/layout/assets and production activity handlers on a temporary loopback Kestrel host with in-memory SQLite and a synthetic administrator. No startup worker, developer configuration, real credentials, existing database, or external business service was used. English and Simplified Chinese showed concise rows, typed/plain-text details, distinct actor kinds even for an administrator named `System`, and the explicit System empty-details state. Page two had four of fourteen rows; UI event-key/date filtering returned the twelve matching posts with local-date boundaries converted to UTC.
+- Browser Cancel preserved fourteen rows. Confirmed clear returned HTTP 204 and left exactly one `activity-log.cleared` Administrator entry with `DeletedCount: 14`; its structured detail modal displayed the count. The isolated host intentionally omitted generated manifest/favicon/scoped-CSS endpoints, causing ancillary resource 404s but no activity JavaScript errors. The browser and host were closed, the listener was checked stopped, and their specific scratch artifacts were removed.
+- Final Web/Setup/Node verification and the Web build passed. Web: **461 passed, zero failed/skipped**. Full Setup with the disposable-provider opt-in: **160 passed, zero failed/skipped**. The activity-only provider subset additionally passed **10/10**, five per provider; this is a subset of the full Setup run, not ten additional unique cases. Node: **28 passed, zero failed/skipped**. Web build: **zero warnings/errors**. No required verification gap remains.
+- Regression checks corrected the Japanese System label to meaningful localized wording, added available stable IDs for avatar/site-icon targets, and verified unnamed-actor and safe-ID presentation fallbacks. The test README and permanent architecture/upgrade instructions are synchronized. Focused read-only test quality review covered 41 C# test methods and 362 assertion callsites, finding no assertion-free or trivial-only tests; no empirical mutation-testing result is claimed.
+- Final commands ran from the repository root and exited zero:
+
+```powershell
+dotnet build src\Moonglade.Web\Moonglade.Web.csproj --no-restore --verbosity quiet
+dotnet test --project src\Tests\Moonglade.Web.Tests\Moonglade.Web.Tests.csproj
+$env:MOONGLADE_TEST_CATEGORY_DATABASES = '1'
+dotnet test --project src\Tests\Moonglade.Setup.Tests\Moonglade.Setup.Tests.csproj
+dotnet test --project src\Tests\Moonglade.Setup.Tests\Moonglade.Setup.Tests.csproj --filter-class '*ActivityLogDatabaseTests'
+node --test src\Tests\Moonglade.Web.Tests\JavaScript\*.mjs
+git diff --check
+```
+
+- Disposable provider containers were removed by the fixtures. Browser/preview and test-pipeline scratch records were removed after evidence was retained here. Changed Markdown local links, CRLF/final-newline conventions, and the working tree were checked. Changes remain local and uncommitted on `master`; no real installation was upgraded or deployed.
+
+### B2 Requirement Evidence
+
+Web C# names below are under `src/Tests/Moonglade.Web.Tests/Controllers`; provider names are under `src/Tests/Moonglade.Setup.Tests/Database`.
+
+| Requirement | Evidence |
+| --- | --- |
+| Exact catalog of 49 active events with shared localized identities | `ActivityLogModelTests.Catalog_All49ActiveEvents_HaveExactUniqueKeysGroupsAndLabels`; `ActivityLogHttpTests.Catalog_All49Events_LocalizedFiltersSummaryAndHeadingShareIdentity` covers five cultures. |
+| Required UTC, generated IDs, snapshots, typed scalar/array details and string boundaries | `ActivityLogModelTests.Writer_SqliteRoundTrip_PreservesGeneratedIdUtcSnapshotsAndTypedDetails`, `Writer_FlatGuidAndIntegerArrays_PreserveTypeOrderAndEmptyPartition`, and `Writer_StringLimits_PreserveAtBoundaryAndTruncateOnlyExcessAfterTrim`. |
+| Reject unsupported events/actors/restricted details without persisting or logging contents | `ActivityLogModelTests.Writer_InvalidEventsActorsAndRestrictedDetails_RejectBeforePersistenceAndLogNoContents`. |
+| System omits request context; administrator named System retains its actual kind | `ActivityLogModelTests.WriterAndReader_SystemOmitsRequestContext_AdministratorNamedSystemRemainsAdministrator`; disposable browser demonstrated both icon/actor-kind presentations. |
+| Deterministic time/ID pagination, inclusive dates and repeated event-key filters | `ActivityLogModelTests.List_TimeThenIdDescending_PaginatesInclusiveDatesAndRepeatedKeyFilters`; browser page-two and event/date-filter checks. |
+| Detached target snapshots survive deletion; display/actor fallbacks remain meaningful | `ActivityLogModelTests.Detail_TargetSnapshotSurvivesCategoryDeletion_EmptyDetailsStillReturnRow`; `ActivityLogControllerTests.List_MissingTargetDisplay_UsesSafeStableIdAndPrefersCapturedTitle`; `ActivityLogHttpTests.BlankActorAndTargetDisplay_UseLocalizedAdministratorAndStableIdFallback`. |
+| Empty-detail 200 versus missing 404; readable context/fields; protected endpoints | `ActivityLogHttpTests.Metadata_ExistingEmptyRowIs200_MissingIs404_WithReadableContextAndTypedFields`, `ReadEndpoints_AnonymousAndNonAdministrators_AreDenied`, and `Clear_AdminWithoutValidAntiforgery_IsDeniedWithoutMutation`. |
+| B1 clear-only and best-effort behavior remains intact | `ActivityLogControllerTests.Clear_WhenAuditPersistenceFails_DoesNotResurrectOnNextSave`; retained dispatch/delete/HTTP/visitor tests; browser Cancel preserved 14 and confirmed clear left one count-bearing entry. |
+| Both-provider fresh initialization and actual new-schema handlers | `ActivityLogDatabaseTests.FreshSchema_EnsureCreatedAndSeed_UsesCanonicalShapeAndRealHandlers`. |
+| Legacy-only deletion, unrelated-data and identity preservation, rerun safety | `ActivityLogDatabaseTests.LegacyUpgrade_DiscardsOnlyOldHistory_RerunPreservesNewRowsIdentityAndUnrelatedData`. |
+| Reject unsupported schemas before destructive work | `ActivityLogDatabaseTests.UnsupportedSchema_RejectsBeforeDeletingLegacyOrUnrelatedSentinels`, for unknown/partial/wrong-length shapes on both providers. |
+| Node uses server summaries, repeated string keys and typed plain-text detail values | `JavaScript/ActivityLogTests.mjs`: `string event keys serialize repeatedly and server summary is used without reconstruction`; `structured detail loads supplied heading context and typed values as plain text`; retained cancellation/confirmation/failure cases. |

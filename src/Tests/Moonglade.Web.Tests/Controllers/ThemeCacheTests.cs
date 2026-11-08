@@ -24,7 +24,8 @@ public class ThemeCacheTests
             .ReturnsAsync(success ? 1 : -1);
         commands.Setup(m => m.SendAsync(It.IsAny<DeleteThemeCommand>(), It.IsAny<CommandMediationSettings>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(success ? OperationCode.Done : OperationCode.ObjectNotFound);
-        var controller = new ThemeController(commands.Object, themes)
+        var controller = new ThemeController(commands.Object, themes,
+            Mock.Of<Microsoft.Extensions.Logging.ILogger<ThemeController>>())
         {
             ControllerContext = new ControllerContext { HttpContext = new DefaultHttpContext() }
         };

@@ -14,7 +14,8 @@ public sealed class UtcDateTimeContractTests
         await using var context = CreateContext();
         context.ActivityLog.Add(new ActivityLogEntity
         {
-            EventId = 1,
+            EventKey = "post.created",
+            ActorKind = ActivityActorKind.Administrator,
             EventTimeUtc = DateTime.SpecifyKind(
                 new DateTime(2026, 8, 15, 1, 2, 3),
                 dateTimeKind)
@@ -35,7 +36,8 @@ public sealed class UtcDateTimeContractTests
         await using var context = CreateContext();
         context.ActivityLog.Add(new ActivityLogEntity
         {
-            EventId = 1,
+            EventKey = "post.created",
+            ActorKind = ActivityActorKind.Administrator,
             EventTimeUtc = new DateTime(2026, 8, 15, 1, 2, 3, DateTimeKind.Utc)
         });
 
