@@ -7,13 +7,14 @@ const stubs = new Map([
     ['./alpine-init.mjs', `export const Alpine = { data: (name, factory) => { globalThis.b1Activity.factory = factory; globalThis.b1Activity.name = name; } };`],
     ['./httpService.mjs?v=1500', `export const fetch2 = (...args) => globalThis.b1Activity.fetch(...args);`],
     ['./utils.module.mjs', `export const formatUtcTime = () => globalThis.b1Activity.events.push('format');
-        export const getLocalizedString = key => key;
+        export const getLocalizedString = key => globalThis.b1Activity.localized?.[key] ?? key;
         export const localDateBoundaryToUtcIso = (...args) => globalThis.b1Activity.date(...args);`],
     ['./toastService.mjs', `export const success = message => globalThis.b1Activity.events.push(['success', message]);
         export const error = error => globalThis.b1Activity.events.push(['error', error]);`],
-    ['./adminModal.mjs', `export const showDeleteConfirmModal = (message, callback) => {
-            globalThis.b1Activity.events.push(['confirm', message]);
-            globalThis.b1Activity.confirm = callback;
+    ['./adminModal.mjs', `export const showConfirmModal = options => {
+            globalThis.b1Activity.events.push(['confirm', options.body]);
+            globalThis.b1Activity.confirmOptions = options;
+            globalThis.b1Activity.confirm = options.onConfirm;
         };
         export const hideConfirmModal = () => globalThis.b1Activity.events.push('hide');`]
 ]);
@@ -37,7 +38,7 @@ test('activityLogManager clear confirmation flow', async t => {
     assert.equal(globalThis.b1Activity.name, 'activityLogManager');
     const createManager = () => {
         const events = [];
-        Object.assign(globalThis.b1Activity, { events, confirm: null });
+        Object.assign(globalThis.b1Activity, { events, confirm: null, confirmOptions: null, localized: null });
         const manager = globalThis.b1Activity.factory();
         manager.logs = [{ id: 11, summary: 'Historical post' }, { id: 12, summary: 'Historical comment' }];
         manager.totalRows = 35;
@@ -47,6 +48,33 @@ test('activityLogManager clear confirmation flow', async t => {
         manager.$nextTick = callback => callback();
         return { manager, events, originalLogs: manager.logs };
     };
+
+    await t.test('localized clear confirmation uses page title action and body with unchanged danger presentation', () => {
+        for (const localized of [
+            { clearAll: '清除全部', confirmClearAllLogs: '确定要清除全部活动日志吗？此操作将被记录。' },
+            { clearAll: 'Alle löschen', confirmClearAllLogs: 'Alle Aktivitätsprotokolle löschen? Diese Aktion wird protokolliert.' }
+        ]) {
+            const { manager, events, originalLogs } = createManager();
+            globalThis.b1Activity.localized = localized;
+            globalThis.b1Activity.fetch = () => assert.fail('Opening localized confirmation must not call any API.');
+
+            manager.clearAllLogs();
+
+            const options = globalThis.b1Activity.confirmOptions;
+            assert.deepEqual(Object.keys(options).sort(), ['body', 'confirmClass', 'confirmIcon', 'confirmText', 'onConfirm', 'title']);
+            assert.equal(options.title, localized.clearAll);
+            assert.equal(options.confirmText, localized.clearAll);
+            assert.equal(options.body, localized.confirmClearAllLogs);
+            assert.equal(options.confirmClass, 'btn-outline-danger');
+            assert.equal(options.confirmIcon, 'bi-trash');
+            assert.equal(typeof options.onConfirm, 'function');
+            assert.strictEqual(globalThis.b1Activity.confirm, options.onConfirm);
+            assert.strictEqual(manager.logs, originalLogs);
+            assert.equal(manager.currentPage, 4);
+            assert.equal(manager.totalRows, 35);
+            assert.deepEqual(events, [['confirm', localized.confirmClearAllLogs]]);
+        }
+    });
 
     await t.test('cancelled clear keeps history and pagination without clear or refresh', () => {
         const { manager, events, originalLogs } = createManager();

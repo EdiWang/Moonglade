@@ -65,6 +65,12 @@ B4 verification on 2026-11-08 passed the complete Features suite (132 tests), Ba
 
 `ActivityLogDatabaseTests` uses the existing opt-in disposable PostgreSQL and SQL Server fixture. It verifies fresh `EnsureCreated`/seed schemas, the standard nine-column legacy upgrade, preservation of unrelated data and newly written rows on rerun, identity continuity, invalid-schema rejection before deletion, and real writer/list/filter/detail/clear handlers. The fixture reconnects after the standalone SQL upgrade, matching the application's new database session. Only uniquely named disposable Docker databases are used.
 
+The integrated Activity Log gate also initializes a complete synthetic installation through the actual `StartUpInitializer`, replaces only its activity table with the supported legacy shape, applies the published upgrade, and initializes the upgraded installation and its rerun with existing valid settings. It compares exact row snapshots of every unrelated mapped table, retains all eleven configuration values/timestamps and account/manifest state, verifies new activity identity continuity and the next category identity, and rejects unexpected repair warnings. This is distinct from the existing schema-only activity witness and the separate category/naming prerequisite migration fixtures. Five-culture writer-to-HTTP regressions cover every non-settings allowed detail label, including the exact `Widget Type`, `Accent Color`, `File Name` and `Content Type` resource keys, typed scalar/array/enum values, literal markup/space-containing names, and the compiled page's plain-text field bindings. These automated fixtures do not constitute browser verification or user acceptance.
+
+Activity clear-all confirmation tests verify the compiled page's localized action/body data in five cultures and the actual activity module's shared-modal options with non-English title/action/body, unchanged danger icon/class, and no destructive request before confirmation. Existing Node cancellation, awaited delete/reload/success and failed-delete sequences run through the same options callback; the generic shared delete helper is not changed for this activity-specific behavior.
+
+The activity-only localized-confirmation follow-up on 2026-11-08 passed the complete Web suite (635 tests) and JavaScript wildcard (32 tests), with exit0 and no failures/skips. The unchanged non-Web/provider evidence was retained from the passing integrated solution run rather than repeating those suites; browser verification and the final Web build remain separate.
+
 Manual upgrade tests for category IDs and PostgreSQL naming use opt-in disposable database containers. See [Migration Verification](../../docs/agent-reference.md#migration-verification) for prerequisites and limits; ordinary runs explicitly skip those relational groups.
 
 ## Run Tests
@@ -99,3 +105,13 @@ dotnet test --project src/Tests/Moonglade.Setup.Tests/Moonglade.Setup.Tests.cspr
 ```
 
 With that opt-in enabled, omitting `--filter-class` also runs the remaining Setup provider scenarios. Docker must be running; ordinary runs without the opt-in explicitly skip the provider group.
+
+For the full integrated automated gate, enable the same opt-in for the complete solution rather than assuming an ordinary solution run exercised the relational fixtures:
+
+```powershell
+$env:MOONGLADE_TEST_CATEGORY_DATABASES = '1'
+dotnet test --solution src/Moonglade.slnx
+node --test src\Tests\Moonglade.Web.Tests\JavaScript\*.mjs
+```
+
+That solution command includes both supported providers' activity, installation and category fixtures, plus the PostgreSQL naming upgrade fixtures. The Web build and isolated synthetic-data browser acceptance are separate gates. Report actual discovery, failures and skips; do not equate an omitted provider group or successful compilation with tested provider compatibility.

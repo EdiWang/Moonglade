@@ -1,13 +1,17 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Moonglade.ActivityLog;
+using Moonglade.Configuration;
 using Moonglade.Data;
 using Moonglade.Data.Entities;
+using Moonglade.Setup.Tests.TestSupport;
 using Moq;
 using System.Data.Common;
+using System.Globalization;
 
 namespace Moonglade.Setup.Tests.Database;
 
+[Collection("Startup site icon cache")]
 public class ActivityLogDatabaseTests(DisposableCategoryDatabases databases) : IClassFixture<DisposableCategoryDatabases>
 {
     private const string Script = "activity-log-events.sql";
@@ -89,6 +93,90 @@ public class ActivityLogDatabaseTests(DisposableCategoryDatabases databases) : I
         await ExerciseHandlersAsync(db);
         Assert.Equal(1, await db.Post.CountAsync(ct));
         Assert.Equal(1, await db.BlogConfiguration.CountAsync(ct));
+    }
+
+    [DisposableDatabaseTheory]
+    [InlineData("PostgreSql")]
+    [InlineData("SqlServer")]
+    public async Task CompleteLegacyInstallation_UpgradeAndRerun_StartUpPreservesSettingsContentAndIdentity(string provider)
+    {
+        var ct = TestContext.Current.CancellationToken;
+        await using var database = await databases.CreateAsync(provider);
+        await using var db = database.Context();
+        var settingTime = new DateTime(2026, 1, 2, 3, 4, 5, DateTimeKind.Utc);
+        using (var installed = new StartupTestHarness(db))
+        {
+            Assert.Equal(InitStartUpResult.Success, await installed.Initializer.InitStartUpAsync(ct));
+            var general = await db.BlogConfiguration.SingleAsync(row => row.CfgKey == nameof(GeneralSettings), ct);
+            general.CfgValue = (installed.Config.Capture().GeneralSettings with { SiteTitle = "B5 retained" }).ToJson();
+            general.LastModifiedTimeUtc = settingTime;
+            db.Comment.Add(new CommentEntity
+            {
+                Id = Guid.NewGuid(), PostId = (await db.Post.SingleAsync(ct)).Id,
+                Username = "B5 retained visitor", Email = "b5@example.invalid", IPAddress = "192.0.2.55",
+                CommentContent = "B5 retained comment", CreateTimeUtc = settingTime, IsApproved = true
+            });
+            await db.SaveChangesAsync(ct);
+        }
+        db.ChangeTracker.Clear();
+        Assert.Equal(11, await db.BlogConfiguration.CountAsync(ct));
+        Assert.Equal(1, await db.Post.CountAsync(ct));
+        Assert.Equal(100, (await db.Category.AsNoTracking().SingleAsync(ct)).Id);
+        Assert.Equal(2, await db.Tag.CountAsync(ct));
+        Assert.Equal(1, await db.Widget.CountAsync(ct));
+        Assert.Equal(1, await db.BlogPage.CountAsync(ct));
+        Assert.Equal(1, await db.Comment.CountAsync(ct));
+        var manifest = (await db.BlogConfiguration.AsNoTracking().SingleAsync(row => row.CfgKey == nameof(SystemManifestSettings), ct)).CfgValue;
+        var before = await UnrelatedRowsAsync(db, database);
+        await ReplaceWithLegacyAsync(database);
+        Assert.Equal(2, (await LegacyRowsAsync(database)).Length);
+
+        await UpgradeAndReconnectAsync(database);
+        await AssertCanonicalSchemaAsync(database);
+        Assert.Empty(await db.ActivityLog.AsNoTracking().ToListAsync(ct));
+        Assert.Equal(before, await UnrelatedRowsAsync(db, database));
+        using (var upgraded = new StartupTestHarness(db))
+        {
+            Assert.Equal(InitStartUpResult.Success, await upgraded.Initializer.InitStartUpAsync(ct));
+            Assert.Equal("B5 retained", upgraded.Config.Capture().GeneralSettings.SiteTitle);
+            Assert.Equal(Moonglade.Auth.LocalAccountSettings.DefaultValue.ToJson(), upgraded.Accounts.Read().ToJson());
+            Assert.Equal(manifest, upgraded.Manifest.ToJson());
+            Assert.DoesNotContain(upgraded.ConfigLogger.Entries, entry => entry.Level >= LogLevel.Warning);
+        }
+        Assert.Equal(before, await UnrelatedRowsAsync(db, database));
+        var occurrence = new DateTime(2026, 2, 3, 4, 5, 6, DateTimeKind.Utc);
+        await Writer(db).HandleAsync(new CreateActivityLogCommand(ActivityEvents.PostAutomaticallyPublished, ActivityActorKind.System, null,
+            TargetId: "b5-captured-post", TargetDisplayName: "B5 captured title",
+            Details: ActivityLogDetails.Create(("PostId", Guid.Parse("aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee"))),
+            EventTimeUtc: occurrence), ct);
+        var written = await db.ActivityLog.AsNoTracking().SingleAsync(ct);
+        Assert.True(written.Id > 2);
+        using var writtenDetails = System.Text.Json.JsonDocument.Parse(written.Details!);
+        Assert.Equal(Guid.Parse("aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee"), writtenDetails.RootElement.GetProperty("PostId").GetGuid());
+        Assert.Single(writtenDetails.RootElement.EnumerateObject());
+
+        await UpgradeAndReconnectAsync(database);
+        await using var restartedDb = database.Context();
+        using (var restarted = new StartupTestHarness(restartedDb))
+        {
+            Assert.Equal(InitStartUpResult.Success, await restarted.Initializer.InitStartUpAsync(ct));
+            Assert.Equal("B5 retained", restarted.Config.Capture().GeneralSettings.SiteTitle);
+            Assert.Equal(Moonglade.Auth.LocalAccountSettings.DefaultValue.ToJson(), restarted.Accounts.Read().ToJson());
+            Assert.Equal(manifest, restarted.Manifest.ToJson());
+            Assert.DoesNotContain(restarted.ConfigLogger.Entries, entry => entry.Level >= LogLevel.Warning);
+        }
+        Assert.Equal(before, await UnrelatedRowsAsync(restartedDb, database));
+        var retained = await restartedDb.ActivityLog.AsNoTracking().SingleAsync(ct);
+        Assert.Equal((written.Id, ActivityEvents.PostAutomaticallyPublished, occurrence, ActivityActorKind.System,
+                (string)null, "b5-captured-post", "B5 captured title", written.Details, (string)null, (string)null),
+            (retained.Id, retained.EventKey, retained.EventTimeUtc, retained.ActorKind, retained.ActorDisplayName,
+                retained.TargetId, retained.TargetDisplayName, retained.Details, retained.IpAddress, retained.UserAgent));
+        await Writer(restartedDb).HandleAsync(new CreateActivityLogCommand(ActivityEvents.PostCreated, ActivityActorKind.Administrator, "b5-admin"), ct);
+        Assert.Equal(written.Id + 1, (await restartedDb.ActivityLog.AsNoTracking().SingleAsync(row => row.EventKey == ActivityEvents.PostCreated, ct)).Id);
+        var nextCategory = new CategoryEntity { DisplayName = "B5 next category", Slug = "b5-next", Note = "B5 synthetic" };
+        restartedDb.Category.Add(nextCategory);
+        await restartedDb.SaveChangesAsync(ct);
+        Assert.Equal(101, nextCategory.Id);
     }
 
     [DisposableDatabaseTheory]
@@ -190,6 +278,34 @@ public class ActivityLogDatabaseTests(DisposableCategoryDatabases databases) : I
 
     private static CreateActivityLogCommandHandler Writer(BlogDbContext db) =>
         new(db, Mock.Of<ILogger<CreateActivityLogCommandHandler>>());
+
+    private static async Task<string[]> UnrelatedRowsAsync(BlogDbContext db, CategoryTestDatabase database)
+    {
+        var tables = db.Model.GetEntityTypes().Select(type => type.GetTableName()!)
+            .Where(table => !table.Equals(database.Provider == "PostgreSql" ? "activity_log" : "ActivityLog", StringComparison.Ordinal))
+            .Distinct().Order(StringComparer.Ordinal);
+        var snapshots = new List<string>();
+        foreach (var table in tables)
+        {
+            await using var command = database.Connection.CreateCommand();
+            command.CommandText = database.Provider == "PostgreSql" ? $"SELECT * FROM public.\"{table}\";" : $"SELECT * FROM dbo.[{table}];";
+            await using var reader = await command.ExecuteReaderAsync(TestContext.Current.CancellationToken);
+            var rows = new List<string>();
+            while (await reader.ReadAsync(TestContext.Current.CancellationToken))
+            {
+                var values = Enumerable.Range(0, reader.FieldCount).Select(index => reader.GetValue(index) switch
+                {
+                    DBNull => null,
+                    byte[] bytes => Convert.ToHexString(bytes),
+                    DateTime date => date.ToString("O", CultureInfo.InvariantCulture),
+                    var value => Convert.ToString(value, CultureInfo.InvariantCulture)
+                }).ToArray();
+                rows.Add(System.Text.Json.JsonSerializer.Serialize(values));
+            }
+            snapshots.Add(table + ":" + System.Text.Json.JsonSerializer.Serialize(rows.Order(StringComparer.Ordinal)));
+        }
+        return snapshots.ToArray();
+    }
 
     private static async Task UpgradeAndReconnectAsync(CategoryTestDatabase database)
     {

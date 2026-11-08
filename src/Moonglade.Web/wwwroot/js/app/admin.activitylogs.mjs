@@ -2,7 +2,7 @@ import { Alpine } from './alpine-init.mjs';
 import { fetch2 } from './httpService.mjs?v=1500';
 import { formatUtcTime, getLocalizedString, localDateBoundaryToUtcIso } from './utils.module.mjs';
 import { success, error } from './toastService.mjs';
-import { showDeleteConfirmModal, hideConfirmModal } from './adminModal.mjs';
+import { showConfirmModal, hideConfirmModal } from './adminModal.mjs';
 import { withPagination } from './admin.pagination.mjs';
 
 Alpine.data('activityLogManager', () => withPagination(10, {
@@ -88,16 +88,24 @@ Alpine.data('activityLogManager', () => withPagination(10, {
     },
 
     clearAllLogs() {
-        showDeleteConfirmModal(getLocalizedString('confirmClearAllLogs'), async () => {
-            try {
-                await fetch2('/api/activitylog/clear', 'DELETE');
-                this.currentPage = 1;
-                await this.loadData();
-                success(getLocalizedString('logsCleared'));
-            } catch (err) {
-                error(err);
-            } finally {
-                hideConfirmModal();
+        const clearAll = getLocalizedString('clearAll');
+        showConfirmModal({
+            title: clearAll,
+            body: getLocalizedString('confirmClearAllLogs'),
+            confirmText: clearAll,
+            confirmClass: 'btn-outline-danger',
+            confirmIcon: 'bi-trash',
+            onConfirm: async () => {
+                try {
+                    await fetch2('/api/activitylog/clear', 'DELETE');
+                    this.currentPage = 1;
+                    await this.loadData();
+                    success(getLocalizedString('logsCleared'));
+                } catch (err) {
+                    error(err);
+                } finally {
+                    hideConfirmModal();
+                }
             }
         });
     },

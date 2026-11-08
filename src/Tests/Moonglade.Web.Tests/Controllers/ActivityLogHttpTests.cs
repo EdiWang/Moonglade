@@ -9,6 +9,7 @@ using Moonglade.Web.Tests.TestSupport;
 using System.Globalization;
 using System.Net;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;
 
 namespace Moonglade.Web.Tests.Controllers;
@@ -343,5 +344,92 @@ public partial class ActivityLogHttpTests
         Assert.Equal(expectedActor, detail.RootElement.GetProperty("actor").GetString());
         Assert.Equal(expectedLabel, detail.RootElement.GetProperty("heading").GetString());
         Assert.Equal("safe-stable-id", detail.RootElement.GetProperty("targetId").GetString());
+    }
+
+    [Theory]
+    [InlineData("en-US")]
+    [InlineData("zh-Hans")]
+    [InlineData("zh-Hant")]
+    [InlineData("de-DE")]
+    [InlineData("ja-JP")]
+    public async Task NonSettingsDetails_AllowedLabels_LocalizeFromWriterAndRemainTypedPlainText(string culture)
+    {
+        var ct = TestContext.Current.CancellationToken;
+        await using var fixture = await ActivityLogHttpFixture.CreateAsync(0, ct);
+        using var scope = fixture.App.Services.CreateScope();
+        var db = scope.ServiceProvider.GetRequiredService<BlogDbContext>();
+        var id = Guid.Parse("aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee");
+        Dictionary<string, (string Label, object Value)> expected = new(StringComparer.Ordinal)
+        {
+            ["PostId"] = ("Post ID", id), ["PageId"] = ("Page ID", id),
+            ["CategoryId"] = ("Category ID", 101), ["Id"] = ("Category ID", 102),
+            ["CommentId"] = ("Comment ID", id), ["CommentIds"] = ("Comment IDs", new[] { id }),
+            ["TagId"] = ("Tag ID", id), ["ThemeId"] = ("Theme ID", 7),
+            ["WidgetId"] = ("Widget ID", id), ["FileId"] = ("File ID", id),
+            ["Slug"] = ("Slug", "b5-safe-slug"), ["PostStatus"] = ("Post status", PostStatus.Draft),
+            ["Hours"] = ("Hours", 3), ["Count"] = ("Count", 2), ["DeletedCount"] = ("Deleted count", 4),
+            ["WidgetType"] = ("Widget Type", WidgetType.ImageLink),
+            ["AccentColor"] = ("Accent Color", "#123456"),
+            ["FileName"] = ("File Name", "<b>B5 file name</b>.png"),
+            ["OldFileName"] = ("Previous file name", "B5 previous file.txt"),
+            ["FileSize"] = ("File size", 2048), ["ContentType"] = ("Content Type", "image/png"),
+            ["ImageSize"] = ("Image dimensions", "64x32"), ["SkipWatermark"] = ("Skip watermark", true),
+            ["IsEnabled"] = ("Enabled", false), ["IsPublished"] = ("Published", true),
+            ["Username"] = ("Username", "<script>B5 display name</script>")
+        };
+        var definitions = ActivityEvents.All.Where(definition => definition.SettingKeys is null).OrderBy(definition => definition.Key).ToArray();
+        Assert.Equal(expected.Keys.Order(StringComparer.Ordinal),
+            definitions.SelectMany(definition => definition.DetailKeys).Distinct().Order(StringComparer.Ordinal));
+        var jsonOptions = new JsonSerializerOptions { Converters = { new JsonStringEnumConverter() } };
+        using var client = fixture.App.GetTestClient();
+        client.DefaultRequestHeaders.Add("X-B1-User", "admin");
+        client.DefaultRequestHeaders.AcceptLanguage.ParseAdd(culture);
+        var originalCulture = CultureInfo.CurrentUICulture;
+        try
+        {
+            CultureInfo.CurrentUICulture = CultureInfo.GetCultureInfo(culture);
+            var localizer = scope.ServiceProvider.GetRequiredService<IStringLocalizer<Program>>();
+            foreach (var definition in definitions)
+            {
+                var keys = definition.DetailKeys.Order(StringComparer.Ordinal).ToArray();
+                await new CreateActivityLogCommandHandler(db, fixture.Store.WriterLogger.Object).HandleAsync(
+                    new CreateActivityLogCommand(definition.Key, ActivityActorKind.Administrator, "admin",
+                        Details: ActivityLogDetails.Create(keys.Select(key => (key, (object?)expected[key].Value)).ToArray())), ct);
+                var row = await db.ActivityLog.AsNoTracking().SingleAsync(item => item.EventKey == definition.Key, ct);
+                using var response = await client.GetAsync($"/api/activitylog/{row.Id}/metadata", ct);
+                Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+                using var details = JsonDocument.Parse(await response.Content.ReadAsStringAsync(ct));
+                Assert.Equal(row.Id, details.RootElement.GetProperty("id").GetInt64());
+                Assert.Equal(definition.Key, details.RootElement.GetProperty("eventKey").GetString());
+                Assert.Equal(JsonValueKind.Null, details.RootElement.GetProperty("changes").ValueKind);
+                var fields = details.RootElement.GetProperty("fields").EnumerateArray().ToArray();
+                Assert.Equal(keys, fields.Select(field => field.GetProperty("key").GetString()));
+                foreach (var field in fields)
+                {
+                    var key = field.GetProperty("key").GetString()!;
+                    var label = localizer[expected[key].Label];
+                    if (culture != "en-US") Assert.False(label.ResourceNotFound, $"Missing existing resource {expected[key].Label} in {culture}.");
+                    Assert.Equal(label.Value, field.GetProperty("label").GetString());
+                    var value = JsonSerializer.SerializeToElement(expected[key].Value, jsonOptions);
+                    Assert.Equal(value.ValueKind, field.GetProperty("value").ValueKind);
+                    Assert.True(JsonElement.DeepEquals(value, field.GetProperty("value")), $"Unexpected value for {definition.Key}/{key}.");
+                }
+            }
+            using var page = await client.GetAsync("/admin/activitylogs", ct);
+            Assert.Equal(HttpStatusCode.OK, page.StatusCode);
+            var html = await page.Content.ReadAsStringAsync(ct);
+            var clearLabel = Regex.Match(html, "data-clear-all=\"([^\"]*)\"");
+            var clearBody = Regex.Match(html, "data-confirm-clear-all-logs=\"([^\"]*)\"");
+            Assert.True(clearLabel.Success, "Actual ActivityLogs page must supply its localized clear-all action.");
+            Assert.True(clearBody.Success, "Actual ActivityLogs page must supply its localized confirmation body.");
+            Assert.Equal(localizer["Clear all"].Value, WebUtility.HtmlDecode(clearLabel.Groups[1].Value));
+            Assert.Equal(localizer["Are you sure you want to clear all activity logs? This action will be recorded."].Value,
+                WebUtility.HtmlDecode(clearBody.Groups[1].Value));
+            var template = Regex.Match(html, "<template x-for=\"field[^>]*>[\\s\\S]*?</template>").Value;
+            Assert.Contains("x-text=\"field.label\"", template);
+            Assert.Contains("x-text=\"formatDetailValue(field.value, field.key)\"", template);
+            Assert.DoesNotContain("x-html=", template);
+        }
+        finally { CultureInfo.CurrentUICulture = originalCulture; }
     }
 }
