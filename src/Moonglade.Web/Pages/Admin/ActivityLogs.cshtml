@@ -31,6 +31,18 @@
      data-draft="@SharedLocalizer["Draft"]"
      data-published="@SharedLocalizer["Published"]"
      data-scheduled="@SharedLocalizer["Scheduled"]"
+     data-right="@SharedLocalizer["Right"]"
+     data-left="@SharedLocalizer["Left"]"
+     data-disabled="@SharedLocalizer["Disabled"]"
+     data-center="@SharedLocalizer["Center"]"
+     data-html="HTML"
+     data-markdown="Markdown"
+     data-built-in="@SharedLocalizer["Built in"]"
+     data-third-party="@SharedLocalizer["Third party"]"
+     data-old-to-new="@SharedLocalizer["Old to new"]"
+     data-new-to-old="@SharedLocalizer["New to old"]"
+     data-mask-word="@SharedLocalizer["Mask Word"]"
+     data-block-comment="@SharedLocalizer["Block Comment"]"
      data-confirm-clear-all-logs="@SharedLocalizer["Are you sure you want to clear all activity logs? This action will be recorded."]">
 </div>
 
@@ -234,7 +246,33 @@
                         </div>
                     </template>
                 </dl>
-                <p class="text-muted mb-0" x-show="!hasDetailContext && !currentDetail?.fields?.length">
+                <div x-show="hasSettingsChanges">
+                    <h6>@SharedLocalizer["Settings changes"]</h6>
+                    <div class="table-responsive" x-show="currentDetail?.changes?.length">
+                        <table class="table table-sm text-break">
+                            <thead>
+                                <tr>
+                                    <th>@SharedLocalizer["Setting"]</th>
+                                    <th>@SharedLocalizer["Previous value"]</th>
+                                    <th>@SharedLocalizer["New value"]</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <template x-for="change in currentDetail?.changes ?? []" :key="change.key">
+                                    <tr>
+                                        <th scope="row" x-text="change.label"></th>
+                                        <td x-text="formatDetailValue(change.oldValue, change.key)"></td>
+                                        <td x-text="formatDetailValue(change.newValue, change.key)"></td>
+                                    </tr>
+                                </template>
+                            </tbody>
+                        </table>
+                    </div>
+                    <p class="text-muted mb-0" x-show="!currentDetail?.changes?.length">
+                        @SharedLocalizer["No change values are available for this update."]
+                    </p>
+                </div>
+                <p class="text-muted mb-0" x-show="!hasSettingsChanges && !hasDetailContext && !currentDetail?.fields?.length">
                     @SharedLocalizer["No additional activity details are available."]
                 </p>
             </div>

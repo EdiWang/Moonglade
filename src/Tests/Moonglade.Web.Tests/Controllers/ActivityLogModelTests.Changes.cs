@@ -1,0 +1,250 @@
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
+using Moonglade.ActivityLog;
+using Moonglade.Configuration;
+using Moonglade.Data;
+using Moonglade.Data.Entities;
+using Moonglade.Web.Tests.TestSupport;
+using System.Text.Json;
+
+namespace Moonglade.Web.Tests.Controllers;
+
+public partial class ActivityLogModelTests
+{
+    public static IEnumerable<object[]> ActivitySettingsGroups() => SettingsActivityCases.Groups.Select(group => new object[] { group.Group });
+
+    [Theory]
+    [MemberData(nameof(ActivitySettingsGroups))]
+    public async Task SettingChanges_All51B0Fields_AreExactEventAllowlistAndPersistTypedValues(string group)
+    {
+        var ct = TestContext.Current.CancellationToken;
+        var expected = SettingsActivityCases.Groups.Single(item => item.Group == group);
+        Assert.Equal(expected.Allowed.Order(), ActivityEvents.Get(expected.EventKey).SettingKeys!.Order());
+        await using var store = await ActivityLogTestStore.CreateAsync(ct: ct);
+        using var scope = store.Services.CreateScope();
+        var db = scope.ServiceProvider.GetRequiredService<BlogDbContext>();
+        var model = SettingsActivityCases.Get(store.Config.Capture(), group);
+        var changes = expected.Allowed.Select(key =>
+        {
+            var old = model.GetType().GetProperty(key)!.GetValue(model);
+            object? value = old switch
+            {
+                bool boolean => !boolean,
+                int number => number == 1 ? 2 : 1,
+                Enum enumeration => Enum.GetValues(enumeration.GetType()).Cast<object>().First(item => !Equals(item, old)),
+                _ => "After"
+            };
+            return new ActivityLogSettingChange(key, old, value);
+        }).ToArray();
+
+        await Writer(db, store).HandleAsync(new CreateActivityLogCommand(expected.EventKey, ActivityActorKind.Administrator, "admin",
+            Details: ActivityLogDetails.Create(("Changes", changes))), ct);
+
+        var row = Assert.Single(await store.ReadLogsAsync(ct));
+        var result = (await new GetMetaDataByActivityLogIdQueryHandler(db).HandleAsync(new(row.Id), ct))!;
+        var actual = result.Details["Changes"].EnumerateArray().ToArray();
+        Assert.Equal(changes.Length, actual.Length);
+        for (var index = 0; index < changes.Length; index++)
+        {
+            Assert.Equal(changes[index].Key, actual[index].GetProperty("Key").GetString());
+            AssertScalar(changes[index].OldValue, actual[index].GetProperty("OldValue"));
+            AssertScalar(changes[index].NewValue, actual[index].GetProperty("NewValue"));
+        }
+        Assert.Equal(["Changes"], result.Details.Keys);
+    }
+
+    [Theory]
+    [InlineData("empty")]
+    [InlineData("null-to-empty")]
+    [InlineData("empty-to-null")]
+    [InlineData("controls")]
+    [InlineData("bool")]
+    [InlineData("integer")]
+    [InlineData("enum")]
+    public async Task SettingChanges_EmptyAndScalarBoundaries_RoundTripWithoutLosingTypes(string scenario)
+    {
+        var ct = TestContext.Current.CancellationToken;
+        await using var store = await ActivityLogTestStore.CreateAsync(ct: ct);
+        using var scope = store.Services.CreateScope();
+        var db = scope.ServiceProvider.GetRequiredService<BlogDbContext>();
+        ActivityLogSettingChange[] changes = scenario switch
+        {
+            "empty" => [],
+            "null-to-empty" => [new("SiteTitle", null, "")],
+            "empty-to-null" => [new("SiteTitle", "", null)],
+            "controls" => [new("SiteTitle", "Before", "<script>\u000C\u0001</script>")],
+            "bool" => [new("WidgetsProfile", true, false)],
+            "integer" => [new("HotTagAmount", 0, 20)],
+            _ => [new("SideBarOption", SideBarOption.Right, SideBarOption.Disabled)]
+        };
+
+        await Writer(db, store).HandleAsync(new CreateActivityLogCommand(ActivityEvents.SettingsGeneralUpdated,
+            ActivityActorKind.Administrator, "admin", Details: ActivityLogDetails.Create(("Changes", changes))), ct);
+
+        var row = Assert.Single(await store.ReadLogsAsync(ct));
+        var result = (await new GetMetaDataByActivityLogIdQueryHandler(db).HandleAsync(new(row.Id), ct))!;
+        var actual = result.Details["Changes"].EnumerateArray().ToArray();
+        Assert.Equal(changes.Length, actual.Length);
+        if (scenario == "empty") Assert.Equal("""{"Changes":[]}""", row.Details);
+        else
+        {
+            var change = Assert.Single(actual);
+            Assert.Equal(changes[0].Key, change.GetProperty("Key").GetString());
+            AssertScalar(changes[0].OldValue, change.GetProperty("OldValue"));
+            AssertScalar(changes[0].NewValue, change.GetProperty("NewValue"));
+        }
+    }
+
+    [Theory]
+    [InlineData("restricted-key")]
+    [InlineData("wrong-event-key")]
+    [InlineData("wrong-case-key")]
+    [InlineData("duplicate-key")]
+    [InlineData("unchanged-value")]
+    [InlineData("null-entry")]
+    [InlineData("old-array")]
+    [InlineData("new-array")]
+    [InlineData("old-object")]
+    [InlineData("new-object")]
+    [InlineData("untyped-list")]
+    [InlineData("null-envelope")]
+    [InlineData("non-settings-event")]
+    public async Task SettingChanges_InvalidWriterInput_RejectsBeforePersistenceAndLogsNoProtectedContents(string scenario)
+    {
+        var ct = TestContext.Current.CancellationToken;
+        await using var store = await ActivityLogTestStore.CreateAsync(ct: ct);
+        using var scope = store.Services.CreateScope();
+        var db = scope.ServiceProvider.GetRequiredService<BlogDbContext>();
+        const string sentinel = "B3-PROTECTED-PAYLOAD";
+        object? changes = scenario switch
+        {
+            "restricted-key" => new ActivityLogSettingChange[] { new("PasswordHash", "before", sentinel) },
+            "wrong-event-key" => new ActivityLogSettingChange[] { new("FeedItemCount", 1, 2) },
+            "wrong-case-key" => new ActivityLogSettingChange[] { new("siteTitle", "before", sentinel) },
+            "duplicate-key" => new ActivityLogSettingChange[] { new("SiteTitle", "before", "after"), new("SiteTitle", "after", sentinel) },
+            "unchanged-value" => new ActivityLogSettingChange[] { new("SiteTitle", sentinel, sentinel) },
+            "null-entry" => new ActivityLogSettingChange[] { null! },
+            "old-array" => new ActivityLogSettingChange[] { new("SiteTitle", new[] { sentinel }, "after") },
+            "new-array" => new ActivityLogSettingChange[] { new("SiteTitle", "before", new[] { sentinel }) },
+            "old-object" => new ActivityLogSettingChange[] { new("SiteTitle", new Dictionary<string, string> { ["private"] = sentinel }, "after") },
+            "new-object" => new ActivityLogSettingChange[] { new("SiteTitle", "before", new Dictionary<string, string> { ["private"] = sentinel }) },
+            "untyped-list" => new object[] { new Dictionary<string, object?> { ["Key"] = "SiteTitle", ["OldValue"] = "before", ["NewValue"] = sentinel } },
+            "null-envelope" => null,
+            _ => new ActivityLogSettingChange[] { new("SiteTitle", "before", sentinel) }
+        };
+        var unrelated = new BlogConfigurationEntity { CfgKey = "B3Unrelated", CfgValue = "retained", LastModifiedTimeUtc = DateTime.UtcNow };
+        db.Add(unrelated);
+        await Writer(db, store).HandleAsync(new CreateActivityLogCommand(
+            scenario == "non-settings-event" ? ActivityEvents.PostCreated : ActivityEvents.SettingsGeneralUpdated,
+            ActivityActorKind.Administrator, "admin", Details: ActivityLogDetails.Create(("Changes", changes))), ct);
+
+        Assert.Empty(await store.ReadLogsAsync(ct));
+        Assert.Empty(db.ChangeTracker.Entries<ActivityLogEntity>());
+        Assert.Equal(EntityState.Added, db.Entry(unrelated).State);
+        Assert.Empty(await db.BlogConfiguration.AsNoTracking().ToListAsync(ct));
+        var diagnostic = Assert.Single(store.WriterLogger.Invocations);
+        Assert.Equal(LogLevel.Error, diagnostic.Arguments[0]);
+        Assert.Null(diagnostic.Arguments[3]);
+        Assert.DoesNotContain(sentinel, diagnostic.Arguments[2]!.ToString());
+        Assert.DoesNotContain("PasswordHash", diagnostic.Arguments[2]!.ToString());
+    }
+
+    [Theory]
+    [InlineData("malformed")]
+    [InlineData("null-root")]
+    [InlineData("array-root")]
+    [InlineData("unknown-root")]
+    [InlineData("duplicate-root")]
+    [InlineData("object-envelope")]
+    [InlineData("null-envelope")]
+    [InlineData("scalar-entry")]
+    [InlineData("null-entry")]
+    [InlineData("missing-key")]
+    [InlineData("missing-old")]
+    [InlineData("missing-new")]
+    [InlineData("extra-member")]
+    [InlineData("duplicate-member")]
+    [InlineData("wrong-case-member")]
+    [InlineData("unknown-key")]
+    [InlineData("wrong-event-key")]
+    [InlineData("duplicate-change")]
+    [InlineData("same-values")]
+    [InlineData("old-array")]
+    [InlineData("new-object")]
+    [InlineData("non-settings-event")]
+    public async Task SettingChanges_InvalidStoredEnvelope_ThrowsSafeFailureBeforeReadExposure(string scenario)
+    {
+        var ct = TestContext.Current.CancellationToken;
+        await using var store = await ActivityLogTestStore.CreateAsync(ct: ct);
+        using var scope = store.Services.CreateScope();
+        var db = scope.ServiceProvider.GetRequiredService<BlogDbContext>();
+        const string valid = """{"Key":"SiteTitle","OldValue":"before","NewValue":"B3-PROTECTED-PAYLOAD"}""";
+        var json = scenario switch
+        {
+            "malformed" => """{"Changes":[B3-PROTECTED-PAYLOAD""",
+            "null-root" => "null",
+            "array-root" => "[]",
+            "unknown-root" => """{"PasswordHash":"B3-PROTECTED-PAYLOAD"}""",
+            "duplicate-root" => $$"""{"Changes":[{{valid}}],"Changes":[]}""",
+            "object-envelope" => $$"""{"Changes":{{valid}}}""",
+            "null-envelope" => """{"Changes":null}""",
+            "scalar-entry" => """{"Changes":["B3-PROTECTED-PAYLOAD"]}""",
+            "null-entry" => """{"Changes":[null]}""",
+            "missing-key" => """{"Changes":[{"OldValue":"before","NewValue":"B3-PROTECTED-PAYLOAD"}]}""",
+            "missing-old" => """{"Changes":[{"Key":"SiteTitle","NewValue":"B3-PROTECTED-PAYLOAD"}]}""",
+            "missing-new" => """{"Changes":[{"Key":"SiteTitle","OldValue":"B3-PROTECTED-PAYLOAD"}]}""",
+            "extra-member" => """{"Changes":[{"Key":"SiteTitle","OldValue":"before","NewValue":"after","PasswordHash":"B3-PROTECTED-PAYLOAD"}]}""",
+            "duplicate-member" => """{"Changes":[{"Key":"SiteTitle","Key":"LogoText","NewValue":"B3-PROTECTED-PAYLOAD"}]}""",
+            "wrong-case-member" => """{"Changes":[{"key":"SiteTitle","OldValue":"before","NewValue":"B3-PROTECTED-PAYLOAD"}]}""",
+            "unknown-key" => """{"Changes":[{"Key":"PasswordHash","OldValue":"before","NewValue":"B3-PROTECTED-PAYLOAD"}]}""",
+            "wrong-event-key" => """{"Changes":[{"Key":"FeedItemCount","OldValue":1,"NewValue":2}]}""",
+            "duplicate-change" => $$"""{"Changes":[{{valid}},{{valid}}]}""",
+            "same-values" => """{"Changes":[{"Key":"SiteTitle","OldValue":"B3-PROTECTED-PAYLOAD","NewValue":"B3-PROTECTED-PAYLOAD"}]}""",
+            "old-array" => """{"Changes":[{"Key":"SiteTitle","OldValue":["B3-PROTECTED-PAYLOAD"],"NewValue":"after"}]}""",
+            "new-object" => """{"Changes":[{"Key":"SiteTitle","OldValue":"before","NewValue":{"private":"B3-PROTECTED-PAYLOAD"}}]}""",
+            _ => $$"""{"Changes":[{{valid}}]}"""
+        };
+        var row = new ActivityLogEntity
+        {
+            EventKey = scenario == "non-settings-event" ? ActivityEvents.PostCreated : ActivityEvents.SettingsGeneralUpdated,
+            EventTimeUtc = DateTime.UtcNow, ActorKind = ActivityActorKind.Administrator, Details = json
+        };
+        db.Add(row);
+        await db.SaveChangesAsync(ct);
+
+        var exception = await Assert.ThrowsAsync<InvalidDataException>(() =>
+            new GetMetaDataByActivityLogIdQueryHandler(db).HandleAsync(new(row.Id), ct));
+
+        Assert.DoesNotContain("B3-PROTECTED-PAYLOAD", exception.Message);
+        Assert.DoesNotContain("PasswordHash", exception.Message);
+        Assert.Equal(json, (await db.ActivityLog.AsNoTracking().SingleAsync(ct)).Details);
+    }
+
+    [Theory]
+    [InlineData(ActivityEvents.SettingsGeneralUpdated, "SiteTitle")]
+    [InlineData(ActivityEvents.SettingsCommentUpdated, "EnableComments")]
+    [InlineData(ActivityEvents.SettingsImageUpdated, "EnableCDNRedirect")]
+    [InlineData(ActivityEvents.SettingsAppearanceUpdated, "ThemeId")]
+    [InlineData(ActivityEvents.SettingsCustomMenuUpdated, "IsEnabled")]
+    public async Task LegacyB2ScalarSettingsDetails_RemainReadableWithoutInventedBeforeValues(string eventKey, string key)
+    {
+        var ct = TestContext.Current.CancellationToken;
+        await using var store = await ActivityLogTestStore.CreateAsync(ct: ct);
+        using var scope = store.Services.CreateScope();
+        var db = scope.ServiceProvider.GetRequiredService<BlogDbContext>();
+        object value = key switch { "SiteTitle" => "Legacy title", "ThemeId" => 100, _ => true };
+
+        await Writer(db, store).HandleAsync(new CreateActivityLogCommand(eventKey, ActivityActorKind.Administrator, "admin",
+            Details: ActivityLogDetails.Create((key, value))), ct);
+
+        var row = Assert.Single(await store.ReadLogsAsync(ct));
+        var result = (await new GetMetaDataByActivityLogIdQueryHandler(db).HandleAsync(new(row.Id), ct))!;
+        Assert.Equal([key], result.Details.Keys);
+        AssertScalar(value, result.Details[key]);
+    }
+
+    private static void AssertScalar(object? expected, JsonElement actual) =>
+        Assert.True(JsonElement.DeepEquals(JsonSerializer.SerializeToElement(expected is Enum ? expected.ToString() : expected), actual),
+            "Stored scalar must equal the independently supplied value with its JSON type.");
+}

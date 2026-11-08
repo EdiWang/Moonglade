@@ -55,7 +55,10 @@ public partial class SettingsControllerTests
     [InlineData(EditorChoice.Markdown)]
     public async Task Content_PersistsDefaultEditorAndUpdatesRuntimeSettings(EditorChoice editor)
     {
-        var blogConfig = new BlogConfig();
+        var blogConfig = new BlogConfig(new BlogSettingsSnapshot
+        {
+            ContentSettings = new ContentSettings { DefaultEditor = editor == EditorChoice.Html ? EditorChoice.Markdown : EditorChoice.Html }
+        });
         using var commandMediator = new ConfigurationCommandRecorder();
         var controller = CreateController(
             blogConfig,

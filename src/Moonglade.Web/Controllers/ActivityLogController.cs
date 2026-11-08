@@ -71,12 +71,20 @@ public class ActivityLogController(
 
         if (log == null) return NotFound();
 
+        var changes = log.Details.TryGetValue(ActivityLogSettingChange.DetailsKey, out var settingChanges)
+            ? settingChanges.EnumerateArray().Select(change => new ActivityLogDetailChange(
+                change.GetProperty("Key").GetString()!,
+                localizer[DetailLabel(change.GetProperty("Key").GetString()!)].Value,
+                change.GetProperty("OldValue"), change.GetProperty("NewValue"))).ToList()
+            : null;
         return Ok(new ActivityLogDetail(
             log.Id, log.EventKey, localizer[ActivityEvents.Get(log.EventKey).Label].Value,
             log.EventTimeUtc, log.ActorKind, Actor(log),
             log.TargetId, log.TargetDisplayName, log.IpAddress, log.UserAgent,
-            log.Details.Select(field => new ActivityLogDetailField(
-                field.Key, localizer[DetailLabel(field.Key)].Value, field.Value)).ToList()));
+            log.Details.Where(field => field.Key != ActivityLogSettingChange.DetailsKey)
+                .Select(field => new ActivityLogDetailField(
+                    field.Key, localizer[DetailLabel(field.Key)].Value, field.Value)).ToList(),
+            changes));
     }
 
     [HttpDelete("clear")]
@@ -130,11 +138,53 @@ public class ActivityLogController(
         "SkipWatermark" => "Skip watermark",
         "SiteTitle" => "Site title",
         "LogoText" => "Logo text",
+        "SideBarOption" => "Side bar display",
+        "WidgetsProfile" => "Profile",
+        "HotTagAmount" => "How many tags to show on sidebar",
+        "WidgetsCategoryList" => "Categories",
+        "WidgetsSubscriptionButtons" => "Subscription buttons",
+        "UseGravatarAsProfilePicture" => "Use my Gravatar as profile picture",
+        "DefaultLanguageCode" => "Default language",
+        "UseDublinCoreMetaData" => "Use Dublin Core Metadata",
+        "DefaultEditor" => "Default editor",
+        "PostListPageSize" => "Post list page size",
+        "PostTitleAlignment" => "Post title alignment",
+        "ShowCalloutSection" => "Show call-out section",
+        "ShowPostFooter" => "Show customize footer on each post",
+        "DocumentOutline" => "Show post outline as side navigation",
+        "EnableViewCount" => "Enable view count",
+        "MaximumPageNumbersToDisplay" => "Maximum page numbers to display in pagination",
+        "CommentProvider" => "Comment provider",
+        "CommentOrder" => "Comments display order",
         "EnableComments" => "Enable comments",
+        "EnableGravatar" => "Enable Gravatar in comment list",
+        "EnableMarkdownLinks" => "Enable Markdown links in comments and replies",
         "RequireCommentReview" => "Require comment review",
+        "CloseCommentAfterDays" => "Automatically close comments on posts older than x days",
+        "EnableWordFilter" => "Enable word filter",
+        "WordFilterMode" => "Word filter mode",
+        "EnableCommentSectionOnMobile" => "Show comment section on mobile screens",
+        "EnableEmailSending" => "Enable email sending",
+        "SendEmailOnCommentReply" => "Send email on comment reply",
+        "SendEmailOnNewComment" => "Send email on new comment",
+        "FeedItemCount" => "Feed items",
+        "UseFullContent" => "Use full blog post content instead of abstract",
         "EnableCDNRedirect" => "Enable CDN redirect",
         "IsWatermarkEnabled" => "Enable watermark",
-        "EnableCustomCss" => "Enable custom CSS",
+        "KeepOriginImage" => "Keep origin image",
+        "WatermarkFontSize" => "Font size",
+        "WatermarkColorA" => "Watermark opacity",
+        "WatermarkSkipPixel" => "Watermark skip pixel threshold",
+        "EnableWebmention" => "Enable Webmention",
+        "EnableOpenSearch" => "Enable OpenSearch",
+        "EnableFoaf" => "Enable FOAF",
+        "EnableOpml" => "Enable OPML",
+        "EnableSiteMap" => "Enable Site Map",
+        "EnablePostScheduler" => "Enable Post Scheduler",
+        "WarnPostExternalLink" => "Show warning when clicking external links in posts",
+        "WarnCommentExternalLink" => "Show warning when clicking external links in comments",
+        "EnableJsonLdBlogPosting" => "Enable JSON-LD BlogPosting",
+        "EnableCustomCss" => "Enable Custom CSS",
         "IsEnabled" => "Enabled",
         "IsPublished" => "Published",
         "Username" => "Username",
@@ -147,5 +197,7 @@ public sealed record ActivityEventOption(string Key, string Label);
 public sealed record ActivityLogListItem(long Id, string EventKey, DateTime EventTimeUtc, ActivityActorKind ActorKind, string Actor, string Summary);
 public sealed record ActivityLogDetail(
     long Id, string EventKey, string Heading, DateTime EventTimeUtc, ActivityActorKind ActorKind, string Actor,
-    string? TargetId, string? TargetDisplayName, string? IpAddress, string? UserAgent, IReadOnlyList<ActivityLogDetailField> Fields);
+    string? TargetId, string? TargetDisplayName, string? IpAddress, string? UserAgent, IReadOnlyList<ActivityLogDetailField> Fields,
+    IReadOnlyList<ActivityLogDetailChange>? Changes = null);
 public sealed record ActivityLogDetailField(string Key, string Label, JsonElement Value);
+public sealed record ActivityLogDetailChange(string Key, string Label, JsonElement OldValue, JsonElement NewValue);

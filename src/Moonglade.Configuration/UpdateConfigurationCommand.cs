@@ -6,7 +6,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Moonglade.Configuration;
 
-public record UpdateConfigurationCommand : ICommand
+public record UpdateConfigurationCommand : ICommand<ConfigurationSaveResult>
 {
     public object Settings { get; }
 
@@ -25,15 +25,16 @@ public class UpdateConfigurationCommandHandler(
     IEventMediator eventMediator,
     ConfigurationWriteGate gate,
     ILogger<UpdateConfigurationCommandHandler> logger)
-    : ICommandHandler<UpdateConfigurationCommand>, ICommandHandler<PatchConfigurationCommand, object>
+    : ICommandHandler<UpdateConfigurationCommand, ConfigurationSaveResult>,
+        ICommandHandler<PatchConfigurationCommand, ConfigurationSaveResult>
 {
-    public async Task HandleAsync(UpdateConfigurationCommand request, CancellationToken ct) =>
-        await SaveAsync(request.Settings.GetType(), _ => request.Settings, ct);
+    public Task<ConfigurationSaveResult> HandleAsync(UpdateConfigurationCommand request, CancellationToken ct) =>
+        SaveAsync(request.Settings.GetType(), _ => request.Settings, ct);
 
-    public Task<object> HandleAsync(PatchConfigurationCommand request, CancellationToken ct) =>
+    public Task<ConfigurationSaveResult> HandleAsync(PatchConfigurationCommand request, CancellationToken ct) =>
         SaveAsync(request.SettingsType, request.Apply, ct);
 
-    private async Task<object> SaveAsync(Type settingsType, Func<object, object> replace, CancellationToken ct)
+    private async Task<ConfigurationSaveResult> SaveAsync(Type settingsType, Func<object, object> replace, CancellationToken ct)
     {
         var name = settingsType.Name;
         await gate.WaitAsync(ct);
@@ -42,8 +43,10 @@ public class UpdateConfigurationCommandHandler(
             var property = typeof(BlogSettingsSnapshot).GetProperty(name)
                 ?? throw new InvalidOperationException($"Unknown blog setting '{name}'.");
             var current = blogConfig.Capture();
-            var settings = replace(property.GetValue(current));
+            var previous = property.GetValue(current);
+            var settings = replace(previous);
             Validator.ValidateObject(settings, new ValidationContext(settings), true);
+            var result = SettingsChangeProjection.Compare(previous, settings);
 
             var candidate = current with { };
             property.SetValue(candidate, settings);
@@ -68,7 +71,7 @@ public class UpdateConfigurationCommandHandler(
                 await eventMediator.PublishAsync(new ConfigurationChangedEvent([name]), CancellationToken.None);
 
             logger.LogInformation("Configuration updated successfully: {Name}", name);
-            return settings;
+            return result;
         }
         catch (Exception ex)
         {

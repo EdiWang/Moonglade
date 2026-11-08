@@ -1,4 +1,5 @@
 using LiteBus.Commands;
+using Edi.CacheAside.InMemory;
 using LiteBus.Events;
 using LiteBus.Extensions.Microsoft.DependencyInjection;
 using LiteBus.Messaging;
@@ -8,6 +9,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Moonglade.ActivityLog;
+using Moonglade.BackgroundServices;
 using Moonglade.Configuration;
 using Moonglade.Data;
 using Moonglade.Data.Entities;
@@ -15,6 +17,8 @@ using Moonglade.Email;
 using Moonglade.Email.Core;
 using Moonglade.Features.Comment;
 using Moonglade.Theme;
+using Moonglade.Web.Handlers;
+using Moonglade.Web;
 using Moq;
 
 namespace Moonglade.Web.Tests.TestSupport;
@@ -59,6 +63,12 @@ public sealed class ActivityLogTestStore : IAsyncDisposable
         services.AddLogging();
         services.AddDbContext<BlogDbContext>(options => options.UseSqlite(_connection));
         services.AddSingleton<IBlogConfig>(Config);
+        services.AddSingleton(Config);
+        services.AddSingleton<ConfigurationWriteGate>();
+        services.AddInMemoryCacheAside();
+        services.AddSingleton<PostCacheInvalidator>();
+        services.AddSingleton<ThemeCacheInvalidator>();
+        services.AddSingleton<ScheduledPublishWakeUp>();
         services.AddSingleton(ControllerLogger.Object);
         services.AddSingleton(WriterLogger.Object);
         services.AddScoped<IEmailNotificationQueue, DbEmailNotificationQueue>();
@@ -77,13 +87,18 @@ public sealed class ActivityLogTestStore : IAsyncDisposable
             {
                 module.RegisterFromAssembly(typeof(ClearActivityLogsCommand).Assembly);
                 module.RegisterFromAssembly(typeof(CreateCommentCommand).Assembly);
+                module.RegisterFromAssembly(typeof(UpdateConfigurationCommand).Assembly);
             });
             bus.AddQueries(module =>
             {
                 module.RegisterFromAssembly(typeof(ListActivityLogsQuery).Assembly);
                 module.RegisterFromAssembly(typeof(GetSiteThemeStyleSheetQuery).Assembly);
             });
-            bus.AddEvents(module => module.RegisterFromAssembly(typeof(CommentNotificationEventHandler).Assembly));
+            bus.AddEvents(module =>
+            {
+                module.RegisterFromAssembly(typeof(CommentNotificationEventHandler).Assembly);
+                module.RegisterFromAssembly(typeof(ConfigurationChangedEventHandler).Assembly);
+            });
         });
     }
 

@@ -6,7 +6,7 @@ using System.Text.Json.Serialization;
 
 namespace Moonglade.Configuration;
 
-public sealed class PatchConfigurationCommand : ICommand<object>
+public sealed class PatchConfigurationCommand : ICommand<ConfigurationSaveResult>
 {
     private static readonly JsonSerializerOptions FieldJson = new()
     {

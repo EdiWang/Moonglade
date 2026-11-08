@@ -142,6 +142,10 @@ Alpine.data('activityLogManager', () => withPagination(10, {
         return !!(detail?.targetId || detail?.targetDisplayName || detail?.ipAddress || detail?.userAgent);
     },
 
+    get hasSettingsChanges() {
+        return Array.isArray(this.currentDetail?.changes);
+    },
+
     formatDetailValue(value, key) {
         if (value === null || value === undefined) return '\u2014';
         if (typeof value === 'boolean') return getLocalizedString(value ? 'yes' : 'no');
@@ -149,6 +153,16 @@ Alpine.data('activityLogManager', () => withPagination(10, {
         if (key === 'PostStatus' && ['Draft', 'Published', 'Scheduled'].includes(value)) {
             return getLocalizedString(value.toLowerCase());
         }
+        const choices = {
+            SideBarOption: { Right: 'right', Left: 'left', Disabled: 'disabled' },
+            DefaultEditor: { Html: 'html', Markdown: 'markdown' },
+            PostTitleAlignment: { Left: 'left', Center: 'center' },
+            CommentProvider: { BuiltIn: 'builtIn', ThirdParty: 'thirdParty' },
+            CommentOrder: { OldToNew: 'oldToNew', NewToOld: 'newToOld' },
+            WordFilterMode: { Mask: 'maskWord', Block: 'blockComment' }
+        };
+        const label = choices[key]?.[value];
+        if (label) return getLocalizedString(label);
         return String(value);
     }
 }, [10, 20, 30, 40, 50]));

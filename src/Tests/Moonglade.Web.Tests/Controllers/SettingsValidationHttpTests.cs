@@ -221,14 +221,14 @@ public class SettingsValidationHttpTests
         using var client = app.GetTestClient();
         object model = route switch
         {
-            "general" => GeneralSettings.DefaultValue,
-            "content" => ContentSettings.DefaultValue,
-            "comment" => CommentSettings.DefaultValue,
-            "notification" => NotificationSettings.DefaultValue,
-            "subscription" => FeedSettings.DefaultValue,
-            "watermark" => ImageSettings.DefaultValue,
-            "advanced" => AdvancedSettings.DefaultValue,
-            "appearance" => AppearanceSettings.DefaultValue,
+            "general" => config.Capture().GeneralSettings with { SiteTitle = "Changed title" },
+            "content" => config.Capture().ContentSettings with { PostListPageSize = 30 },
+            "comment" => config.Capture().CommentSettings with { EnableComments = false },
+            "notification" => config.Capture().NotificationSettings with { EnableEmailSending = true },
+            "subscription" => config.Capture().FeedSettings with { FeedItemCount = 7 },
+            "watermark" => config.Capture().ImageSettings with { KeepOriginImage = true },
+            "advanced" => config.Capture().AdvancedSettings with { EnableOpml = false },
+            "appearance" => config.Capture().AppearanceSettings with { ThemeId = 777 },
             "custom-menu" => new CustomMenuSettingsJsonModel { IsEnabled = false },
             _ => throw new ArgumentOutOfRangeException(nameof(route))
         };

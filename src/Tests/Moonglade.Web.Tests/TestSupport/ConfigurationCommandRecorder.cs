@@ -4,6 +4,7 @@ using LiteBus.Messaging.Abstractions;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging.Abstractions;
+using Microsoft.Extensions.Logging;
 using Moonglade.ActivityLog;
 using Moonglade.Auth;
 using Moonglade.Configuration;
@@ -24,6 +25,8 @@ internal sealed class ConfigurationCommandRecorder : ICommandMediator, IDisposab
     public LocalAccountState Accounts { get; } = new();
     public ConfigurationWriteGate Gate { get; } = new();
     public Exception? ActivityLogFailure { get; set; }
+    public bool PersistActivityLogs { get; set; }
+    public Mock<ILogger<CreateActivityLogCommandHandler>> ActivityLogger { get; } = new();
     public IEventMediator EventMediator { get; } = Mock.Of<IEventMediator>();
 
     public ConfigurationCommandRecorder()
@@ -68,12 +71,7 @@ internal sealed class ConfigurationCommandRecorder : ICommandMediator, IDisposab
     public async Task SendAsync(ICommand command, CommandMediationSettings? settings, CancellationToken cancellationToken)
     {
         Commands.Add(command);
-        if (command is UpdateConfigurationCommand update)
-        {
-            await new UpdateConfigurationCommandHandler(Db, _config, EventMediator, Gate, NullLogger<UpdateConfigurationCommandHandler>.Instance)
-                .HandleAsync(update, cancellationToken);
-        }
-        else if (command is UpdateLocalAccountCommand accountUpdate)
+        if (command is UpdateLocalAccountCommand accountUpdate)
         {
             await new UpdateLocalAccountCommandHandler(Db, Accounts, Gate, EventMediator, NullLogger<UpdateLocalAccountCommandHandler>.Instance)
                 .HandleAsync(accountUpdate, cancellationToken);
@@ -82,16 +80,23 @@ internal sealed class ConfigurationCommandRecorder : ICommandMediator, IDisposab
         {
             throw ActivityLogFailure;
         }
+        else if (command is CreateActivityLogCommand activity && PersistActivityLogs)
+        {
+            await new CreateActivityLogCommandHandler(Db, ActivityLogger.Object).HandleAsync(activity, cancellationToken);
+        }
     }
 
     public async Task<TCommandResult> SendAsync<TCommandResult>(ICommand<TCommandResult> command,
         CommandMediationSettings? settings, CancellationToken cancellationToken)
     {
+        Commands.Add(command);
+        var handler = new UpdateConfigurationCommandHandler(Db, _config, EventMediator, Gate,
+            NullLogger<UpdateConfigurationCommandHandler>.Instance);
+        if (command is UpdateConfigurationCommand update)
+            return (TCommandResult)(object)await handler.HandleAsync(update, cancellationToken);
         if (command is PatchConfigurationCommand patch)
         {
-            var handler = new UpdateConfigurationCommandHandler(Db, _config, EventMediator, Gate,
-                NullLogger<UpdateConfigurationCommandHandler>.Instance);
-            return (TCommandResult)await handler.HandleAsync(patch, cancellationToken);
+            return (TCommandResult)(object)await handler.HandleAsync(patch, cancellationToken);
         }
 
         throw new NotSupportedException("No result configured for this command.");

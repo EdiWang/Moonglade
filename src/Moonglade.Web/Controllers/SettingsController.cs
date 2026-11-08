@@ -163,28 +163,27 @@ public class SettingsController(
         return await CompleteSettingsSaveAsync(updated);
     }
 
-    private async Task<IActionResult> CompleteSettingsSaveAsync(object settings)
+    private async Task<IActionResult> CompleteSettingsSaveAsync(ConfigurationSaveResult saved)
     {
-        (string EventKey, string GroupName, IReadOnlyDictionary<string, object?>? Details) activity = settings switch
+        if (!saved.HasEffectiveChanges) return NoContent();
+
+        (string EventKey, string GroupName) activity = saved.SettingsType.Name switch
         {
-            GeneralSettings model => (ActivityEvents.SettingsGeneralUpdated, "General",
-                ActivityLogDetails.Create(("SiteTitle", model.SiteTitle), ("LogoText", model.LogoText))),
-            CommentSettings model => (ActivityEvents.SettingsCommentUpdated, "Comment",
-                ActivityLogDetails.Create(("EnableComments", model.EnableComments), ("RequireCommentReview", model.RequireCommentReview))),
-            ImageSettings model => (ActivityEvents.SettingsImageUpdated, "Image",
-                ActivityLogDetails.Create(("EnableCDNRedirect", model.EnableCDNRedirect), ("IsWatermarkEnabled", model.IsWatermarkEnabled))),
-            AppearanceSettings model => (ActivityEvents.SettingsAppearanceUpdated, "Appearance",
-                ActivityLogDetails.Create(("ThemeId", model.ThemeId), ("EnableCustomCss", model.EnableCustomCss))),
-            ContentSettings => (ActivityEvents.SettingsContentUpdated, "Content", null),
-            NotificationSettings => (ActivityEvents.SettingsNotificationUpdated, "Notification", null),
-            FeedSettings => (ActivityEvents.SettingsSubscriptionUpdated, "Subscription", null),
-            AdvancedSettings => (ActivityEvents.SettingsAdvancedUpdated, "Advanced", null),
-            CustomMenuSettings model => (ActivityEvents.SettingsCustomMenuUpdated, "Custom Menu",
-                ActivityLogDetails.Create(("IsEnabled", model.IsEnabled))),
+            nameof(GeneralSettings) => (ActivityEvents.SettingsGeneralUpdated, "General"),
+            nameof(CommentSettings) => (ActivityEvents.SettingsCommentUpdated, "Comment"),
+            nameof(ImageSettings) => (ActivityEvents.SettingsImageUpdated, "Image"),
+            nameof(AppearanceSettings) => (ActivityEvents.SettingsAppearanceUpdated, "Appearance"),
+            nameof(ContentSettings) => (ActivityEvents.SettingsContentUpdated, "Content"),
+            nameof(NotificationSettings) => (ActivityEvents.SettingsNotificationUpdated, "Notification"),
+            nameof(FeedSettings) => (ActivityEvents.SettingsSubscriptionUpdated, "Subscription"),
+            nameof(AdvancedSettings) => (ActivityEvents.SettingsAdvancedUpdated, "Advanced"),
+            nameof(CustomMenuSettings) => (ActivityEvents.SettingsCustomMenuUpdated, "Custom Menu"),
             _ => throw new InvalidOperationException("Unexpected settings type.")
         };
 
-        await LogActivityAfterSaveAsync(logger, activity.EventKey, $"{activity.GroupName} Settings", activity.Details);
+        var changes = saved.Changes.Select(change => new ActivityLogSettingChange(change.Key, change.OldValue, change.NewValue)).ToArray();
+        await LogActivityAfterSaveAsync(logger, activity.EventKey, $"{activity.GroupName} Settings",
+            ActivityLogDetails.Create((ActivityLogSettingChange.DetailsKey, changes)));
         return NoContent();
     }
 
@@ -282,8 +281,8 @@ public class SettingsController(
 
     private async Task<IActionResult> UpdateSettingsAsync<T>(T settings) where T : IBlogSettings<T>
     {
-        await CommandMediator.SendAsync(UpdateConfigurationCommand.Create(settings), HttpContext.RequestAborted);
-        return await CompleteSettingsSaveAsync(settings);
+        var saved = await CommandMediator.SendAsync(UpdateConfigurationCommand.Create(settings), HttpContext.RequestAborted);
+        return await CompleteSettingsSaveAsync(saved);
     }
 
     private IActionResult CreateEmailCapabilityProblem()

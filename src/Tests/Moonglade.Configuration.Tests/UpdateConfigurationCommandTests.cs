@@ -10,7 +10,7 @@ using System.Text.Json;
 
 namespace Moonglade.Configuration.Tests;
 
-public class UpdateConfigurationCommandTests
+public partial class UpdateConfigurationCommandTests
 {
     private readonly ConfigurationWriteGate _gate = new();
     [Fact]
@@ -26,8 +26,9 @@ public class UpdateConfigurationCommandTests
         var command = UpdateConfigurationCommand.Create(model);
         model = model with { SiteTitle = "Changed after dispatch" };
 
-        await Handler(db, config).HandleAsync(command, TestContext.Current.CancellationToken);
+        var result = await Handler(db, config).HandleAsync(command, TestContext.Current.CancellationToken);
 
+        Assert.Equal(new SettingValueChange("SiteTitle", "Old", "New"), Assert.Single(result.Changes));
         Assert.Equal("New", config.Capture().GeneralSettings.SiteTitle);
         Assert.Equal("Old", original.SiteTitle);
         Assert.Same(submitted, command.Settings);
@@ -132,6 +133,9 @@ public class UpdateConfigurationCommandTests
 
         await Task.WhenAll(first, second);
 
+        Assert.Equal(new SettingValueChange("SiteTitle", null, "First"),
+            Assert.Single(first.Result.Changes, change => change.Key == "SiteTitle"));
+        Assert.Equal(new SettingValueChange("SiteTitle", "First", "Second"), Assert.Single(second.Result.Changes));
         Assert.True(secondWasBlocked);
         Assert.Equal("Second", config.Capture().GeneralSettings.SiteTitle);
         secondDb.ChangeTracker.Clear();
@@ -161,6 +165,8 @@ public class UpdateConfigurationCommandTests
         interceptor.Resume.SetResult();
         await Task.WhenAll(firstSave, secondSave);
 
+        Assert.Equal(new SettingValueChange("SiteTitle", "Old", "New title"), Assert.Single(firstSave.Result.Changes));
+        Assert.Equal(new SettingValueChange("LogoText", "moonglade", "New logo"), Assert.Single(secondSave.Result.Changes));
         Assert.True(secondWasBlocked);
         var saved = config.Capture().GeneralSettings;
         Assert.Equal(original with { SiteTitle = "New title", LogoText = "New logo" }, saved);
@@ -190,9 +196,11 @@ public class UpdateConfigurationCommandTests
                 Assert.Equal([nameof(GeneralSettings)], ((ConfigurationChangedEvent)message).Names);
             }).Returns(Task.CompletedTask);
 
-        await new UpdateConfigurationCommandHandler(db, config, events.Object, _gate, NullLogger<UpdateConfigurationCommandHandler>.Instance)
+        var result = await new UpdateConfigurationCommandHandler(db, config, events.Object, _gate, NullLogger<UpdateConfigurationCommandHandler>.Instance)
             .HandleAsync(UpdateConfigurationCommand.Create(General("Committed")), cancellation.Token);
 
+        Assert.Equal(new SettingValueChange("SiteTitle", null, "Committed"),
+            Assert.Single(result.Changes, change => change.Key == "SiteTitle"));
         Assert.True(cancellation.IsCancellationRequested);
         events.Verify(m => m.PublishAsync(It.IsAny<IEvent>(), It.IsAny<EventMediationSettings>(), CancellationToken.None), Times.Once);
         Assert.Equal("Committed", config.Capture().GeneralSettings.SiteTitle);
@@ -299,6 +307,8 @@ public class UpdateConfigurationCommandTests
         interceptor.Resume.SetResult();
         await Task.WhenAll(firstSave, secondSave);
 
+        Assert.Equal(new SettingValueChange("SiteTitle", "Old", "New"), Assert.Single(firstSave.Result.Changes));
+        Assert.Equal(new SettingValueChange("FeedItemCount", 20, 7), Assert.Single(secondSave.Result.Changes));
         Assert.True(secondWasBlocked);
         Assert.Single(events.Invocations);
         var current = config.Capture();

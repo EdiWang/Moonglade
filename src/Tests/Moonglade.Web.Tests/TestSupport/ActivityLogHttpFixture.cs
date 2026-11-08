@@ -12,6 +12,9 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Moonglade.Auth;
+using Moonglade.Configuration;
+using Moonglade.Data;
+using Moonglade.Data.Entities;
 using Moonglade.Web.Controllers;
 using Moonglade.Web.Filters;
 using Moonglade.Web.Services;
@@ -27,9 +30,21 @@ public sealed class ActivityLogHttpFixture(WebApplication app, ActivityLogTestSt
     public WebApplication App { get; } = app;
     public ActivityLogTestStore Store { get; } = store;
 
-    public static async Task<ActivityLogHttpFixture> CreateAsync(int historyCount = 3, CancellationToken ct = default)
+    public static async Task<ActivityLogHttpFixture> CreateAsync(int historyCount = 3, CancellationToken ct = default, bool includeSettings = false)
     {
         var store = await ActivityLogTestStore.CreateAsync(historyCount, ct);
+        if (includeSettings)
+        {
+            using var scope = store.Services.CreateScope();
+            var db = scope.ServiceProvider.GetRequiredService<BlogDbContext>();
+            foreach (var property in typeof(BlogSettingsSnapshot).GetProperties())
+                db.BlogConfiguration.Add(new BlogConfigurationEntity
+                {
+                    CfgKey = property.Name, CfgValue = property.GetValue(store.Config.Capture()).ToJson(),
+                    LastModifiedTimeUtc = new DateTime(2026, 1, 1, 0, 0, 0, DateTimeKind.Utc)
+                });
+            await db.SaveChangesAsync(ct);
+        }
         var directory = new DirectoryInfo(AppContext.BaseDirectory);
         while (directory != null && !File.Exists(Path.Combine(directory.FullName, "src", "Moonglade.Web", "Moonglade.Web.csproj")))
             directory = directory.Parent;
@@ -66,7 +81,7 @@ public sealed class ActivityLogHttpFixture(WebApplication app, ActivityLogTestSt
                 options.Filters.Add<BlogSettingsFilter>();
             })
             .AddJsonOptions(options => options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()))
-            .ConfigureApplicationPartManager(manager => manager.FeatureProviders.Add(new ActivityOnlyFeatureProvider()));
+            .ConfigureApplicationPartManager(manager => manager.FeatureProviders.Add(new ActivityOnlyFeatureProvider(includeSettings)));
         builder.Services.AddRazorPages(options => options.Conventions.AuthorizeFolder("/Admin", BlogAuthSchemas.AdministratorPolicy));
         var app = builder.Build();
         app.UseRequestLocalization(new RequestLocalizationOptions()
@@ -94,11 +109,12 @@ public sealed class ActivityLogHttpFixture(WebApplication app, ActivityLogTestSt
         await Store.DisposeAsync();
     }
 
-    private sealed class ActivityOnlyFeatureProvider : IApplicationFeatureProvider<ControllerFeature>
+    private sealed class ActivityOnlyFeatureProvider(bool includeSettings) : IApplicationFeatureProvider<ControllerFeature>
     {
         public void PopulateFeature(IEnumerable<ApplicationPart> parts, ControllerFeature feature)
         {
-            foreach (var controller in feature.Controllers.Where(type => type.AsType() != typeof(ActivityLogController)).ToArray())
+            foreach (var controller in feature.Controllers.Where(type => type.AsType() != typeof(ActivityLogController)
+                         && (!includeSettings || type.AsType() != typeof(SettingsController))).ToArray())
                 feature.Controllers.Remove(controller);
         }
     }

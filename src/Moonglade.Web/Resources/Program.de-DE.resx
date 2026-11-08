@@ -2069,4 +2069,16 @@
   <data name="User Agent" xml:space="preserve"><value>User-Agent</value></data>
   <data name="Verification file toggled" xml:space="preserve"><value>Verifizierungsdatei umgeschaltet</value></data>
   <data name="Widget ID" xml:space="preserve"><value>Widget-ID</value></data>
+  <data name="Draft" xml:space="preserve"><value>Entwurf</value></data>
+  <data name="Enable JSON-LD BlogPosting" xml:space="preserve"><value>JSON-LD BlogPosting aktivieren</value></data>
+  <data name="Enable Post Scheduler" xml:space="preserve"><value>Zeitgesteuerte Beitragsveröffentlichung aktivieren</value></data>
+  <data name="Enable view count" xml:space="preserve"><value>Aufrufzähler aktivieren</value></data>
+  <data name="Maximum page numbers to display in pagination" xml:space="preserve"><value>Maximale Anzahl angezeigter Seitenzahlen</value></data>
+  <data name="New value" xml:space="preserve"><value>Neuer Wert</value></data>
+  <data name="No change values are available for this update." xml:space="preserve"><value>Für diese Aktualisierung sind keine anzeigbaren Änderungswerte verfügbar.</value></data>
+  <data name="Previous value" xml:space="preserve"><value>Vorheriger Wert</value></data>
+  <data name="Setting" xml:space="preserve"><value>Einstellung</value></data>
+  <data name="Settings changes" xml:space="preserve"><value>Einstellungsänderungen</value></data>
+  <data name="Show comment section on mobile screens" xml:space="preserve"><value>Kommentarbereich auf Mobilgeräten anzeigen</value></data>
+  <data name="Watermark opacity" xml:space="preserve"><value>Deckkraft des Wasserzeichens</value></data>
 </root>

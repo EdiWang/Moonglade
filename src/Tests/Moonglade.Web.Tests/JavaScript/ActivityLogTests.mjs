@@ -269,6 +269,70 @@ test('activityLogManager clear confirmation flow', async t => {
         assert.deepEqual(events, [['error', failure]]);
     });
 
+    await t.test('B3 settings changes retain typed old and new values as plain text', async () => {
+        const { manager, events } = createManager();
+        const changes = [
+            { key: 'SiteTitle', label: 'Title', oldValue: '<old>', newValue: '<script>alert(1)</script>' },
+            { key: 'EnableComments', label: 'Comments', oldValue: true, newValue: false },
+            { key: 'FeedItemCount', label: 'Feed items', oldValue: 0, newValue: 2147483647 },
+            { key: 'SiteTitle', label: 'Nullable title', oldValue: null, newValue: '' }
+        ];
+        manager.detailModal = { show: () => events.push('detail-show') };
+        globalThis.b1Activity.fetch = async () => ({ id: 101, fields: [], changes });
+
+        await manager.showDetail(101);
+
+        assert.equal(manager.hasSettingsChanges, true);
+        assert.strictEqual(manager.currentDetail.changes, changes);
+        assert.deepEqual(changes.map(change => [
+            manager.formatDetailValue(change.oldValue, change.key),
+            manager.formatDetailValue(change.newValue, change.key)
+        ]), [
+            ['<old>', '<script>alert(1)</script>'],
+            ['yes', 'no'],
+            ['0', '2147483647'],
+            ['\u2014', '']
+        ]);
+        assert.deepEqual(events, ['detail-show', 'format']);
+    });
+
+    await t.test('B3 empty changes are intentional while legacy null missing or invalid shapes are not settings changes', () => {
+        const { manager } = createManager();
+        manager.currentDetail = { fields: [], changes: [] };
+        assert.equal(manager.hasSettingsChanges, true);
+        assert.equal(manager.currentDetail.changes.length, 0);
+        assert.equal(manager.hasDetailContext, false);
+        for (const detail of [
+            { fields: [{ key: 'SiteTitle', value: 'Legacy' }], changes: null },
+            { fields: [] },
+            { changes: {} },
+            { changes: '' },
+            null
+        ]) {
+            manager.currentDetail = detail;
+            assert.equal(manager.hasSettingsChanges, false);
+        }
+    });
+
+    await t.test('all six settings enum discriminators localize every approved choice without rewriting ordinary strings', () => {
+        const { manager } = createManager();
+        const cases = [
+            ['SideBarOption', 'Right', 'right'], ['SideBarOption', 'Left', 'left'], ['SideBarOption', 'Disabled', 'disabled'],
+            ['DefaultEditor', 'Html', 'html'], ['DefaultEditor', 'Markdown', 'markdown'],
+            ['PostTitleAlignment', 'Left', 'left'], ['PostTitleAlignment', 'Center', 'center'],
+            ['CommentProvider', 'BuiltIn', 'builtIn'], ['CommentProvider', 'ThirdParty', 'thirdParty'],
+            ['CommentOrder', 'OldToNew', 'oldToNew'], ['CommentOrder', 'NewToOld', 'newToOld'],
+            ['WordFilterMode', 'Mask', 'maskWord'], ['WordFilterMode', 'Block', 'blockComment']
+        ];
+        for (const [key, value, label] of cases) {
+            assert.equal(manager.formatDetailValue(value, key), label, `${key} approved choice`);
+            assert.equal(manager.formatDetailValue(value, 'SiteTitle'), value, `${key} ordinary string`);
+            assert.equal(manager.formatDetailValue('Unknown', key), 'Unknown', `${key} unknown choice`);
+        }
+        assert.equal(manager.formatDetailValue('Right', 'DefaultEditor'), 'Right');
+        assert.equal(manager.formatDetailValue('Markdown', 'CommentProvider'), 'Markdown');
+    });
+
     await t.test('failed list retains existing history and page and empty successful list clears it', async () => {
         const { manager, events, originalLogs } = createManager();
         const failure = new Error('Synthetic list failed');

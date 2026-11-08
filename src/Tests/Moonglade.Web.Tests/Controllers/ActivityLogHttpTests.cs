@@ -13,7 +13,7 @@ using System.Text.RegularExpressions;
 
 namespace Moonglade.Web.Tests.Controllers;
 
-public class ActivityLogHttpTests
+public partial class ActivityLogHttpTests
 {
     [Theory]
     [InlineData(null, HttpStatusCode.Unauthorized)]

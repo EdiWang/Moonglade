@@ -10,7 +10,7 @@ using System.Text.Json;
 
 namespace Moonglade.Web.Tests.Controllers;
 
-public class ActivityLogModelTests
+public partial class ActivityLogModelTests
 {
     [Fact]
     public async Task Catalog_All49ActiveEvents_HaveExactUniqueKeysGroupsAndLabels()
@@ -79,7 +79,7 @@ public class ActivityLogModelTests
         Assert.Equal(["CategoryId", "Slug"], ActivityEvents.Get("category.created").DetailKeys.Order().ToArray());
         Assert.Equal(["CommentId"], ActivityEvents.Get("comment.replied").DetailKeys.ToArray());
         Assert.Equal(["DeletedCount"], ActivityEvents.Get("activity-log.cleared").DetailKeys.ToArray());
-        Assert.Equal(["EnableComments", "RequireCommentReview"], ActivityEvents.Get("settings.comments.updated").DetailKeys.Order().ToArray());
+        Assert.Equal(["Changes", "EnableComments", "RequireCommentReview"], ActivityEvents.Get("settings.comments.updated").DetailKeys.Order().ToArray());
     }
 
     [Fact]

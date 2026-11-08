@@ -2069,4 +2069,16 @@
   <data name="User Agent" xml:space="preserve"><value>ユーザーエージェント</value></data>
   <data name="Verification file toggled" xml:space="preserve"><value>検証ファイルの状態を切り替えました</value></data>
   <data name="Widget ID" xml:space="preserve"><value>ウィジェット ID</value></data>
+  <data name="Draft" xml:space="preserve"><value>下書き</value></data>
+  <data name="Enable JSON-LD BlogPosting" xml:space="preserve"><value>JSON-LD BlogPosting を有効にする</value></data>
+  <data name="Enable Post Scheduler" xml:space="preserve"><value>記事の予約公開を有効にする</value></data>
+  <data name="Enable view count" xml:space="preserve"><value>閲覧回数の集計を有効にする</value></data>
+  <data name="Maximum page numbers to display in pagination" xml:space="preserve"><value>ページ番号の最大表示数</value></data>
+  <data name="New value" xml:space="preserve"><value>新しい値</value></data>
+  <data name="No change values are available for this update." xml:space="preserve"><value>この更新には表示できる変更値がありません。</value></data>
+  <data name="Previous value" xml:space="preserve"><value>以前の値</value></data>
+  <data name="Setting" xml:space="preserve"><value>設定項目</value></data>
+  <data name="Settings changes" xml:space="preserve"><value>設定の変更</value></data>
+  <data name="Show comment section on mobile screens" xml:space="preserve"><value>モバイル画面にコメント欄を表示する</value></data>
+  <data name="Watermark opacity" xml:space="preserve"><value>透かしの不透明度</value></data>
 </root>

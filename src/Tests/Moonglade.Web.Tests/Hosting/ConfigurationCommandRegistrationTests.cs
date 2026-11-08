@@ -78,12 +78,21 @@ public class ConfigurationCommandRegistrationTests
 
         var settings = GeneralSettings.DefaultValue;
         settings = settings with { SiteTitle = "Saved via bus" };
-        await provider.GetRequiredService<ICommandMediator>().SendAsync(UpdateConfigurationCommand.Create(settings), TestContext.Current.CancellationToken);
+        var result = await provider.GetRequiredService<ICommandMediator>().SendAsync(UpdateConfigurationCommand.Create(settings), TestContext.Current.CancellationToken);
 
+        Assert.Equal(typeof(GeneralSettings), result.SettingsType);
+        Assert.True(result.HasEffectiveChanges);
+        Assert.Equal(new SettingValueChange("SiteTitle", null, "Saved via bus"),
+            Assert.Single(result.Changes, change => change.Key == "SiteTitle"));
         Assert.Equal("Saved via bus", config.Capture().GeneralSettings.SiteTitle);
         Assert.NotEqual(previousFeedKey, feeds.GetFeedCacheKey("rss"));
         Assert.Equal(config.Capture().GeneralSettings.ToJson(), (await store.Db.BlogConfiguration.SingleAsync(
             p => p.CfgKey == nameof(GeneralSettings), TestContext.Current.CancellationToken)).CfgValue);
+        var patch = PatchConfigurationCommand.Create<GeneralSettings>(static value => value with { },
+            System.Text.Json.JsonSerializer.SerializeToElement(new Dictionary<string, string> { ["SiteTitle"] = "Patched via bus" }), "SiteTitle");
+        var patched = await provider.GetRequiredService<ICommandMediator>().SendAsync(patch, TestContext.Current.CancellationToken);
+        Assert.Equal(new SettingValueChange("SiteTitle", "Saved via bus", "Patched via bus"), Assert.Single(patched.Changes));
+        Assert.Equal("Patched via bus", config.Capture().GeneralSettings.SiteTitle);
 
         var gate = Assert.Single(provider.GetServices<ConfigurationWriteGate>());
         Assert.Same(gate, provider.GetRequiredService<ConfigurationWriteGate>());

@@ -2069,4 +2069,16 @@
   <data name="User Agent" xml:space="preserve"><value>使用者代理程式</value></data>
   <data name="Verification file toggled" xml:space="preserve"><value>驗證檔案狀態已切換</value></data>
   <data name="Widget ID" xml:space="preserve"><value>小工具 ID</value></data>
+  <data name="Draft" xml:space="preserve"><value>草稿</value></data>
+  <data name="Enable JSON-LD BlogPosting" xml:space="preserve"><value>啟用 JSON-LD BlogPosting</value></data>
+  <data name="Enable Post Scheduler" xml:space="preserve"><value>啟用文章定時發佈</value></data>
+  <data name="Enable view count" xml:space="preserve"><value>啟用瀏覽次數統計</value></data>
+  <data name="Maximum page numbers to display in pagination" xml:space="preserve"><value>分頁最多顯示的頁碼數</value></data>
+  <data name="New value" xml:space="preserve"><value>新值</value></data>
+  <data name="No change values are available for this update." xml:space="preserve"><value>此更新沒有可顯示的變更值。</value></data>
+  <data name="Previous value" xml:space="preserve"><value>舊值</value></data>
+  <data name="Setting" xml:space="preserve"><value>設定項目</value></data>
+  <data name="Settings changes" xml:space="preserve"><value>設定變更</value></data>
+  <data name="Show comment section on mobile screens" xml:space="preserve"><value>在行動裝置上顯示評論區</value></data>
+  <data name="Watermark opacity" xml:space="preserve"><value>浮水印不透明度</value></data>
 </root>

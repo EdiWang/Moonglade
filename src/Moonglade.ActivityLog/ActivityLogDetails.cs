@@ -29,11 +29,25 @@ public static class ActivityLogDetails
         var safe = new Dictionary<string, JsonElement>(StringComparer.Ordinal);
         foreach (var (key, value) in details)
         {
-            if (!definition.DetailKeys.Contains(key) || !IsScalarOrArray(value))
+            if (!definition.DetailKeys.Contains(key))
             {
                 throw new ArgumentException("Activity details contain an unsupported field or value.");
             }
-            safe.Add(key, JsonSerializer.SerializeToElement(value, JsonOptions));
+            if (key == ActivityLogSettingChange.DetailsKey)
+            {
+                if (value is not IReadOnlyList<ActivityLogSettingChange> changes
+                    || changes.Any(change => change is null || !IsScalar(change.OldValue) || !IsScalar(change.NewValue)))
+                    throw new ArgumentException("Activity setting changes contain an unsupported value.");
+                var json = JsonSerializer.SerializeToElement(changes, JsonOptions);
+                ValidateSettingChanges(definition, json);
+                safe.Add(key, json);
+            }
+            else
+            {
+                if (!IsScalarOrArray(value))
+                    throw new ArgumentException("Activity details contain an unsupported field or value.");
+                safe.Add(key, JsonSerializer.SerializeToElement(value, JsonOptions));
+            }
         }
         return JsonSerializer.Serialize(safe);
     }
@@ -42,30 +56,61 @@ public static class ActivityLogDetails
     {
         if (string.IsNullOrWhiteSpace(details)) return new Dictionary<string, JsonElement>();
 
-        var values = JsonSerializer.Deserialize<Dictionary<string, JsonElement>>(details)
-            ?? throw new InvalidDataException("Activity details must be a JSON object.");
-        foreach (var (key, value) in values)
+        try
         {
-            if (!definition.DetailKeys.Contains(key) || !IsSafeJson(value))
+            using var document = JsonDocument.Parse(details);
+            if (document.RootElement.ValueKind != JsonValueKind.Object)
+                throw new InvalidDataException("Activity details must be a JSON object.");
+            var values = new Dictionary<string, JsonElement>(StringComparer.Ordinal);
+            foreach (var field in document.RootElement.EnumerateObject())
             {
-                throw new InvalidDataException("Stored activity details contain an unsupported field or value.");
+                if (!definition.DetailKeys.Contains(field.Name) || !values.TryAdd(field.Name, field.Value.Clone()))
+                    throw new InvalidDataException("Stored activity details contain an unsupported or repeated field.");
+                if (field.Name == ActivityLogSettingChange.DetailsKey)
+                    ValidateSettingChanges(definition, field.Value);
+                else if (!IsSafeJson(field.Value))
+                    throw new InvalidDataException("Stored activity details contain an unsupported value.");
             }
+            return values;
         }
-        return values;
+        catch (JsonException)
+        {
+            throw new InvalidDataException("Stored activity details contain invalid JSON.");
+        }
     }
 
-    private static bool IsScalarOrArray(object? value) => value switch
+    private static void ValidateSettingChanges(ActivityEventDefinition definition, JsonElement changes)
     {
+        if (definition.SettingKeys is null || changes.ValueKind != JsonValueKind.Array)
+            throw new InvalidDataException("Activity setting changes are not supported for this event.");
+        var keys = new HashSet<string>(StringComparer.Ordinal);
+        foreach (var change in changes.EnumerateArray())
+        {
+            if (change.ValueKind != JsonValueKind.Object)
+                throw new InvalidDataException("Activity setting changes must contain field changes.");
+            var properties = change.EnumerateObject().ToArray();
+            if (properties.Length != 3 || properties.Select(property => property.Name).Distinct(StringComparer.Ordinal).Count() != 3
+                || !change.TryGetProperty("Key", out var key) || key.ValueKind != JsonValueKind.String
+                || !change.TryGetProperty("OldValue", out var oldValue) || !IsSafeScalarJson(oldValue)
+                || !change.TryGetProperty("NewValue", out var newValue) || !IsSafeScalarJson(newValue)
+                || !definition.SettingKeys.Contains(key.GetString()!) || !keys.Add(key.GetString()!)
+                || JsonElement.DeepEquals(oldValue, newValue))
+                throw new InvalidDataException("Activity setting changes contain an unsupported, repeated, or unchanged field.");
+        }
+    }
+
+    private static bool IsScalar(object? value) => value is
         null or string or bool or byte or sbyte or short or ushort or int or uint or long or ulong
-            or float or double or decimal or Guid or Enum => true,
-        Array array => array.Cast<object?>().All(item => item is not Array && IsScalarOrArray(item)),
-        _ => false
-    };
+        or float or double or decimal or Guid or Enum;
+
+    private static bool IsScalarOrArray(object? value) => IsScalar(value) || value is Array array && array.Cast<object?>().All(IsScalar);
+
+    private static bool IsSafeScalarJson(JsonElement value) => value.ValueKind is
+        JsonValueKind.Null or JsonValueKind.String or JsonValueKind.Number or JsonValueKind.True or JsonValueKind.False;
 
     private static bool IsSafeJson(JsonElement value) => value.ValueKind switch
     {
-        JsonValueKind.Null or JsonValueKind.String or JsonValueKind.Number or JsonValueKind.True or JsonValueKind.False => true,
-        JsonValueKind.Array => value.EnumerateArray().All(item => item.ValueKind != JsonValueKind.Array && IsSafeJson(item)),
-        _ => false
+        JsonValueKind.Array => value.EnumerateArray().All(IsSafeScalarJson),
+        _ => IsSafeScalarJson(value)
     };
 }
