@@ -1158,6 +1158,9 @@
   <data name="Post published" xml:space="preserve">
     <value>投稿を公開しました</value>
   </data>
+  <data name="Post automatically published" xml:space="preserve">
+    <value>投稿が自動公開されました</value>
+  </data>
   <data name="Post restored" xml:space="preserve">
     <value>投稿を復元しました</value>
   </data>

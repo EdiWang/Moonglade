@@ -9,7 +9,7 @@ A public blog and authenticated admin portal provide:
 - **Content publishing:** posts, drafts, scheduled posts, Markdown Mermaid diagrams, pages, featured/outdated flags, archives, recycle bin behavior, and route links for published posts.
 - **Reader interaction:** comments, replies, Webmentions, comment moderation, view counts, and optional email notifications.
 - **Site management:** runtime blog settings, widgets, themes, custom CSS, menus, image storage, site verification files, account settings, and data import/export.
-- **Activity history:** localized administrator history with time, actor, a single activity description, event/date filters, and readable details. Ordinary setting updates show approved before/after values only when effective values change; unchanged saves produce no activity entry, while updates without displayable values retain a localized explanation. **Clear all** is the only deletion action; public comment submissions are excluded. After clearing, the application attempts to record the administrator, time, and deleted count. A failed activity write is logged without undoing the business operation.
+- **Activity history:** localized administrator history with time, actor, a single activity description, event/date filters, and readable details. Each automatically published article has its own System entry with the captured title, stable ID, and actual publication time. Ordinary setting updates show approved before/after values only when effective values change; unchanged saves produce no activity entry, while updates without displayable values retain a localized explanation. **Clear all** is the only deletion action; public comment submissions are excluded. After clearing, the application attempts to record the administrator, time, and deleted count. A failed activity write is logged without undoing the business operation.
 - **Discovery and interoperability:** RSS, Atom, OPML, OpenSearch, FOAF, sitemap, robots.txt, IndexNow, root-level site ownership verification files, reader-friendly markup, and health checks.
 
 The admin portal supports desktop browsers with a viewport at least 1440 CSS pixels wide.
@@ -108,6 +108,8 @@ Choose HTML or Markdown under **Settings > Content > Default editor** (`/admin/s
 ### Content Cache Invalidation
 
 Article saves, publication changes (including scheduled publishing), recycle-bin operations, and category/tag updates or deletions invalidate article caches, feeds, and the sitemap. Counters do not trigger invalidation; page-specific sitemap invalidation preserves article/feed caches. Feeds and the sitemap expire after one hour; articles use `PostCacheMinutes`. Invalidation is process-local, so multiple instances require separate coordination. See [Caching and Side Effects](docs/agent-reference.md#caching-and-side-effects) for implementation details.
+
+Scheduled publication commits before cache and activity notifications. It attempts the activity handoff even if postcommit cache notification fails, while retaining that cache failure's existing error behavior. Individual activity failures do not roll back publication or stop the remaining activity writes; already-published articles are excluded from later scheduler passes. This is best-effort, in-process history, not durable delivery or multi-instance deduplication, and adds no further activity schema migration.
 
 ### Saving Blog Settings
 

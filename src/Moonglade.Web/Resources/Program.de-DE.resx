@@ -1158,6 +1158,9 @@
   <data name="Post published" xml:space="preserve">
     <value>Beitrag veröffentlicht</value>
   </data>
+  <data name="Post automatically published" xml:space="preserve">
+    <value>Beitrag automatisch veröffentlicht</value>
+  </data>
   <data name="Post restored" xml:space="preserve">
     <value>Beitrag wiederhergestellt</value>
   </data>

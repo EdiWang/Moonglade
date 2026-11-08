@@ -1158,6 +1158,9 @@
   <data name="Post published" xml:space="preserve">
     <value>文章已发布</value>
   </data>
+  <data name="Post automatically published" xml:space="preserve">
+    <value>文章已自动发布</value>
+  </data>
   <data name="Post restored" xml:space="preserve">
     <value>文章已恢复</value>
   </data>

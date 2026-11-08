@@ -3,7 +3,7 @@
 ## Resume Here
 
 - Planning snapshot: 2026-11-08, Asia/Taipei. Repository baseline was clean at `4140154d4e4c54b37b057a9e9d717306fdeefca1` on `master`. Recheck the current branch, HEAD, and `git status --short` before starting. Preserve other work.
-- The user accepted B2 on 2026-11-08 and requested B3 implementation. B3 started from a clean `master` at `a566629054d24ffa2032e649c87d5a7d363ce1ff` and is now awaiting user acceptance with technical verification complete and no agent commit. The B2 application cutover is committed as `19e12ef03e954591c40adfdbb5caa3651568bfac`, and its separately authorized Development PostgreSQL upgrade is applied and verified with a retained whole-database backup. B3 changes effective settings audit behavior and structured detail content, not the B2 database schema. No further database operation, production upgrade, deployment, or B4 work is authorized.
+- The user accepted B3 on 2026-11-08 and requested B4 implementation. B4 is technically complete and awaiting user acceptance: Features 132, BackgroundServices 15, Web 630; zero failures/skips, clean Web build, and disposable browser verification passed. It started from a clean `master` at `7ed70bc12460676fcb8ec01ff8c605f06bf9d8f8`, the observed user B3 commit; no B4 commit was made. B2's separately authorized Development PostgreSQL upgrade remains applied with its retained whole-database backup. B4 adds the approved `post.automatically-published` System event and committed-publication handoff without a schema change. No further database operation, production upgrade, deployment, or B5 work is authorized.
 - In a fresh conversation, read this file, [AGENTS.md](AGENTS.md), and the applicable sections of the [engineering reference](docs/agent-reference.md). No Java, JDK, or JRE may be used. Repository text is English outside localization resources.
 - Start with the earliest unaccepted batch in the progress table. Check the last recorded evidence and open decisions before touching code. If the work is already committed, verify that commit before resuming acceptance.
 - Ask the user about new requirement, behavior, architecture, ownership, public contract, or data-policy choices. Explain the alternatives, impact, and recommendation. Continue independent work already authorized. Record each answer and the affected acceptance criteria here before starting dependent work.
@@ -124,9 +124,9 @@ git diff --check
 | B0 | Accepted | User approved the review package on 2026-11-08. Web 370 passed, Configuration 102 passed, Web build clean. Isolated browser baseline unavailable. | Tracker introduction commit (`git log --diff-filter=A -1 -- ACTIVITY_LOG_PLAN.md`) | B0 closed. |
 | B1 | Accepted | User accepted B1 on 2026-11-08. Web 382 passed; Node 22 passed; Web build clean; SQLite HTTP/fault and browser verification complete. | `3226ff207417923e1894ab7dbdb2fb67b57f871b` | B1 closed. |
 | B2 | Accepted | User accepted B2 on 2026-11-08 after the Development migration. Web 461, Setup 160, activity provider subset 10, Node 28; zero failures/skips. Web build and disposable browser passed. | `19e12ef03e954591c40adfdbb5caa3651568bfac` (observed user commit) | B2 closed. |
-| B3 | Awaiting acceptance | Configuration 310, Web 607, Node 31; zero failures/skips. HTTP subset 63 passed; Web build clean; real-handler SQLite and English/zh-Hans browser flow passed. | Not committed | Await B3 user acceptance; B4 remains gated. |
-| B4 | Not started | Pending | — | Wait for B3 acceptance. |
-| B5 | Not started | Pending | — | Wait for B3 and B4 acceptance. |
+| B3 | Accepted | User accepted B3 on 2026-11-08. Configuration 310, Web 607, Node 31; zero failures/skips. HTTP subset 63 passed; Web build and isolated browser passed. | `7ed70bc12460676fcb8ec01ff8c605f06bf9d8f8` (observed user commit) | B3 closed. |
+| B4 | Awaiting acceptance | Features 132, BackgroundServices 15, Web 630; zero failures/skips. Web build clean; real SQLite/bus/cache/fault tests and English/zh-Hans browser verification passed. | Not committed | User acceptance of per-post System history; application rollback point `7ed70bc12460676fcb8ec01ff8c605f06bf9d8f8`. B5 remains gated. |
+| B5 | Not started | Pending | — | Wait for B4 acceptance. |
 
 ### Batch Evidence To Append
 
@@ -314,7 +314,7 @@ dotnet build src\Moonglade.Web\Moonglade.Web.csproj --no-restore --verbosity qui
 git diff --check
 ```
 
-- The browser pages and attached loopback host were closed, its listener was verified stopped, and the specific preview/test-pipeline scratch was removed after retaining evidence here. Changed-file CRLF/final-newline conventions, exact-case resource keys, synchronized documentation links, and final working-tree scope were checked. B3 is technically complete and awaiting user acceptance, not committed or accepted; do not start B4.
+- The browser pages and attached loopback host were closed, its listener was verified stopped, and the specific preview/test-pipeline scratch was removed after retaining evidence here. Changed-file CRLF/final-newline conventions, exact-case resource keys, synchronized documentation links, and final working-tree scope were checked. At its initial handoff B3 awaited acceptance without an agent commit. The user subsequently committed and accepted B3, as recorded in Progress, and authorized B4.
 
 ### B3 Requirement Evidence
 
@@ -338,3 +338,54 @@ Method names below are in the owning Configuration or Web test project; Node nam
 | Empty HTTP 204 responses, administrator authorization, valid/missing/invalid CSRF | `SettingsHttp_FullAndPatch_Return204AndExactSafeChangeThenSuppressNoOp`; `SettingsHttp_UnauthorizedOrMissingCsrf_PreservesStateWithoutAudit`; browser real antiforgery-protected full/PATCH saves. |
 | All 51 labels localize and typed values render as text | `SettingDetails_All51LabelsAreLocalizedAndOldNewValuesRemainTypedPlainText`; Node `B3 settings changes retain typed old and new values as plain text` and `all six settings enum discriminators localize every approved choice without rewriting ordinary strings`; English/zh-Hans browser checks. |
 | Named account events remain safe and preserve sign-out policy | `AccountNamedEvents_RealWriterStoresNoProtectedValuesAndPreservesSignOutPolicy`; retained password/authenticator audit-failure tests. |
+
+## B4 Evidence
+
+- 2026-11-08, Asia/Taipei. The user accepted B3 and requested B4. Started with a clean `master` at `7ed70bc12460676fcb8ec01ff8c605f06bf9d8f8`; that commit remains the application rollback point. No agent commit, push, real database operation, migration, deployment, or B5 work occurred.
+- Implemented the B0-approved new `post.automatically-published` event, bringing the canonical catalog to 50. Its only allowed detail is `PostId`. Added the exact automatic-publication label in all four localization resources; System activity retains no administrator or request context.
+- Features still owns selection and database persistence and still returns the EF affected-entry `int`. The original due predicate, separate cutoff/execution UTC samples, publication date, route generation, schedule clearing, and LastModified behavior remain unchanged. A positive successful save captures a read-only detached batch of post ID, title, and actual publication UTC.
+- The existing `PostChangedEvent` cache attempt remains first. A `finally` handoff attempts `ScheduledPostsPublishedEvent` even when that cache operation fails, preserving its original exception and worker error behavior. Both postcommit notifications use `CancellationToken.None`. A failed handoff is safely logged without undoing publication or changing the successful return.
+- The discovered Web subscriber awaits an independent System activity command for each captured post, continues after individual dispatch/write failures, and performs no publication, cache, or outbound notification work. The activity command accepts optional occurrence UTC; existing callers still default to current UTC, and the shared UTC guard rejects local/unspecified values without resurrecting failed inserts.
+- Delivery is best-effort in-process, not durable or globally exactly-once. A later normal scheduler pass excludes already-published posts and therefore emits no repeat history. No queue, retry, cross-host coordination, uniqueness constraint, new schema, migration script, or provider-specific behavior was introduced.
+- Dedicated automated verification added 38 cases across 20 methods. Features 132, BackgroundServices 15, and Web 630 passed: 777 total, zero failures/skips, all final commands exit zero. Focused Features 15, worker 7, and Web 234 are subsets, not additional independent cases. The final parent Web build has zero warnings/errors. BackgroundServices test compilation retains three pre-existing CS8602 warnings in unchanged `CannonServiceTests.cs` at lines 54, 154, and 192; new B4 tests are warning-free.
+- Assertion-quality and static change-survival review strengthened the actual pre-query cancellation, supplied-UTC writer cancellation, exact single-post row count, and audit-only dispatch assertions. No assertions were weakened, skipped, or removed to fit production. No production defect was found. No empirical mutation score or measured coverage percentage is claimed.
+- The browser gate used an isolated loopback host with compiled production Web/Razor/assets, actual Features/ActivityLog handlers, actual cache invalidators and scheduled-event subscriber, validated synthetic configuration, synthetic administrator authentication, and in-memory SQLite. No application startup initializer, hosted worker, real account, appsettings copy, real database, email, or external integration was used.
+- Eight synthetic posts included three due posts (before and exactly at cutoff) and five unchanged future/null-schedule/draft/deleted/already-published sentinels. The actual bus command returned 3, committed all three publications at `2026-11-08T04:55:02Z`, generated their expected `2026/11/8` routes, cleared schedules, preserved LastModified, advanced post/feed/sitemap generations to 1, and wrote exactly three System entries at that same occurrence UTC.
+- The fixture subsequently renamed and soft-deleted one published post; its captured literal `<b>Due alpha</b>` activity target remained unchanged. Another actual scheduler pass returned 0 with identical post state, activity IDs/count, and cache generations. Automatic/manual/exact-inclusive-time/before-occurrence API filters returned 3/0/3/0; the catalog contained exactly one new key.
+- All three actual English detail modals identified their own post ID, captured title, and publication time without stale target data. zh-Hans list/filter/detail/System/Post ID labels agreed. The literal markup stayed plain text, with PostId-only fields and no request context, post body, or renamed title in captured history. Scoped CSS loaded; missing synthetic favicons and the existing transient Bootstrap close-focus warning were fixture/UI limits, with no activity-script exception. Failure isolation is proved by automated fault injection, not a browser-induced database failure.
+- README, AGENTS, the engineering reference, and the test README are synchronized. The previously recorded non-settings label casing issues remain unchanged for B5 integrated review. B4 requires no further Development migration; the separately retained restore-tested B2 backup remains untouched.
+- The task-owned browser pages were closed and all three disposable preview ports were verified stopped. Preview and test-pipeline scratch were removed after retaining evidence here. Final changed-file UTF-8/CRLF/final-newline, exact resource-key uniqueness, documentation-link, diff-scope, `git diff --check`, branch, HEAD, and status checks passed. B4 is **Awaiting acceptance**, not Accepted or committed; do not start B5.
+
+### B4 Verification Commands
+
+All commands ran from the repository root with the configured Microsoft.Testing.Platform runner. Final owning-suite results were retained after the pipeline's last test correction; production and tests did not change afterward.
+
+```powershell
+dotnet test --project src\Tests\Moonglade.Features.Tests\Moonglade.Features.Tests.csproj --filter-class '*PublishScheduledPostCommandTests'
+dotnet test --project src\Tests\Moonglade.BackgroundServices.Tests\Moonglade.BackgroundServices.Tests.csproj --filter-class '*ScheduledPublishServiceTests'
+dotnet test --project src\Tests\Moonglade.Web.Tests\Moonglade.Web.Tests.csproj --filter-class '*ScheduledPostsPublishedEventHandlerTests' '*ActivityLogModelTests' '*PostCacheInvalidationTests' '*ScheduledPublicationRegistrationTests' '*ActivityLogHttpTests'
+dotnet test --project src\Tests\Moonglade.Features.Tests\Moonglade.Features.Tests.csproj
+dotnet test --project src\Tests\Moonglade.BackgroundServices.Tests\Moonglade.BackgroundServices.Tests.csproj
+dotnet test --project src\Tests\Moonglade.Web.Tests\Moonglade.Web.Tests.csproj
+dotnet build src\Moonglade.Web\Moonglade.Web.csproj --no-restore --verbosity quiet
+git diff --check
+```
+
+### B4 Requirement Evidence
+
+Exact method names below are in the owning Features, BackgroundServices, or Web test project. Real SQLite/cache outcomes and browser checks are separate from direct dispatcher assertions.
+
+| Requirement | Evidence |
+| --- | --- |
+| Original due/ineligible boundaries, distinct execution UTC, rollover routes, LastModified, affected-entry int, repeat suppression | `HandleAsync_MixedEligibility_UsesCutoffAndExecutionTimeAndDoesNotRepeat`; strengthened `HandleAsync_DueScheduledPost_PublishesPostAndGeneratesRouteLink`. |
+| Empty, failed, cancelled and zero-row saves never notify or persist publication | `HandleAsync_EmptySelection_DoesNotSaveOrNotify`; `HandleAsync_UnsuccessfulSave_DoesNotNotifyOrPersistPublication`; `HandleAsync_ZeroRowSave_DoesNotNotify`; `ScheduledPublication_UncommittedSqlitePass_LeavesPostCachesAndActivityUntouched`. |
+| Noncancelable postcommit notifications and detached read-only snapshots | `HandleAsync_PostCommitCancellation_UsesNoncancelableNotifications`; `HandleAsync_CacheSubscriberMutatesPosts_HandsOffDetachedReadOnlySnapshot`. |
+| Cache failure still audits; handoff failure preserves successful return and original cache exception | `HandleAsync_NotificationFailures_PreservePublicationAndOriginalCacheException`; `ScheduledPublication_RealCacheFailsAfterCommit_StillPersistsAuditAndRethrowsOriginalFailure`. |
+| Per-post System-only commands, canonical key, captured target/time, safe details and diagnostics, sequential failure/cancellation continuation | `HandleAsync_Batch_EmitsOrderedIndependentSystemCommandsWithPublicationSnapshots`; `HandleAsync_PendingWrite_AwaitsItBeforeDispatchingNextPost`; `HandleAsync_OneDispatchFailsOrCancels_ContinuesWithSafeDiagnostics`. |
+| Supplied/default UTC, non-UTC rejection, failed-entity detachment and no resurrection | `Writer_PublicationOccurrence_PreservesSuppliedUtcOrDefaultsToCurrentUtc`; `Writer_NonUtcSuppliedOccurrence_RejectsSafelyAndDoesNotResurrectOnLaterSave`; `Writer_SuppliedUtcWriteFailsOrCancels_DetachesActivityAndLogsOnlySafeFailureType`. |
+| Real publication, actual cache/feed/sitemap outcomes and repeat isolation, independently from audits | `ScheduledPublication_RealBusMixedBatch_PreservesPublicationCachesAndExactlyOneAuditPerPost`; browser three-post pass and unchanged repeat. |
+| Failed activity insert leaves publication/cache committed, continues the batch and never resurrects on a later save | `ScheduledPublication_OneSqliteActivityInsertFails_ContinuesAndNeverResurrectsFailedEntry`. |
+| Detached rename/delete targets, five-culture filter/list/detail identity and occurrence, plain text | `AutomaticPublication_DetachedRenameDeleteSnapshots_KeepLocalizedFilterListDetailIdentityAndOccurrence`; actual English three-detail and zh-Hans browser checks. |
+| Catalog 50 and exact localized identities preserve previous events | `Catalog_All50ActiveEvents_HaveExactUniqueKeysGroupsAndLabels`; `Catalog_All50Events_LocalizedFiltersSummaryAndHeadingShareIdentity`. |
+| Actual Web LiteBus composition discovers the subscriber | `WebServices_ActualLiteBusDiscovery_DispatchesScheduledPublicationToSystemWriter`. |
+| Worker int/failure/shutdown policies and existing wake/toggle behavior | `Worker_RealScheduledCommand_RetainsIntResultAndPostCommitFailurePoliciesAndStopsPromptly`; retained `DisableWhileWaiting_SkipsPublicationAndRemainsRunning`, `EnableWhileDisabled_WakesAndPublishesDueWorkWithoutFiveMinuteDelay`, `DisableAfterDispatch_DoesNotCancelPublicationAlreadyRunning`. |

@@ -23,6 +23,7 @@ public static class ActivityEvents
     public const string PostUpdated = "post.updated";
     public const string PostDeleted = "post.deleted";
     public const string PostPublished = "post.published";
+    public const string PostAutomaticallyPublished = "post.automatically-published";
     public const string PostUnpublished = "post.unpublished";
     public const string CommentApprovalToggled = "comment.approval-toggled";
     public const string CommentDeleted = "comment.deleted";
@@ -75,6 +76,7 @@ public static class ActivityEvents
         Define(PostUpdated, "Posts", "Post updated", "PostId", "Slug", "PostStatus"),
         Define(PostDeleted, "Posts", "Post moved to recycle bin", "PostId"),
         Define(PostPublished, "Posts", "Post published", "PostId"),
+        Define(PostAutomaticallyPublished, "Posts", "Post automatically published", "PostId"),
         Define(PostUnpublished, "Posts", "Post unpublished", "PostId"),
         Define(CommentApprovalToggled, "Comments", "Comment approval toggled", "CommentId"),
         Define(CommentDeleted, "Comments", "Comments deleted", "CommentIds"),

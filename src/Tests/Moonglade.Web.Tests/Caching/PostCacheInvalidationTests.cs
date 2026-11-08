@@ -19,6 +19,7 @@ using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Moonglade.BackgroundServices;
+using Moonglade.ActivityLog;
 using Moonglade.Configuration;
 using Moonglade.Data;
 using Moonglade.Data.Entities;
@@ -338,6 +339,7 @@ public partial class PostCacheInvalidationTests
                 {
                     module.RegisterFromAssembly(typeof(CreatePostCommand).Assembly);
                     module.RegisterFromAssembly(typeof(UpdateConfigurationCommand).Assembly);
+                    module.RegisterFromAssembly(typeof(CreateActivityLogCommand).Assembly);
                 });
                 bus.AddQueries(module =>
                 {

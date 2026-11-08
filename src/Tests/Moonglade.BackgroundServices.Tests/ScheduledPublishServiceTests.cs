@@ -8,7 +8,7 @@ using Moq;
 
 namespace Moonglade.BackgroundServices.Tests;
 
-public class ScheduledPublishServiceTests
+public partial class ScheduledPublishServiceTests
 {
     [Fact]
     public async Task DisableWhileWaiting_SkipsPublicationAndRemainsRunning()
@@ -117,6 +117,7 @@ public class ScheduledPublishServiceTests
     {
         public TaskCompletionSource Waiting { get; } = new(TaskCreationOptions.RunContinuationsAsynchronously);
         public TaskCompletionSource Disabled { get; } = new(TaskCreationOptions.RunContinuationsAsynchronously);
+        public TaskCompletionSource<(int? Count, Exception? Failure)> Outcome { get; } = new(TaskCreationOptions.RunContinuationsAsynchronously);
         public IDisposable? BeginScope<TState>(TState state) where TState : notnull => null;
         public bool IsEnabled(LogLevel logLevel) => true;
         public void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception? exception, Func<TState, Exception?, string> formatter)
@@ -124,6 +125,13 @@ public class ScheduledPublishServiceTests
             var message = formatter(state, exception);
             if (message.StartsWith("Next scheduled publish in", StringComparison.Ordinal)) Waiting.TrySetResult();
             if (message.StartsWith("Scheduled publishing is disabled", StringComparison.Ordinal)) Disabled.TrySetResult();
+            if (message.StartsWith("Published ", StringComparison.Ordinal))
+            {
+                if (state is IEnumerable<KeyValuePair<string, object?>> fields)
+                    Outcome.TrySetResult(((int)fields.Single(field => field.Key == "Count").Value!, null));
+            }
+            if (message.StartsWith("Error in ScheduledPublishService.", StringComparison.Ordinal))
+                Outcome.TrySetResult((null, exception));
         }
     }
 }

@@ -13,7 +13,7 @@ namespace Moonglade.Web.Tests.Controllers;
 public partial class ActivityLogModelTests
 {
     [Fact]
-    public async Task Catalog_All49ActiveEvents_HaveExactUniqueKeysGroupsAndLabels()
+    public async Task Catalog_All50ActiveEvents_HaveExactUniqueKeysGroupsAndLabels()
     {
         (string Key, string Group, string Label)[] expected =
         [
@@ -29,6 +29,7 @@ public partial class ActivityLogModelTests
             ("post.updated", "Posts", "Post updated"),
             ("post.deleted", "Posts", "Post moved to recycle bin"),
             ("post.published", "Posts", "Post published"),
+            ("post.automatically-published", "Posts", "Post automatically published"),
             ("post.unpublished", "Posts", "Post unpublished"),
             ("comment.approval-toggled", "Comments", "Comment approval toggled"),
             ("comment.deleted", "Comments", "Comments deleted"),
@@ -69,15 +70,16 @@ public partial class ActivityLogModelTests
         ];
         var actual = await new GetEventTypesQueryHandler().HandleAsync(new GetEventTypesQuery(),
             TestContext.Current.CancellationToken);
-        Assert.Equal(49, actual.Count);
+        Assert.Equal(50, actual.Count);
         Assert.Equal(expected.OrderBy(item => item.Key), actual.Select(item => (item.Key, item.Group, item.Label)).OrderBy(item => item.Key));
-        Assert.Equal(49, actual.Select(item => item.Key).Distinct(StringComparer.Ordinal).Count());
-        Assert.Equal(49, actual.Select(item => item.Label).Distinct(StringComparer.Ordinal).Count());
+        Assert.Equal(50, actual.Select(item => item.Key).Distinct(StringComparer.Ordinal).Count());
+        Assert.Equal(50, actual.Select(item => item.Label).Distinct(StringComparer.Ordinal).Count());
         Assert.Equal(expected.Select(item => item.Key).Order(), typeof(ActivityEvents)
             .GetFields(BindingFlags.Public | BindingFlags.Static).Where(field => field.IsLiteral)
             .Select(field => Assert.IsType<string>(field.GetRawConstantValue())).Order());
         Assert.Equal(["CategoryId", "Slug"], ActivityEvents.Get("category.created").DetailKeys.Order().ToArray());
         Assert.Equal(["CommentId"], ActivityEvents.Get("comment.replied").DetailKeys.ToArray());
+        Assert.Equal(["PostId"], ActivityEvents.Get("post.automatically-published").DetailKeys.ToArray());
         Assert.Equal(["DeletedCount"], ActivityEvents.Get("activity-log.cleared").DetailKeys.ToArray());
         Assert.Equal(["Changes", "EnableComments", "RequireCommentReview"], ActivityEvents.Get("settings.comments.updated").DetailKeys.Order().ToArray());
     }

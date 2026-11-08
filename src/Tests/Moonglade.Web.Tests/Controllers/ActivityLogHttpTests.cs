@@ -120,7 +120,7 @@ public partial class ActivityLogHttpTests
     [InlineData("zh-Hant")]
     [InlineData("de-DE")]
     [InlineData("ja-JP")]
-    public async Task Catalog_All49Events_LocalizedFiltersSummaryAndHeadingShareIdentity(string culture)
+    public async Task Catalog_All50Events_LocalizedFiltersSummaryAndHeadingShareIdentity(string culture)
     {
         var ct = TestContext.Current.CancellationToken;
         await using var fixture = await ActivityLogHttpFixture.CreateAsync(0, ct);
@@ -142,11 +142,11 @@ public partial class ActivityLogHttpTests
         var labels = filters.RootElement.EnumerateArray()
             .SelectMany(group => group.GetProperty("items").EnumerateArray())
             .ToDictionary(item => item.GetProperty("key").GetString()!, item => item.GetProperty("label").GetString()!);
-        Assert.Equal(49, labels.Count);
+        Assert.Equal(50, labels.Count);
         using var list = JsonDocument.Parse(await client.GetStringAsync("/api/activitylog/list?pageSize=100", ct));
-        Assert.Equal(49, list.RootElement.GetProperty("totalItemCount").GetInt32());
+        Assert.Equal(50, list.RootElement.GetProperty("totalItemCount").GetInt32());
         var items = list.RootElement.GetProperty("items").EnumerateArray().ToArray();
-        Assert.Equal(49, items.Length);
+        Assert.Equal(50, items.Length);
         var originalCulture = CultureInfo.CurrentUICulture;
         try
         {

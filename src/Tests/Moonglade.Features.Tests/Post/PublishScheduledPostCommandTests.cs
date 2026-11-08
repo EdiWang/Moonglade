@@ -5,7 +5,7 @@ using Moonglade.Features.Post;
 
 namespace Moonglade.Features.Tests.Post;
 
-public class PublishScheduledPostCommandTests
+public partial class PublishScheduledPostCommandTests
 {
     private static readonly DateTimeOffset DueCutoffUtc = new(2026, 8, 15, 1, 2, 3, TimeSpan.Zero);
     private static readonly DateTimeOffset SuccessfulPublishTimeUtc = DueCutoffUtc.AddSeconds(2);
@@ -34,7 +34,7 @@ public class PublishScheduledPostCommandTests
         var result = await handler.HandleAsync(new PublishScheduledPostCommand(), TestContext.Current.CancellationToken);
 
         var post = await db.Post.SingleAsync(p => p.Id == postId, TestContext.Current.CancellationToken);
-        Assert.True(result > 0);
+        Assert.Equal(1, result);
         Assert.Equal(PostStatus.Published, post.PostStatus);
         Assert.Equal(SuccessfulPublishTimeUtc.UtcDateTime, post.PubDateUtc);
         Assert.Null(post.ScheduledPublishTimeUtc);
@@ -102,7 +102,8 @@ public class PublishScheduledPostCommandTests
     }
 
     private static PublishScheduledPostCommandHandler CreateHandler(BlogDbContext db) =>
-        new(db, new SequenceTimeProvider(DueCutoffUtc, SuccessfulPublishTimeUtc), Moq.Mock.Of<IEventMediator>());
+        new(db, new SequenceTimeProvider(DueCutoffUtc, SuccessfulPublishTimeUtc), Moq.Mock.Of<IEventMediator>(),
+            Microsoft.Extensions.Logging.Abstractions.NullLogger<PublishScheduledPostCommandHandler>.Instance);
 
     private static PostEntity CreatePostEntity(Guid id, PostStatus status, string slug, DateTime? scheduledPublishTimeUtc = null, DateTime? pubDateUtc = null)
     {

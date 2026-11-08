@@ -13,7 +13,8 @@ public record CreateActivityLogCommand(
     string? TargetDisplayName = null,
     IReadOnlyDictionary<string, object?>? Details = null,
     string? IpAddress = null,
-    string? UserAgent = null) : ICommand;
+    string? UserAgent = null,
+    DateTime? EventTimeUtc = null) : ICommand;
 
 public class CreateActivityLogCommandHandler(
     BlogDbContext db,
@@ -41,7 +42,7 @@ public class CreateActivityLogCommandHandler(
             entity = new ActivityLogEntity
             {
                 EventKey = definition.Key,
-                EventTimeUtc = DateTime.UtcNow,
+                EventTimeUtc = request.EventTimeUtc ?? DateTime.UtcNow,
                 ActorKind = request.ActorKind,
                 ActorDisplayName = isSystem ? null : TruncateString(request.ActorDisplayName, 100),
                 TargetId = TruncateString(request.TargetId, 100),
