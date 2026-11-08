@@ -22,8 +22,8 @@
 
     <section class="dashboard-section mb-4" aria-labelledby="viewStatsTitle">
         <h2 id="viewStatsTitle" class="admin-subtitle fw-bold mb-2">@SharedLocalizer["Reading views"]</h2>
-        <div class="row g-3">
-            <div class="col-12 col-md-4">
+        <div class="row row-cols-1 row-cols-md-2 row-cols-xl-4 g-3">
+            <div class="col">
                 <div class="dashboard-metric">
                     <div class="dashboard-metric-icon text-bg-primary-subtle text-primary">
                         <i class="bi-calendar-day"></i>
@@ -34,7 +34,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-12 col-md-4">
+            <div class="col">
                 <div class="dashboard-metric">
                     <div class="dashboard-metric-icon text-bg-success-subtle text-success">
                         <i class="bi-calendar-week"></i>
@@ -45,7 +45,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-12 col-md-4">
+            <div class="col">
                 <div class="dashboard-metric">
                     <div class="dashboard-metric-icon text-bg-warning-subtle text-warning">
                         <i class="bi-calendar-month"></i>
@@ -53,6 +53,17 @@
                     <div>
                         <div class="dashboard-metric-label">@SharedLocalizer["This Month"]</div>
                         <div class="dashboard-metric-value">@Model.Stats.ThisMonthViews</div>
+                    </div>
+                </div>
+            </div>
+            <div class="col">
+                <div class="dashboard-metric">
+                    <div class="dashboard-metric-icon text-bg-info-subtle text-info">
+                        <i class="bi-calendar-range" aria-hidden="true"></i>
+                    </div>
+                    <div>
+                        <div class="dashboard-metric-label">@SharedLocalizer["This Year"]</div>
+                        <div class="dashboard-metric-value">@Model.Stats.ThisYearViews</div>
                     </div>
                 </div>
             </div>

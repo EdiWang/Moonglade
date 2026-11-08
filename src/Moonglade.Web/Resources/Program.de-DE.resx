@@ -1836,6 +1836,9 @@
   <data name="This Month" xml:space="preserve">
     <value>Dieser Monat</value>
   </data>
+  <data name="This Year" xml:space="preserve">
+    <value>Dieses Jahr</value>
+  </data>
   <data name="Taxonomy" xml:space="preserve">
     <value>Kategorien und Tags</value>
   </data>

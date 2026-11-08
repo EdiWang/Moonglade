@@ -1836,6 +1836,9 @@
   <data name="This Month" xml:space="preserve">
     <value>今月</value>
   </data>
+  <data name="This Year" xml:space="preserve">
+    <value>今年</value>
+  </data>
   <data name="Taxonomy" xml:space="preserve">
     <value>カテゴリーとタグ</value>
   </data>

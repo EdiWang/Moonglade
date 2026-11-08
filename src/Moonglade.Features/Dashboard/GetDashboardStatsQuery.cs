@@ -6,6 +6,7 @@ public record DashboardStats(
     int YesterdayViews,
     int ThisWeekViews,
     int ThisMonthViews,
+    long ThisYearViews,
     int PublishedPostCount,
     int DraftPostCount,
     int ScheduledPostCount,
@@ -18,7 +19,7 @@ public record DashboardRecentPost(Guid Id, string Title, DateTime DateUtc);
 
 public record GetDashboardStatsQuery(DateTime? UtcNow = null) : IQuery<DashboardStats>;
 
-public record DashboardViewCounts(int Yesterday, int ThisWeek, int ThisMonth);
+public record DashboardViewCounts(int Yesterday, int ThisWeek, int ThisMonth, long ThisYear);
 
 public record DashboardPostStatusCount(PostStatus Status, int Count);
 
@@ -31,7 +32,8 @@ public class GetDashboardStatsQueryHandler(BlogDbContext db) : IQueryHandler<Get
         var yesterdayUtc = todayUtc.AddDays(-1);
         var weekStartUtc = todayUtc.AddDays(-GetDaysSinceMonday(todayUtc));
         var monthStartUtc = new DateOnly(todayUtc.Year, todayUtc.Month, 1);
-        var viewStartUtc = new[] { yesterdayUtc, weekStartUtc, monthStartUtc }.Min();
+        var yearStartUtc = new DateOnly(todayUtc.Year, 1, 1);
+        var viewStartUtc = new[] { yesterdayUtc, weekStartUtc, yearStartUtc }.Min();
 
         var viewCounts = await db.PostViewDaily.AsNoTracking()
             .Where(v => v.ViewDateUtc >= viewStartUtc && v.ViewDateUtc < tomorrowUtc)
@@ -39,7 +41,8 @@ public class GetDashboardStatsQueryHandler(BlogDbContext db) : IQueryHandler<Get
             .Select(g => new DashboardViewCounts(
                 g.Sum(v => v.ViewDateUtc >= yesterdayUtc && v.ViewDateUtc < todayUtc ? v.ViewCount : 0),
                 g.Sum(v => v.ViewDateUtc >= weekStartUtc ? v.ViewCount : 0),
-                g.Sum(v => v.ViewDateUtc >= monthStartUtc ? v.ViewCount : 0)))
+                g.Sum(v => v.ViewDateUtc >= monthStartUtc ? v.ViewCount : 0),
+                g.Sum(v => v.ViewDateUtc >= yearStartUtc ? (long)v.ViewCount : 0L)))
             .SingleOrDefaultAsync(ct);
 
         var postCounts = await db.Post.AsNoTracking()
@@ -75,6 +78,7 @@ public class GetDashboardStatsQueryHandler(BlogDbContext db) : IQueryHandler<Get
             viewCounts?.Yesterday ?? 0,
             viewCounts?.ThisWeek ?? 0,
             viewCounts?.ThisMonth ?? 0,
+            viewCounts?.ThisYear ?? 0,
             postCounts.GetValueOrDefault(PostStatus.Published),
             postCounts.GetValueOrDefault(PostStatus.Draft),
             postCounts.GetValueOrDefault(PostStatus.Scheduled),
