@@ -282,8 +282,11 @@ public partial class ActivityLogModelTests
         var end = start.AddHours(1);
         ActivityLogEntity Row(DateTime time, string key) => new()
         {
-            EventKey = key, EventTimeUtc = time, ActorKind = ActivityActorKind.Administrator,
-            ActorDisplayName = "admin", TargetDisplayName = "Captured"
+            EventKey = key,
+            EventTimeUtc = time,
+            ActorKind = ActivityActorKind.Administrator,
+            ActorDisplayName = "admin",
+            TargetDisplayName = "Captured"
         };
         ActivityLogEntity[] rows =
         [
@@ -395,8 +398,10 @@ public partial class ActivityLogModelTests
         var db = scope.ServiceProvider.GetRequiredService<BlogDbContext>();
         var row = new ActivityLogEntity
         {
-            EventKey = ActivityEvents.PostCreated, EventTimeUtc = DateTime.UtcNow,
-            ActorKind = ActivityActorKind.Administrator, Details = details
+            EventKey = ActivityEvents.PostCreated,
+            EventTimeUtc = DateTime.UtcNow,
+            ActorKind = ActivityActorKind.Administrator,
+            Details = details
         };
         db.Add(row);
         await db.SaveChangesAsync(ct);

@@ -7,8 +7,8 @@ using Moonglade.Configuration;
 using Moonglade.Data;
 using Moonglade.Data.Entities;
 using Moonglade.Web.Tests.TestSupport;
-using System.Net;
 using System.Globalization;
+using System.Net;
 using System.Net.Http.Json;
 using System.Text.Json;
 using System.Text.RegularExpressions;
@@ -45,9 +45,15 @@ public partial class ActivityLogHttpTests
         };
         var key = group switch
         {
-            "general" => "SiteTitle", "content" => "PostListPageSize", "comment" => "EnableComments",
-            "notification" => "EnableEmailSending", "subscription" => "FeedItemCount", "watermark" => "KeepOriginImage",
-            "advanced" => "EnableOpml", "appearance" => "ThemeId", _ => "IsEnabled"
+            "general" => "SiteTitle",
+            "content" => "PostListPageSize",
+            "comment" => "EnableComments",
+            "notification" => "EnableEmailSending",
+            "subscription" => "FeedItemCount",
+            "watermark" => "KeepOriginImage",
+            "advanced" => "EnableOpml",
+            "appearance" => "ThemeId",
+            _ => "IsEnabled"
         };
         var content = patch ? new Dictionary<string, object?> { [key] = model.GetType().GetProperty(key)!.GetValue(model) } : model;
         using var request = new HttpRequestMessage(patch ? HttpMethod.Patch : HttpMethod.Post, $"/api/settings/{group}")
@@ -185,8 +191,13 @@ public partial class ActivityLogHttpTests
         Assert.DoesNotContain("B3-private", metadata.RootElement.GetRawText());
         using var scope = fixture.App.Services.CreateScope();
         var db = scope.ServiceProvider.GetRequiredService<BlogDbContext>();
-        var ordinary = new ActivityLogEntity { EventKey = ActivityEvents.ActivityLogsCleared, EventTimeUtc = DateTime.UtcNow,
-            ActorKind = ActivityActorKind.Administrator, Details = """{"DeletedCount":3}""" };
+        var ordinary = new ActivityLogEntity
+        {
+            EventKey = ActivityEvents.ActivityLogsCleared,
+            EventTimeUtc = DateTime.UtcNow,
+            ActorKind = ActivityActorKind.Administrator,
+            Details = """{"DeletedCount":3}"""
+        };
         db.Add(ordinary);
         await db.SaveChangesAsync(ct);
         using var detail = JsonDocument.Parse(await client.GetStringAsync($"/api/activitylog/{ordinary.Id}/metadata", ct));

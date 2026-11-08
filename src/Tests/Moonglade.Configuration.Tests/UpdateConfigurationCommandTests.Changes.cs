@@ -505,7 +505,8 @@ public partial class UpdateConfigurationCommandTests
     {
         var row = new BlogConfigurationEntity
         {
-            CfgKey = value.GetType().Name, CfgValue = value.ToJson(),
+            CfgKey = value.GetType().Name,
+            CfgValue = value.ToJson(),
             LastModifiedTimeUtc = new DateTime(2026, 1, 1, 0, 0, 0, DateTimeKind.Utc)
         };
         db.BlogConfiguration.Add(row);

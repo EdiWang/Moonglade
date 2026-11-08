@@ -213,7 +213,9 @@ public partial class ActivityLogModelTests
         var row = new ActivityLogEntity
         {
             EventKey = scenario == "non-settings-event" ? ActivityEvents.PostCreated : ActivityEvents.SettingsGeneralUpdated,
-            EventTimeUtc = DateTime.UtcNow, ActorKind = ActivityActorKind.Administrator, Details = json
+            EventTimeUtc = DateTime.UtcNow,
+            ActorKind = ActivityActorKind.Administrator,
+            Details = json
         };
         db.Add(row);
         await db.SaveChangesAsync(ct);

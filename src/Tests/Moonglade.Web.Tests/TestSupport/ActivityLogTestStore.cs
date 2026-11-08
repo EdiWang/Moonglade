@@ -1,5 +1,5 @@
-using LiteBus.Commands;
 using Edi.CacheAside.InMemory;
+using LiteBus.Commands;
 using LiteBus.Events;
 using LiteBus.Extensions.Microsoft.DependencyInjection;
 using LiteBus.Messaging;
@@ -18,7 +18,6 @@ using Moonglade.Email.Core;
 using Moonglade.Features.Comment;
 using Moonglade.Theme;
 using Moonglade.Web.Handlers;
-using Moonglade.Web;
 using Moq;
 
 namespace Moonglade.Web.Tests.TestSupport;

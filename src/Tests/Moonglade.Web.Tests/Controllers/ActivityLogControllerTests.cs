@@ -5,8 +5,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Localization;
+using Microsoft.Extensions.Logging;
 using Moonglade.ActivityLog;
 using Moonglade.Data;
 using Moonglade.Data.Entities;
@@ -116,8 +116,11 @@ public class ActivityLogControllerTests
     {
         var log = new ActivityLogItem
         {
-            Id = 7, EventKey = ActivityEvents.PostCreated, EventTimeUtc = DateTime.UtcNow,
-            ActorKind = ActivityActorKind.Administrator, ActorDisplayName = actor
+            Id = 7,
+            EventKey = ActivityEvents.PostCreated,
+            EventTimeUtc = DateTime.UtcNow,
+            ActorKind = ActivityActorKind.Administrator,
+            ActorDisplayName = actor
         };
         _queryMediator.Setup(mediator => mediator.QueryAsync(It.IsAny<ListActivityLogsQuery>(),
                 It.IsAny<QueryMediationSettings>(), It.IsAny<CancellationToken>()))
@@ -139,8 +142,13 @@ public class ActivityLogControllerTests
     {
         var log = new ActivityLogItem
         {
-            Id = 7, EventKey = ActivityEvents.PostCreated, EventTimeUtc = DateTime.UtcNow,
-            ActorKind = ActivityActorKind.Administrator, ActorDisplayName = "admin", TargetId = id, TargetDisplayName = display
+            Id = 7,
+            EventKey = ActivityEvents.PostCreated,
+            EventTimeUtc = DateTime.UtcNow,
+            ActorKind = ActivityActorKind.Administrator,
+            ActorDisplayName = "admin",
+            TargetId = id,
+            TargetDisplayName = display
         };
         _queryMediator.Setup(mediator => mediator.QueryAsync(It.IsAny<ListActivityLogsQuery>(),
                 It.IsAny<QueryMediationSettings>(), It.IsAny<CancellationToken>()))

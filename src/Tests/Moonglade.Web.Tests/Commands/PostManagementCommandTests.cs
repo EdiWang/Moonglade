@@ -96,7 +96,10 @@ public class PostManagementCommandTests
         var savedAt = new DateTime(2026, 5, 1, 0, 0, 0, DateTimeKind.Utc);
         _commandMediator.SetResult<CreatePostCommand, PostCommandResult>(new PostCommandResult
         {
-            Id = postId, RouteLink = "captured-route", PostContent = model.EditorContent, LastModifiedUtc = savedAt
+            Id = postId,
+            RouteLink = "captured-route",
+            PostContent = model.EditorContent,
+            LastModifiedUtc = savedAt
         });
         Exception failure = canceled
             ? new OperationCanceledException("B2-PROTECTED-EXCEPTION-SENTINEL")

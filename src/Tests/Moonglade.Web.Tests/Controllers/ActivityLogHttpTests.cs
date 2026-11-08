@@ -131,9 +131,12 @@ public partial class ActivityLogHttpTests
         foreach (var definition in ActivityEvents.All)
             db.ActivityLog.Add(new ActivityLogEntity
             {
-                EventKey = definition.Key, EventTimeUtc = new DateTime(2026, 3, 1, 0, 0, 0, DateTimeKind.Utc),
-                ActorKind = ActivityActorKind.Administrator, ActorDisplayName = "admin",
-                TargetId = "captured-id", TargetDisplayName = target,
+                EventKey = definition.Key,
+                EventTimeUtc = new DateTime(2026, 3, 1, 0, 0, 0, DateTimeKind.Utc),
+                ActorKind = ActivityActorKind.Administrator,
+                ActorDisplayName = "admin",
+                TargetId = "captured-id",
+                TargetDisplayName = target,
                 Details = definition.SettingKeys is null ? null : """{"Changes":[]}"""
             });
         await db.SaveChangesAsync(ct);
@@ -278,8 +281,12 @@ public partial class ActivityLogHttpTests
         var db = scope.ServiceProvider.GetRequiredService<BlogDbContext>();
         var row = new ActivityLogEntity
         {
-            EventKey = ActivityEvents.PostPublished, EventTimeUtc = DateTime.UtcNow, ActorKind = ActivityActorKind.System,
-            ActorDisplayName = "B2-MUST-NOT-RENDER", IpAddress = "192.0.2.99", UserAgent = "B2-MUST-NOT-RENDER"
+            EventKey = ActivityEvents.PostPublished,
+            EventTimeUtc = DateTime.UtcNow,
+            ActorKind = ActivityActorKind.System,
+            ActorDisplayName = "B2-MUST-NOT-RENDER",
+            IpAddress = "192.0.2.99",
+            UserAgent = "B2-MUST-NOT-RENDER"
         };
         db.Add(row);
         await db.SaveChangesAsync(ct);
@@ -327,12 +334,14 @@ public partial class ActivityLogHttpTests
         var nextMidnightUtc = new DateTime(2026, 11, 8, 16, 0, 0, DateTimeKind.Utc);
         var lastTick = new ActivityLogEntity
         {
-            EventKey = ActivityEvents.PostCreated, EventTimeUtc = nextMidnightUtc.AddTicks(-1),
+            EventKey = ActivityEvents.PostCreated,
+            EventTimeUtc = nextMidnightUtc.AddTicks(-1),
             ActorKind = ActivityActorKind.Administrator
         };
         db.AddRange(lastTick, new ActivityLogEntity
         {
-            EventKey = ActivityEvents.PostCreated, EventTimeUtc = nextMidnightUtc,
+            EventKey = ActivityEvents.PostCreated,
+            EventTimeUtc = nextMidnightUtc,
             ActorKind = ActivityActorKind.Administrator
         });
         await db.SaveChangesAsync(ct);
@@ -358,9 +367,12 @@ public partial class ActivityLogHttpTests
         var db = scope.ServiceProvider.GetRequiredService<BlogDbContext>();
         var row = new ActivityLogEntity
         {
-            EventKey = ActivityEvents.PostCreated, EventTimeUtc = DateTime.UtcNow,
-            ActorKind = ActivityActorKind.Administrator, ActorDisplayName = "   ",
-            TargetId = "safe-stable-id", TargetDisplayName = "   "
+            EventKey = ActivityEvents.PostCreated,
+            EventTimeUtc = DateTime.UtcNow,
+            ActorKind = ActivityActorKind.Administrator,
+            ActorDisplayName = "   ",
+            TargetId = "safe-stable-id",
+            TargetDisplayName = "   "
         };
         db.Add(row);
         await db.SaveChangesAsync(ct);
@@ -393,20 +405,31 @@ public partial class ActivityLogHttpTests
         var id = Guid.Parse("aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee");
         Dictionary<string, (string Label, object Value)> expected = new(StringComparer.Ordinal)
         {
-            ["PostId"] = ("Post ID", id), ["PageId"] = ("Page ID", id),
-            ["CategoryId"] = ("Category ID", 101), ["Id"] = ("Category ID", 102),
-            ["CommentId"] = ("Comment ID", id), ["CommentIds"] = ("Comment IDs", new[] { id }),
-            ["TagId"] = ("Tag ID", id), ["ThemeId"] = ("Theme ID", 7),
-            ["WidgetId"] = ("Widget ID", id), ["FileId"] = ("File ID", id),
-            ["Slug"] = ("Slug", "b5-safe-slug"), ["PostStatus"] = ("Post status", PostStatus.Draft),
-            ["Hours"] = ("Hours", 3), ["Count"] = ("Count", 2), ["DeletedCount"] = ("Deleted count", 4),
+            ["PostId"] = ("Post ID", id),
+            ["PageId"] = ("Page ID", id),
+            ["CategoryId"] = ("Category ID", 101),
+            ["Id"] = ("Category ID", 102),
+            ["CommentId"] = ("Comment ID", id),
+            ["CommentIds"] = ("Comment IDs", new[] { id }),
+            ["TagId"] = ("Tag ID", id),
+            ["ThemeId"] = ("Theme ID", 7),
+            ["WidgetId"] = ("Widget ID", id),
+            ["FileId"] = ("File ID", id),
+            ["Slug"] = ("Slug", "b5-safe-slug"),
+            ["PostStatus"] = ("Post status", PostStatus.Draft),
+            ["Hours"] = ("Hours", 3),
+            ["Count"] = ("Count", 2),
+            ["DeletedCount"] = ("Deleted count", 4),
             ["WidgetType"] = ("Widget Type", WidgetType.ImageLink),
             ["AccentColor"] = ("Accent Color", "#123456"),
             ["FileName"] = ("File Name", "<b>B5 file name</b>.png"),
             ["OldFileName"] = ("Previous file name", "B5 previous file.txt"),
-            ["FileSize"] = ("File size", 2048), ["ContentType"] = ("Content Type", "image/png"),
-            ["ImageSize"] = ("Image dimensions", "64x32"), ["SkipWatermark"] = ("Skip watermark", true),
-            ["IsEnabled"] = ("Enabled", false), ["IsPublished"] = ("Published", true),
+            ["FileSize"] = ("File size", 2048),
+            ["ContentType"] = ("Content Type", "image/png"),
+            ["ImageSize"] = ("Image dimensions", "64x32"),
+            ["SkipWatermark"] = ("Skip watermark", true),
+            ["IsEnabled"] = ("Enabled", false),
+            ["IsPublished"] = ("Published", true),
             ["Username"] = ("Username", "<script>B5 display name</script>")
         };
         var definitions = ActivityEvents.All.Where(definition => definition.SettingKeys is null).OrderBy(definition => definition.Key).ToArray();

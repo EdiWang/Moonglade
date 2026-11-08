@@ -30,10 +30,17 @@ public partial class ScheduledPublishServiceTests
             for (var index = 0; index < ids.Length; index++)
                 db.Post.Add(new PostEntity
                 {
-                    Id = ids[index], Title = $"B4 worker {index}", Slug = $"worker-{index}",
-                    PostContent = "Worker body", ContentAbstract = "Worker abstract", Author = "Worker author",
-                    ContentType = "html", ContentLanguageCode = "en-us", PostStatus = PostStatus.Scheduled,
-                    ScheduledPublishTimeUtc = cutoff.UtcDateTime, CreateTimeUtc = cutoff.UtcDateTime.AddDays(-1),
+                    Id = ids[index],
+                    Title = $"B4 worker {index}",
+                    Slug = $"worker-{index}",
+                    PostContent = "Worker body",
+                    ContentAbstract = "Worker abstract",
+                    Author = "Worker author",
+                    ContentType = "html",
+                    ContentLanguageCode = "en-us",
+                    PostStatus = PostStatus.Scheduled,
+                    ScheduledPublishTimeUtc = cutoff.UtcDateTime,
+                    CreateTimeUtc = cutoff.UtcDateTime.AddDays(-1),
                     LastModifiedUtc = cutoff.UtcDateTime.AddDays(-1)
                 });
             await db.SaveChangesAsync(ct);

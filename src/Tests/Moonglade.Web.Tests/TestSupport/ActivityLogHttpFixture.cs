@@ -2,13 +2,12 @@ using Edi.CacheAside.InMemory;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.DataProtection;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ApplicationParts;
 using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.AspNetCore.TestHost;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Moonglade.Auth;
@@ -17,7 +16,6 @@ using Moonglade.Data;
 using Moonglade.Data.Entities;
 using Moonglade.Web.Controllers;
 using Moonglade.Web.Filters;
-using Moonglade.Web.Services;
 using System.Net;
 using System.Security.Claims;
 using System.Text.Encodings.Web;
@@ -40,7 +38,8 @@ public sealed class ActivityLogHttpFixture(WebApplication app, ActivityLogTestSt
             foreach (var property in typeof(BlogSettingsSnapshot).GetProperties())
                 db.BlogConfiguration.Add(new BlogConfigurationEntity
                 {
-                    CfgKey = property.Name, CfgValue = property.GetValue(store.Config.Capture()).ToJson(),
+                    CfgKey = property.Name,
+                    CfgValue = property.GetValue(store.Config.Capture()).ToJson(),
                     LastModifiedTimeUtc = new DateTime(2026, 1, 1, 0, 0, 0, DateTimeKind.Utc)
                 });
             await db.SaveChangesAsync(ct);

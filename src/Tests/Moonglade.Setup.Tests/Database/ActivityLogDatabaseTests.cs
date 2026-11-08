@@ -51,7 +51,9 @@ public class ActivityLogDatabaseTests(DisposableCategoryDatabases databases) : I
         var settingTime = new DateTime(2026, 1, 1, 1, 2, 3, DateTimeKind.Utc);
         db.BlogConfiguration.Add(new BlogConfigurationEntity
         {
-            CfgKey = "B2UnrelatedSentinel", CfgValue = "{\"preserve\":\"unrelated-setting\"}", LastModifiedTimeUtc = settingTime
+            CfgKey = "B2UnrelatedSentinel",
+            CfgValue = "{\"preserve\":\"unrelated-setting\"}",
+            LastModifiedTimeUtc = settingTime
         });
         await db.SaveChangesAsync(ct);
         var posts = (await db.Post.AsNoTracking().ToListAsync(ct)).Select(row => (row.Id, row.Title, row.PostContent, row.CreateTimeUtc)).ToArray();
@@ -112,9 +114,14 @@ public class ActivityLogDatabaseTests(DisposableCategoryDatabases databases) : I
             general.LastModifiedTimeUtc = settingTime;
             db.Comment.Add(new CommentEntity
             {
-                Id = Guid.NewGuid(), PostId = (await db.Post.SingleAsync(ct)).Id,
-                Username = "B5 retained visitor", Email = "b5@example.invalid", IPAddress = "192.0.2.55",
-                CommentContent = "B5 retained comment", CreateTimeUtc = settingTime, IsApproved = true
+                Id = Guid.NewGuid(),
+                PostId = (await db.Post.SingleAsync(ct)).Id,
+                Username = "B5 retained visitor",
+                Email = "b5@example.invalid",
+                IPAddress = "192.0.2.55",
+                CommentContent = "B5 retained comment",
+                CreateTimeUtc = settingTime,
+                IsApproved = true
             });
             await db.SaveChangesAsync(ct);
         }
@@ -367,16 +374,28 @@ public class ActivityLogDatabaseTests(DisposableCategoryDatabases databases) : I
         string Text(int limit) => $"{(postgres ? "character varying" : "nvarchar")}|YES|{limit}|<null>";
         Dictionary<string, string> expected = postgres ? new()
         {
-            ["id"] = "bigint|NO|<null>|<null>", ["event_key"] = "character varying|NO|100|<null>",
-            ["event_time_utc"] = "timestamp with time zone|NO|<null>|6", ["actor_kind"] = "integer|NO|<null>|<null>",
-            ["actor_display_name"] = Text(100), ["target_id"] = Text(100), ["target_display_name"] = Text(200),
-            ["ip_address"] = Text(50), ["user_agent"] = Text(512), ["details"] = "text|YES|<null>|<null>"
+            ["id"] = "bigint|NO|<null>|<null>",
+            ["event_key"] = "character varying|NO|100|<null>",
+            ["event_time_utc"] = "timestamp with time zone|NO|<null>|6",
+            ["actor_kind"] = "integer|NO|<null>|<null>",
+            ["actor_display_name"] = Text(100),
+            ["target_id"] = Text(100),
+            ["target_display_name"] = Text(200),
+            ["ip_address"] = Text(50),
+            ["user_agent"] = Text(512),
+            ["details"] = "text|YES|<null>|<null>"
         } : new()
         {
-            ["Id"] = "bigint|NO|<null>|<null>", ["EventKey"] = "nvarchar|NO|100|<null>",
-            ["EventTimeUtc"] = "datetime2|NO|<null>|7", ["ActorKind"] = "int|NO|<null>|<null>",
-            ["ActorDisplayName"] = Text(100), ["TargetId"] = Text(100), ["TargetDisplayName"] = Text(200),
-            ["IpAddress"] = Text(50), ["UserAgent"] = Text(512), ["Details"] = "nvarchar|YES|-1|<null>"
+            ["Id"] = "bigint|NO|<null>|<null>",
+            ["EventKey"] = "nvarchar|NO|100|<null>",
+            ["EventTimeUtc"] = "datetime2|NO|<null>|7",
+            ["ActorKind"] = "int|NO|<null>|<null>",
+            ["ActorDisplayName"] = Text(100),
+            ["TargetId"] = Text(100),
+            ["TargetDisplayName"] = Text(200),
+            ["IpAddress"] = Text(50),
+            ["UserAgent"] = Text(512),
+            ["Details"] = "nvarchar|YES|-1|<null>"
         };
         Assert.Equal(10, columns.Length);
         Assert.Equal(expected.Keys.Order(StringComparer.Ordinal), columns.Select(row => row[0]).Order(StringComparer.Ordinal));

@@ -26,7 +26,9 @@ internal static class SettingChangeCases
     {
         GeneralSettings = GeneralSettings.DefaultValue with
         {
-            Copyright = "[c] 2026", CanonicalPrefix = "https://before.example.invalid", AvatarUrl = "/legacy-avatar",
+            Copyright = "[c] 2026",
+            CanonicalPrefix = "https://before.example.invalid",
+            AvatarUrl = "/legacy-avatar",
             DcLicenseUrl = "https://before.example.invalid/license"
         },
         ContentSettings = ContentSettings.DefaultValue with { PostFooterHtmlPitch = "<p>Before footer</p>" },
@@ -36,7 +38,9 @@ internal static class SettingChangeCases
         ImageSettings = ImageSettings.DefaultValue with { CDNEndpoint = "https://before.example.invalid/images" },
         AdvancedSettings = AdvancedSettings.DefaultValue with
         {
-            RobotsTxtContent = "User-agent: Before", HeadScripts = "<script>beforeHead()</script>", FootScripts = "<script>beforeFoot()</script>"
+            RobotsTxtContent = "User-agent: Before",
+            HeadScripts = "<script>beforeHead()</script>",
+            FootScripts = "<script>beforeFoot()</script>"
         },
         AppearanceSettings = AppearanceSettings.DefaultValue with { CssCode = "body { color: blue; }" },
         CustomMenuSettings = new CustomMenuSettings

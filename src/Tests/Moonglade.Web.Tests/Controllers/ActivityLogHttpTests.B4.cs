@@ -4,7 +4,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Logging.Abstractions;
-using Moonglade.ActivityLog;
 using Moonglade.Data;
 using Moonglade.Data.Entities;
 using Moonglade.Features.Post;
@@ -110,10 +109,19 @@ public partial class ActivityLogHttpTests
 
     private static PostEntity B4HttpPost(string title, string slug, DateTime due) => new()
     {
-        Id = Guid.NewGuid(), Title = title, Slug = slug, Author = "B4 author", PostContent = "B4 body not audited",
-        ContentAbstract = "B4 abstract not audited", PostStatus = PostStatus.Scheduled, ScheduledPublishTimeUtc = due,
-        CreateTimeUtc = due.AddDays(-1), LastModifiedUtc = due.AddHours(-1), ContentType = "html",
-        ContentLanguageCode = "en-us", IsFeedIncluded = true
+        Id = Guid.NewGuid(),
+        Title = title,
+        Slug = slug,
+        Author = "B4 author",
+        PostContent = "B4 body not audited",
+        ContentAbstract = "B4 abstract not audited",
+        PostStatus = PostStatus.Scheduled,
+        ScheduledPublishTimeUtc = due,
+        CreateTimeUtc = due.AddDays(-1),
+        LastModifiedUtc = due.AddHours(-1),
+        ContentType = "html",
+        ContentLanguageCode = "en-us",
+        IsFeedIncluded = true
     };
 
     private sealed class B4HttpTimeProvider(DateTime occurrence) : TimeProvider

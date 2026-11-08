@@ -1,12 +1,11 @@
-using Edi.CacheAside;
 using Edi.CacheAside.InMemory;
 using LiteBus.Events.Abstractions;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using Moonglade.BackgroundServices;
 using Moonglade.ActivityLog;
+using Moonglade.BackgroundServices;
 using Moonglade.Configuration;
 using Moonglade.Web.Controllers;
 using Moonglade.Web.Handlers;
@@ -124,7 +123,9 @@ public partial class SettingsControllerTests
         var controller = CreateController(config, mediator, new Mock<IAuthenticationService>());
         var after = config.Capture().GeneralSettings with
         {
-            SiteTitle = "Changed title", OwnerEmail = "B3-private@example.invalid", Description = "B3-private-description"
+            SiteTitle = "Changed title",
+            OwnerEmail = "B3-private@example.invalid",
+            Description = "B3-private-description"
         };
 
         Assert.IsType<NoContentResult>(await SaveController(controller, "general", after, patch));
@@ -170,7 +171,9 @@ public partial class SettingsControllerTests
         await mediator.Db.Database.ExecuteSqlRawAsync("DROP TRIGGER reject_b3_activity;", ct);
         mediator.Db.BlogConfiguration.Add(new Moonglade.Data.Entities.BlogConfigurationEntity
         {
-            CfgKey = "B3Unrelated", CfgValue = "preserved", LastModifiedTimeUtc = DateTime.UtcNow
+            CfgKey = "B3Unrelated",
+            CfgValue = "preserved",
+            LastModifiedTimeUtc = DateTime.UtcNow
         });
         await mediator.Db.SaveChangesAsync(ct);
         Assert.Empty(await mediator.Db.ActivityLog.AsNoTracking().ToListAsync(ct));
@@ -276,9 +279,15 @@ public partial class SettingsControllerTests
 
     private static string SafeKey(string group) => group switch
     {
-        "general" => "SiteTitle", "content" => "PostListPageSize", "comment" => "EnableComments",
-        "notification" => "EnableEmailSending", "subscription" => "FeedItemCount", "watermark" => "KeepOriginImage",
-        "advanced" => "EnableOpml", "appearance" => "ThemeId", _ => "IsEnabled"
+        "general" => "SiteTitle",
+        "content" => "PostListPageSize",
+        "comment" => "EnableComments",
+        "notification" => "EnableEmailSending",
+        "subscription" => "FeedItemCount",
+        "watermark" => "KeepOriginImage",
+        "advanced" => "EnableOpml",
+        "appearance" => "ThemeId",
+        _ => "IsEnabled"
     };
 
     private static object ChangedGroup(BlogSettingsSnapshot root, string group) => group switch
@@ -312,10 +321,14 @@ public partial class SettingsControllerTests
                 .ToDictionary(property => property.Name, property => property.GetValue(model))))
             : model switch
             {
-                GeneralSettings value => controller.General(value), ContentSettings value => controller.Content(value),
-                CommentSettings value => controller.Comment(value), NotificationSettings value => controller.Notification(value),
-                FeedSettings value => controller.Subscription(value), ImageSettings value => controller.Image(value),
-                AdvancedSettings value => controller.Advanced(value), AppearanceSettings value => controller.Appearance(value),
+                GeneralSettings value => controller.General(value),
+                ContentSettings value => controller.Content(value),
+                CommentSettings value => controller.Comment(value),
+                NotificationSettings value => controller.Notification(value),
+                FeedSettings value => controller.Subscription(value),
+                ImageSettings value => controller.Image(value),
+                AdvancedSettings value => controller.Advanced(value),
+                AppearanceSettings value => controller.Appearance(value),
                 CustomMenuSettings value => controller.CustomMenu(new CustomMenuSettingsJsonModel { IsEnabled = value.IsEnabled, MenuJson = value.Menus.ToJson() }),
                 _ => throw new InvalidOperationException("Unsupported test settings group.")
             };
