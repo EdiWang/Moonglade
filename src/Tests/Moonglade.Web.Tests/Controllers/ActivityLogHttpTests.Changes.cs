@@ -58,6 +58,7 @@ public partial class ActivityLogHttpTests
         Assert.Empty(await response.Content.ReadAsStringAsync(ct));
         var row = Assert.Single(await fixture.Store.ReadLogsAsync(ct));
         Assert.Equal(SettingsActivityCases.Groups.Single(item => item.Group == group).EventKey, row.EventKey);
+        Assert.Null(row.TargetDisplayName);
         using var metadata = JsonDocument.Parse(await client.GetStringAsync($"/api/activitylog/{row.Id}/metadata", ct));
         Assert.Empty(metadata.RootElement.GetProperty("fields").EnumerateArray());
         var change = Assert.Single(metadata.RootElement.GetProperty("changes").EnumerateArray());

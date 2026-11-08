@@ -163,7 +163,8 @@ public partial class ActivityLogHttpTests
                 var definition = ActivityEvents.Get(key);
                 Assert.Equal(localizer[definition.Label].Value, labels[key]);
                 if (culture != "en-US") Assert.NotEqual(definition.Label, labels[key]);
-                Assert.Equal(labels[key] + ": " + target, item.GetProperty("summary").GetString());
+                var expectedSummary = definition.SettingKeys is null ? $"{labels[key]}: {target}" : labels[key];
+                Assert.Equal(expectedSummary, item.GetProperty("summary").GetString());
                 Assert.Equal("admin", item.GetProperty("actor").GetString());
                 Assert.Equal("Administrator", item.GetProperty("actorKind").GetString());
                 using var detail = JsonDocument.Parse(await client.GetStringAsync(
@@ -314,6 +315,36 @@ public partial class ActivityLogHttpTests
         Assert.Equal(new[] { "comment.deleted", "post.created" }, items.Select(item => item.GetProperty("eventKey").GetString()));
         Assert.Equal(new[] { "Comments deleted: Historical target 1", "Post created: Historical target 0" },
             items.Select(item => item.GetProperty("summary").GetString()));
+    }
+
+    [Fact]
+    public async Task List_EndOfLocalDay_IncludesFinalTickButExcludesNextMidnight()
+    {
+        var ct = TestContext.Current.CancellationToken;
+        await using var fixture = await ActivityLogHttpFixture.CreateAsync(0, ct);
+        using var scope = fixture.App.Services.CreateScope();
+        var db = scope.ServiceProvider.GetRequiredService<BlogDbContext>();
+        var nextMidnightUtc = new DateTime(2026, 11, 8, 16, 0, 0, DateTimeKind.Utc);
+        var lastTick = new ActivityLogEntity
+        {
+            EventKey = ActivityEvents.PostCreated, EventTimeUtc = nextMidnightUtc.AddTicks(-1),
+            ActorKind = ActivityActorKind.Administrator
+        };
+        db.AddRange(lastTick, new ActivityLogEntity
+        {
+            EventKey = ActivityEvents.PostCreated, EventTimeUtc = nextMidnightUtc,
+            ActorKind = ActivityActorKind.Administrator
+        });
+        await db.SaveChangesAsync(ct);
+
+        using var client = fixture.App.GetTestClient();
+        client.DefaultRequestHeaders.Add("X-B1-User", "admin");
+        using var list = JsonDocument.Parse(await client.GetStringAsync(
+            "/api/activitylog/list?endTimeUtc=2026-11-08T15%3A59%3A59.9999999Z", ct));
+
+        Assert.Equal(1, list.RootElement.GetProperty("totalItemCount").GetInt32());
+        var item = Assert.Single(list.RootElement.GetProperty("items").EnumerateArray());
+        Assert.Equal(lastTick.Id, item.GetProperty("id").GetInt64());
     }
 
     [Theory]

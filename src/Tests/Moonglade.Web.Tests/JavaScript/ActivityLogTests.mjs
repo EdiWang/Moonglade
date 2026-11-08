@@ -169,7 +169,7 @@ test('activityLogManager clear confirmation flow', async t => {
         const dateCalls = [];
         globalThis.b1Activity.date = (date, end = false) => {
             dateCalls.push([date, end]);
-            return end ? '2026-03-02T23:59:59.999Z' : '2026-03-01T00:00:00.000Z';
+            return end ? '2026-03-02T23:59:59.9999999Z' : '2026-03-01T00:00:00.000Z';
         };
         const items = [{ id: 81, eventKey: 'post.created', actor: 'System', actorKind: 'Administrator',
             summary: 'Localized server sentence: <captured title>', eventTimeUtc: '2026-03-01T00:00:00Z' }];
@@ -180,7 +180,7 @@ test('activityLogManager clear confirmation flow', async t => {
             assert.equal(parsed.searchParams.get('pageIndex'), '4');
             assert.equal(parsed.searchParams.get('pageSize'), '10');
             assert.equal(parsed.searchParams.get('startTimeUtc'), '2026-03-01T00:00:00.000Z');
-            assert.equal(parsed.searchParams.get('endTimeUtc'), '2026-03-02T23:59:59.999Z');
+            assert.equal(parsed.searchParams.get('endTimeUtc'), '2026-03-02T23:59:59.9999999Z');
             assert.equal(parsed.searchParams.has('eventTypes'), false);
             return { items, totalItemCount: 81 };
         };

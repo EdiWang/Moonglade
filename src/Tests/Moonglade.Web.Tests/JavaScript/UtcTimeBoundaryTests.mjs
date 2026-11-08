@@ -29,18 +29,15 @@ test('toLocalDateTimeInputValue performs exactly one UTC-to-local conversion', (
 
 test('localDateBoundaryToUtcIso converts local day boundaries to explicit UTC', () => {
     const start = new Date(localDateBoundaryToUtcIso('2026-08-15'));
-    const end = new Date(localDateBoundaryToUtcIso('2026-08-15', true));
-
     assert.equal(start.getFullYear(), 2026);
     assert.equal(start.getMonth(), 7);
     assert.equal(start.getDate(), 15);
     assert.equal(start.getHours(), 0);
-    assert.equal(end.getFullYear(), 2026);
-    assert.equal(end.getMonth(), 7);
-    assert.equal(end.getDate(), 15);
-    assert.equal(end.getHours(), 23);
-    assert.equal(end.getMinutes(), 59);
-    assert.equal(end.getSeconds(), 59);
+    for (const [date, nextDate] of [['2026-08-15', '2026-08-16'], ['2026-03-08', '2026-03-09']]) {
+        const end = localDateBoundaryToUtcIso(date, true);
+        assert.match(end, /\.9999999Z$/);
+        assert.equal(Date.parse(end) + 1, Date.parse(`${nextDate}T00:00:00`));
+    }
 });
 
 test('UTC parsing helpers reject invalid input', () => {

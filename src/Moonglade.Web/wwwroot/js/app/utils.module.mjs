@@ -1,4 +1,4 @@
-﻿export function toMagicJson(value) {
+export function toMagicJson(value) {
     const newValue = {};
 
     for (const item in value) {
@@ -75,8 +75,14 @@ export function toLocalDateTimeInputValue(dateString) {
 export function localDateBoundaryToUtcIso(dateString, endOfDay = false) {
     if (!dateString) return null;
 
-    const localTime = new Date(`${dateString}T${endOfDay ? '23:59:59' : '00:00:00'}`);
-    return Number.isNaN(localTime.getTime()) ? null : localTime.toISOString();
+    const localTime = new Date(`${dateString}T00:00:00`);
+    if (Number.isNaN(localTime.getTime())) return null;
+    if (!endOfDay) return localTime.toISOString();
+
+    const nextMidnight = localTime.setHours(24, 0, 0, 0);
+    const lastMillisecond = new Date(nextMidnight - 1).toISOString();
+    // The inclusive API accepts seven fractional digits, including ticks after the final millisecond.
+    return lastMillisecond.replace(/Z$/, '9999Z');
 }
 
 export function parseMetaContent(metaName) {

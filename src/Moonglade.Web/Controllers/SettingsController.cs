@@ -167,22 +167,22 @@ public class SettingsController(
     {
         if (!saved.HasEffectiveChanges) return NoContent();
 
-        (string EventKey, string GroupName) activity = saved.SettingsType.Name switch
+        var eventKey = saved.SettingsType.Name switch
         {
-            nameof(GeneralSettings) => (ActivityEvents.SettingsGeneralUpdated, "General"),
-            nameof(CommentSettings) => (ActivityEvents.SettingsCommentUpdated, "Comment"),
-            nameof(ImageSettings) => (ActivityEvents.SettingsImageUpdated, "Image"),
-            nameof(AppearanceSettings) => (ActivityEvents.SettingsAppearanceUpdated, "Appearance"),
-            nameof(ContentSettings) => (ActivityEvents.SettingsContentUpdated, "Content"),
-            nameof(NotificationSettings) => (ActivityEvents.SettingsNotificationUpdated, "Notification"),
-            nameof(FeedSettings) => (ActivityEvents.SettingsSubscriptionUpdated, "Subscription"),
-            nameof(AdvancedSettings) => (ActivityEvents.SettingsAdvancedUpdated, "Advanced"),
-            nameof(CustomMenuSettings) => (ActivityEvents.SettingsCustomMenuUpdated, "Custom Menu"),
+            nameof(GeneralSettings) => ActivityEvents.SettingsGeneralUpdated,
+            nameof(CommentSettings) => ActivityEvents.SettingsCommentUpdated,
+            nameof(ImageSettings) => ActivityEvents.SettingsImageUpdated,
+            nameof(AppearanceSettings) => ActivityEvents.SettingsAppearanceUpdated,
+            nameof(ContentSettings) => ActivityEvents.SettingsContentUpdated,
+            nameof(NotificationSettings) => ActivityEvents.SettingsNotificationUpdated,
+            nameof(FeedSettings) => ActivityEvents.SettingsSubscriptionUpdated,
+            nameof(AdvancedSettings) => ActivityEvents.SettingsAdvancedUpdated,
+            nameof(CustomMenuSettings) => ActivityEvents.SettingsCustomMenuUpdated,
             _ => throw new InvalidOperationException("Unexpected settings type.")
         };
 
         var changes = saved.Changes.Select(change => new ActivityLogSettingChange(change.Key, change.OldValue, change.NewValue)).ToArray();
-        await LogActivityAfterSaveAsync(logger, activity.EventKey, $"{activity.GroupName} Settings",
+        await LogActivityAfterSaveAsync(logger, eventKey, null,
             ActivityLogDetails.Create((ActivityLogSettingChange.DetailsKey, changes)));
         return NoContent();
     }

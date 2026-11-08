@@ -107,7 +107,10 @@ public class ActivityLogController(
 
     private string Summary(ActivityLogItem log)
     {
-        var label = localizer[ActivityEvents.Get(log.EventKey).Label].Value;
+        var definition = ActivityEvents.Get(log.EventKey);
+        var label = localizer[definition.Label].Value;
+        if (definition.SettingKeys is not null) return label;
+
         var target = string.IsNullOrWhiteSpace(log.TargetDisplayName) ? log.TargetId : log.TargetDisplayName;
         return string.IsNullOrWhiteSpace(target) ? label : $"{label}: {target}";
     }

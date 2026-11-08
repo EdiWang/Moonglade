@@ -222,7 +222,8 @@ public class ActivityLogDatabaseTests(DisposableCategoryDatabases databases) : I
         await new ClearActivityLogsCommandHandler(db, Mock.Of<ILogger<ClearActivityLogsCommandHandler>>())
             .HandleAsync(new(), ct);
         db.ChangeTracker.Clear();
-        var start = new DateTime(2026, 4, 1, 12, 0, 0, DateTimeKind.Utc);
+        var nextMidnightUtc = new DateTime(2026, 4, 1, 16, 0, 0, DateTimeKind.Utc);
+        var start = nextMidnightUtc.AddTicks(-10);
         ActivityLogEntity[] rows =
         [
             new()
@@ -233,7 +234,7 @@ public class ActivityLogDatabaseTests(DisposableCategoryDatabases databases) : I
                 Details = "{\"PostStatus\":\"Draft\",\"Slug\":\"captured\"}"
             },
             new() { EventKey = ActivityEvents.CommentDeleted, EventTimeUtc = start, ActorKind = ActivityActorKind.System, Details = "{\"CommentIds\":[1,2]}" },
-            new() { EventKey = ActivityEvents.PostCreated, EventTimeUtc = start.AddHours(1), ActorKind = ActivityActorKind.System }
+            new() { EventKey = ActivityEvents.PostCreated, EventTimeUtc = nextMidnightUtc, ActorKind = ActivityActorKind.System }
         ];
         db.AddRange(rows);
         await db.SaveChangesAsync(ct);
@@ -251,6 +252,8 @@ public class ActivityLogDatabaseTests(DisposableCategoryDatabases databases) : I
         Assert.Equal(rows[0].Id, item.Id);
         Assert.Equal("System", item.ActorDisplayName);
         Assert.Equal(ActivityActorKind.Administrator, item.ActorKind);
+        var throughEndOfDay = await listHandler.HandleAsync(new(EndTimeUtc: nextMidnightUtc.AddTicks(-1)), ct);
+        Assert.Equal(new[] { rows[1].Id, rows[0].Id }, throughEndOfDay.Logs.Select(row => row.Id));
         await Assert.ThrowsAsync<ArgumentException>(() => listHandler.HandleAsync(new(EventKeys: ["unknown"]), ct));
         var detailHandler = new GetMetaDataByActivityLogIdQueryHandler(db);
         var detail = await detailHandler.HandleAsync(new(rows[0].Id), ct);
