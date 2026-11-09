@@ -199,7 +199,7 @@ test('activityLogManager clear confirmation flow', async t => {
         const previousDocument = Object.getOwnPropertyDescriptor(globalThis, 'document');
         globalThis.document = {
             querySelector: selector => {
-                assert.equal(selector, '.admin-main');
+                assert.equal(selector, '.admin-main-body');
                 return { scrollTo: (x, y) => events.push(['scroll', x, y]) };
             }
         };

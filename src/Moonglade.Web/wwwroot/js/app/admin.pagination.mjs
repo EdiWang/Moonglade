@@ -40,7 +40,7 @@ export function createPaginationMixin(pageSize, pageSizeOptions) {
             this.currentPage = page;
             await this.loadData();
             this.updateUrl();
-            document.querySelector('.admin-main').scrollTo(0, 0);
+            document.querySelector('.admin-main-body').scrollTo(0, 0);
         },
 
         async changePageSize(newSize) {

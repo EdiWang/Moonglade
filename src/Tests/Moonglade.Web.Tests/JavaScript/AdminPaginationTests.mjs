@@ -2,11 +2,11 @@ import assert from 'node:assert/strict';
 import test from 'node:test';
 import { createPaginationMixin } from '../../../Moonglade.Web/wwwroot/js/app/admin.pagination.mjs';
 
-test('changing pages scrolls the admin content after loading the new page', async (t) => {
+test('changing pages scrolls the admin body after loading the new page', async (t) => {
     const calls = [];
     globalThis.document = {
         querySelector(selector) {
-            assert.equal(selector, '.admin-main');
+            assert.equal(selector, '.admin-main-body');
             return { scrollTo: (...position) => calls.push(position) };
         }
     };
