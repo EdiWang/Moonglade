@@ -93,6 +93,14 @@ dotnet build src/Moonglade.Web/Moonglade.Web.csproj
 dotnet run --project src/Moonglade.Web/Moonglade.Web.csproj
 ```
 
+With PowerShell, use the startup script from the repository root instead:
+
+```powershell
+.\start.ps1
+```
+
+The script requires the .NET 10 SDK and a configured, running database (see [Database Setup](#database-setup)). It restores dependencies, builds, and runs the web project with the `Moonglade.Web` launch profile in `Development`. It does not start Docker or change local configuration. Stop the application with `Ctrl+C`.
+
 Open `https://localhost:10210` or `https://localhost:10210/admin`. The default local account is `admin` / `admin123`; first sign-in requires scanning the authenticator QR code and entering its 6-digit TOTP code. For test commands and coverage guidance, see [Tests](src/Tests/README.md).
 
 Deploy the current application at the URL root. Hosting under a prefix such as `/blog` is not supported by forwarding `X-Forwarded-Prefix` alone; it requires additional host-pipeline and client-URL work.
