@@ -2,8 +2,9 @@
 
 ## Current state
 
-- Last updated: 2026-11-09.
+- Last updated: 2026-11-10.
 - Phase: B0-B4 and R1 accepted. B5 is ready for user acceptance under confirmed D21/D22. B6 is not authorized.
+- Latest refinement: D23 reduces Settings item gaps to 5px. Web build passed with zero warnings/errors; 40 English route/viewport/theme samples verified actual 5px gaps and preserved Account spacing/internal padding.
 - Latest B5 checks: final W passed with zero warnings/errors; final T passed 663/663, zero failures/skips. Browser checks passed 72 normal samples, 72 DOM-only stress samples, and 48 boundary samples, followed by final-host keyboard/hover/contrast and native-page checks. J was not required because production JavaScript did not change.
 - Latest R1 checks: W passed with zero warnings/errors; T passed 663/663; final J passed 34/34. The 360-sample navigation layout matrix, four final overflow stress cases, 16 boundary samples, native action dialogs, and actual keyboard navigation passed. All files pass UTF-8/CRLF/final-newline and whitespace checks.
 - Earlier revised B4 checks: W passed with zero warnings/errors; T passed 663/663; all 240 fresh rendered samples passed, including disclosure states/interaction. No image-test exception was needed. Production JavaScript had not changed at that earlier checkpoint, so J was not required then; R1 now changes JavaScript and includes J.
@@ -12,7 +13,7 @@
 - Planning checkout: `master`, commit `6615117f9b93d7d9c31519ec109b1cc00f7e2662`. B0 execution checkout: `b2c47ecf94540bbe8b3d01918cd98180b0776f3c` (`Document admin portal visual refresh plan`). The worktree was clean at B0 start. Only this plan differs between those commits; application source is unchanged.
 - Authorized: B5 Dashboard/Account/About presentation work and its checks. Local test-data fixture permission, host stop/start, and README default-account login remain authorized. Not authorized: B6, Git commits, branch changes, push, PR, deployment, external email/service operations, account-reset operations, or unrelated image-test fixes.
 - Starting B5 checkout: clean `master`, user-created commit `1dbcc3ee12e838b1a6c5c8d5b6106f339cef42a2` (`Refresh admin settings and secondary navigation`), containing accepted B4/R1.
-- Next action: wait for B5 acceptance and the user's commit. Do not start B6 without explicit authorization.
+- Next action: wait for user acceptance of B5 and the Settings spacing refinement; B5's user-created commit is confirmed. Do not start B6 without explicit authorization.
 
 ## Goal and reference context
 
@@ -24,7 +25,7 @@ The screenshots were supplied in the original conversation and are not repositor
 
 ### Confirmed design decisions
 
-| ID | Decision confirmed by the user on 2026-11-09 |
+| ID | Decision confirmed by the user |
 | --- | --- |
 | D1 | Retain a light-gray page background and give the left navigation a distinct white surface in light mode. |
 | D2 | Keep the page toolbar below the top bar and visible while only the main content scrolls. |
@@ -33,7 +34,7 @@ The screenshots were supplied in the original conversation and are not repositor
 | D5 | Put primary actions and state switches on the toolbar's left; put counts, search, and filtering on its right. |
 | D6 | Exclude both full-screen editors from this redesign. Preserve their focused layout and existing bottom actions. |
 | D7 | Accept at 1440 x 900 and 1920 x 1080 CSS-pixel desktop viewports, in light/dark mode and all six existing UI languages, at 100% browser zoom only. During B0 the user explicitly removed zoom checks from the earlier scope. |
-| D8 | Use 24px outer main-area/panel padding and 16px panel/toolbar gaps. The approved Settings revision uses 16px vertical/24px horizontal item padding and 8px card gaps instead; preserve existing control sizes and toolbar wrapping. |
+| D8 | Use 24px outer main-area/panel padding and 16px panel/toolbar gaps. The approved Settings revision uses 16px vertical/24px horizontal item padding and, after D23, 5px card gaps instead; preserve existing control sizes and toolbar wrapping. |
 | D9 | Use 8px panel/card radii, 1px theme-aware borders, and no panel/card shadows. This applies only to in-scope admin surfaces, not excluded editors or public pages. |
 | D10 | Keep the toolbar on the workspace background: light gray in light mode, with the corresponding dark-mode surface. Do not add a separate white toolbar card or retain the existing toolbar bottom divider. |
 | D11 | Superseded by R1: page classifications are secondary navigation in the existing blue top bar, not controls mixed into the action toolbar. Actions stay in the fixed content toolbar; pages with no actions do not retain an empty toolbar. Ordinary settings still have no Save action. |
@@ -48,6 +49,7 @@ The screenshots were supplied in the original conversation and are not repositor
 | D20 | Secondary navigation stays on one line and scrolls horizontally when needed without displacing global/account controls. Keep the active destination visible after layout/font changes; preserve normal links, routes, and keyboard navigation. |
 | D21 | B5 Dashboard fixes its existing title/overview plus New Post row in the common action region, with New Post retained on the right. The user explicitly chose this Dashboard-only exception to D5. Do not duplicate the title/header in the scrolling content. |
 | D22 | B5 Account changes to the same Windows 11 Settings style, not the previously proposed large cards: left-aligned single column capped at 1120px, separate icon/title/description action rows, 8px gaps and 16px vertical/24px horizontal padding. Preserve full-row native-button activation, existing dialogs/bindings, and danger distinction; add no switches, disclosure groups, or authentication behavior. |
+| D23 | On 2026-11-10 the user requested 5px spacing between Settings items. Apply it to adjacent independent cards and expandable groups; retain section spacing, internal padding, joined group rows, and Account's separate D22 8px action-row spacing. |
 
 Retain the existing font, theme accent colors, and blue top-bar design. Preserve application behavior. A surface/layout refresh is not authorization to change save semantics, add features, redesign navigation information architecture, or introduce a frontend framework.
 
@@ -301,7 +303,7 @@ Status vocabulary: `Pending`, `In progress`, `Blocked`, `Ready for user acceptan
 | B3 | B1 | Complete | W: 0 warnings/errors; T: 661 passed, 1 failed, 0 skipped, with explicit B3 image-test exception; J not required; 72 rendered route/culture/viewport/mode probes plus native-page checks; fixture gaps below | Accepted explicitly on 2026-11-09 | `5d5d39a1e85604cb769e59adee10eabeac25a2b0`, `Refresh admin page, category, and widget cards`, confirmed from Git | Closed; user explicitly authorized B4 |
 | B4 | B1, B2 | Complete | Revised W: 0 warnings/errors; revised T: 663 passed, 0 failed/skipped; J not required; 240 fresh rendered samples passed, including disclosure independence, plus native/write checks below | Accepted explicitly on 2026-11-09 | `1dbcc3ee12e838b1a6c5c8d5b6106f339cef42a2`, `Refresh admin settings and secondary navigation`, confirmed from Git | Closed; user explicitly authorized B5 |
 | R1 | B1, B2, revised B4 | Complete | W: 0 warnings/errors; T: 663 passed; J: 34 passed; 360 layout samples, 4 final overflow cases, 16 boundary samples, native dialogs/keyboard passed | Accepted explicitly on 2026-11-09 | Same confirmed user-created commit `1dbcc3ee12e838b1a6c5c8d5b6106f339cef42a2` as B4 | Closed; user explicitly authorized B5 |
-| B5 | B1 | Ready for user acceptance | Final W: 0 warnings/errors; final T: 663 passed, 0 failed/skipped; J not required; 72 normal + 72 DOM-stress + 48 boundary samples passed, followed by final keyboard/hover/contrast checks | Pending | Not created | User acceptance, user-created commit, and explicit B6 authorization |
+| B5 | B1 | Ready for user acceptance | Final W: 0 warnings/errors; final T: 663 passed, 0 failed/skipped; J not required; 72 normal + 72 DOM-stress + 48 boundary samples passed, followed by final keyboard/hover/contrast checks; later D23 spacing refinement verified separately below | Pending explicit acceptance | User-created `da7dea0fabe8e6f0c33db20571d373eea06e1f21`, `Refresh admin dashboard and account surfaces`, confirmed from Git | User acceptance and explicit B6 authorization |
 | B6 | B2, B3, B4, B5 | Pending | Not run | Pending | Verification/documentation only unless fixes are needed | All implementation gates closed and B6 authorization |
 
 ### Required update after every batch or interruption
@@ -816,13 +818,23 @@ git --no-pager diff --check
 - Browser page 17 is signed in on Dashboard with viewport overrides cleared, automatic theme restored, and 100% zoom. No temporary helpers, frames, masks, overlays, or backdrops remain.
 - No staging, commit, push, PR, branch change, deployment, or B6 work occurred. The user owns acceptance and commits.
 
+### 2026-11-10 - Settings spacing refinement
+
+- The user requested reducing Settings item gaps to 5px, with a General Settings screenshot identifying the inter-card space. D23 supersedes the earlier 8px Settings spacing, not internal padding or section spacing.
+- Confirmed a clean worktree on `master` at user-created commit `da7dea0fabe8e6f0c33db20571d373eea06e1f21` (`Refresh admin dashboard and account surfaces`), containing B5. This confirms the commit, not explicit B5 acceptance or B6 authorization.
+- Updated the shared Settings item margin and expandable-group margin to 5px. Nested rows retain zero margins and separators; Account explicitly retains its D22 8px spacing. No forms, behavior, or JavaScript changed.
+- Updated the durable frontend guidance and current decision record. `dotnet build .\src\Moonglade.Web\Moonglade.Web.csproj --no-restore` passed, exit 0, zero warnings/errors, 3.59s. T/J were not repeated for this CSS-only spacing refinement.
+- Browser verification: nine Settings routes plus Account x 1440x900/1920x1080 x light/dark = 40 English rendered samples. Each combination measured 30 actual adjacent Settings pairs at exactly 5px, plus Account's pair at 8px; expandable-group margins were 5px and their nested rows retained zero margins. Internal item padding stayed 16px/24px, section margins stayed 24px, and no document/content horizontal overflow occurred. Verification Files retained its table and had no item-card pairs. This focused check does not repeat the earlier six-culture matrix.
+- The previous host was no longer listening. Started the authorized local review host using `dotnet run --project .\src\Moonglade.Web\Moonglade.Web.csproj --no-build --no-restore`, detached session `admin-settings-spacing-host`, verified listener PID `22168` and expected Web executable, readiness HTTP 200. Used the authorized README default sign-in without changing credentials or content.
+- Browser page 1 is left on General Settings with automatic theme/native viewport restored. Temporary frames/helper were removed. Changed-file UTF-8/CRLF/final-newline and `git diff --check` validation passed. This refinement is ready for review, not B6; no commit or data writes were performed.
+
 ## Latest handoff
 
-- Current phase: B0-B4/R1 accepted; B5 ready for user acceptance under D21/D22. Do not begin B6.
-- Verified baseline: B5 started on clean `master` at `1dbcc3ee12e838b1a6c5c8d5b6106f339cef42a2`; eight B5 files are now modified, with no staging or commits. Do not change branches or commit for the user.
-- Application changes: Dashboard fixed header/common panels, Account Settings-style action rows, About grouped panels, and directly replaced CSS. Engineering guidance and this retained tracker are updated. Preserve the accepted Settings/Menu/top-navigation work.
+- Current phase: B0-B4/R1 accepted; B5 awaits explicit user acceptance, with the D23 Settings spacing refinement ready for review. Do not begin B6.
+- Verified baseline: B5 was committed by the user as `da7dea0fabe8e6f0c33db20571d373eea06e1f21`; the 2026-11-10 spacing refinement starts from that clean `master` checkout. Only shared admin CSS and its two related documentation files change. Do not change branches or commit for the user.
+- Application changes: B5 Dashboard/Account/About work is in the confirmed user-created commit. Current uncommitted scope is only Settings 5px spacing in shared CSS, the durable frontend guidance, and this tracker. Account retains 8px spacing; preserve all action semantics and accepted navigation.
 - Verification: final W passed with zero warnings/errors; final T Passed: 663, Failed: 0, Skipped: 0. J not required. All 72 normal, 72 DOM-stress, and 48 boundary samples passed, followed by final-host focus/hover/contrast/native checks. Detailed evidence, corrections, and sampling limits are in the B5 record above.
-- Decisions: D1-D22 govern the design. Dashboard keeps New Post on the right in its fixed title row; Account becomes Windows 11-style action rows. Preserve immediate settings writes, explicit Menu save, the existing theme limit, excluded editors, and 100% zoom scope.
-- Runtime: `https://localhost:10210`, detached session `admin-b5-acceptance-host`, last verified listener PID `36752`, expected Web Debug executable, readiness HTTP 200. Reverify ownership before stopping. Browser page 17 is signed in on Dashboard at native viewport/automatic theme, 100% zoom, with no temporary helpers, frames, masks, or overlays.
+- Decisions: D1-D23 govern the design. Settings item gaps are now 5px; Account retains 8px action-row gaps. Dashboard keeps New Post on the right in its fixed title row. Preserve immediate settings writes, explicit Menu save, the existing theme limit, excluded editors, and 100% zoom scope.
+- Runtime: `https://localhost:10210`, detached session `admin-settings-spacing-host`, last verified listener PID `22168`, expected Web Debug executable, readiness HTTP 200. Reverify ownership before stopping. Browser page 1 is signed in on General Settings at native viewport/automatic theme, 100% zoom, with no temporary helpers, frames, masks, or overlays.
 - Fixture permission: local test-data writes/creation without restoration remain explicitly authorized. Own B4 fixture menus/child were cleaned up because their long label overflowed the public navbar; the original two menus remain. Do not send email, trigger external services, or extrapolate to production.
-- Immediate next action: wait for B5 user acceptance and the user's commit, then obtain explicit B6 authorization. No autonomous commit or B6.
+- Immediate next action: wait for user acceptance of B5 and the spacing refinement, then obtain explicit B6 authorization. B5's commit is confirmed; no autonomous commit or B6.

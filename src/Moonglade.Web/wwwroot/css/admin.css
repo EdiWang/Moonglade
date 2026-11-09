@@ -340,7 +340,7 @@
     align-items: center;
     gap: 8px 16px;
     min-height: 72px;
-    margin: 0 0 8px;
+    margin: 0 0 5px;
     padding: 16px 24px;
     border: 1px solid var(--bs-border-color);
     border-radius: 8px;
@@ -360,7 +360,7 @@
 }
 
 .admin-settings-expander {
-    margin-bottom: 8px;
+    margin-bottom: 5px;
     border: 1px solid var(--bs-border-color);
     border-radius: 8px;
     background-color: var(--bs-body-bg);
@@ -751,6 +751,7 @@
 
 .admin-settings-page .local-account-action {
     grid-template-columns: 32px minmax(0, 1fr) 24px;
+    margin-bottom: 8px;
 }
 
 .local-account-action {
