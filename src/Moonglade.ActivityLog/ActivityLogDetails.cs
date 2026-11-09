@@ -44,7 +44,7 @@ public static class ActivityLogDetails
                     || changes.Any(change => change is null || !IsScalar(change.OldValue) || !IsScalar(change.NewValue)))
                     throw new ArgumentException("Activity setting changes contain an unsupported value.");
                 var json = JsonSerializer.SerializeToElement(changes, JsonOptions);
-                ReadSettingChanges(definition, json);
+                ValidateSettingChanges(definition, json);
                 safe.Add(key, json);
             }
             else
@@ -79,7 +79,11 @@ public static class ActivityLogDetails
                 if (!definition.DetailKeys.Contains(field.Name) || !values.TryAdd(field.Name, field.Value.Clone()))
                     throw new InvalidDataException("Stored activity details contain an unsupported or repeated field.");
                 if (field.Name == ActivityLogSettingChange.DetailsKey)
-                    settingChanges = ReadSettingChanges(definition, field.Value);
+                {
+                    var changes = new List<ActivityLogSettingChangeDetail>();
+                    ValidateSettingChanges(definition, field.Value, changes);
+                    settingChanges = changes.AsReadOnly();
+                }
                 else if (!IsSafeJson(field.Value))
                     throw new InvalidDataException("Stored activity details contain an unsupported value.");
             }
@@ -93,12 +97,12 @@ public static class ActivityLogDetails
         }
     }
 
-    private static IReadOnlyList<ActivityLogSettingChangeDetail> ReadSettingChanges(ActivityEventDefinition definition, JsonElement changes)
+    private static void ValidateSettingChanges(ActivityEventDefinition definition, JsonElement changes,
+        List<ActivityLogSettingChangeDetail>? readDetails = null)
     {
         if (definition.SettingKeys is null || changes.ValueKind != JsonValueKind.Array)
             throw new InvalidDataException("Activity setting changes are not supported for this event.");
         var keys = new HashSet<string>(StringComparer.Ordinal);
-        var values = new List<ActivityLogSettingChangeDetail>();
         foreach (var change in changes.EnumerateArray())
         {
             if (change.ValueKind != JsonValueKind.Object)
@@ -111,9 +115,8 @@ public static class ActivityLogDetails
                 || !definition.SettingKeys.Contains(key.GetString()!) || !keys.Add(key.GetString()!)
                 || JsonElement.DeepEquals(oldValue, newValue))
                 throw new InvalidDataException("Activity setting changes contain an unsupported, repeated, or unchanged field.");
-            values.Add(new(key.GetString()!, oldValue.Clone(), newValue.Clone()));
+            readDetails?.Add(new(key.GetString()!, oldValue.Clone(), newValue.Clone()));
         }
-        return values.AsReadOnly();
     }
 
     private static bool IsScalar(object? value) => value is
