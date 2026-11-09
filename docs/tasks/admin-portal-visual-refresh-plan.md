@@ -3,14 +3,16 @@
 ## Current state
 
 - Last updated: 2026-11-09.
-- Phase: B0-B3 accepted; revised B4 and the authorized cross-batch R1 navigation refinement are ready for user acceptance. B5 is not authorized.
+- Phase: B0-B4 and R1 accepted. B5 is ready for user acceptance under confirmed D21/D22. B6 is not authorized.
+- Latest B5 checks: final W passed with zero warnings/errors; final T passed 663/663, zero failures/skips. Browser checks passed 72 normal samples, 72 DOM-only stress samples, and 48 boundary samples, followed by final-host keyboard/hover/contrast and native-page checks. J was not required because production JavaScript did not change.
 - Latest R1 checks: W passed with zero warnings/errors; T passed 663/663; final J passed 34/34. The 360-sample navigation layout matrix, four final overflow stress cases, 16 boundary samples, native action dialogs, and actual keyboard navigation passed. All files pass UTF-8/CRLF/final-newline and whitespace checks.
 - Earlier revised B4 checks: W passed with zero warnings/errors; T passed 663/663; all 240 fresh rendered samples passed, including disclosure states/interaction. No image-test exception was needed. Production JavaScript had not changed at that earlier checkpoint, so J was not required then; R1 now changes JavaScript and includes J.
 - This document is the task plan, decision record, progress tracker, and cold-start handoff. The user explicitly requested its retention, including after completion.
 - No application code, configuration, dependencies, or blog data was changed by AI during B0. The final Web build passed with zero warnings/errors; Web tests passed 662/662 and Node tests passed 32/32, with no failed or skipped tests.
 - Planning checkout: `master`, commit `6615117f9b93d7d9c31519ec109b1cc00f7e2662`. B0 execution checkout: `b2c47ecf94540bbe8b3d01918cd98180b0776f3c` (`Document admin portal visual refresh plan`). The worktree was clean at B0 start. Only this plan differs between those commits; application source is unchanged.
-- Authorized: B4 plus the explicitly requested R1 secondary-navigation refinement and checks. Local test-data fixture permission, host stop/start, and README default-account login remain authorized. Not authorized: B5, Git commits, branch changes, push, PR, deployment, external email/service operations, or unrelated image-test fixes.
-- Next action: wait for user acceptance and the user's commit; do not infer B4 acceptance or B5 permission from this refinement request.
+- Authorized: B5 Dashboard/Account/About presentation work and its checks. Local test-data fixture permission, host stop/start, and README default-account login remain authorized. Not authorized: B6, Git commits, branch changes, push, PR, deployment, external email/service operations, account-reset operations, or unrelated image-test fixes.
+- Starting B5 checkout: clean `master`, user-created commit `1dbcc3ee12e838b1a6c5c8d5b6106f339cef42a2` (`Refresh admin settings and secondary navigation`), containing accepted B4/R1.
+- Next action: wait for B5 acceptance and the user's commit. Do not start B6 without explicit authorization.
 
 ## Goal and reference context
 
@@ -44,6 +46,8 @@ The screenshots were supplied in the original conversation and are not repositor
 | D18 | Groups for enabled features initially expand; inactive groups initially collapse. Arrow buttons and setting controls remain independent: folding never saves/changes a setting, and toggling a setting does not automatically fold/unfold its group. Preserve immediate PATCHes and existing edit dialogs. Menu is not redesigned again with this Settings revision. |
 | D19 | R1 covers four Post states, Pages/recycle bin, and nine Settings classifications (15 routes). Put secondary navigation inside the existing top bar, right of the site title and aligned with the main content, using text links, hover surfaces, and selected underlines instead of pills. Exclude editor/dialog tabs. |
 | D20 | Secondary navigation stays on one line and scrolls horizontally when needed without displacing global/account controls. Keep the active destination visible after layout/font changes; preserve normal links, routes, and keyboard navigation. |
+| D21 | B5 Dashboard fixes its existing title/overview plus New Post row in the common action region, with New Post retained on the right. The user explicitly chose this Dashboard-only exception to D5. Do not duplicate the title/header in the scrolling content. |
+| D22 | B5 Account changes to the same Windows 11 Settings style, not the previously proposed large cards: left-aligned single column capped at 1120px, separate icon/title/description action rows, 8px gaps and 16px vertical/24px horizontal padding. Preserve full-row native-button activation, existing dialogs/bindings, and danger distinction; add no switches, disclosure groups, or authentication behavior. |
 
 Retain the existing font, theme accent colors, and blue top-bar design. Preserve application behavior. A surface/layout refresh is not authorization to change save semantics, add features, redesign navigation information architecture, or introduce a frontend framework.
 
@@ -217,7 +221,7 @@ Technical dependencies are explicit below. The intended delivery order is B0 thr
 - Align Dashboard's metrics and business panels with the common surface rules; keep its useful multi-panel hierarchy and current data.
 - Align its New Post placement with the common action region without inventing a redundant toolbar.
 - Align Account and About surfaces without adding empty toolbar space or changing their information/action structure.
-- Do not redesign account actions or alter authentication/reset behavior.
+- Account's visual layout follows the user's later D22 Windows 11-style instruction; retain its existing action meanings, native buttons, dialogs, and authentication/reset behavior.
 - Consolidate superseded page-specific styles only where directly replaced by this work.
 
 **Checks and acceptance**
@@ -295,9 +299,9 @@ Status vocabulary: `Pending`, `In progress`, `Blocked`, `Ready for user acceptan
 | B1 | B0 | Complete | W: 0 warnings/errors; J: 32 passed; browser checks passed; final T: 661 passed, 1 failed, 0 skipped, with the explicit B1 image-test exception | Accepted explicitly on 2026-11-09 | `e84a9cd570661a8b63b084240681e0c17192aaf3`, `Refresh admin shell and activity log layout`, confirmed from Git | Closed; user explicitly authorized B2 |
 | B2 | B1 | Complete | W: 0 warnings/errors; T: 662 passed, 0 failed/skipped; J: 32 passed, 0 failed/skipped; browser evidence and unavailable fixture scenarios recorded below | Accepted explicitly on 2026-11-09 | `3580bf019dda97eaedf8ee792b936e597080ba45`, `Refresh admin list panels and toolbars`, confirmed from Git | Closed; user explicitly authorized B3 |
 | B3 | B1 | Complete | W: 0 warnings/errors; T: 661 passed, 1 failed, 0 skipped, with explicit B3 image-test exception; J not required; 72 rendered route/culture/viewport/mode probes plus native-page checks; fixture gaps below | Accepted explicitly on 2026-11-09 | `5d5d39a1e85604cb769e59adee10eabeac25a2b0`, `Refresh admin page, category, and widget cards`, confirmed from Git | Closed; user explicitly authorized B4 |
-| B4 | B1, B2 | Ready for user acceptance | Revised W: 0 warnings/errors; revised T: 663 passed, 0 failed/skipped; J not required; 240 fresh rendered samples passed, including disclosure independence, plus native/write checks below | Pending | Not created | User acceptance, user commit, and explicit continuation |
-| R1 | B1, B2, revised B4 | Ready for user acceptance | W: 0 warnings/errors; T: 663 passed; J: 34 passed; 360 layout samples, 4 final overflow cases, 16 boundary samples, native dialogs/keyboard passed | Pending | Not created | User acceptance and user commit; this does not authorize B5 |
-| B5 | B1 | Pending | Not run | Pending | Not created | Prior delivery closed and B5 authorization |
+| B4 | B1, B2 | Complete | Revised W: 0 warnings/errors; revised T: 663 passed, 0 failed/skipped; J not required; 240 fresh rendered samples passed, including disclosure independence, plus native/write checks below | Accepted explicitly on 2026-11-09 | `1dbcc3ee12e838b1a6c5c8d5b6106f339cef42a2`, `Refresh admin settings and secondary navigation`, confirmed from Git | Closed; user explicitly authorized B5 |
+| R1 | B1, B2, revised B4 | Complete | W: 0 warnings/errors; T: 663 passed; J: 34 passed; 360 layout samples, 4 final overflow cases, 16 boundary samples, native dialogs/keyboard passed | Accepted explicitly on 2026-11-09 | Same confirmed user-created commit `1dbcc3ee12e838b1a6c5c8d5b6106f339cef42a2` as B4 | Closed; user explicitly authorized B5 |
+| B5 | B1 | Ready for user acceptance | Final W: 0 warnings/errors; final T: 663 passed, 0 failed/skipped; J not required; 72 normal + 72 DOM-stress + 48 boundary samples passed, followed by final keyboard/hover/contrast checks | Pending | Not created | User acceptance, user-created commit, and explicit B6 authorization |
 | B6 | B2, B3, B4, B5 | Pending | Not run | Pending | Verification/documentation only unless fixes are needed | All implementation gates closed and B6 authorization |
 
 ### Required update after every batch or interruption
@@ -759,13 +763,66 @@ git --no-pager diff --check
 - Current final host: `https://localhost:10210`, detached session `admin-r1-acceptance-host`, last verified listener PID `34016`, expected Web Debug executable, readiness HTTP 200. Earlier recorded hosts were stopped for builds; verify current ownership before stopping.
 - Existing B4 changes remain preserved and uncommitted. Total worktree scope is 30 files (24 modified, six untracked including the earlier B4 Menu test). R1 is an authorized cross-batch correction, not B4 acceptance or B5. Stop for user acceptance; the user owns commits.
 
+### 2026-11-09 - B4/R1 accepted; B5 baseline and design gate
+
+- At 20:27 +08:00 the user accepted the prior delivery and explicitly requested B5. Confirmed accepted work in user-created commit `1dbcc3ee12e838b1a6c5c8d5b6106f339cef42a2` (`Refresh admin settings and secondary navigation`). B5 starts on clean `master`.
+- B5 remains limited to Dashboard, Account, and About presentation; preserve all data, links, forms, authentication behavior, and the accepted B1-B4/R1 surfaces. B6 is not authorized.
+- Read the three Razor pages, Dashboard/About isolated CSS, Account shared CSS and dark overrides, Dashboard model/module, and existing Account command regression context. The Dashboard module only formats UTC labels and need not change.
+- Fresh 1440x900/light baseline: Dashboard has a scrolling title/overview/New Post header, four metric cards, Posts/Taxonomy panels, empty recent drafts, and two recent published entries. Account has two large centered action cards with shadows and 32px spacing. About has two groups containing 4 and 11 rows; headings sit outside their 8px-padded white table surfaces.
+- Two material layout choices need user confirmation: how to place Dashboard's New Post in the fixed action region without a redundant header, and whether Account's existing large action cards move to the content's top-left or retain their centered placement. About can preserve its groups and bottom legal/report actions while putting each heading/table inside a common padded panel.
+- The user answered: fix the existing Dashboard title/New Post row, allowing New Post on the right; redesign Account in the same Windows 11 Settings style. These supersede the pending alternatives above and are recorded as D21/D22. Implementation may now proceed; no further authentication scope was authorized.
+- Browser reconnected with new page ID 17 and lost its sign-in session. The authorized README default local sign-in succeeded; no credentials/configuration were changed or copied into this record. No account actions or local content writes were performed.
+- At this gate only this tracker changed. B5 application edits, build/tests, and acceptance remain pending.
+
+### 2026-11-09 - B5 ready for user acceptance
+
+**Changes and boundaries**
+
+- Starting checkout remains `master` at `1dbcc3ee12e838b1a6c5c8d5b6106f339cef42a2`. B5 changes six application files: `Dashboard.cshtml`, `Dashboard.cshtml.css`, `LocalAccount.cshtml`, `About.cshtml`, `About.cshtml.css` under `src/Moonglade.Web/Pages/Admin`, and `src/Moonglade.Web/wwwroot/css/admin.css`. This tracker and `docs/agent-reference.md` complete the eight-file scope.
+- Dashboard's original title/overview and New Post now occupy the fixed action region. New Post remains on the right, as explicitly selected in D21. Four metric cards and four business panels reuse the common surface rules, with 16px gaps, preserved column proportions, and recent-list separators. Counts, destinations, data queries, empty-state wording, and UTC formatting are unchanged.
+- Account follows D22: a left-aligned 1120px-capped Settings column with two independent native action rows, icon/text/chevron order, 8px gaps, 16px vertical/24px horizontal padding, and no shadows. Original dialogs, forms, validation, action bindings, and authentication behavior remain unchanged. Added dialog associations and inset keyboard outlines; danger styling remains distinct.
+- About keeps its two information groups and all 4 + 11 rows. Each heading and responsive table now shares a standard 24px-padded panel; the group gap is 16px. Existing values, monospace wrapping, legal dialog, and bottom Legal/Report actions remain intact.
+- No production JavaScript, resources, dependencies, configuration, handlers, database schema, or test source changed. Accepted Settings/Menu/navigation surfaces and excluded editors were not redesigned. No account actions, external sends, or local content/settings writes were invoked for B5.
+
+**Verification and corrections**
+
+| Check | Exact command | Final result |
+| --- | --- | --- |
+| W | `dotnet build .\src\Moonglade.Web\Moonglade.Web.csproj --no-restore` | Exit 0; 0 warnings, 0 errors; 1.66s |
+| T | `dotnet test --project .\src\Tests\Moonglade.Web.Tests\Moonglade.Web.Tests.csproj` | Exit 0; Passed: 663, Failed: 0, Skipped: 0; total 663; 12.025s |
+| J | Not run | Not required: no production JavaScript changes |
+| Formatting | `git --no-pager diff --check` and changed-file encoding/newline checks | Eight files pass UTF-8/CRLF/final-newline checks; existing BOM choices preserved |
+
+- Initial W/T also passed. The final commands above ran after both the decorative Account markup correction and the final theme-color correction; no image-test exception, skipped tests, dependency installation, or retry-until-green was needed.
+- A focused comparison against HEAD confirmed 16 unchanged Account form/input/label/button contract entries, excluding the two intentionally restyled action buttons. A separate comparison confirmed both original `x-on:click` action bindings unchanged.
+- Stress inspection exposed an incorrectly ordered second-row chevron that assigned Account text to a 24px column. Corrected both rows to icon/body/chevron and strengthened checks to require the body in the second grid column, chevron last, 982px text width at 1120px row width, and bounded stress-row height.
+- Native keyboard inspection then exposed insufficient dark-mode contrast in the new focus styling. Replaced fixed accent colors only in the affected B5 rules with Bootstrap's theme-aware link-hover/danger-emphasis colors. Final Dashboard focus text/outline contrast is 5.43:1 or better across both viewports/themes; Account action titles are 6.10:1 or better in the checked focus/hover states, and descriptions are 6.78:1 or better. These are focused measurements, not a whole-portal accessibility audit.
+
+**Browser evidence**
+
+- Normal layout matrix: three routes x six cultures x two approved viewports x light/dark = 72 rendered samples, all passed after the Account order correction. Verified fixed Dashboard header ownership/right-side New Post, four metrics/four business panels, common padding/radius/border/no-shadow rules, Account column/order/width/dialog associations, About group/row counts, and no document/body horizontal overflow or empty Account/About toolbar.
+- DOM-only stress matrix: the same 72 combinations passed. Dashboard used six temporary recent rows with 128-character unbroken titles, a cloned empty state in the other recent panel, and 19-digit counts. Account used long temporary titles/descriptions; About used a synthetic long Windows path in the Directory cell. Verified wrapping, actual main-body scrolling, reachable final content/actions, and an unmoving Dashboard toolbar. English scroll distances at 1440/1920 were Dashboard 697/319px, Account 413/233px, About 863/333px.
+- These stress cases prove rendered layout, not saved translations, database fixtures, or backend query limits. In particular, six recent rows exceed the normal Dashboard query result limit. Real baseline sections contained empty drafts and two recent published entries. All temporary frames and substitutions were removed.
+- Boundary matrix: 12 English routes x both approved sizes/themes = 48 samples, all passed: Posts, Pages, General, Appearance, Verification Files, Menu, Categories, Activity Logs, both blank editors, public home, and a real same-origin public article. Checked retained secondary-navigation/current-route semantics where applicable, no empty General toolbar, sole native Menu toolbar Save, excluded editor branches, no public admin-style leakage, and no horizontal overflow.
+- The 192 layout/stress/boundary samples preceded the final color-only refinement. The acceptance host then passed eight Dashboard focus-color samples across both sizes/themes and native Account focus/hover checks in both themes; no geometry changed in that refinement.
+- Actual Tab/Enter followed the Dashboard Published count to Posts and New Post to the existing blank editor without saving. Native Tab reached count tiles and recent links with visible unclipped focus. Final native screenshots inspected all three pages in both themes; About's 15 values were temporarily hidden for screenshots, then restored without copying server metadata.
+- Actual Tab moved through both Account rows with inset focus and correct danger distinction; actual pointer hover exercised both rows in both themes. Neither action was activated and no Account dialog opened.
+- About's Legal action opened by keyboard; its 800px modal stayed within 1440x900, focus entered it, Tab reached its close control, and Escape closed it and returned focus. Report's existing destination was checked without opening GitHub. Final native Dashboard/Account/About console samples had no errors, warnings, or issues.
+
+**Delivery gate and runtime**
+
+- B5 is ready for user acceptance, not accepted or committed. B6's complete integrated matrix remains a separate, unauthorized batch. No full-solution/provider tests or account-reset behavior were run for this presentation-only scope.
+- The accepted R1 host and earlier B5 hosts were stopped only after verifying ownership, for local builds. The current detached host is `admin-b5-acceptance-host`, `https://localhost:10210`, listener PID `36752`, expected Web Debug executable, readiness HTTP 200. Reverify ownership before any later stop.
+- Browser page 17 is signed in on Dashboard with viewport overrides cleared, automatic theme restored, and 100% zoom. No temporary helpers, frames, masks, overlays, or backdrops remain.
+- No staging, commit, push, PR, branch change, deployment, or B6 work occurred. The user owns acceptance and commits.
+
 ## Latest handoff
 
-- Current phase: B0-B3 accepted; revised B4 and R1 are ready for user acceptance. Do not begin B5.
-- Verified baseline: `5d5d39a1e85604cb769e59adee10eabeac25a2b0` on `master`, clean at B4 start; sixteen B4 files are now uncommitted. Do not change branches or commit for the user.
-- Application changes: preserve revised B4 settings/Menu work; R1 adds top secondary navigation, separates classifications from action toolbars, and keeps selected/focused links visible. Engineering guidance now describes the navigation contract.
-- Verification: R1 W passed with zero warnings/errors; T passed 663/663; final J passed 34/34, including the two focused navigation cases. The 360-sample layout matrix passed after CSS fixes; the final keyboard enhancement then passed its focused/full J, W, four fresh overflow cases, and 16 boundary samples. No historical image-test exception is needed.
-- Decisions: D1-D20 govern the revised design. Preserve immediate settings writes, explicit Menu save, the existing theme limit, excluded editors, and 100% zoom scope.
-- Runtime: detached session `admin-r1-acceptance-host`, last verified listener PID `34016`, expected executable, readiness HTTP 200. Browser page 2 is left on General with emulation cleared, auto theme preference, and no temporary overlays/helpers. Reverify process ownership before stopping.
+- Current phase: B0-B4/R1 accepted; B5 ready for user acceptance under D21/D22. Do not begin B6.
+- Verified baseline: B5 started on clean `master` at `1dbcc3ee12e838b1a6c5c8d5b6106f339cef42a2`; eight B5 files are now modified, with no staging or commits. Do not change branches or commit for the user.
+- Application changes: Dashboard fixed header/common panels, Account Settings-style action rows, About grouped panels, and directly replaced CSS. Engineering guidance and this retained tracker are updated. Preserve the accepted Settings/Menu/top-navigation work.
+- Verification: final W passed with zero warnings/errors; final T Passed: 663, Failed: 0, Skipped: 0. J not required. All 72 normal, 72 DOM-stress, and 48 boundary samples passed, followed by final-host focus/hover/contrast/native checks. Detailed evidence, corrections, and sampling limits are in the B5 record above.
+- Decisions: D1-D22 govern the design. Dashboard keeps New Post on the right in its fixed title row; Account becomes Windows 11-style action rows. Preserve immediate settings writes, explicit Menu save, the existing theme limit, excluded editors, and 100% zoom scope.
+- Runtime: `https://localhost:10210`, detached session `admin-b5-acceptance-host`, last verified listener PID `36752`, expected Web Debug executable, readiness HTTP 200. Reverify ownership before stopping. Browser page 17 is signed in on Dashboard at native viewport/automatic theme, 100% zoom, with no temporary helpers, frames, masks, or overlays.
 - Fixture permission: local test-data writes/creation without restoration remain explicitly authorized. Own B4 fixture menus/child were cleaned up because their long label overflowed the public navbar; the original two menus remain. Do not send email, trigger external services, or extrapolate to production.
-- Immediate next action: wait for user acceptance and the user's commit. Record eventual commits from Git history; do not advance to B5 automatically.
+- Immediate next action: wait for B5 user acceptance and the user's commit, then obtain explicit B6 authorization. No autonomous commit or B6.

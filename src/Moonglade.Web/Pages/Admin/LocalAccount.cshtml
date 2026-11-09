@@ -14,29 +14,35 @@
      data-password-updated="@SharedLocalizer["Password updated."]">
 </div>
 
-<div class="local-account-actions">
+<div class="admin-settings-page local-account-actions">
     <button type="button"
-            class="local-account-action"
+            class="settings-entry local-account-action"
+            aria-haspopup="dialog"
+            aria-controls="resetPasswordModal"
             x-on:click="openResetPasswordModal()">
-        <span class="local-account-action-icon">
+        <span class="settings-entry-icon" aria-hidden="true">
             <i class="bi-key"></i>
         </span>
         <span class="local-account-action-body">
             <span class="local-account-action-title">@SharedLocalizer["Change Password"]</span>
             <span class="local-account-action-description">@SharedLocalizer["Update your local username and password for administrator sign-in."]</span>
         </span>
+        <i class="bi-chevron-right" aria-hidden="true"></i>
     </button>
 
     <button type="button"
-            class="local-account-action local-account-action-danger"
+            class="settings-entry local-account-action local-account-action-danger"
+            aria-haspopup="dialog"
+            aria-controls="resetAuthenticatorModal"
             x-on:click="openResetAuthenticatorModal()">
-        <span class="local-account-action-icon">
+        <span class="settings-entry-icon" aria-hidden="true">
             <i class="bi-shield-lock"></i>
         </span>
         <span class="local-account-action-body">
             <span class="local-account-action-title">@SharedLocalizer["Reset Authenticator"]</span>
             <span class="local-account-action-description">@SharedLocalizer["Clear the current authenticator setup and enroll a new app on next sign-in."]</span>
         </span>
+        <i class="bi-chevron-right" aria-hidden="true"></i>
     </button>
 </div>
 

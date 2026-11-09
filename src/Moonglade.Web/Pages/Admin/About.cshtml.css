@@ -2,8 +2,9 @@
     width: 250px;
 }
 
-.info-section {
-    margin-bottom: 2rem;
+.admin-about {
+    display: grid;
+    gap: 16px;
 }
 
 .info-value {

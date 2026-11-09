@@ -22,13 +22,13 @@
     var aspNetCoreEnv = Html.Encode(Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? "Not Set");
 }
 
-<div class="pb-3">
-    <div class="info-section">
-        <h4 class="admin-subtitle fw-bold mb-2">
+<div class="admin-about">
+    <div class="admin-panel info-section">
+        <h4 class="admin-subtitle fw-bold mb-3">
             @SharedLocalizer["Moonglade Configuration"]
         </h4>
 
-        <div class="admin-table-container mb-4 rounded-3 border p-2">
+        <div class="table-responsive">
             <table class="table table-borderless table-sm mb-0">
                 <tbody>
                     <tr>
@@ -54,12 +54,12 @@
         </div>
     </div>
 
-    <div class="info-section">
-        <h4 class="admin-subtitle fw-bold mb-2">
+    <div class="admin-panel info-section">
+        <h4 class="admin-subtitle fw-bold mb-3">
             @SharedLocalizer["Server Information"]
         </h4>
 
-        <div class="admin-table-container mb-4 rounded-3 border p-2">
+        <div class="table-responsive">
             <table class="table table-borderless table-sm mb-0">
                 <tbody>
                     <tr>
