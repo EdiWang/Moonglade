@@ -16,11 +16,13 @@
 </div>
 
 @section admintoolbar {
-    <div class="admin-toolbar d-flex flex-shrink-0 align-items-center gap-2">
-        <a x-on:click="initCreateTag()" class="btn btn-outline-accent" role="button">
-            <i class="bi-plus-lg"></i>
-            @SharedLocalizer["New"]
-        </a>
+    <div class="admin-toolbar admin-toolbar-row">
+        <div class="admin-toolbar-group">
+            <button type="button" x-on:click="initCreateTag()" class="btn btn-outline-accent">
+                <i class="bi-plus-lg" aria-hidden="true"></i>
+                @SharedLocalizer["New"]
+            </button>
+        </div>
 
         <input x-model="tagFilter"
                x-on:input="filterTags()"
@@ -34,21 +36,25 @@
 
 @Html.AntiForgeryToken()
 
-<div>
+<div class="admin-panel">
     <div x-show="isLoading"
-         class="text-muted mb-3"
+         class="text-muted"
          :class="{ 'd-flex align-items-center': isLoading }">
         <div class="spinner-border spinner-border-sm me-2" role="status"></div>
         <span>@SharedLocalizer["Loading tags..."]</span>
     </div>
 
-    <div x-show="!isLoading && !hasTags" class="alert alert-info" role="alert">
+    <div x-show="!isLoading && !hasTags" class="alert alert-info mb-0" role="alert">
         @SharedLocalizer["No tags found. Create your first tag to get started."]
     </div>
 
-    <div x-show="!isLoading && hasTags" class="tag-manager-container">
+    <div x-show="!isLoading && hasTags && groupedTags.length === 0" class="alert alert-info mb-0" role="alert">
+        @SharedLocalizer["no items to show"]
+    </div>
+
+    <div x-show="!isLoading && hasTags" class="tag-manager-container admin-list">
         <template x-for="group in groupedTags" :key="group.letter">
-            <div class="tag-letter-group mb-4" :id="'tag-group-' + group.letter">
+            <div class="tag-letter-group admin-list-item gap-3" :id="'tag-group-' + group.letter">
                 <div class="tag-letter-tile">
                     <span x-text="group.letter"></span>
                 </div>

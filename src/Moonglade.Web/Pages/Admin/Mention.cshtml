@@ -21,50 +21,47 @@
 </div>
 
 @section admintoolbar{
-    <div class="admin-toolbar">
-        <div class="row">
-            <div class="col">
-                <a x-on:click="openFilter()" class="btn btn-outline-accent me-2" role="button">
-                    <i class="bi-funnel"></i>
-                    @SharedLocalizer["Filter"]
-                    <span x-show="activeFilterCount > 0" class="badge bg-danger ms-1" x-text="activeFilterCount"></span>
-                </a>
-                <a class="btn btn-outline-danger me-2" 
-                   href="javascript:;" 
-                   x-on:click="deleteSelectedMentions()"
-                   x-show="selectedIds.length > 0">
-                    <i class="bi-trash"></i>
-                    <span x-text="`@SharedLocalizer["Delete selected"] (${selectedIds.length})`"></span>
-                </a>
-                <a class="btn btn-outline-danger" href="javascript:;" x-on:click="clearAllMentions()">
-                    <i class="bi-trash"></i>
-                    @SharedLocalizer["Clear all"]
-                </a>
+    <div class="admin-toolbar admin-toolbar-row">
+        <div class="admin-toolbar-group">
+            <button type="button" class="btn btn-outline-danger"
+                    x-on:click="deleteSelectedMentions()"
+                    x-show="selectedIds.length > 0">
+                <i class="bi-trash" aria-hidden="true"></i>
+                <span x-text="`@SharedLocalizer["Delete selected"] (${selectedIds.length})`"></span>
+            </button>
+            <button type="button" class="btn btn-outline-danger" x-on:click="clearAllMentions()">
+                <i class="bi-trash" aria-hidden="true"></i>
+                @SharedLocalizer["Clear all"]
+            </button>
+        </div>
+        <div class="admin-toolbar-group ms-auto">
+            <div class="text-muted admin-toolbar-text">
+                <span x-text="mentionCount"></span> @SharedLocalizer["item(s)"]
             </div>
-            <div class="col-auto">
-                <div class="text-muted admin-toolbar-text">
-                    <span x-text="mentionCount"></span> @SharedLocalizer["item(s)"]
-                </div>
-            </div>
+            <button type="button" x-on:click="openFilter()" class="btn btn-outline-accent">
+                <i class="bi-funnel" aria-hidden="true"></i>
+                @SharedLocalizer["Filter"]
+                <span x-show="activeFilterCount > 0" class="badge bg-danger ms-1" x-text="activeFilterCount"></span>
+            </button>
         </div>
     </div>
 }
 
-<div>
+<div class="admin-panel">
     <div x-show="isLoading"
-         class="text-muted mb-3"
+         class="text-muted"
          :class="{ 'd-flex align-items-center': isLoading }">
         <div class="spinner-border spinner-border-sm me-2" role="status"></div>
         <span>@SharedLocalizer["Loading mentions..."]</span>
     </div>
 
-    <div x-show="!isLoading && !hasMentions" class="alert alert-info">
+    <div x-show="!isLoading && !hasMentions" class="alert alert-info mb-0">
         @SharedLocalizer["No mentions yet."]
     </div>
 
-    <div class="mentions-container">
+    <div x-show="!isLoading && hasMentions" class="mentions-container admin-list">
         <template x-for="item in mentions" :key="item.id">
-            <div class="mention-item-entry p-3 rounded-3 border mb-1">
+            <div class="mention-item-entry admin-list-item">
                 <div :id="`mention-box-${item.id}`" class="mention-item row">
                     <div class="col-auto d-flex align-items-center">
                         <input type="checkbox" 
@@ -73,7 +70,7 @@
                                :value="item.id"
                                x-model="selectedIds">
                     </div>
-                    <div class="col">
+                    <div class="col admin-list-content">
                         <strong>
                             <a :href="item.sourceUrl" target="_blank" x-text="item.sourceTitle"></a>
                         </strong>
@@ -90,7 +87,7 @@
                         </div>
                     </div>
 
-                    <div class="col-auto">
+                    <div class="col-auto admin-list-actions">
                         <a class="btn btn-sm btn-outline-danger btn-delete" 
                            x-on:click="deleteMention(item.id)"
                            role="button">
@@ -102,7 +99,7 @@
         </template>
     </div>
 
-    <div x-show="!isLoading && hasMentions" class="d-flex justify-content-between align-items-center mt-4">
+    <div x-show.important="hasMentions" class="admin-panel-footer">
         <nav x-show="totalPages > 1" aria-label="Page navigation">
             <ul class="pagination mb-0">
                 <li class="page-item" :class="{ 'disabled': currentPage === 1 }">
@@ -137,7 +134,7 @@
             </ul>
         </nav>
 
-        <div class="d-flex align-items-center gap-2">
+        <div class="d-flex align-items-center gap-2 ms-auto">
             <label class="form-label mb-0 text-nowrap">@SharedLocalizer["Page Size"]</label>
             <select class="form-select form-select-sm" style="width: auto;"
                     x-on:change="changePageSize($event.target.value)">

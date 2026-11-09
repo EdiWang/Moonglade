@@ -163,6 +163,58 @@
     --bs-table-bg: var(--bs-tertiary-bg);
 }
 
+.admin-panel-footer {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    margin-top: 16px;
+    padding-top: 16px;
+    border-top: 1px solid var(--bs-border-color);
+}
+
+.admin-list-item {
+    margin: 0;
+    padding-bottom: 16px;
+}
+
+.admin-list-item ~ .admin-list-item {
+    padding-top: 16px;
+    border-top: 1px solid var(--bs-border-color);
+}
+
+.admin-list-item:last-child {
+    padding-bottom: 0;
+}
+
+.admin-list-content {
+    min-width: 0;
+    overflow-wrap: anywhere;
+}
+
+.admin-list-content img {
+    max-width: 100%;
+    height: auto;
+}
+
+.admin-list-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    gap: 8px;
+    max-width: 100%;
+}
+
+.admin-panel .empty-recycle {
+    height: auto;
+    padding-top: 0;
+}
+
+.admin-panel .empty-recycle p:last-child {
+    margin-bottom: 0;
+}
+
 .admin-toolbar-text {
     line-height: 36px;
 }
