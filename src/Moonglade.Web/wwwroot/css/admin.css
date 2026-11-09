@@ -206,6 +206,45 @@
     max-width: 100%;
 }
 
+.admin-card-grid {
+    --bs-gutter-x: 16px;
+    --bs-gutter-y: 16px;
+}
+
+.admin-card {
+    --bs-card-spacer-x: 24px;
+    --bs-card-spacer-y: 24px;
+    --bs-card-border-radius: 8px;
+    --bs-card-border-color: var(--bs-border-color);
+    --bs-card-bg: var(--bs-body-bg);
+    min-width: 0;
+    height: 100%;
+    overflow-wrap: anywhere;
+}
+
+.admin-card .card-title {
+    min-width: 0;
+}
+
+.admin-card > .card-footer {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+    margin: 0 24px 24px;
+    padding: 16px 0 0;
+    background-color: transparent;
+}
+
+.admin-widget-preview img {
+    max-width: 100%;
+    height: auto;
+}
+
+.admin-widget-preview .btn-group {
+    max-width: 100%;
+}
+
 .admin-panel .empty-recycle {
     height: auto;
     padding-top: 0;

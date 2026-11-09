@@ -3,13 +3,13 @@
 ## Current state
 
 - Last updated: 2026-11-09.
-- Phase: B0 and B1 accepted. B2 is ready for user visual acceptance, with the unavailable fixture scenarios listed below remaining unverified.
-- B2 checks: Web build passed with zero warnings/errors; Web tests passed 662/662; JavaScript tests passed 32/32. The B1 image-test failure did not recur; no new exception was applied.
+- Phase: B0-B2 accepted. B3 implementation and read-only browser checks are ready for user acceptance, with the explicit B3 image-test exception and unavailable fixture cases recorded below.
+- B3 automated checks: Web build passed with zero warnings/errors. Web tests: 661 passed, 1 failed, 0 skipped; the user explicitly approved a B3-only exception for the unchanged image-original-storage test. JavaScript modules were unchanged, so J was not required or rerun.
 - This document is the task plan, decision record, progress tracker, and cold-start handoff. The user explicitly requested its retention, including after completion.
 - No application code, configuration, dependencies, or blog data was changed by AI during B0. The final Web build passed with zero warnings/errors; Web tests passed 662/662 and Node tests passed 32/32, with no failed or skipped tests.
 - Planning checkout: `master`, commit `6615117f9b93d7d9c31519ec109b1cc00f7e2662`. B0 execution checkout: `b2c47ecf94540bbe8b3d01918cd98180b0776f3c` (`Document admin portal visual refresh plan`). The worktree was clean at B0 start. Only this plan differs between those commits; application source is unchanged.
-- Authorized: B2 list/table presentation changes and checks. Local host stop/start and README default-account login remain authorized. Keep the existing blog read-only. Not authorized: B3, Git commits, branch changes, push, PR, deployment, or unrelated image-test fixes.
-- Next action: stop for B2 visual acceptance. The user owns the subsequent commit. Do not start B3 without a separate continuation instruction.
+- Authorized: B3 card-grid presentation changes and checks. Local host stop/start and README default-account login remain authorized. Keep the existing blog read-only. Not authorized: B4, Git commits, branch changes, push, PR, deployment, or unrelated image-test fixes.
+- Next action: wait for B3 visual acceptance. The user owns commits; B4 requires a separate continuation instruction.
 
 ## Goal and reference context
 
@@ -36,6 +36,7 @@ The screenshots were supplied in the original conversation and are not repositor
 | D11 | Prefer one settings header flow: primary page actions on the left followed by classification tabs; allow natural wrapping when necessary. Ordinary settings tabs do not acquire a Save action. |
 | D12 | Move Menu Save to the fixed top toolbar and remove the old bottom Save. Retain the existing explicit-save semantics and form association. |
 | D13 | The existing development site is read-only for AI's UI checks. Browser writes require a separate local test instance and disposable database; confirm its actual setup before provisioning or writing fixtures. |
+| D14 | Card action footers keep the body surface and use inset separators aligned with the 24px body padding. Cards in the same row follow that row's tallest content and align their footer actions; do not stretch cards to the viewport. Preserve four columns for Pages/Categories and three for Widgets. |
 
 Retain the existing font, theme accent colors, and blue top-bar design. Preserve application behavior. A surface/layout refresh is not authorization to change save semantics, add features, redesign navigation information architecture, or introduce a frontend framework.
 
@@ -284,8 +285,8 @@ Status vocabulary: `Pending`, `In progress`, `Blocked`, `Ready for user acceptan
 | --- | --- | --- | --- | --- | --- | --- |
 | B0 | Explicit B0 authorization | Complete | W: 0 warnings/errors after approved host stop; T: 662 passed; J: 32 passed; no test failures/skips; representative read-only baseline recorded below | Accepted explicitly on 2026-11-09 | Planning commit `b2c47ecf9` confirmed; no B0 application commit required | Closed; user explicitly authorized B1 |
 | B1 | B0 | Complete | W: 0 warnings/errors; J: 32 passed; browser checks passed; final T: 661 passed, 1 failed, 0 skipped, with the explicit B1 image-test exception | Accepted explicitly on 2026-11-09 | `e84a9cd570661a8b63b084240681e0c17192aaf3`, `Refresh admin shell and activity log layout`, confirmed from Git | Closed; user explicitly authorized B2 |
-| B2 | B1 | Ready for user acceptance | W: 0 warnings/errors; T: 662 passed, 0 failed/skipped; J: 32 passed, 0 failed/skipped; browser evidence and unavailable fixture scenarios recorded below | Pending | Not created | User visual acceptance, user-managed commit, and explicit continuation instruction |
-| B3 | B1 | Pending | Not run | Pending | Not created | Prior delivery closed and B3 authorization |
+| B2 | B1 | Complete | W: 0 warnings/errors; T: 662 passed, 0 failed/skipped; J: 32 passed, 0 failed/skipped; browser evidence and unavailable fixture scenarios recorded below | Accepted explicitly on 2026-11-09 | `3580bf019dda97eaedf8ee792b936e597080ba45`, `Refresh admin list panels and toolbars`, confirmed from Git | Closed; user explicitly authorized B3 |
+| B3 | B1 | Ready for user acceptance | W: 0 warnings/errors; T: 661 passed, 1 failed, 0 skipped, with explicit B3 image-test exception; J not required; 72 rendered route/culture/viewport/mode probes plus native-page checks; fixture gaps below | Pending | Not created | User visual acceptance, user commit, explicit continuation |
 | B4 | B1, B2 | Pending | Not run | Pending | Not created | Prior delivery closed and B4 authorization |
 | B5 | B1 | Pending | Not run | Pending | Not created | Prior delivery closed and B5 authorization |
 | B6 | B2, B3, B4, B5 | Pending | Not run | Pending | Verification/documentation only unless fixes are needed | All implementation gates closed and B6 authorization |
@@ -332,6 +333,10 @@ Next action:
 - 2026-11-09: The user chose to keep B1's visual scope and explicitly record the image-test exception before visual acceptance. Image-test investigation/fixes are deferred; this decision does not accept B1's appearance, authorize a commit, or authorize B2.
 - 2026-11-09: User explicitly accepted B1 and authorized B2. Git confirms the user-created B1 commit `e84a9cd570661a8b63b084240681e0c17192aaf3` (`Refresh admin shell and activity log layout`). B2 starts on `master` with a clean worktree.
 - 2026-11-09: B2 presentation changes, automated checks, and read-only browser checks completed. The current blog was not used for fixture writes. B2 is awaiting visual acceptance; no commit or B3 work has been performed.
+- 2026-11-09: User explicitly accepted B2 and authorized B3. Git confirms the user-created B2 commit `3580bf019dda97eaedf8ee792b936e597080ba45` (`Refresh admin list panels and toolbars`). B3 starts on `master` with a clean worktree, aligned with `origin/master`.
+- 2026-11-09: Before B3 application edits, the user confirmed D14: white card footers with inset separators and equal card heights within each content-driven row.
+- 2026-11-09: B3 Web tests reported 661 passed, 1 failed, 0 skipped (exit 2). The unchanged `Image_Post_WhenOriginalIsKept_PublicEndpointCannotReadOriginalStorage` test failed at `ImageControllerTests.cs:88`. The user explicitly chose a B3-specific exception and continuation to visual acceptance. No image-code change or retry was performed; this is not a clean test run or B3 visual acceptance.
+- 2026-11-09: B3 card styling, read-only browser checks, documentation, and cleanup completed. Fixture-only cases remain unverified. B3 awaits visual acceptance; no commit or B4 work has been performed.
 
 ### B0 execution record - 2026-11-09
 
@@ -536,16 +541,77 @@ All checks used 100% zoom and real existing data. The baseline matrix covered th
 - The final compiled host is running at `https://localhost:10210` from this checkout. Detached session: `admin-b2-final-host`; last verified listener PID: `23592`, with the expected Web Debug executable path and HTTP 200 readiness. Reverify ownership/current PID before stopping.
 - Browser page 2 was returned to unfiltered `/admin/post`, page 1, page size 4, at 1920 x 1080. Theme preference remains `auto`, currently light. Temporary emulation/probes were removed, all nine additional tabs were closed, and no modal/drawer remains.
 - Changes are uncommitted on `master`, based on `e84a9cd570661a8b63b084240681e0c17192aaf3`. No staging, commit, push, PR, branch change, deployment, or B3 work occurred.
-- B2 visual acceptance is pending. The user owns the commit after acceptance; wait for explicit continuation before starting B3.
+- B2 visual acceptance was subsequently confirmed explicitly by the user. The user committed B2 as `3580bf019dda97eaedf8ee792b936e597080ba45` and explicitly authorized B3.
+
+### B3 execution record - 2026-11-09
+
+**Authorization and checkout**
+
+- The user accepted B2 and explicitly authorized B3. Git confirmed B2 commit `3580bf019dda97eaedf8ee792b936e597080ba45` (`Refresh admin list panels and toolbars`) on `master`, aligned with `origin/master`, with a clean starting worktree.
+- Before application edits, the user confirmed D14 through the clarification form: white action footers with inset separators and content-driven equal heights within each row.
+- Only this tracker was dirty during initial inspection. No existing user edits were overwritten.
+
+**Implemented scope**
+
+- `admin.css`: added scoped card-grid/card/preview helpers. Grids have 16px gutters; independent cards have 24px body padding, 8px radii, theme-aware 1px borders, and no shadows. Same-row cards align their footers, whose inset borders, transparent background, 16px top padding, and 8px button gaps keep actions aligned with the body.
+- `BlogPage.cshtml`, `Category.cshtml`, `Widgets.cshtml`: adopted those helpers while retaining four/four/three columns. Removed shadow utilities, redundant Page card margins, and fixed-height slug/note usage. Page headings may wrap around publication badges; meaningful text remains visible.
+- Categories/Widgets now use the shared wrapping toolbar composition. Action-only anchors became explicit non-submit buttons; navigation remains anchors. Existing Edit/Delete resources label icon-only actions. Routes, bindings, IDs, sorting, badges, preview rendering, forms, and API behavior are preserved.
+- `docs/agent-reference.md` records the reusable card convention. This retained tracker records decisions, evidence, remaining gates, and handoff.
+- No JavaScript, C# business logic, tests, resource files, dependencies, configuration, schema, or database content changed. Settings/Menu, Dashboard/account/about, public pages, and both editors were not redesigned.
+
+**Automated checks**
+
+Commands ran from the repository root:
+
+```powershell
+dotnet build .\src\Moonglade.Web\Moonglade.Web.csproj
+dotnet test --project .\src\Tests\Moonglade.Web.Tests\Moonglade.Web.Tests.csproj
+git --no-pager diff --check
+```
+
+- W: exit 0, zero warnings/errors. The verified prior host PID `23592` was stopped before the build to avoid its file lock.
+- T: exit 2; **Passed: 661, Failed: 1, Skipped: 0**, total 662. `Image_Post_WhenOriginalIsKept_PublicEndpointCannotReadOriginalStorage` failed `Assert.True` at `ImageControllerTests.cs:88`.
+- That test was unchanged, failed intermittently in B1, and passed in B2. The user explicitly approved a **B3-only exception** after seeing this run's result. It was not retried, fixed, weakened, or treated as passing; the B1 exception was not silently reused.
+- J: not required or run because no JavaScript module changed. B2's 32/32 remains historical evidence only.
+- Whitespace checks passed. All six changed files were checked as valid UTF-8 with CRLF and final newlines, preserving existing Razor BOMs.
+
+**Read-only browser evidence**
+
+- All three actual Razor routes were rendered at 1440 x 900 and 1920 x 1080 CSS pixels, in light/dark mode, across `en-US`, `zh-Hans`, `zh-Hant`, `de-DE`, `ja-JP`, and `fr-FR`, at 100% zoom: **72 route/culture/size/mode samples**.
+- The matrix used sequential, temporary same-origin frames sized to each accepted viewport, loading the real pages/modules/data and waiting for Alpine and images. Geometry/style probes checked each card, row, footer, preview, toolbar, and document; these were rendered-document checks, not 72 manually reviewed screenshots.
+- Separate native-page screenshots were visually inspected for all three routes in both themes: Widgets at 1440 x 900, Categories at 1920 x 1080 light / 1440 x 900 dark, and Pages at 1920 x 1080 light / 1440 x 900 dark.
+- All matrix probes passed: 16px toolbar/grid gaps; 24px body/inset-footer alignment; 8px radii/1px theme borders/no shadows; equal heights and footer positions within rows; preserved columns; no card/preview/workspace horizontal overflow, double document scrolling, or last-card clipping.
+- Real samples contained three Pages, eleven Categories, and five Widgets. Page publication badges represented both states. Category descriptions up to 58 characters wrapped naturally; uneven descriptions kept row actions aligned. No sparse grid stretched to viewport height.
+- Approximate row heights were Pages 216px; Categories 230/208/208px; Widgets 311/320px at 1440 and 371/320px at 1920. Only each row's content determined its height.
+- All three existing widget types were present. The existing 1440 x 540 image fitted at approximately 340 x 129px at the narrow viewport; links and the existing one-button group remained within their card bodies. Normalized preview HTML matched the unchanged production renderer across the matrix.
+- Categories: New opened with blank fields via Enter; Edit opened and loaded the matching record via Space. The 400px drawer, reachable Submit, and focus containment were checked at 1440 x 900 dark. Escape closed both without submission. Delete confirmation was opened and cancelled.
+- Widgets: New and Edit for LinkList/ButtonLink/ImageLink opened and closed at 1920 x 1080 light and 1440 x 900 dark. The 500px drawer fitted, existing values/type content loaded, Submit stayed reachable, and no horizontal clipping occurred. Delete confirmation was cancelled; the final click-based check waited for Bootstrap's transition before dismissal.
+- Pages: public/edit URLs and the New editor route were checked against existing IDs/slugs; publication badges remained correct. Delete confirmation opened and was cancelled. No editor save or export was invoked.
+- Network checks for the native grid/drawer/confirmation interactions showed only successful GETs; no POST/PUT/DELETE was issued. No real records/settings/files were changed.
+- Boundaries at 1440 x 900 dark: Posts and Activity Logs retained their single panels without new card helpers; General retained nine tabs and its toolbar stayed fixed during a real 57px content scroll. Menu still had its existing body Save, leaving the top-only move for B4. Both blank editors had no ordinary-admin scroller, toolbar, or new card helpers and fitted without document overflow. Public home had no admin stylesheet or new card helpers.
+- A blank-editor frame emitted Chrome's user-gesture/beforeunload diagnostic during probe cleanup; no editor behavior was changed. The final normal Widgets navigation had no console errors/warnings.
+
+**Unverified fixture cases and remaining risk**
+
+- D13 remains in force: no disposable instance/database has been agreed or provisioned. Single-card and fully empty grids, very long/unbroken or maximum-length titles/slugs/notes, many-row scrolling grids, disabled Widgets, multi-button wrapping, and unusually sized/custom-class images were not naturally available and remain unverified fixture cases.
+- Existing multi-line descriptions and all three preview types are real evidence, not proof of those unavailable edge cases. New/edit/delete confirmations do not prove create/update/delete submission or failure handling; browser writes still require the agreed disposable setup.
+- The image test remains an unrelated unresolved test failure with the explicit B3 exception, not a repaired or green automated gate.
+
+**Runtime and delivery**
+
+- Host: `https://localhost:10210`, detached session `admin-b3-host`, last verified listener PID `24716`, expected Web Debug executable from this checkout, `/health/ready` HTTP 200. Reverify ownership/current PID before any stop.
+- Only browser page 2 remains, on unfiltered `/admin/widgets`. Emulation was cleared, returning to the user's native 1920 x 889 viewport; theme preference remains `auto`, currently light. No temporary frames/helpers, dialogs, drawers, or backdrops remain.
+- Six files are uncommitted on `master`: the shared CSS, three Razor pages, engineering reference, and tracker. No staging, commit, push, PR, branch change, deployment, or B4 work occurred.
+- User acceptance: pending. User commit: not created. Permission to continue: B3 only; wait for explicit acceptance/continuation.
 
 ## Latest handoff
 
-- Current phase: B0/B1 accepted; B2 ready for user visual acceptance, with fixture limits recorded above.
-- Current authorized work: B2 only; do not begin B3.
-- Verified baseline: `e84a9cd570661a8b63b084240681e0c17192aaf3` on `master`, clean at B2 start; do not change branches.
-- Application changes: B1 is committed. B2's 16 changed files cover list panels/separators, toolbar grouping, shared panel footers, the verification-file New action, and related documentation. JavaScript and business code are unchanged; card-grid/settings regrouping and editors remain outside this batch.
-- Verification: B2 W passed with 0 warnings/errors; T Passed: 662, Failed: 0, Skipped: 0; J Passed: 32, Failed: 0, Skipped: 0. Read-only browser checks passed as recorded above. Missing fixtures remain explicitly unverified. B1's historical test exception was not needed for B2.
-- Decisions: D1-D13 govern implementation. In particular, use 24px padding/16px gaps, 8px radii/1px borders/no shadows, gray toolbar without a bottom divider, naturally wrapping settings actions/tabs, and top-only Menu Save. Only 100% browser zoom is in scope.
-- Environment: local host stop/start and README default-account login are authorized. The final build is running in detached session `admin-b2-final-host` (last listener PID `23592`). Verify ownership before stopping. Browser is on unfiltered posts at 1920 x 1080 with emulation restored to default; no temporary helpers/tabs/overlays remain.
+- Current phase: B0-B2 accepted; B3 is ready for visual acceptance with the explicit image-test exception and fixture limitations above.
+- Current authorized work: B3 only; do not begin B4.
+- Verified baseline: `3580bf019dda97eaedf8ee792b936e597080ba45` on `master`, clean at B3 start; do not change branches.
+- Application changes: B1/B2 are committed. B3 changes are uncommitted in six files: three grid Razor pages, shared admin CSS, engineering reference, and this tracker. Preserve these changes.
+- Verification: B3 W passed; T is 661 passed / 1 failed / 0 skipped with the user's explicit B3 exception. J was not required. The 72 rendered matrix samples and native interaction/boundary checks passed within the recorded fixture limits.
+- Decisions: D1-D14 govern implementation. In particular, use 24px padding/16px gaps, 8px radii/1px borders/no shadows, gray toolbar without a bottom divider, naturally wrapping settings actions/tabs, and top-only Menu Save. Only 100% browser zoom is in scope.
+- Environment: local host stop/start and README default-account login are authorized. The B3 build is running in detached session `admin-b3-host` (last listener PID `24716`). Verify ownership before stopping. Browser is on unfiltered Widgets, native 1920 x 889, with emulation cleared and no temporary helpers/tabs/overlays.
 - Remaining setup: no isolated fixture instance/database has been created. Confirm the concrete environment before any later browser write scenario; current development blog remains read-only.
-- Immediate next action: stop for B2 visual acceptance. Do not commit, fix unrelated image tests, create fixtures in the existing blog, or advance to B3 without the required separate authorization.
+- Immediate next action: wait for B3 visual acceptance. Record acceptance separately, confirm the user's eventual commit from Git history, and begin B4 only after explicit continuation. Do not commit or create fixtures in the existing blog.

@@ -33,11 +33,13 @@
 </div>
 
 @section admintoolbar {
-    <div class="admin-toolbar">
-        <a x-on:click="initCreateWidget()" class="btn btn-outline-accent" role="button">
-            <i class="bi-plus-lg"></i>
-            @SharedLocalizer["New"]
-        </a>
+    <div class="admin-toolbar admin-toolbar-row">
+        <div class="admin-toolbar-group">
+            <button type="button" x-on:click="initCreateWidget()" class="btn btn-outline-accent">
+                <i class="bi-plus-lg" aria-hidden="true"></i>
+                @SharedLocalizer["New"]
+            </button>
+        </div>
     </div>
 }
 
@@ -54,10 +56,10 @@
     @SharedLocalizer["No widgets yet."]
 </div>
 
-<section class="row row-cols-3 g-4">
+<section class="row row-cols-3 admin-card-grid">
     <template x-for="widget in sortedWidgets" :key="widget.id">
         <div class="col">
-            <div class="card shadow-sm h-100">
+            <div class="card admin-card">
                 <div class="card-body">
                     <div class="d-flex justify-content-between align-items-start mb-2">
                         <h6 class="card-title mb-0">
@@ -66,15 +68,15 @@
                         </h6>
                     </div>
                     <hr class="my-2" />
-                    <div x-html="renderWidgetContent(widget)" class="small"></div>
+                    <div x-html="renderWidgetContent(widget)" class="small admin-widget-preview"></div>
                 </div>
                 <div class="card-footer">
-                    <a x-on:click="editWidget(widget.id)" class="btn btn-sm btn-outline-accent me-2" role="button">
-                        <i class="bi-pen"></i> @SharedLocalizer["Edit"]
-                    </a>
-                    <a x-on:click="deleteWidget(widget.id)" class="btn btn-sm btn-outline-danger" role="button">
-                        <i class="bi-trash"></i>
-                    </a>
+                    <button type="button" x-on:click="editWidget(widget.id)" class="btn btn-sm btn-outline-accent">
+                        <i class="bi-pen" aria-hidden="true"></i> @SharedLocalizer["Edit"]
+                    </button>
+                    <button type="button" x-on:click="deleteWidget(widget.id)" class="btn btn-sm btn-outline-danger" aria-label="@SharedLocalizer["Delete"]">
+                        <i class="bi-trash" aria-hidden="true"></i>
+                    </button>
                 </div>
             </div>
         </div>

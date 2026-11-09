@@ -34,28 +34,28 @@
     </div>
 </div>
 
-<div x-show="!isLoading && hasPages" class="row row-cols-4 g-4">
+<div x-show="!isLoading && hasPages" class="row row-cols-4 admin-card-grid">
     <template x-for="page in sortedPages" :key="page.id">
         <div class="col">
-            <div class="card shadow-sm mb-4" :id="`card-${page.id}`">
+            <div class="card admin-card" :id="`card-${page.id}`">
                 <div class="card-body">
-                    <div class="d-flex justify-content-between align-items-start gap-2">
+                    <div class="d-flex flex-wrap justify-content-between align-items-start gap-2">
                         <h6 class="card-title">
                             <a :href="`/page/${encodeURIComponent(page.slug)}`" target="_blank" x-text="page.title"></a>
                         </h6>
                         <span x-show="page.isPublished" x-cloak class="badge bg-success">@SharedLocalizer["Published"]</span>
                         <span x-show="!page.isPublished" x-cloak class="badge bg-secondary">@SharedLocalizer["Unpublished"]</span>
                     </div>
-                    <p class="mt-2 h-30px" x-text="page.slug"></p>
+                    <p class="mt-2" x-text="page.slug"></p>
                     <small class="text-muted" x-text="formatDate(page.createTimeUtc)"></small>
                 </div>
                 <div class="card-footer">
-                    <a class="btn btn-outline-accent btn-sm btn-edit" :href="`./page/edit/${page.id}`">
-                        <i class="bi-pen"></i>
+                    <a class="btn btn-outline-accent btn-sm btn-edit" :href="`./page/edit/${page.id}`" aria-label="@SharedLocalizer["Edit"]">
+                        <i class="bi-pen" aria-hidden="true"></i>
                     </a>
-                    <a x-on:click="showDeleteModal(page.id)" class="btn btn-outline-danger btn-sm btn-delete" role="button">
-                        <i class="bi-trash"></i>
-                    </a>
+                    <button type="button" x-on:click="showDeleteModal(page.id)" class="btn btn-outline-danger btn-sm btn-delete" aria-label="@SharedLocalizer["Delete"]">
+                        <i class="bi-trash" aria-hidden="true"></i>
+                    </button>
                 </div>
             </div>
         </div>

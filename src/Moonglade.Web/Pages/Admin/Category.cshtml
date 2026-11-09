@@ -18,11 +18,13 @@
 </div>
 
 @section admintoolbar {
-    <div class="admin-toolbar">
-        <a x-on:click="initCreateCategory()" class="btn btn-outline-accent" role="button">
-            <i class="bi-plus-lg"></i>
-            @SharedLocalizer["New"]
-        </a>
+    <div class="admin-toolbar admin-toolbar-row">
+        <div class="admin-toolbar-group">
+            <button type="button" x-on:click="initCreateCategory()" class="btn btn-outline-accent">
+                <i class="bi-plus-lg" aria-hidden="true"></i>
+                @SharedLocalizer["New"]
+            </button>
+        </div>
     </div>
 }
 
@@ -39,24 +41,24 @@
     @SharedLocalizer["No categories yet."]
 </div>
 
-<div class="row row-cols-4 g-4">
+<div class="row row-cols-4 admin-card-grid">
     <template x-for="cat in sortedCategories" :key="cat.id">
         <div class="col">
-            <div class="card shadow-sm">
+            <div class="card admin-card">
                 <div class="card-body">
                     <h6 class="card-title">
                         <a :href="`/category/${encodeURIComponent(cat.slug)}`" target="_blank" x-text="cat.displayName"></a>
                     </h6>
-                    <p class="mt-2 h-30px" x-text="cat.note"></p>
+                    <p class="mt-2" x-text="cat.note"></p>
                     <small class="text-muted" x-text="cat.slug"></small>
                 </div>
                 <div class="card-footer">
-                    <a x-on:click="editCategory(cat.id)" class="btn btn-sm btn-outline-accent me-2" role="button">
-                        <i class="bi-pen"></i>
-                    </a>
-                    <a x-on:click="deleteCategory(cat.id)" class="btn btn-sm btn-outline-danger" role="button">
-                        <i class="bi-trash"></i>
-                    </a>
+                    <button type="button" x-on:click="editCategory(cat.id)" class="btn btn-sm btn-outline-accent" aria-label="@SharedLocalizer["Edit"]">
+                        <i class="bi-pen" aria-hidden="true"></i>
+                    </button>
+                    <button type="button" x-on:click="deleteCategory(cat.id)" class="btn btn-sm btn-outline-danger" aria-label="@SharedLocalizer["Delete"]">
+                        <i class="bi-trash" aria-hidden="true"></i>
+                    </button>
                 </div>
             </div>
         </div>
