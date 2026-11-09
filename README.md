@@ -14,6 +14,8 @@ A public blog and authenticated admin portal provide:
 
 The admin portal supports desktop browsers with a viewport at least 1440 CSS pixels wide.
 
+The interface supports English (`en-US`), Simplified Chinese (`zh-Hans`), Traditional Chinese (`zh-Hant`, using Hong Kong terminology), German (`de-DE`), and Japanese (`ja-JP`). Visitors can choose a display language in the footer; the default language setting controls blog and post metadata for SEO.
+
 ## Repository Layout
 
 The solution is `src/Moonglade.slnx`. See the [engineering reference](docs/agent-reference.md#layers-and-project-responsibilities) for module responsibilities.

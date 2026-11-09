@@ -292,7 +292,7 @@
     <value>删除内存及磁盘上的数据对象</value>
   </data>
   <data name="Delete selected" xml:space="preserve">
-    <value>删除勾选的评论</value>
+    <value>删除所选项</value>
   </data>
   <data name="Description" xml:space="preserve">
     <value>描述</value>
@@ -1028,6 +1028,9 @@
   </data>
   <data name="Scheduled for" xml:space="preserve">
     <value>计划于</value>
+  </data>
+  <data name="Scheduled Publish Time" xml:space="preserve">
+    <value>计划发布时间</value>
   </data>
   <data name="Publish Post" xml:space="preserve">
     <value>发布文章</value>

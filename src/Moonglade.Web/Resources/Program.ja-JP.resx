@@ -292,7 +292,7 @@
     <value>メモリとディスクからデータ・オブジェクトを削除</value>
   </data>
   <data name="Delete selected" xml:space="preserve">
-    <value>チェックしたコメントを削除する</value>
+    <value>選択した項目を削除</value>
   </data>
   <data name="Description" xml:space="preserve">
     <value>説明</value>
@@ -1025,6 +1025,9 @@
   </data>
   <data name="Scheduled for" xml:space="preserve">
     <value>予定日</value>
+  </data>
+  <data name="Scheduled Publish Time" xml:space="preserve">
+    <value>公開予定日時</value>
   </data>
   <data name="Publish Post" xml:space="preserve">
     <value>記事を公開する</value>

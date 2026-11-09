@@ -34,7 +34,7 @@
                    x-on:click="deleteSelectedMentions()"
                    x-show="selectedIds.length > 0">
                     <i class="bi-trash"></i>
-                    <span x-text="`@SharedLocalizer["Delete Selected"] (${selectedIds.length})`"></span>
+                    <span x-text="`@SharedLocalizer["Delete selected"] (${selectedIds.length})`"></span>
                 </a>
                 <a class="btn btn-outline-danger" href="javascript:;" x-on:click="clearAllMentions()">
                     <i class="bi-trash"></i>
@@ -43,7 +43,7 @@
             </div>
             <div class="col-auto">
                 <div class="text-muted admin-toolbar-text">
-                    <span x-text="mentionCount"></span> item(s)
+                    <span x-text="mentionCount"></span> @SharedLocalizer["item(s)"]
                 </div>
             </div>
         </div>
