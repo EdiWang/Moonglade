@@ -85,8 +85,8 @@ public sealed class ActivityLogHttpFixture(WebApplication app, ActivityLogTestSt
         var app = builder.Build();
         app.UseRequestLocalization(new RequestLocalizationOptions()
             .SetDefaultCulture("en-US")
-            .AddSupportedCultures("en-US", "zh-Hans", "zh-Hant", "de-DE", "ja-JP")
-            .AddSupportedUICultures("en-US", "zh-Hans", "zh-Hant", "de-DE", "ja-JP"));
+            .AddSupportedCultures("en-US", "zh-Hans", "zh-Hant", "de-DE", "ja-JP", "fr-FR")
+            .AddSupportedUICultures("en-US", "zh-Hans", "zh-Hant", "de-DE", "ja-JP", "fr-FR"));
         app.Use((context, next) =>
         {
             context.Connection.RemoteIpAddress = IPAddress.Parse("192.0.2.25");

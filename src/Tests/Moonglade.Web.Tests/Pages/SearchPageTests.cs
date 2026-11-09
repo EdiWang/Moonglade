@@ -1,6 +1,7 @@
 using Edi.CacheAside.InMemory;
 using LiteBus.Queries.Abstractions;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc.ApplicationParts;
 using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.AspNetCore.TestHost;
@@ -26,6 +27,34 @@ namespace Moonglade.Web.Tests.Pages;
 
 public class SearchPageTests
 {
+    [Fact]
+    public async Task FrenchLanguage_RendersPublicSearchAndSettingsPickers()
+    {
+        var ct = TestContext.Current.CancellationToken;
+        var scenario = new SearchPageScenario();
+        using var app = await CreateTestApp(scenario);
+        using var client = app.GetTestClient();
+        client.DefaultRequestHeaders.Add("Cookie",
+            $"{CookieRequestCultureProvider.DefaultCookieName}={CookieRequestCultureProvider.MakeCookieValue(new RequestCulture("fr-FR"))}");
+
+        var search = WebUtility.HtmlDecode(await client.GetStringAsync("/search?term=bonjour&language=fr-fr", ct));
+
+        Assert.Contains("<html lang=\"fr-fr\"", search);
+        Assert.Contains("Résultats de recherche", search);
+        Assert.Contains("Toutes les langues", search);
+        Assert.Contains("value=\"fr-fr\" selected=\"selected\"", search);
+        Assert.Contains("français (France)", search);
+        Assert.Contains("setLanguage('fr-FR'", search);
+        Assert.Contains("Choisir la langue d'affichage", search);
+        Assert.Equal("fr-fr", Assert.Single(scenario.SearchQueries).LanguageCode);
+
+        var settings = WebUtility.HtmlDecode(await client.GetStringAsync("/admin/settings/general", ct));
+
+        Assert.Contains("Langue par défaut", settings);
+        Assert.Contains("<option value=\"fr-fr\">français (France)</option>", settings);
+        Assert.Contains("selected=\"selected\" value=\"en-us\"", settings);
+    }
+
     [Fact]
     public async Task SubscriptionPage_TagHelpersUseImmutableSettingMetadataAndSavedValue()
     {
@@ -230,7 +259,7 @@ public class SearchPageTests
             ["WidgetCacheMinutes"] = "20"
         });
 
-        var cultures = new[] { "en-US", "zh-Hans", "zh-Hant", "de-DE", "ja-JP" }
+        var cultures = new[] { "en-US", "zh-Hans", "zh-Hant", "de-DE", "ja-JP", "fr-FR" }
             .Select(code => new CultureInfo(code))
             .ToList();
 

@@ -14,7 +14,7 @@ A public blog and authenticated admin portal provide:
 
 The admin portal supports desktop browsers with a viewport at least 1440 CSS pixels wide.
 
-The interface supports English (`en-US`), Simplified Chinese (`zh-Hans`), Traditional Chinese (`zh-Hant`, using Hong Kong terminology), German (`de-DE`), and Japanese (`ja-JP`). Visitors can choose a display language in the footer; the default language setting controls blog and post metadata for SEO.
+The interface supports English (`en-US`), Simplified Chinese (`zh-Hans`), Traditional Chinese (`zh-Hant`, using Hong Kong terminology), German (`de-DE`), Japanese (`ja-JP`), and French (`fr-FR`, France). Visitors can choose a display language in the footer; the default language setting controls blog and post metadata for SEO.
 
 ## Repository Layout
 

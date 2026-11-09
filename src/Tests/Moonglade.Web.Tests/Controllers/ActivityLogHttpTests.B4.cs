@@ -22,6 +22,7 @@ public partial class ActivityLogHttpTests
     [InlineData("zh-Hant")]
     [InlineData("de-DE")]
     [InlineData("ja-JP")]
+    [InlineData("fr-FR")]
     public async Task AutomaticPublication_DetachedRenameDeleteSnapshots_KeepLocalizedFilterListDetailIdentityAndOccurrence(string culture)
     {
         var ct = TestContext.Current.CancellationToken;

@@ -121,6 +121,7 @@ public partial class ActivityLogHttpTests
     [InlineData("zh-Hant")]
     [InlineData("de-DE")]
     [InlineData("ja-JP")]
+    [InlineData("fr-FR")]
     public async Task Catalog_All50Events_LocalizedFiltersSummaryAndHeadingShareIdentity(string culture)
     {
         var ct = TestContext.Current.CancellationToken;
@@ -285,6 +286,7 @@ public partial class ActivityLogHttpTests
     [InlineData("zh-Hant", "系統")]
     [InlineData("de-DE", "System")]
     [InlineData("ja-JP", "システム")]
+    [InlineData("fr-FR", "Système")]
     public async Task SystemActor_IsExplicitlyLocalizedAndOmitsStoredRequestContext(string culture, string expectedActor)
     {
         var ct = TestContext.Current.CancellationToken;
@@ -408,6 +410,7 @@ public partial class ActivityLogHttpTests
     [InlineData("zh-Hant")]
     [InlineData("de-DE")]
     [InlineData("ja-JP")]
+    [InlineData("fr-FR")]
     public async Task NonSettingsDetails_AllowedLabels_LocalizeFromWriterAndRemainTypedPlainText(string culture)
     {
         var ct = TestContext.Current.CancellationToken;

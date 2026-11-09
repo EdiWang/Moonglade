@@ -151,7 +151,10 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="menuItemModalLabel" x-text="editingIndex !== null ? '@SharedLocalizer["Edit Menu Item"]' : '@SharedLocalizer["Add Menu Item"]'"></h5>
+                <h5 class="modal-title" id="menuItemModalLabel"
+                    data-edit-title="@SharedLocalizer["Edit Menu Item"]"
+                    data-add-title="@SharedLocalizer["Add Menu Item"]"
+                    x-text="editingIndex !== null ? $el.dataset.editTitle : $el.dataset.addTitle"></h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
@@ -208,7 +211,10 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="subMenuItemModalLabel" x-text="editingSubIndex !== null ? '@SharedLocalizer["Edit Sub Menu Item"]' : '@SharedLocalizer["Add Sub Menu Item"]'"></h5>
+                <h5 class="modal-title" id="subMenuItemModalLabel"
+                    data-edit-title="@SharedLocalizer["Edit Sub Menu Item"]"
+                    data-add-title="@SharedLocalizer["Add Sub Menu Item"]"
+                    x-text="editingSubIndex !== null ? $el.dataset.editTitle : $el.dataset.addTitle"></h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">

@@ -64,7 +64,7 @@ public class Program
 
     private static List<CultureInfo> GetSupportedCultures()
     {
-        var cultureCodes = new[] { "en-US", "zh-Hans", "zh-Hant", "de-DE", "ja-JP" };
+        var cultureCodes = new[] { "en-US", "zh-Hans", "zh-Hant", "de-DE", "ja-JP", "fr-FR" };
         return [.. cultureCodes.Select(code => new CultureInfo(code))];
     }
 

@@ -100,6 +100,7 @@ public class EmailNotificationPageStateTests
     [InlineData("Program.zh-Hant.resx")]
     [InlineData("Program.de-DE.resx")]
     [InlineData("Program.ja-JP.resx")]
+    [InlineData("Program.fr-FR.resx")]
     public void NotificationCapabilityResourceKeys_AreLocalized(string resourceFileName)
     {
         var resourcePath = Path.Combine(

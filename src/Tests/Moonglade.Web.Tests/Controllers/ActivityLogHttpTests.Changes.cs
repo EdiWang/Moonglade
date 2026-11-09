@@ -122,6 +122,7 @@ public partial class ActivityLogHttpTests
     [InlineData("zh-Hant")]
     [InlineData("de-DE")]
     [InlineData("ja-JP")]
+    [InlineData("fr-FR")]
     public async Task SettingDetails_All51LabelsAreLocalizedAndOldNewValuesRemainTypedPlainText(string culture)
     {
         var ct = TestContext.Current.CancellationToken;
