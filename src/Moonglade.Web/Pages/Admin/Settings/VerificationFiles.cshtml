@@ -23,13 +23,17 @@
      data-file-content-required="@SharedLocalizer["File content is required"]">
 </div>
 
+@section adminnavigation {
+    <partial name="_SettingsNavigation" />
+}
+
 @section admintoolbar {
     <partial name="_SettingsHeader" />
 }
 
 @Html.AntiForgeryToken()
 
-<div class="admin-panel">
+<div class="admin-panel admin-settings-page">
     <h4 class="admin-subtitle fw-bold mb-3">@SharedLocalizer["Verification Files"]</h4>
 
     <div x-show="isLoading"

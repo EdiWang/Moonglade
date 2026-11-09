@@ -11,6 +11,7 @@
 
     bool clientPreferDarkMode = Helper.IsClientPreferDarkMode(Context);
     bool hideAdminSidebar = ViewBag.HideAdminSidebar == true;
+    bool hasAdminNavigation = !hideAdminSidebar && IsSectionDefined("adminnavigation");
     string adminBackUrl = ViewBag.AdminBackUrl as string;
 
     var themeCss = await Cache.GetOrCreateAsync(BlogCachePartition.General.ToString(), ThemeCache.GetCacheKey(snapshot.AppearanceSettings.ThemeId), async () =>
@@ -45,10 +46,14 @@
 </head>
 
 <body class="admin-body bg-gray-1">
-    <nav class="admin-navbar navbar navbar-expand navbar-moonglade" data-bs-theme="dark">
-        <a class="navbar-brand font-sairas" asp-page="/Admin/Dashboard">
+    <nav class="admin-navbar navbar navbar-expand navbar-moonglade @(hasAdminNavigation ? "admin-navbar-has-navigation" : null)" data-bs-theme="dark">
+        <a class="navbar-brand font-sairas" asp-page="/Admin/Dashboard" title="@snapshot.GeneralSettings.SiteTitle">
             @snapshot.GeneralSettings.SiteTitle
         </a>
+        @if (hasAdminNavigation)
+        {
+            @await RenderSectionAsync("adminnavigation")
+        }
         <div class="navbar-collapse">
             @if (!string.IsNullOrEmpty(adminBackUrl))
             {
@@ -123,6 +128,10 @@
 
     <script src="~/lib/twitter-bootstrap/js/bootstrap.bundle.min.js"></script>
     <script type="module" src="~/js/app/base.mjs"></script>
+    @if (hasAdminNavigation)
+    {
+        <script type="module" src="~/js/app/admin.navigation.mjs" asp-append-version="true"></script>
+    }
 
     @await RenderSectionAsync("scripts", false)
 </body>

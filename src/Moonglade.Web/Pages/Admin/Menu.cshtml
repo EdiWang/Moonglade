@@ -20,14 +20,18 @@
 </div>
 
 @section admintoolbar {
-    <div class="admin-toolbar">
-        <button type="button" class="btn btn-outline-accent" x-on:click="openMenuItemModal()">
-            <i class="bi-plus-circle"></i> @SharedLocalizer["Add Menu Item"]
-        </button>
-
-        <button type="button" class="btn btn-outline-danger" x-on:click="clearMenus()">
-            <i class="bi-trash"></i> @SharedLocalizer["Clear menus"]
-        </button>
+    <div class="admin-toolbar admin-toolbar-row">
+        <div class="admin-toolbar-group">
+            <button type="submit" form="form-settings" class="btn btn-outline-accent" :disabled="isLoading">
+                @SharedLocalizer["Save"]
+            </button>
+            <button type="button" class="btn btn-outline-accent" x-on:click="openMenuItemModal()">
+                <i class="bi-plus-circle" aria-hidden="true"></i> @SharedLocalizer["Add Menu Item"]
+            </button>
+            <button type="button" class="btn btn-outline-danger" x-on:click="clearMenus()">
+                <i class="bi-trash" aria-hidden="true"></i> @SharedLocalizer["Clear menus"]
+            </button>
+        </div>
     </div>
 }
 
@@ -40,8 +44,8 @@
     </div>
 
     <form id="form-settings" x-show="!isLoading" x-on:submit.prevent="saveSettings()">
-        <div class="admin-settings-entry-container">
-            <div class="settings-entry row align-items-center py-3 px-2 rounded-3 border mb-3">
+        <div class="admin-panel admin-settings-panel">
+            <div class="settings-entry row align-items-center">
                 <div class="col-auto">
                     <i class="bi-menu-app settings-entry-icon"></i>
                 </div>
@@ -120,7 +124,7 @@
                                 </div>
                             </template>
                             
-                            <div class="submenu-container rounded-bottom">
+                            <div class="submenu-container">
                                 <button type="button" class="btn btn-sm btn-outline-accent" 
                                         x-on:click="openSubMenuItemModal(index)">
                                     <i class="bi-plus-circle"></i> @SharedLocalizer["Add Sub Menu"]
@@ -138,11 +142,6 @@
             </div>
         </div>
 
-        <div class="admin-settings-action-container border-top pt-2 mt-2">
-            <button type="submit" class="btn btn-outline-accent">
-                @SharedLocalizer["Save"]
-            </button>
-        </div>
     </form>
 </div>
 

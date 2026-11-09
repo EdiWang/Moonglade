@@ -12,18 +12,22 @@
     <script type="module" src="~/js/app/admin.settings.content.mjs"></script>
 }
 
+@section adminnavigation {
+    <partial name="_SettingsNavigation" />
+}
+
 @section admintoolbar {
     <partial name="_SettingsHeader" />
 }
 
-<form id="form-settings" asp-controller="Settings" asp-action="Advanced">
+<form id="form-settings" class="admin-settings-page" asp-controller="Settings" asp-action="Advanced">
     <div class="admin-settings-entry-container">
-        <div class="row">
-            <div class="col-6">
+        <div>
+            <div class="admin-settings-section">
                 <div class="mb-4">
-                    <h4 class="admin-subtitle fw-bold mb-2">@SharedLocalizer["Advanced Settings"]</h4>
+                    <h4 class="admin-subtitle fw-bold">@SharedLocalizer["Advanced Settings"]</h4>
 
-                    <div class="settings-entry row align-items-center py-3 px-2 rounded-3 border mb-1">
+                    <div class="settings-entry row align-items-center">
                         <div class="col-auto">
                             <i class="bi-bell settings-entry-icon"></i>
                         </div>
@@ -38,7 +42,7 @@
                         </div>
                     </div>
 
-                    <div class="settings-entry row align-items-center py-3 px-2 rounded-3 border mb-1">
+                    <div class="settings-entry row align-items-center">
                         <div class="col-auto">
                             <i class="bi-map settings-entry-icon"></i>
                         </div>
@@ -53,7 +57,7 @@
                         </div>
                     </div>
 
-                    <div class="settings-entry row align-items-center py-3 px-2 rounded-3 border mb-1">
+                    <div class="settings-entry row align-items-center">
                         <div class="col-auto">
                             <i class="bi-file-earmark-check settings-entry-icon"></i>
                         </div>
@@ -72,7 +76,7 @@
                         </div>
                     </div>
 
-                    <div class="settings-entry row align-items-center py-3 px-2 rounded-3 border mb-1">
+                    <div class="settings-entry row align-items-center">
                         <div class="col-auto">
                             <i class="bi-search settings-entry-icon"></i>
                         </div>
@@ -87,7 +91,7 @@
                         </div>
                     </div>
 
-                    <div class="settings-entry row align-items-center py-3 px-2 rounded-3 border mb-1">
+                    <div class="settings-entry row align-items-center">
                         <div class="col-auto">
                             <i class="bi-diagram-2 settings-entry-icon"></i>
                         </div>
@@ -102,7 +106,7 @@
                         </div>
                     </div>
 
-                    <div class="settings-entry row align-items-center py-3 px-2 rounded-3 border mb-1">
+                    <div class="settings-entry row align-items-center">
                         <div class="col-auto">
                             <i class="bi-filetype-xml settings-entry-icon"></i>
                         </div>
@@ -117,7 +121,7 @@
                         </div>
                     </div>
 
-                    <div class="settings-entry row align-items-center py-3 px-2 rounded-3 border mb-1">
+                    <div class="settings-entry row align-items-center">
                         <div class="col-auto">
                             <i class="bi-clock settings-entry-icon"></i>
                         </div>
@@ -133,7 +137,7 @@
                         </div>
                     </div>
 
-                    <div class="settings-entry row align-items-center py-3 px-2 rounded-3 border mb-1">
+                    <div class="settings-entry row align-items-center">
                         <div class="col-auto">
                             <i class="bi-exclamation-triangle settings-entry-icon"></i>
                         </div>
@@ -148,7 +152,7 @@
                         </div>
                     </div>
 
-                    <div class="settings-entry row align-items-center py-3 px-2 rounded-3 border mb-1">
+                    <div class="settings-entry row align-items-center">
                         <div class="col-auto">
                             <i class="bi-chat-left-text settings-entry-icon"></i>
                         </div>
@@ -163,7 +167,7 @@
                         </div>
                     </div>
 
-                    <div class="settings-entry row align-items-center py-3 px-2 rounded-3 border">
+                    <div class="settings-entry row align-items-center">
                         <div class="col-auto">
                             <i class="bi-braces settings-entry-icon"></i>
                         </div>
@@ -179,20 +183,33 @@
                     </div>
                 </div>
             </div>
-            <div class="col-6">
-                <div class="mb-3">
-                    <h4 class="admin-subtitle fw-bold mb-2">@Html.DisplayNameFor(m => settings.RobotsTxtContent)</h4>
-                    <div class="p-3 rounded-3 border mb-3">
+            <div class="admin-settings-section">
+                <div class="settings-entry">
+                    <div class="col-auto">
+                        <i class="bi-robot settings-entry-icon" aria-hidden="true"></i>
+                    </div>
+                    <div class="col">
+                        <label asp-for="@settings.RobotsTxtContent"></label>
+                    </div>
+                    <div class="col">
                         <textarea asp-for="@settings.RobotsTxtContent" data-setting-edit='@Html.DisplayNameFor(m => settings.RobotsTxtContent)' class="form-control textarea-code" cols="60" rows="10" spellcheck="false"></textarea>
                     </div>
+                </div>
 
-                    <h4 class="admin-subtitle fw-bold mb-2">@Html.DisplayNameFor(m => settings.HeadScripts)</h4>
-                    <div class="p-3 rounded-3 border mb-3">
+                <div class="settings-entry">
+                    <div class="col-auto">
+                        <i class="bi-code-slash settings-entry-icon" aria-hidden="true"></i>
+                    </div>
+                    <div class="col">
+                        <label asp-for="@settings.HeadScripts"></label>
+                    </div>
+                    <div class="col">
+                        <textarea asp-for="@settings.HeadScripts" data-setting-edit='@Html.DisplayNameFor(m => settings.HeadScripts)' class="form-control textarea-code" cols="60" rows="10" spellcheck="false"></textarea>
+                    </div>
+                    <div class="admin-settings-note">
                         <div class="alert alert-warning">
                             @SharedLocalizer["Using a third party script may cause your website to be blocked by some browsers or ad blockers, it can have security risks too. Please use with caution."]
                         </div>
-
-                        <textarea asp-for="@settings.HeadScripts" data-setting-edit='@Html.DisplayNameFor(m => settings.HeadScripts)' class="form-control textarea-code" cols="60" rows="10" spellcheck="false"></textarea>
 
                         <div class="form-text">
                             @Html.Raw(string.Format(SharedLocalizer["* Global script that will be injected into every page's {0} section."].Value, "<code>head</code>")) <br />
@@ -200,14 +217,22 @@
                             @Html.Raw(string.Format(SharedLocalizer["* Please use valid {0} code."].Value, "<code>&lt;script&gt;...&lt;/script&gt;</code>"))
                         </div>
                     </div>
+                </div>
 
-                    <h4 class="admin-subtitle fw-bold mb-2">@Html.DisplayNameFor(m => settings.FootScripts)</h4>
-                    <div class="p-3 rounded-3 border mb-3">
+                <div class="settings-entry">
+                    <div class="col-auto">
+                        <i class="bi-code-slash settings-entry-icon" aria-hidden="true"></i>
+                    </div>
+                    <div class="col">
+                        <label asp-for="@settings.FootScripts"></label>
+                    </div>
+                    <div class="col">
+                        <textarea asp-for="@settings.FootScripts" data-setting-edit='@Html.DisplayNameFor(m => settings.FootScripts)' class="form-control textarea-code" cols="60" rows="10" spellcheck="false"></textarea>
+                    </div>
+                    <div class="admin-settings-note">
                         <div class="alert alert-warning">
                             @SharedLocalizer["Using a third party script may cause your website to be blocked by some browsers or ad blockers, it can have security risks too. Please use with caution."]
                         </div>
-
-                        <textarea asp-for="@settings.FootScripts" data-setting-edit='@Html.DisplayNameFor(m => settings.FootScripts)' class="form-control textarea-code" cols="60" rows="10" spellcheck="false"></textarea>
 
                         <div class="form-text">
                             @Html.Raw(string.Format(SharedLocalizer["* Global script that will be injected into every page's footer, before the ending of {0} tag. Typically used for third party analytics services."].Value, "<code>body</code>")) <br />
@@ -216,9 +241,9 @@
                         </div>
                     </div>
                 </div>
-                            </div>
-                        </div>
-                    </div>
+            </div>
+        </div>
+    </div>
 </form>
 
 <partial name="_SettingEditModal" />

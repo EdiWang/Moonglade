@@ -10,15 +10,19 @@
     var settings = snapshot.FeedSettings;
 }
 
+@section adminnavigation {
+    <partial name="_SettingsNavigation" />
+}
+
 @section admintoolbar{
     <partial name="_SettingsHeader" />
 }
 
-<form id="form-settings" asp-controller="Settings" asp-action="Subscription" spellcheck="false">
+<form id="form-settings" class="admin-settings-page" asp-controller="Settings" asp-action="Subscription" spellcheck="false">
     <div class="admin-settings-entry-container">
-        <div class="row">
-            <div class="col-6">
-                <div class="settings-entry row align-items-center py-3 px-2 rounded-3 border mb-1">
+        <div>
+            <div class="admin-settings-section">
+                <div class="settings-entry row align-items-center">
                     <div class="col-auto">
                         <i class="bi-list-ol settings-entry-icon"></i>
                     </div>
@@ -31,7 +35,7 @@
                     </div>
                 </div>
 
-                <div class="settings-entry row align-items-center py-3 px-2 rounded-3 border">
+                <div class="settings-entry row align-items-center">
                     <div class="col-auto">
                         <i class="bi-justify-left settings-entry-icon"></i>
                     </div>

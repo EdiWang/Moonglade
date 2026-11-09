@@ -1,0 +1,20 @@
+@{
+    var currentPage = ViewContext.RouteData.Values["Page"]?.ToString();
+}
+
+<nav class="admin-secondary-nav" aria-label="@SharedLocalizer["Posts"]">
+    <ul class="nav">
+        <li class="nav-item">
+            <a class="nav-link @(currentPage == "/Admin/Post" ? "active" : null)" aria-current="@(currentPage == "/Admin/Post" ? "page" : null)" asp-page="/Admin/Post">@SharedLocalizer["Published"]</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link @(currentPage == "/Admin/Draft" ? "active" : null)" aria-current="@(currentPage == "/Admin/Draft" ? "page" : null)" asp-page="/Admin/Draft">@SharedLocalizer["Drafts"]</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link @(currentPage == "/Admin/Scheduled" ? "active" : null)" aria-current="@(currentPage == "/Admin/Scheduled" ? "page" : null)" asp-page="/Admin/Scheduled">@SharedLocalizer["Scheduled"]</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link @(currentPage == "/Admin/RecycleBin" ? "active" : null)" aria-current="@(currentPage == "/Admin/RecycleBin" ? "page" : null)" asp-page="/Admin/RecycleBin">@SharedLocalizer["Recycle Bin"]</a>
+        </li>
+    </ul>
+</nav>

@@ -1,31 +1,55 @@
 .menu-item-card {
-    border: 1px solid #dee2e6;
-    border-radius: 0.375rem;
-    margin-bottom: 1rem;
+    border: 1px solid var(--bs-border-color);
+    border-radius: 8px;
+    margin-top: 16px;
+    background-color: var(--bs-body-bg);
+    overflow-wrap: anywhere;
 }
 
 .menu-item-header {
-    padding: 1rem;
-    border-bottom: 1px solid #dee2e6;
+    padding: 24px;
+    border-bottom: 1px solid var(--bs-border-color);
     display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
     align-items: center;
     justify-content: space-between;
 }
 
 .submenu-container {
-    background-color: #f8f9fa;
-    padding: 0.75rem;
+    background-color: var(--bs-tertiary-bg);
+    padding: 16px 24px;
 }
 
 .submenu-item {
-    background-color: white;
-    border: 1px solid #dee2e6;
-    border-radius: 0.25rem;
-    padding: 0.75rem;
-    margin-bottom: 0.5rem;
+    background-color: var(--bs-body-bg);
+    border: 1px solid var(--bs-border-color);
+    border-radius: 8px;
+    padding: 16px;
+    margin-bottom: 8px;
     display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
     align-items: center;
     justify-content: space-between;
+}
+
+.menu-item-header > .flex-grow-1,
+.submenu-item > div:first-child {
+    min-width: 0;
+}
+
+.menu-item-header .btn-group,
+.submenu-item .btn-group {
+    flex-shrink: 0;
+}
+
+.submenu-item:last-child {
+    margin-bottom: 0;
+}
+
+.submenu-container:last-child {
+    border-radius: 0 0 7px 7px;
 }
 
 .menu-form {
@@ -34,13 +58,13 @@
 
 .drag-handle {
     cursor: move;
-    color: #6c757d;
+    color: var(--bs-secondary-color);
 }
 
 .empty-state {
     text-align: center;
     padding: 3rem 1rem;
-    color: #6c757d;
+    color: var(--bs-secondary-color);
 }
 
 .icon-preview {

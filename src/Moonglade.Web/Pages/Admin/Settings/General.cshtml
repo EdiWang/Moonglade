@@ -28,18 +28,22 @@
      data-file-apis-not-supported="@SharedLocalizer["The File APIs are not fully supported in this browser."]">
 </div>
 
+@section adminnavigation {
+    <partial name="_SettingsNavigation" />
+}
+
 @section admintoolbar {
     <partial name="_SettingsHeader" />
 }
 
-<form id="form-settings" asp-controller="Settings" asp-action="General" spellcheck="false">
+<form id="form-settings" class="admin-settings-page" asp-controller="Settings" asp-action="General" spellcheck="false">
     <div class="admin-settings-entry-container">
-        <div class="row">
-            <div class="col-6">
+        <div>
+            <div class="admin-settings-section">
                 <div class="mb-3">
-                    <h4 class="admin-subtitle fw-bold mb-2">@SharedLocalizer["Blog Identity"]</h4>
+                    <h4 class="admin-subtitle fw-bold">@SharedLocalizer["Blog Identity"]</h4>
 
-                    <div class="settings-entry row align-items-center py-3 px-2 rounded-3 border mb-1">
+                    <div class="settings-entry row align-items-center">
                         <div class="col-auto">
                             <i class="bi-card-heading settings-entry-icon"></i>
                         </div>
@@ -51,7 +55,7 @@
                         </div>
                     </div>
 
-                    <div class="settings-entry row align-items-center py-3 px-2 rounded-3 border mb-1">
+                    <div class="settings-entry row align-items-center">
                         <div class="col-auto">
                             <i class="bi-input-cursor settings-entry-icon"></i>
                         </div>
@@ -63,7 +67,7 @@
                         </div>
                     </div>
 
-                    <div class="settings-entry row align-items-center py-3 px-2 rounded-3 border mb-1">
+                    <div class="settings-entry row align-items-center">
                         <div class="col-auto">
                             <i class="bi-file-word settings-entry-icon"></i>
                         </div>
@@ -75,7 +79,7 @@
                         </div>
                     </div>
 
-                    <div class="settings-entry row align-items-center py-3 px-2 rounded-3 border mb-1">
+                    <div class="settings-entry row align-items-center">
                         <div class="col-auto">
                             <i class="bi-app-indicator settings-entry-icon"></i>
                         </div>
@@ -90,7 +94,7 @@
                         </div>
                     </div>
 
-                    <div class="settings-entry row align-items-center py-3 px-2 rounded-3 border mb-1">
+                    <div class="settings-entry row align-items-center">
                         <div class="col-auto">
                             <i class="bi-link settings-entry-icon"></i>
                         </div>
@@ -103,7 +107,7 @@
                         </div>
                     </div>
 
-                    <div class="settings-entry row align-items-center py-3 px-2 rounded-3 border mb-1">
+                    <div class="settings-entry row align-items-center">
                         <div class="col-auto">
                             <i class="bi-globe settings-entry-icon"></i>
                         </div>
@@ -116,7 +120,7 @@
                         </div>
                     </div>
 
-                    <div class="settings-entry row align-items-center py-3 px-2 rounded-3 border">
+                    <div class="settings-entry row align-items-center">
                         <div class="col-auto">
                             <i class="bi-check2-square settings-entry-icon"></i>
                         </div>
@@ -131,11 +135,11 @@
                 </div>
 
                 <div>
-                    <h4 class="admin-subtitle fw-bold mb-2">
+                    <h4 class="admin-subtitle fw-bold">
                         @SharedLocalizer["Dublin Core Metadata"]
                     </h4>
-                    <div class="rounded-3 border">
-                        <div class="settings-entry row align-items-center rounded-3 py-3 px-2">
+                    <div class="admin-settings-expander">
+                        <div class="settings-entry admin-settings-expander-header">
                             <div class="col-auto">
                                 <i class="bi bi-globe settings-entry-icon"></i>
                             </div>
@@ -148,28 +152,35 @@
                                     <input type="checkbox" name="UseDublinCoreMetaData" value="true" class="form-check-input" @(snapshot.GeneralSettings.UseDublinCoreMetaData ? "checked" : null)>
                                 </div>
                             </div>
+                            <button type="button" class="admin-settings-expander-toggle" data-bs-toggle="collapse" data-bs-target="#settings-dublin-core" aria-controls="settings-dublin-core" aria-expanded="@(snapshot.GeneralSettings.UseDublinCoreMetaData ? "true" : "false")" aria-label="@SharedLocalizer["Dublin Core Metadata"]">
+                                <i class="bi bi-chevron-down" aria-hidden="true"></i>
+                            </button>
                         </div>
 
-                        <div class="border-top settings-entry row align-items-center rounded-bottom-3 py-3 px-2">
-                            <div class="col-auto">
-                                <i class="bi-link settings-entry-icon"></i>
-                            </div>
-                            <div class="col">
-                                <label asp-for="@snapshot.GeneralSettings.DcLicenseUrl"></label>
-                            </div>
-                            <div class="col-5 text-end">
-                                <input asp-for="@snapshot.GeneralSettings.DcLicenseUrl" data-setting-edit="" class="form-control" />
+                        <div id="settings-dublin-core" class="collapse @(snapshot.GeneralSettings.UseDublinCoreMetaData ? "show" : null)">
+                            <div class="admin-settings-expander-body">
+                                <div class="settings-entry row align-items-center">
+                                    <div class="col-auto">
+                                        <i class="bi-link settings-entry-icon"></i>
+                                    </div>
+                                    <div class="col">
+                                        <label asp-for="@snapshot.GeneralSettings.DcLicenseUrl"></label>
+                                    </div>
+                                    <div class="col-5 text-end">
+                                        <input asp-for="@snapshot.GeneralSettings.DcLicenseUrl" data-setting-edit="" class="form-control" />
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="col-6">
+            <div class="admin-settings-section">
                 <div class="mb-3">
-                    <h4 class="admin-subtitle fw-bold mb-2">
+                    <h4 class="admin-subtitle fw-bold">
                         @SharedLocalizer["Side Bar"]
                     </h4>
-                    <div class="settings-entry row align-items-center py-3 px-2 rounded-3 border mb-1">
+                    <div class="settings-entry row align-items-center">
                         <div class="col-auto">
                             <i class="bi-layout-sidebar-inset settings-entry-icon"></i>
                         </div>
@@ -208,8 +219,8 @@
                         </div>
                     </div>
 
-                    <div class="rounded-3 border mb-2">
-                        <div class="settings-entry row align-items-center rounded-3 py-3 px-2">
+                    <div class="admin-settings-expander">
+                        <div class="settings-entry admin-settings-expander-header">
                             <div class="col-auto">
                                 <i class="bi-file-person settings-entry-icon"></i>
                             </div>
@@ -222,94 +233,101 @@
                                     <input type="checkbox" name="WidgetsProfile" value="true" class="form-check-input" @(ViewModel.WidgetsProfile ? "checked" : null)>
                                 </div>
                             </div>
+                            <button type="button" class="admin-settings-expander-toggle" data-bs-toggle="collapse" data-bs-target="#settings-profile" aria-controls="settings-profile" aria-expanded="@(ViewModel.WidgetsProfile ? "true" : "false")" aria-label="@Html.DisplayNameFor(m => ViewModel.WidgetsProfile)">
+                                <i class="bi bi-chevron-down" aria-hidden="true"></i>
+                            </button>
                         </div>
 
-                        <div class="border-top py-3 px-2">
-                            <div class="row">
-                                <div class="col-2">
-                                    <div class="mb-3">
-                                        <img src="@avatarUrl" class="img-thumbnail img-fluid blogadmin-avatar" />
-                                    </div>
-                                    <a class="btn w-100 btn-sm btn-outline-accent" href="#" data-bs-toggle="modal" data-bs-target="#avatarmodal">@SharedLocalizer["Change"]</a>
-                                </div>
-                                <div class="col-10">
-                                    <div class="row mb-2 gap-0">
-                                        <div class="col">
-                                            <label class="form-label" asp-for="@ViewModel.OwnerName"></label>
-                                            <input asp-for="@ViewModel.OwnerName" data-setting-edit="" class="form-control" required />
+                        <div id="settings-profile" class="collapse @(ViewModel.WidgetsProfile ? "show" : null)">
+                            <div class="admin-settings-expander-body">
+                                <div class="admin-settings-detail">
+                                    <div class="row">
+                                        <div class="col-2">
+                                            <div class="mb-3">
+                                                <img src="@avatarUrl" class="img-thumbnail img-fluid blogadmin-avatar" />
+                                            </div>
+                                            <a class="btn w-100 btn-sm btn-outline-accent" href="#" data-bs-toggle="modal" data-bs-target="#avatarmodal">@SharedLocalizer["Change"]</a>
                                         </div>
-                                        <div class="col">
-                                            <label class="form-label" asp-for="@ViewModel.OwnerEmail"></label>
-                                            <input asp-for="@ViewModel.OwnerEmail" data-setting-edit="" class="form-control" required title="@SharedLocalizer["Email address to receive notifications from this blog."]" />
+                                        <div class="col-10">
+                                            <div class="row mb-2 gap-0">
+                                                <div class="col">
+                                                    <label class="form-label" asp-for="@ViewModel.OwnerName"></label>
+                                                    <input asp-for="@ViewModel.OwnerName" data-setting-edit="" class="form-control" required />
+                                                </div>
+                                                <div class="col">
+                                                    <label class="form-label" asp-for="@ViewModel.OwnerEmail"></label>
+                                                    <input asp-for="@ViewModel.OwnerEmail" data-setting-edit="" class="form-control" required title="@SharedLocalizer["Email address to receive notifications from this blog."]" />
+                                                </div>
+                                            </div>
+
+                                            <div class="mb-2">
+                                                <label class="form-label" asp-for="@ViewModel.Description"></label>
+                                                <input asp-for="@ViewModel.Description" data-setting-edit=""
+                                                       placeholder="@Html.DisplayName(ViewModel.Description)"
+                                                       class="form-control" required>
+                                            </div>
                                         </div>
                                     </div>
+                                </div>
 
-                                    <div class="mb-2">
-                                        <label class="form-label" asp-for="@ViewModel.Description"></label>
-                                        <input asp-for="@ViewModel.Description" data-setting-edit=""
-                                               placeholder="@Html.DisplayName(ViewModel.Description)"
-                                               class="form-control" required>
+                                <div class="settings-entry row align-items-center">
+                                    <div class="col-auto">
+                                        <i class="bi-person-circle settings-entry-icon"></i>
+                                    </div>
+                                    <div class="col">
+                                        <label asp-for="@ViewModel.UseGravatarAsProfilePicture" class="form-check-label"></label>
+                                        <div class="form-text">@SharedLocalizer["Please make sure you have setup Gravatar with your email address"]</div>
+                                    </div>
+                                    <div class="col-5 text-end">
+                                        <div class="form-check form-switch form-control-lg">
+                                            <input type="hidden" name="UseGravatarAsProfilePicture" value="false">
+                                            <input type="checkbox" name="UseGravatarAsProfilePicture" value="true" class="form-check-input" @(ViewModel.UseGravatarAsProfilePicture ? "checked" : null)>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
+                    </div>
 
-                        <div class="settings-entry row align-items-center py-3 px-2 border-top">
-                            <div class="col-auto">
-                                <i class="bi-person-circle settings-entry-icon"></i>
-                            </div>
-                            <div class="col">
-                                <label asp-for="@ViewModel.UseGravatarAsProfilePicture" class="form-check-label"></label>
-                                <div class="form-text">@SharedLocalizer["Please make sure you have setup Gravatar with your email address"]</div>
-                            </div>
-                            <div class="col-5 text-end">
-                                <div class="form-check form-switch form-control-lg">
-                                    <input type="hidden" name="UseGravatarAsProfilePicture" value="false">
-                                    <input type="checkbox" name="UseGravatarAsProfilePicture" value="true" class="form-check-input" @(ViewModel.UseGravatarAsProfilePicture ? "checked" : null)>
-                                </div>
+                    <div class="settings-entry row align-items-center">
+                        <div class="col-auto">
+                            <i class="bi-tags settings-entry-icon"></i>
+                        </div>
+                        <div class="col">
+                            <label asp-for="@ViewModel.HotTagAmount"></label>
+                            <div class="text-muted">@SharedLocalizer["Set to 0 to hide tags widget"]</div>
+                        </div>
+                        <div class="col-4">
+                            <input asp-for="@ViewModel.HotTagAmount" data-setting-edit="" class="form-control" min="0" max="20" required />
+                        </div>
+                    </div>
+
+                    <div class="settings-entry row align-items-center">
+                        <div class="col-auto">
+                            <i class="bi-folder2 settings-entry-icon"></i>
+                        </div>
+                        <div class="col">
+                            <label asp-for="@ViewModel.WidgetsCategoryList" class="form-check-label"></label>
+                        </div>
+                        <div class="col-5 text-end">
+                            <div class="form-check form-switch form-control-lg">
+                                <input type="hidden" name="WidgetsCategoryList" value="false">
+                                <input type="checkbox" name="WidgetsCategoryList" value="true" class="form-check-input" @(ViewModel.WidgetsCategoryList ? "checked" : null)>
                             </div>
                         </div>
+                    </div>
 
-                        <div class="border-top settings-entry row align-items-center py-3 px-2">
-                            <div class="col-auto">
-                                <i class="bi-tags settings-entry-icon"></i>
-                            </div>
-                            <div class="col">
-                                <label asp-for="@ViewModel.HotTagAmount"></label>
-                                <div class="text-muted">@SharedLocalizer["Set to 0 to hide tags widget"]</div>
-                            </div>
-                            <div class="col-4">
-                                <input asp-for="@ViewModel.HotTagAmount" data-setting-edit="" class="form-control" min="0" max="20" required />
-                            </div>
+                    <div class="settings-entry row align-items-center">
+                        <div class="col-auto">
+                            <i class="bi-menu-button settings-entry-icon"></i>
                         </div>
-
-                        <div class="border-top settings-entry row align-items-center py-3 px-2">
-                            <div class="col-auto">
-                                <i class="bi-folder2 settings-entry-icon"></i>
-                            </div>
-                            <div class="col">
-                                <label asp-for="@ViewModel.WidgetsCategoryList" class="form-check-label"></label>
-                            </div>
-                            <div class="col-5 text-end">
-                                <div class="form-check form-switch form-control-lg">
-                                    <input type="hidden" name="WidgetsCategoryList" value="false">
-                                    <input type="checkbox" name="WidgetsCategoryList" value="true" class="form-check-input" @(ViewModel.WidgetsCategoryList ? "checked" : null)>
-                                </div>
-                            </div>
+                        <div class="col">
+                            <label asp-for="@ViewModel.WidgetsSubscriptionButtons" class="form-check-label"></label>
                         </div>
-
-                        <div class="border-top settings-entry row align-items-center rounded-bottom-3 py-3 px-2">
-                            <div class="col-auto">
-                                <i class="bi-menu-button settings-entry-icon"></i>
-                            </div>
-                            <div class="col">
-                                <label asp-for="@ViewModel.WidgetsSubscriptionButtons" class="form-check-label"></label>
-                            </div>
-                            <div class="col-5 text-end">
-                                <div class="form-check form-switch form-control-lg">
-                                    <input type="hidden" name="WidgetsSubscriptionButtons" value="false">
-                                    <input type="checkbox" name="WidgetsSubscriptionButtons" value="true" class="form-check-input" @(ViewModel.WidgetsSubscriptionButtons ? "checked" : null)>
-                                </div>
+                        <div class="col-5 text-end">
+                            <div class="form-check form-switch form-control-lg">
+                                <input type="hidden" name="WidgetsSubscriptionButtons" value="false">
+                                <input type="checkbox" name="WidgetsSubscriptionButtons" value="true" class="form-check-input" @(ViewModel.WidgetsSubscriptionButtons ? "checked" : null)>
                             </div>
                         </div>
                     </div>

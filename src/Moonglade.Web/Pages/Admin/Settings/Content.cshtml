@@ -14,16 +14,20 @@
     <script type="module" src="~/js/app/admin.settings.content.editor.mjs" asp-append-version="true"></script>
 }
 
+@section adminnavigation {
+    <partial name="_SettingsNavigation" />
+}
+
 @section admintoolbar {
     <partial name="_SettingsHeader" />
 }
 
-<form id="form-settings" asp-controller="Settings" asp-action="Content">
+<form id="form-settings" class="admin-settings-page" asp-controller="Settings" asp-action="Content">
     <div class="admin-settings-entry-container">
-        <div class="row">
-            <div class="col-6">
-                <h4 class="admin-subtitle fw-bold mb-2">@SharedLocalizer["Editor"]</h4>
-                <div class="settings-entry row align-items-center py-3 px-2 rounded-3 border mb-3">
+        <div>
+            <div class="admin-settings-section">
+                <h4 class="admin-subtitle fw-bold">@SharedLocalizer["Editor"]</h4>
+                <div class="settings-entry row align-items-center">
                     <div class="col-auto">
                         <i class="bi-pencil-square settings-entry-icon"></i>
                     </div>
@@ -39,9 +43,9 @@
                     </div>
                 </div>
 
-                <h4 class="admin-subtitle fw-bold mb-2">@SharedLocalizer["Posts list"]</h4>
-                <div class="rounded-3 border mb-3">
-                    <div class="settings-entry row align-items-center rounded-3 py-3 px-2">
+                <h4 class="admin-subtitle fw-bold">@SharedLocalizer["Posts list"]</h4>
+                <div class="admin-settings-group">
+                    <div class="settings-entry row align-items-center">
                         <div class="col-auto">
                             <i class="bi-sort-numeric-down settings-entry-icon"></i>
                         </div>
@@ -53,7 +57,7 @@
                         </div>
                     </div>
 
-                    <div class="border-top settings-entry row align-items-center rounded-bottom-3 py-3 px-2">
+                    <div class="settings-entry row align-items-center">
                         <div class="col-auto">
                             <i class="settings-entry-icon bi-hash"></i>
                         </div>
@@ -66,9 +70,9 @@
                     </div>
                 </div>
 
-                <h4 class="admin-subtitle fw-bold mb-2">@SharedLocalizer["Reading posts"]</h4>
+                <h4 class="admin-subtitle fw-bold">@SharedLocalizer["Reading posts"]</h4>
 
-                <div class="settings-entry row align-items-center py-3 px-2 rounded-3 border mb-1">
+                <div class="settings-entry row align-items-center">
                     <div class="col-auto">
                         <i class="bi-check2-circle settings-entry-icon"></i>
                     </div>
@@ -87,7 +91,7 @@
                     </div>
                 </div>
 
-                <div class="settings-entry row align-items-center py-3 px-2 rounded-3 border mb-1">
+                <div class="settings-entry row align-items-center">
                     <div class="col-auto">
                         <i class="bi-list-nested settings-entry-icon"></i>
                     </div>
@@ -102,7 +106,7 @@
                     </div>
                 </div>
 
-                <div class="settings-entry row align-items-center py-3 px-2 rounded-3 border mb-1">
+                <div class="settings-entry row align-items-center">
                     <div class="col-auto">
                         <i class="bi-eye settings-entry-icon"></i>
                     </div>
@@ -117,8 +121,8 @@
                     </div>
                 </div>
 
-                <div class="rounded-3 border">
-                    <div class="settings-entry row align-items-center rounded-3 py-3 px-2">
+                <div class="admin-settings-expander">
+                    <div class="settings-entry admin-settings-expander-header">
                         <div class="col-auto">
                             <i class="bi-card-text settings-entry-icon"></i>
                         </div>
@@ -132,23 +136,30 @@
                                 <input type="checkbox" name="ShowPostFooter" value="true" class="form-check-input" @(settings.ShowPostFooter ? "checked" : null)>
                             </div>
                         </div>
+                        <button type="button" class="admin-settings-expander-toggle" data-bs-toggle="collapse" data-bs-target="#settings-post-footer" aria-controls="settings-post-footer" aria-expanded="@(settings.ShowPostFooter ? "true" : "false")" aria-label="@Html.DisplayNameFor(m => settings.ShowPostFooter)">
+                            <i class="bi bi-chevron-down" aria-hidden="true"></i>
+                        </button>
                     </div>
-                    <div class="border-top p-2">
-                        <div class="form-floating">
-                            <textarea asp-for="@settings.PostFooterHtmlPitch" data-setting-edit=""
-                                      placeholder="@Html.DisplayNameFor(m => settings.PostFooterHtmlPitch)"
-                                      class="form-control form-control-sm h-100px"
-                                      spellcheck="false"></textarea>
-                            <label class="form-label" asp-for="@settings.PostFooterHtmlPitch"></label>
+                    <div id="settings-post-footer" class="collapse @(settings.ShowPostFooter ? "show" : null)">
+                        <div class="admin-settings-expander-body">
+                            <div class="admin-settings-detail">
+                                <div class="form-floating">
+                                    <textarea asp-for="@settings.PostFooterHtmlPitch" data-setting-edit=""
+                                              placeholder="@Html.DisplayNameFor(m => settings.PostFooterHtmlPitch)"
+                                              class="form-control form-control-sm h-100px"
+                                              spellcheck="false"></textarea>
+                                    <label class="form-label" asp-for="@settings.PostFooterHtmlPitch"></label>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="col-6">
-                <h4 class="admin-subtitle fw-bold mb-2">@SharedLocalizer["Call-out"]</h4>
+            <div class="admin-settings-section">
+                <h4 class="admin-subtitle fw-bold">@SharedLocalizer["Call-out"]</h4>
 
-                <div class="rounded-3 border mb-2">
-                    <div class="settings-entry row align-items-center rounded-3 py-3 px-2">
+                <div class="admin-settings-expander">
+                    <div class="settings-entry admin-settings-expander-header">
                         <div class="col-auto">
                             <i class="bi-menu-button-wide-fill settings-entry-icon"></i>
                         </div>
@@ -162,14 +173,21 @@
                                 <input type="checkbox" name="ShowCalloutSection" value="true" class="form-check-input" @(settings.ShowCalloutSection ? "checked" : null)>
                             </div>
                         </div>
+                        <button type="button" class="admin-settings-expander-toggle" data-bs-toggle="collapse" data-bs-target="#settings-callout" aria-controls="settings-callout" aria-expanded="@(settings.ShowCalloutSection ? "true" : "false")" aria-label="@SharedLocalizer["Call-out"]">
+                            <i class="bi bi-chevron-down" aria-hidden="true"></i>
+                        </button>
                     </div>
-                    <div class="border-top p-2">
-                        <div class="form-floating">
-                            <textarea asp-for="@settings.CalloutSectionHtmlPitch" data-setting-edit=""
-                                      placeholder="@Html.DisplayNameFor(m => settings.CalloutSectionHtmlPitch)"
-                                      class="form-control form-control-sm h-100px"
-                                      spellcheck="false"></textarea>
-                            <label class="form-label" asp-for="@settings.CalloutSectionHtmlPitch"></label>
+                    <div id="settings-callout" class="collapse @(settings.ShowCalloutSection ? "show" : null)">
+                        <div class="admin-settings-expander-body">
+                            <div class="admin-settings-detail">
+                                <div class="form-floating">
+                                    <textarea asp-for="@settings.CalloutSectionHtmlPitch" data-setting-edit=""
+                                              placeholder="@Html.DisplayNameFor(m => settings.CalloutSectionHtmlPitch)"
+                                              class="form-control form-control-sm h-100px"
+                                              spellcheck="false"></textarea>
+                                    <label class="form-label" asp-for="@settings.CalloutSectionHtmlPitch"></label>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>

@@ -3,13 +3,14 @@
 ## Current state
 
 - Last updated: 2026-11-09.
-- Phase: B0-B2 accepted. B3 implementation and read-only browser checks are ready for user acceptance, with the explicit B3 image-test exception and unavailable fixture cases recorded below.
-- B3 automated checks: Web build passed with zero warnings/errors. Web tests: 661 passed, 1 failed, 0 skipped; the user explicitly approved a B3-only exception for the unchanged image-original-storage test. JavaScript modules were unchanged, so J was not required or rerun.
+- Phase: B0-B3 accepted; revised B4 and the authorized cross-batch R1 navigation refinement are ready for user acceptance. B5 is not authorized.
+- Latest R1 checks: W passed with zero warnings/errors; T passed 663/663; final J passed 34/34. The 360-sample navigation layout matrix, four final overflow stress cases, 16 boundary samples, native action dialogs, and actual keyboard navigation passed. All files pass UTF-8/CRLF/final-newline and whitespace checks.
+- Earlier revised B4 checks: W passed with zero warnings/errors; T passed 663/663; all 240 fresh rendered samples passed, including disclosure states/interaction. No image-test exception was needed. Production JavaScript had not changed at that earlier checkpoint, so J was not required then; R1 now changes JavaScript and includes J.
 - This document is the task plan, decision record, progress tracker, and cold-start handoff. The user explicitly requested its retention, including after completion.
 - No application code, configuration, dependencies, or blog data was changed by AI during B0. The final Web build passed with zero warnings/errors; Web tests passed 662/662 and Node tests passed 32/32, with no failed or skipped tests.
 - Planning checkout: `master`, commit `6615117f9b93d7d9c31519ec109b1cc00f7e2662`. B0 execution checkout: `b2c47ecf94540bbe8b3d01918cd98180b0776f3c` (`Document admin portal visual refresh plan`). The worktree was clean at B0 start. Only this plan differs between those commits; application source is unchanged.
-- Authorized: B3 card-grid presentation changes and checks. Local host stop/start and README default-account login remain authorized. Keep the existing blog read-only. Not authorized: B4, Git commits, branch changes, push, PR, deployment, or unrelated image-test fixes.
-- Next action: wait for B3 visual acceptance. The user owns commits; B4 requires a separate continuation instruction.
+- Authorized: B4 plus the explicitly requested R1 secondary-navigation refinement and checks. Local test-data fixture permission, host stop/start, and README default-account login remain authorized. Not authorized: B5, Git commits, branch changes, push, PR, deployment, external email/service operations, or unrelated image-test fixes.
+- Next action: wait for user acceptance and the user's commit; do not infer B4 acceptance or B5 permission from this refinement request.
 
 ## Goal and reference context
 
@@ -25,18 +26,24 @@ The screenshots were supplied in the original conversation and are not repositor
 | --- | --- |
 | D1 | Retain a light-gray page background and give the left navigation a distinct white surface in light mode. |
 | D2 | Keep the page toolbar below the top bar and visible while only the main content scrolls. |
-| D3 | Organize surfaces by content type: a shared white panel for lists/tables, independent cards for card grids, and larger business-group panels for settings. |
+| D3 | Organize surfaces by content type: a shared white panel for lists/tables and independent cards for card grids. The B4 feedback supersedes larger Settings column panels with independent setting cards and related expandable groups (D15/D18). |
 | D4 | Panels follow content height; do not stretch sparse lists or empty states to fill the remaining viewport. |
 | D5 | Put primary actions and state switches on the toolbar's left; put counts, search, and filtering on its right. |
 | D6 | Exclude both full-screen editors from this redesign. Preserve their focused layout and existing bottom actions. |
 | D7 | Accept at 1440 x 900 and 1920 x 1080 CSS-pixel desktop viewports, in light/dark mode and all six existing UI languages, at 100% browser zoom only. During B0 the user explicitly removed zoom checks from the earlier scope. |
-| D8 | Use 24px outer main-area padding and 24px panel padding; use 16px gaps between panels and from the toolbar to content. Preserve existing button sizes and allow toolbar wrapping. |
+| D8 | Use 24px outer main-area/panel padding and 16px panel/toolbar gaps. The approved Settings revision uses 16px vertical/24px horizontal item padding and 8px card gaps instead; preserve existing control sizes and toolbar wrapping. |
 | D9 | Use 8px panel/card radii, 1px theme-aware borders, and no panel/card shadows. This applies only to in-scope admin surfaces, not excluded editors or public pages. |
 | D10 | Keep the toolbar on the workspace background: light gray in light mode, with the corresponding dark-mode surface. Do not add a separate white toolbar card or retain the existing toolbar bottom divider. |
-| D11 | Prefer one settings header flow: primary page actions on the left followed by classification tabs; allow natural wrapping when necessary. Ordinary settings tabs do not acquire a Save action. |
+| D11 | Superseded by R1: page classifications are secondary navigation in the existing blue top bar, not controls mixed into the action toolbar. Actions stay in the fixed content toolbar; pages with no actions do not retain an empty toolbar. Ordinary settings still have no Save action. |
 | D12 | Move Menu Save to the fixed top toolbar and remove the old bottom Save. Retain the existing explicit-save semantics and form association. |
-| D13 | The existing development site is read-only for AI's UI checks. Browser writes require a separate local test instance and disposable database; confirm its actual setup before provisioning or writing fixtures. |
+| D13 | B0-B3 kept the existing development site read-only. During B4 the user explicitly confirmed that all local development data is test data and authorized changing/creating it without restoration. Local fixture writes are now permitted; this does not authorize production changes, deployment, or external email/service operations. |
 | D14 | Card action footers keep the body surface and use inset separators aligned with the 24px body padding. Cards in the same row follow that row's tallest content and align their footer actions; do not stretch cards to the viewport. Preserve four columns for Pages/Categories and three for Widgets. |
+| D15 | Supersedes the rejected whole-column B4 treatment: Settings use a left-aligned, maximum-width single column of independent Windows 11-style cards, with meaningful related options in expandable groups. Subscription follows this single-column layout. Theme previews remain a dedicated selector surface and Verification Files retains its table, within the same width limit. |
+| D16 | Menu uses one white main panel for enablement and the menu list, retaining the nested menu/submenu hierarchy. Save moves to the fixed toolbar only, preserving explicit form submission. |
+| D17 | R1 separates Appearance's theme New from classification navigation: keep New in the content action toolbar, with the original fewer-than-ten-user-themes condition and no duplicate panel button. All nine Settings classifications now belong in the top navigation. |
+| D18 | Groups for enabled features initially expand; inactive groups initially collapse. Arrow buttons and setting controls remain independent: folding never saves/changes a setting, and toggling a setting does not automatically fold/unfold its group. Preserve immediate PATCHes and existing edit dialogs. Menu is not redesigned again with this Settings revision. |
+| D19 | R1 covers four Post states, Pages/recycle bin, and nine Settings classifications (15 routes). Put secondary navigation inside the existing top bar, right of the site title and aligned with the main content, using text links, hover surfaces, and selected underlines instead of pills. Exclude editor/dialog tabs. |
+| D20 | Secondary navigation stays on one line and scrolls horizontally when needed without displacing global/account controls. Keep the active destination visible after layout/font changes; preserve normal links, routes, and keyboard navigation. |
 
 Retain the existing font, theme accent colors, and blue top-bar design. Preserve application behavior. A surface/layout refresh is not authorization to change save semantics, add features, redesign navigation information architecture, or introduce a frontend framework.
 
@@ -185,7 +192,7 @@ Technical dependencies are explicit below. The intended delivery order is B0 thr
 
 **Work**
 
-- Group related settings into larger panels with headings inside and fine row dividers, retaining useful column/group distinctions.
+- Present ordinary settings as Windows 11-style independent cards in one left-aligned, maximum-width column. Use expandable groups only for functionally related options, retaining useful section headings.
 - Cover General, Content, Comments, Image, Subscription, Appearance, Notification, Advanced, and Verification Files; preserve the B2 file table treatment.
 - Align settings navigation and optional page actions in the approved fixed header arrangement. Do not add empty action rows.
 - Preserve field/edit-dialog identifiers, required-field relationships, conditional sections, validation, and immediate PATCH/save behavior.
@@ -195,8 +202,9 @@ Technical dependencies are explicit below. The intended delivery order is B0 thr
 **Checks and acceptance**
 
 - W and T pass. Run J when JavaScript changes; add/update meaningful owning tests only when bindings, form ownership, or other behavior needs regression coverage.
-- Browser-check all nine tabs and menu management. In isolated fixtures, exercise an edit dialog, toggle, select/radio control, validation failure, and nested-menu save.
+- Browser-check all nine tabs and menu management. Using authorized local test-data fixtures under D13, exercise an edit dialog, toggle, select/radio control, validation failure, and nested-menu save.
 - Confirm one approved interaction still makes the same write as before; regrouping must not introduce duplicate event submissions or delayed settings writes.
+- Verify enabled groups initially expand, inactive groups initially collapse, disclosure controls work by mouse/keyboard without writes, and changing a switch does not automatically change disclosure state.
 - Do not expose configuration secrets in snapshots, console captures, logs, or this record.
 - User accepts grouping, retained save semantics, and menu action placement. Suggested user commit subject: `Group admin settings into consistent panels`.
 
@@ -286,8 +294,9 @@ Status vocabulary: `Pending`, `In progress`, `Blocked`, `Ready for user acceptan
 | B0 | Explicit B0 authorization | Complete | W: 0 warnings/errors after approved host stop; T: 662 passed; J: 32 passed; no test failures/skips; representative read-only baseline recorded below | Accepted explicitly on 2026-11-09 | Planning commit `b2c47ecf9` confirmed; no B0 application commit required | Closed; user explicitly authorized B1 |
 | B1 | B0 | Complete | W: 0 warnings/errors; J: 32 passed; browser checks passed; final T: 661 passed, 1 failed, 0 skipped, with the explicit B1 image-test exception | Accepted explicitly on 2026-11-09 | `e84a9cd570661a8b63b084240681e0c17192aaf3`, `Refresh admin shell and activity log layout`, confirmed from Git | Closed; user explicitly authorized B2 |
 | B2 | B1 | Complete | W: 0 warnings/errors; T: 662 passed, 0 failed/skipped; J: 32 passed, 0 failed/skipped; browser evidence and unavailable fixture scenarios recorded below | Accepted explicitly on 2026-11-09 | `3580bf019dda97eaedf8ee792b936e597080ba45`, `Refresh admin list panels and toolbars`, confirmed from Git | Closed; user explicitly authorized B3 |
-| B3 | B1 | Ready for user acceptance | W: 0 warnings/errors; T: 661 passed, 1 failed, 0 skipped, with explicit B3 image-test exception; J not required; 72 rendered route/culture/viewport/mode probes plus native-page checks; fixture gaps below | Pending | Not created | User visual acceptance, user commit, explicit continuation |
-| B4 | B1, B2 | Pending | Not run | Pending | Not created | Prior delivery closed and B4 authorization |
+| B3 | B1 | Complete | W: 0 warnings/errors; T: 661 passed, 1 failed, 0 skipped, with explicit B3 image-test exception; J not required; 72 rendered route/culture/viewport/mode probes plus native-page checks; fixture gaps below | Accepted explicitly on 2026-11-09 | `5d5d39a1e85604cb769e59adee10eabeac25a2b0`, `Refresh admin page, category, and widget cards`, confirmed from Git | Closed; user explicitly authorized B4 |
+| B4 | B1, B2 | Ready for user acceptance | Revised W: 0 warnings/errors; revised T: 663 passed, 0 failed/skipped; J not required; 240 fresh rendered samples passed, including disclosure independence, plus native/write checks below | Pending | Not created | User acceptance, user commit, and explicit continuation |
+| R1 | B1, B2, revised B4 | Ready for user acceptance | W: 0 warnings/errors; T: 663 passed; J: 34 passed; 360 layout samples, 4 final overflow cases, 16 boundary samples, native dialogs/keyboard passed | Pending | Not created | User acceptance and user commit; this does not authorize B5 |
 | B5 | B1 | Pending | Not run | Pending | Not created | Prior delivery closed and B5 authorization |
 | B6 | B2, B3, B4, B5 | Pending | Not run | Pending | Verification/documentation only unless fixes are needed | All implementation gates closed and B6 authorization |
 
@@ -337,6 +346,9 @@ Next action:
 - 2026-11-09: Before B3 application edits, the user confirmed D14: white card footers with inset separators and equal card heights within each content-driven row.
 - 2026-11-09: B3 Web tests reported 661 passed, 1 failed, 0 skipped (exit 2). The unchanged `Image_Post_WhenOriginalIsKept_PublicEndpointCannotReadOriginalStorage` test failed at `ImageControllerTests.cs:88`. The user explicitly chose a B3-specific exception and continuation to visual acceptance. No image-code change or retry was performed; this is not a clean test run or B3 visual acceptance.
 - 2026-11-09: B3 card styling, read-only browser checks, documentation, and cleanup completed. Fixture-only cases remain unverified. B3 awaits visual acceptance; no commit or B4 work has been performed.
+- 2026-11-09: User explicitly accepted B3 and authorized B4. Git confirmed user commit `5d5d39a1e85604cb769e59adee10eabeac25a2b0` (`Refresh admin page, category, and widget cards`). B4 starts on clean `master`, aligned with `origin/master`.
+- 2026-11-09: Before B4 application edits, the user confirmed D15-D17: one panel per existing settings business column, one Menu main panel retaining nested structure, and conditional theme New in the fixed settings toolbar.
+- 2026-11-09: The user superseded D13's local read-only restriction: the existing local development environment contains test data, and AI may modify/create it without restoration. B4 may exercise real local settings/menu writes and fixtures; do not extend this permission to production, deployment, or external service operations.
 
 ### B0 execution record - 2026-11-09
 
@@ -604,14 +616,156 @@ git --no-pager diff --check
 - Six files are uncommitted on `master`: the shared CSS, three Razor pages, engineering reference, and tracker. No staging, commit, push, PR, branch change, deployment, or B4 work occurred.
 - User acceptance: pending. User commit: not created. Permission to continue: B3 only; wait for explicit acceptance/continuation.
 
+### 2026-11-09 - B4 execution and delivery
+
+**Authorization and decisions**
+
+- The user accepted B3 and explicitly authorized B4. Git confirmed B3 commit `5d5d39a1e85604cb769e59adee10eabeac25a2b0`, `Refresh admin page, category, and widget cards`; `master` was clean and aligned with `origin/master` at B4 start.
+- D15-D17 were confirmed before implementation: retain business columns as independent content-height panels, retain Menu hierarchy inside one main panel, and move conditional Appearance New before the nine tabs.
+- The user explicitly superseded the old read-only restriction for the existing local development environment: its data is test data and may be changed/created without restoration. No separate instance was required. This did not authorize production, deployment, external email, or third-party operations.
+- After seeing the final test failure below, the user explicitly approved a **B4-only exception** and continuation to visual acceptance. B1/B3 exceptions were not reused.
+
+**Implemented scope**
+
+- Added shared settings grid/panel/detail helpers in [admin.css](../../src/Moonglade.Web/wwwroot/css/admin.css): existing columns become larger 24px-padded panels with 16px gaps, 8px radii, theme-aware 1px borders, no shadows, and fine internal row separators instead of independent row cards.
+- Updated General, Content, Comment, Image, Subscription, Appearance, Notification, and Advanced under [Settings](../../src/Moonglade.Web/Pages/Admin/Settings). Internal headings/order and control names, identifiers, constraints, and dependency attributes were preserved. Subscription remains half-width; Verification Files retains its B2 table panel.
+- Moved Appearance New into [_SettingsHeader.cshtml](../../src/Moonglade.Web/Pages/Admin/Settings/_SettingsHeader.cshtml), preserving the fewer-than-ten-user-themes condition and existing limit notice; ordinary settings still have no global Save.
+- Updated [Menu.cshtml](../../src/Moonglade.Web/Pages/Admin/Menu.cshtml) and its scoped CSS: one main panel, theme-aware nested cards, wrapping guards, and the sole page Save first in the fixed toolbar. The native submit explicitly targets `form-settings`, keeps loading disablement, and retains `saveSettings()`; dialog draft forms remain separate.
+- Added [MenuPageTests.cs](../../src/Tests/Moonglade.Web.Tests/Pages/Admin/MenuPageTests.cs). `ToolbarSave_AssociatesWithMenuForm_WithoutChangingSubmitBinding` executes the real compiled Razor page and toolbar section, checking native form ownership, the single page submit, loading disablement, and unchanged page/dialog submit bindings.
+- Updated the engineering reference with the shared settings/Menu contract. No production C#, JavaScript module, dependency, configuration file, provider, or schema changed.
+- The first narrow/light matrix exposed a real 2px Alpha range-row overflow in all six cultures. Removed only its redundant nested Bootstrap grid wrappers, rebuilt, and verified the corrected layout in the final matrix.
+
+**Automated checks**
+
+Commands ran from the repository root:
+
+```powershell
+dotnet test --project .\src\Tests\Moonglade.Web.Tests\Moonglade.Web.Tests.csproj --filter-class '*MenuPageTests'
+dotnet build .\src\Moonglade.Web\Moonglade.Web.csproj
+dotnet test --project .\src\Tests\Moonglade.Web.Tests\Moonglade.Web.Tests.csproj
+dotnet build .\src\Moonglade.Web\Moonglade.Web.csproj --no-restore
+dotnet test --project .\src\Tests\Moonglade.Web.Tests\Moonglade.Web.Tests.csproj
+git --no-pager diff --check
+```
+
+- Focused Menu regression: exit 0; **Passed: 1, Failed: 0, Skipped: 0**.
+- Initial full W/T: build exit 0 with zero warnings/errors; test exit 0, **Passed: 663, Failed: 0, Skipped: 0**.
+- Final W after the range-wrapper/corner cleanup: exit 0, zero warnings/errors.
+- Final T: exit 2; **Passed: 662, Failed: 1, Skipped: 0**, total 663. The sole failure was unchanged `Image_Post_WhenOriginalIsKept_PublicEndpointCannotReadOriginalStorage`, `Assert.True` at `ImageControllerTests.cs:88`. The new Menu regression passed.
+- The final failure remains real and unresolved, with the explicit B4-only exception. It was not retried until green, repaired, weakened, or replaced by the initial successful run.
+- J was not required or rerun because production JavaScript modules did not change. Prior batches' 32/32 results are historical only.
+- Final whitespace/encoding checks cover all fifteen B4 files: valid UTF-8, CRLF, final newlines, and retained existing BOMs.
+
+**Final rendered and native-page evidence**
+
+- All ten routes (nine settings tabs plus Menu), six cultures (`en-US`, `zh-Hans`, `zh-Hant`, `de-DE`, `ja-JP`, `fr-FR`), two accepted sizes (1440 x 900 and 1920 x 1080), and both themes at 100% zoom: **240 final rendered-document samples, zero probe failures**.
+- Sequential temporary same-origin frames loaded the actual Razor pages/modules/current local data, waited for loading/fonts/layout, and were removed afterward. These were geometry/style checks, not 240 manually reviewed screenshots.
+- Checks covered expected panel counts, content-driven heights, 24px padding, 16px grid/toolbar gaps, 8px radii/1px borders/no shadows, row treatment, nine tabs, conditional Appearance New/order, Menu Save/form association, fixed toolbar during content scrolling, horizontal overflow, and final-panel reachability.
+- Final Alpha range rows had no overflow in any combination. At 1440 x 900, General/Content/Advanced required about 89/52/93px of main-body scrolling; Menu with fixtures required 156px. Toolbars stayed fixed. Wide-view panels stayed content-height rather than stretching.
+- Native screenshots were separately inspected: Appearance in German at 1440 x 900 light, Menu at 1440 x 900 light and dark, Image at 1440 x 900 dark, Content at 1440 x 900 light, and Subscription at 1920 x 1080 light. Theme previews, nested hierarchy, long fixture labels, sparse panels, and field/button spacing remained usable.
+- General favicon/avatar dialogs opened and closed at 1440 x 900 dark; file inputs remained present, dialogs fitted, focus stayed inside and returned to their triggers. No file was uploaded.
+- Embedded Content HTML editor opened at 1920 x 1080 light; Appearance CSS editor opened at 1440 x 900 dark. Real CodeMirror editable surfaces and accessible labelling were present; dialogs fitted and settled-state close returned focus. No editor content was saved.
+- Appearance New opened the existing theme dialog without creating a theme. Verification Files New opened/closed its existing 560px drawer at 1440 x 900 dark, with fitting bounds/focus containment; no verification file was created.
+- Notification's current `Available` capability state and enabled Send button fitted the panel; the button was not invoked. No test email was sent and no external capability/service state was changed.
+- Boundary probes found no settings helper leakage into Posts, Activity Logs, Categories, Widgets, or the two blank full-screen editors. Lists retained their panels; card pages retained independent cards. Both editors still lacked the ordinary-admin toolbar/scroller. Public home had no admin stylesheet/settings helpers; its ordinary vertical scrolling was not treated as an admin regression.
+
+**Actual local write checks**
+
+- Temporary fetch observation delegated unchanged requests and recorded only safe method/status/approved payload fields, restoring the original function afterward. Independent fresh rendered GETs checked persistence where noted.
+- Content `DefaultEditor` Html -> Markdown -> Html and `EnableViewCount` true -> false -> true each produced exactly one PATCH per interaction, HTTP 204, containing only the edited field; fresh pages confirmed the changed states.
+- `PostListPageSize` above maximum 30 stayed invalid in the dialog and issued zero PATCHes. Saving 10 -> 11 produced one PATCH 204; a fresh page confirmed 11. Restoring 10 produced one PATCH 204.
+- `PostTitleAlignment` Left -> Center -> Left produced one PATCH 204 per interaction, only that field; a fresh page confirmed Center.
+- Comment provider BuiltIn -> ThirdParty -> BuiltIn produced one PATCH 204 each, only `CommentProvider`. Built-in/third-party sections switched correctly without overflow. Existing settings values used in these checks were restored voluntarily, not because D13 required restoration.
+- Created two real local root-menu fixtures through the existing dialogs, including a 96-character label and one long nested child, all fixture URLs `/page/about`. Up/down ordering round-tripped. Draft additions/reordering and enablement changes produced zero POSTs before explicit Save.
+- Two deliberate top Saves produced exactly two native page submit events and two POSTs, both HTTP 204, with only `isEnabled` and `menuJson`. The first persisted the fixture graph/disabled state, confirmed by a fresh GET; the second restored enabled=true. Reload confirmed the graph.
+- The local fixtures remain: `B4 Visual Refresh ` plus six repetitions of `LongMenuLabel`, `B4 Ordering Check`, and child `B4 nested entry ` plus six repetitions of `NestedLabel`. Final graph: four roots/one child, serialized JSON length 685. These are authorized existing-environment test data, not isolated-instance fixtures.
+
+**Limitations and delivery**
+
+- This is not an exhaustive settings/backend/provider test. Alternative Notification capability states, real email delivery, avatar/favicon uploads, theme creation/deletion and the ten-theme limit transition, verification-file writes, and every dependent-field validation path were not exercised. Existing conditions/control attributes/modules were preserved; do not claim those unexecuted states passed.
+- The unchanged image-original-storage test remains an unrelated unresolved failure with the explicit B4 exception. User visual acceptance is still required.
+- Final host: `https://localhost:10210`, detached session `admin-b4-final-host`, last verified listener PID `21636`, expected Web Debug executable, `/health/ready` HTTP 200. Verify current ownership/PID before any later stop.
+- Browser page 2 is left on Appearance for review, with viewport/theme emulation cleared and auto theme preference retained. No test frames/helpers/fetch wrappers, dialogs, drawers, or backdrops remain. The named session-only class-migration helper was removed.
+- Fifteen B4 files remain uncommitted on `master`. No staging, commit, push, PR, branch change, deployment, or B5 work occurred.
+- User acceptance: pending. User commit: not created. Permission to continue: B4 only; stop here.
+
+### 2026-11-09 - B4 Settings revision and revised delivery
+
+- The user rejected the larger Settings column panels and supplied a Windows 11 Settings reference: mostly separate item cards, with disclosure arrows for related options. This is a revision within B4, not acceptance or B5 authorization.
+- Before editing, the user confirmed a maximum-width left-aligned single column, initially expanded groups for enabled features, and the proposed functional grouping/spacing/special-page exceptions. The implementation uses a 1120px maximum width, 8px card gaps, and 16px vertical/24px horizontal item padding.
+- Approved expandable groups: General Dublin Core/license and profile/avatar; Content footer/HTML and Call-out/HTML; Comment provider-specific controls and word-filter mode/keywords; Image CDN/endpoint and watermark details; Appearance custom CSS; Notification email details and notification-event options.
+- Independent settings remain individual cards. Theme previews and the verification-file table retain purpose-built surfaces. Current save semantics, field attributes, modal editors, conditional sections, and toolbar actions remain; no new frontend dependency or production module was introduced.
+- Updated all nine Settings tabs and shared CSS. General, Content, Comment, Image, and Notification each have two meaningful expanders; Appearance has one. Subscription and Advanced retain independent cards without artificial disclosures. Theme previews and the file table use their dedicated surfaces within the same cap.
+- A source-level check against HEAD confirmed that all eight ordinary pages retain the complete multiset of input/select/textarea attributes, despite moving related options next to their parent controls. Div counts are balanced. No production JavaScript or backend code changed.
+- The first narrow/light probe identified incorrectly nested trailing General widget rows. Corrected the closing-tag placement, rebuilt/retested, and reran the complete final matrix. Simple tag counts alone were not treated as visual proof.
+
+**Fresh automated checks**
+
+```powershell
+dotnet build .\src\Moonglade.Web\Moonglade.Web.csproj --no-restore
+dotnet test --project .\src\Tests\Moonglade.Web.Tests\Moonglade.Web.Tests.csproj
+git --no-pager diff --check
+```
+
+- Initial revised W/T: exit 0, build zero warnings/errors; **Passed: 663, Failed: 0, Skipped: 0**.
+- Final revised W/T after the General nesting correction: exit 0, build zero warnings/errors; **Passed: 663, Failed: 0, Skipped: 0**, including the retained compiled-Razor Menu test.
+- These are fresh results for the revised source. The earlier image-test failure/exception remains historical; it was not needed or used to waive any final revised test.
+- J was not required or rerun because production modules did not change. No extra unit test was added merely to assert CSS classes; real Bootstrap/Razor disclosure behavior was checked in the browser.
+- Final source/format checks cover sixteen B4 files: UTF-8/CRLF/final newlines, existing BOM preservation, whitespace, and retained input/select/textarea attributes.
+
+**Fresh rendered and native-page checks**
+
+- **240 fresh route/culture/viewport/theme samples, zero failures**: all nine settings tabs plus Menu, six existing cultures, 1440 x 900 and 1920 x 1080, light/dark, 100% zoom.
+- Temporary same-origin frames loaded real Razor/modules/data and checked the 1120px left-aligned cap, toolbar gap/fixed position, card padding/borders/radii/gaps, tabs/actions, horizontal overflow, absence of nested setting rows, and final-content reachability.
+- Every one of the eleven disclosure groups was checked in each culture/size/theme combination: initial state against its feature state, then fully collapsed and expanded states, matching `aria-expanded`/targets/labels, no settings-state changes, and **zero write requests from disclosure clicks**. This is rendered-document/interaction evidence, not 240 manually reviewed screenshots.
+- Separate native screenshots were inspected for General and Image at 1440 x 900 light, Comment at 1440 x 900 dark/German, Appearance at 1440 x 900 dark/French, and Content at 1920 x 1080 light. The dedicated theme gallery and file table remain intentional exceptions to ordinary item cards.
+- Native Enter collapsed the footer group with visible keyboard focus; Space expanded it. General favicon/avatar, Appearance New, and the HTML/CSS edit dialogs fitted, contained focus, closed, and returned focus to their triggers. No file was uploaded or theme created.
+- Verification Files New opened/closed its existing 560px drawer within bounds. Notification's current `Available` state and enabled Send button fitted; Send was not invoked. No external email/service operation occurred.
+- Boundary checks retained Posts/Activity Logs list panels, Categories/Widgets independent cards and 24px bodies, and both editors' separate toolbar/scroller branch. Public home had no admin stylesheet or Settings helper leakage.
+
+**Fresh actual writes and local fixture cleanup**
+
+- Footer header switch true -> false -> true while its group was collapsed: exactly one PATCH 204 per interaction, only `ShowPostFooter`. The current group stayed collapsed both times. Fresh GETs confirmed false/initially-collapsed and true/initially-expanded, demonstrating both persistence and the approved reload rule.
+- `PostListPageSize` 31 failed native range validation, left the dialog open, and issued zero PATCHes. Saving 11 and restoring 10 each issued one PATCH 204; the dialog closed and focus returned.
+- `DefaultEditor` Html -> Markdown -> Html issued one PATCH 204 per interaction, only that field.
+- Comment BuiltIn -> ThirdParty -> BuiltIn issued one PATCH 204 per interaction, only `CommentProvider`. Changing provider while collapsed did not expand the group; manually expanding exposed only the correct provider's controls. Switching back preserved the user's expanded state.
+- Temporary request observers delegated unchanged fetch calls, recorded only approved scalar fields/status/key lists, and restored the original function in `finally`. Revised Settings checks restored their original scalar values.
+- A public-boundary probe found horizontal overflow caused by the **own earlier 96-character B4 menu fixture**, not admin CSS. Removed only the two exact B4 root-menu fixtures (including their fixture child) through the real delete-confirmation UI. Draft deletion produced zero POSTs; one explicit top Save produced one POST 204 with only `isEnabled`/`menuJson`.
+- Fresh GETs confirmed the original two root menus, zero fixture labels, enabled=true, and no public/admin horizontal overflow at 1440px. No public CSS/business code was changed. The earlier log's retained four-root/one-child fixture state is historical and no longer current.
+
+**Revised delivery and limitations**
+
+- Disclosure states are deliberately per-render/per-page only, not a saved preference. Arrow clicks do not save; switches do not automatically fold/unfold. Required-field/edit-modal logic remains the existing module's responsibility.
+- Alternative email capability states, real email delivery, image uploads, theme creation/deletion/ten-theme transition, verification-file writes, and every server/network failure/dependency path were not exercised in this revision. Do not equate preserved code/attributes with those unexecuted states passing.
+- Final host: detached session `admin-b4-settings-revision-final-host`, last verified listener PID `29612`, expected Web Debug executable, readiness HTTP 200. The earlier hosts were stopped for builds.
+- Browser page 2 is left on General at the top, with emulation cleared/auto theme retained, and no temporary frames/helpers/fetch wrappers or overlays. Local fixture menus were cleaned up as above.
+- Sixteen B4 files remain uncommitted on `master`. User acceptance/commit are pending; no staging, push, PR, branch change, deployment, or B5 work occurred.
+
+### 2026-11-09 - R1 secondary navigation ready for user acceptance
+
+- The user requested redesigning page classifications as top secondary navigation instead of tabs mixed with action buttons. Before editing, the user confirmed the existing blue top bar, one-line independent horizontal scrolling, and text/underline styling for all three identified groups.
+- Added an ordinary-admin `adminnavigation` section and three navigation partials for 15 routes. Existing action partials now contain only actions/count/filter controls; ordinary Settings with no action render no empty toolbar.
+- The new small admin-only navigation module keeps the selected anchor visible after fonts and navigation-width changes and fully reveals keyboard-focused links. Links retain their existing localized labels, destinations, and ordinary navigation semantics. Actions remain inside the owning main Alpine scope, not the global header.
+- The first narrow/light matrix exposed a Japanese sidebar min-content expansion of approximately 1px, breaking exact alignment. The sidebar now has `min-width: 0`; secondary-nav items explicitly reset inherited right margins. Fresh layout verification after those CSS fixes passed.
+- W: `dotnet build .\src\Moonglade.Web\Moonglade.Web.csproj --no-restore` passed with zero warnings/errors. T: `dotnet test --project .\src\Tests\Moonglade.Web.Tests\Moonglade.Web.Tests.csproj` passed 663/663, zero failures/skips, after all Razor wiring changed. Subsequent corrections were CSS/JavaScript-only, so T was not unnecessarily repeated.
+- J: the final `node --test .\src\Tests\Moonglade.Web.Tests\JavaScript\*.mjs` passed 34/34, zero failures/skips. Focused `node --test .\src\Tests\Moonglade.Web.Tests\JavaScript\AdminNavigationTests.mjs` passed both exact named cases:
+  - `selected navigation stays visible after fonts load and navigation resizes`: verifies the observed navigation element, no premature font-ready scroll, and exact nearest-axis reveal calls for font readiness and resize.
+  - `keyboard focus reveals the focused link rather than the selected link`: verifies separate selected/unselected anchors and exact nearest-axis reveal targets/options.
+- Layout matrix: 15 real routes x six cultures x 1440x900/1920x1080 x light/dark = 360 fresh rendered samples, all passed. Checked ordered destinations/current-route semantics, text/underline styling, alignment, single-line navigation, global controls, no document/content horizontal overflow, fixed header/action-toolbar positions while body-scrolling, dedicated Settings width, and no empty action toolbar. Normal labels fit at both approved sizes; overflow was therefore exercised separately rather than claimed from this matrix.
+- Native screenshots inspected Posts, Pages, and General in both themes. Actual keyboard Tab/Enter followed Published to Drafts with the visible white focus outline and correct new active route. The Post filter, Appearance New modal, and Verification Files New drawer all opened from the retained main-area controls; closing them performed no writes.
+- Overflow stress initially exposed a native browser focus scroll that left the far edge of a long focused link clipped. Added explicit focus reveal, then reran the focused/full J checks and W. Four fresh native stress cases on the resulting host passed at both approved sizes/themes: French labels repeated four times plus long temporary brand/account text stayed single-line, scrollable, and isolated from global actions; selected links remained fully visible through resizing, brand/account text ellipsized, and document scrolling/overflow stayed zero. Actual Tab to the last link at 1440/light now reveals it fully with visible focus. Manual horizontal scrolling remains undisturbed. These are temporary DOM fixtures, not real translations/account or blog-setting changes, and were removed.
+- Boundary checks on the final host: 16 fresh 1440/dark rendered samples (English/Japanese) across Menu, Tags, Dashboard, Account, About, both blank editors, and the public homepage passed. No top-navigation/module leakage or horizontal overflow; Menu retains its sole native toolbar Save, and both editors retain their excluded layout branch.
+- All 30 scoped changed/new files retain valid UTF-8, CRLF, final newlines, and their existing BOM choices. `git diff --check` passes. No dependencies, resource keys, routes, business handlers, or production settings changed for R1; no external sends/services, destructive actions, or local data writes were required.
+- Current final host: `https://localhost:10210`, detached session `admin-r1-acceptance-host`, last verified listener PID `34016`, expected Web Debug executable, readiness HTTP 200. Earlier recorded hosts were stopped for builds; verify current ownership before stopping.
+- Existing B4 changes remain preserved and uncommitted. Total worktree scope is 30 files (24 modified, six untracked including the earlier B4 Menu test). R1 is an authorized cross-batch correction, not B4 acceptance or B5. Stop for user acceptance; the user owns commits.
+
 ## Latest handoff
 
-- Current phase: B0-B2 accepted; B3 is ready for visual acceptance with the explicit image-test exception and fixture limitations above.
-- Current authorized work: B3 only; do not begin B4.
-- Verified baseline: `3580bf019dda97eaedf8ee792b936e597080ba45` on `master`, clean at B3 start; do not change branches.
-- Application changes: B1/B2 are committed. B3 changes are uncommitted in six files: three grid Razor pages, shared admin CSS, engineering reference, and this tracker. Preserve these changes.
-- Verification: B3 W passed; T is 661 passed / 1 failed / 0 skipped with the user's explicit B3 exception. J was not required. The 72 rendered matrix samples and native interaction/boundary checks passed within the recorded fixture limits.
-- Decisions: D1-D14 govern implementation. In particular, use 24px padding/16px gaps, 8px radii/1px borders/no shadows, gray toolbar without a bottom divider, naturally wrapping settings actions/tabs, and top-only Menu Save. Only 100% browser zoom is in scope.
-- Environment: local host stop/start and README default-account login are authorized. The B3 build is running in detached session `admin-b3-host` (last listener PID `24716`). Verify ownership before stopping. Browser is on unfiltered Widgets, native 1920 x 889, with emulation cleared and no temporary helpers/tabs/overlays.
-- Remaining setup: no isolated fixture instance/database has been created. Confirm the concrete environment before any later browser write scenario; current development blog remains read-only.
-- Immediate next action: wait for B3 visual acceptance. Record acceptance separately, confirm the user's eventual commit from Git history, and begin B4 only after explicit continuation. Do not commit or create fixtures in the existing blog.
+- Current phase: B0-B3 accepted; revised B4 and R1 are ready for user acceptance. Do not begin B5.
+- Verified baseline: `5d5d39a1e85604cb769e59adee10eabeac25a2b0` on `master`, clean at B4 start; sixteen B4 files are now uncommitted. Do not change branches or commit for the user.
+- Application changes: preserve revised B4 settings/Menu work; R1 adds top secondary navigation, separates classifications from action toolbars, and keeps selected/focused links visible. Engineering guidance now describes the navigation contract.
+- Verification: R1 W passed with zero warnings/errors; T passed 663/663; final J passed 34/34, including the two focused navigation cases. The 360-sample layout matrix passed after CSS fixes; the final keyboard enhancement then passed its focused/full J, W, four fresh overflow cases, and 16 boundary samples. No historical image-test exception is needed.
+- Decisions: D1-D20 govern the revised design. Preserve immediate settings writes, explicit Menu save, the existing theme limit, excluded editors, and 100% zoom scope.
+- Runtime: detached session `admin-r1-acceptance-host`, last verified listener PID `34016`, expected executable, readiness HTTP 200. Browser page 2 is left on General with emulation cleared, auto theme preference, and no temporary overlays/helpers. Reverify process ownership before stopping.
+- Fixture permission: local test-data writes/creation without restoration remain explicitly authorized. Own B4 fixture menus/child were cleaned up because their long label overflowed the public navbar; the original two menus remain. Do not send email, trigger external services, or extrapolate to production.
+- Immediate next action: wait for user acceptance and the user's commit. Record eventual commits from Git history; do not advance to B5 automatically.
