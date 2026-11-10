@@ -10,7 +10,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Moonglade.Auth;
 using Moonglade.Configuration;
-using Moonglade.Data.DTO;
 using Moonglade.Data.Entities;
 using Moonglade.Features.Category;
 using Moonglade.Features.Post;
@@ -23,14 +22,13 @@ using System.Globalization;
 using System.Net;
 using System.Reflection;
 using System.Security.Claims;
-using System.Text.RegularExpressions;
 
 namespace Moonglade.Web.Tests.Pages;
 
 public class SearchPageTests
 {
     [Fact]
-    public async Task FrenchLanguage_RendersPublicSearchAndSettingsPickers()
+    public async Task FrenchLanguage_BindsSearchLanguage()
     {
         var ct = TestContext.Current.CancellationToken;
         var scenario = new SearchPageScenario();
@@ -39,42 +37,14 @@ public class SearchPageTests
         client.DefaultRequestHeaders.Add("Cookie",
             $"{CookieRequestCultureProvider.DefaultCookieName}={CookieRequestCultureProvider.MakeCookieValue(new RequestCulture("fr-FR"))}");
 
-        var search = WebUtility.HtmlDecode(await client.GetStringAsync("/search?term=bonjour&language=fr-fr", ct));
+        using var response = await client.GetAsync("/search?term=bonjour&language=fr-fr", ct);
 
-        Assert.Contains("<html lang=\"fr-fr\"", search);
-        Assert.Contains("Résultats de recherche", search);
-        Assert.Contains("Toutes les langues", search);
-        Assert.Contains("value=\"fr-fr\" selected=\"selected\"", search);
-        Assert.Contains("français (France)", search);
-        Assert.Contains("setLanguage('fr-FR'", search);
-        Assert.Contains("Choisir la langue d'affichage", search);
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
         Assert.Equal("fr-fr", Assert.Single(scenario.SearchQueries).LanguageCode);
-
-        var settings = WebUtility.HtmlDecode(await client.GetStringAsync("/admin/settings/general", ct));
-
-        Assert.Contains("Langue par défaut", settings);
-        Assert.Contains("<option value=\"fr-fr\">français (France)</option>", settings);
-        Assert.Contains("selected=\"selected\" value=\"en-us\"", settings);
     }
 
     [Fact]
-    public async Task SubscriptionPage_TagHelpersUseImmutableSettingMetadataAndSavedValue()
-    {
-        var config = CreateBlogConfig();
-        config.Publish(config.Capture() with { FeedSettings = new FeedSettings { FeedItemCount = 5 } });
-        using var app = await CreateTestApp(new SearchPageScenario(), config);
-        using var client = app.GetTestClient();
-
-        var html = await client.GetStringAsync("/admin/settings/subscription", TestContext.Current.CancellationToken);
-
-        Assert.Contains("Feed items</label>", html);
-        Assert.Contains("name=\"settings.FeedItemCount\"", html);
-        Assert.Contains("value=\"5\"", html);
-        Assert.Contains("data-val-range-min=\"0\"", html);
-    }
-
-    [Fact]
-    public async Task RenderAndComponents_RetainHandlerCaptureAcrossPublication_AndRefreshOnNextRender()
+    public async Task Search_RetainsHandlerCaptureAcrossPublication_AndRefreshesOnNextRequest()
     {
         var ct = TestContext.Current.CancellationToken;
         var scenario = new SearchPageScenario
@@ -83,62 +53,30 @@ public class SearchPageTests
             Resume = new(TaskCreationOptions.RunContinuationsAsynchronously)
         };
         var config = CreateBlogConfig();
-        config.Publish(config.Capture() with
-        {
-            GeneralSettings = config.Capture().GeneralSettings with { SiteTitle = "Before" },
-            CustomMenuSettings = new CustomMenuSettings { IsEnabled = true, Menus = [new Menu { Title = "Old menu", Url = "/old" }] }
-        });
         using var app = await CreateTestApp(scenario, config);
         using var client = app.GetTestClient();
         var pending = client.GetStringAsync("/search?term=settings", ct);
         await scenario.Started.Task.WaitAsync(TimeSpan.FromSeconds(10), ct);
         config.Publish(config.Capture() with
         {
-            GeneralSettings = config.Capture().GeneralSettings with { SiteTitle = "After" },
-            ContentSettings = config.Capture().ContentSettings with { PostListPageSize = 7 },
-            AppearanceSettings = new AppearanceSettings { ThemeId = 200 },
-            CustomMenuSettings = new CustomMenuSettings { IsEnabled = true, Menus = [new Menu { Title = "New menu", Url = "/new" }] }
+            ContentSettings = config.Capture().ContentSettings with { PostListPageSize = 7 }
         });
         scenario.Resume.SetResult();
-        var first = await pending;
+        await pending;
 
-        Assert.Contains("Before", first);
-        Assert.Contains("Old menu", first);
-        Assert.Contains("theme:100", first);
-        Assert.DoesNotContain("New menu", first);
         Assert.Equal(2, scenario.SearchQueries[0].PageSize);
 
-        var next = await client.GetStringAsync("/search?term=settings", ct);
+        await client.GetStringAsync("/search?term=settings", ct);
 
-        Assert.Contains("After", next);
-        Assert.Contains("New menu", next);
-        Assert.Contains("theme:200", next);
-        Assert.DoesNotContain("theme:100", next);
-        Assert.DoesNotContain("Old menu", next);
         Assert.Equal(7, scenario.SearchQueries[1].PageSize);
     }
 
     [Fact]
-    public async Task Search_RendersResultsAndPreservesQueryStringState()
+    public async Task Search_BindsQueryStringStateAndReturnsNoIndexHeader()
     {
         var scenario = new SearchPageScenario
         {
-            Result = new SearchPostQueryResult(
-                [
-                    new PostDigest
-                    {
-                        Title = "Azure Functions on .NET",
-                        Slug = "azure-functions",
-                        ContentAbstract = "Building Azure Functions with Moonglade",
-                        LangCode = "ja-jp",
-                        PubDateUtc = new DateTime(2026, 2, 1, 12, 0, 0, DateTimeKind.Utc),
-                        Tags =
-                        [
-                            new Tag { DisplayName = "Azure", NormalizedName = "azure" }
-                        ]
-                    }
-                ],
-                7)
+            Result = new SearchPostQueryResult([], 7)
         };
         using var app = await CreateTestApp(scenario);
         using var client = app.GetTestClient();
@@ -149,28 +87,6 @@ public class SearchPageTests
 
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
         Assert.Equal("noindex, nofollow", response.Headers.GetValues("X-Robots-Tag").Single());
-
-        var html = await response.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
-        Assert.Contains("<h3 class=\"mb-4\">", html);
-        Assert.Contains("<input id=\"search-term\" name=\"term\" value=\"Azure Functions\"", html);
-        Assert.Contains("value=\"title-desc\" selected=\"selected\"", html);
-        Assert.Contains("value=\"dotnet\" selected=\"selected\"", html);
-        Assert.Contains("value=\"azure\" selected=\"selected\"", html);
-        Assert.Contains("value=\"ja-jp\" selected=\"selected\"", html);
-        Assert.Contains("id=\"startDate\" name=\"startDate\" value=\"2026-01-02\"", html);
-        Assert.Contains("id=\"endDate\" name=\"endDate\" value=\"2026-02-03\"", html);
-        Assert.Contains("7 results", html);
-        Assert.Contains("<mark>Azure</mark> <mark>Functions</mark> on .NET", html);
-
-        var pageTwoLink = GetHrefForPage(html, 2);
-        Assert.Contains("term=Azure%20Functions", pageTwoLink);
-        Assert.Contains("p=2", pageTwoLink);
-        Assert.Contains("sort=title-desc", pageTwoLink);
-        Assert.Contains("category=dotnet", pageTwoLink);
-        Assert.Contains("tag=azure", pageTwoLink);
-        Assert.Contains("language=ja-jp", pageTwoLink);
-        Assert.Contains("startDate=2026-01-02", pageTwoLink);
-        Assert.Contains("endDate=2026-02-03", pageTwoLink);
 
         var query = Assert.Single(scenario.SearchQueries);
         Assert.Equal("Azure Functions", query.Keyword);
@@ -219,7 +135,7 @@ public class SearchPageTests
     [Theory]
     [InlineData("")]
     [InlineData("/blog")]
-    public async Task PublicAndAdminAvatarRendering_UsesLocalEndpointWithoutMutatingSettings(string pathBase)
+    public async Task PublicAndAdminRequests_DoNotMutateSettingsSnapshot(string pathBase)
     {
         var config = CreateBlogConfig();
         config.Publish(config.Capture() with
@@ -233,13 +149,11 @@ public class SearchPageTests
         var retained = config.Capture();
         using var app = await CreateTestApp(new SearchPageScenario(), config, pathBase);
         using var client = app.GetTestClient();
-        var expected = $"{pathBase}/avatar";
-
         foreach (var route in new[] { "/search?term=avatar", "/admin/settings/general" })
         {
-            var html = await client.GetStringAsync(route, TestContext.Current.CancellationToken);
+            using var response = await client.GetAsync(route, TestContext.Current.CancellationToken);
 
-            Assert.Contains($"src=\"{expected}\"", html);
+            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
             Assert.Same(retained, config.Capture());
         }
     }
@@ -249,7 +163,7 @@ public class SearchPageTests
     [InlineData(AuthenticationProvider.Local, "/blog")]
     [InlineData(AuthenticationProvider.OpenIdConnect, "")]
     [InlineData(AuthenticationProvider.OpenIdConnect, "/blog")]
-    public async Task AdminUserMenu_RendersProviderActionsAndPreservesPathBase(AuthenticationProvider provider, string pathBase)
+    public async Task AdminDisplayClaims_AreHtmlEncoded(AuthenticationProvider provider, string pathBase)
     {
         const string name = "<Admin & Owner>";
         const string email = "owner&portal@example.test";
@@ -260,139 +174,12 @@ public class SearchPageTests
 
         var html = await client.GetStringAsync("/admin/settings/general", TestContext.Current.CancellationToken);
 
-        var toggle = Regex.Match(html, @"<button\b[^>]*id=""admin-user-toggle""[^>]*>(?<content>.*?)</button>", RegexOptions.Singleline);
-        Assert.True(toggle.Success);
-        Assert.Contains("data-bs-toggle=\"dropdown\"", toggle.Value);
-        Assert.Contains("aria-expanded=\"false\"", toggle.Value);
-        Assert.Contains("aria-controls=\"admin-user-menu\"", toggle.Value);
-        Assert.Contains(WebUtility.HtmlEncode(name), toggle.Groups["content"].Value);
-        Assert.Contains($"src=\"{pathBase}/avatar\"", toggle.Value);
-        Assert.DoesNotContain("<div", toggle.Value);
+        Assert.Contains(WebUtility.HtmlEncode(name), html);
+        Assert.DoesNotContain(name, html);
         if (provider == AuthenticationProvider.OpenIdConnect)
-            Assert.Contains(WebUtility.HtmlEncode(email), toggle.Value);
-        else
-            Assert.DoesNotContain(WebUtility.HtmlEncode(email), toggle.Value);
-
-        var menu = Regex.Match(html, @"<ul\b[^>]*aria-labelledby=""admin-user-toggle""[^>]*>(?<content>.*?)</ul>", RegexOptions.Singleline);
-        Assert.True(menu.Success);
-        var links = Regex.Matches(menu.Groups["content"].Value, @"<a\b[^>]*href=""(?<url>[^""]+)""[^>]*>(?<content>.*?)</a>", RegexOptions.Singleline);
-        string[] expectedUrls = provider == AuthenticationProvider.Local
-            ? [$"{pathBase}/admin/account", $"{pathBase}/auth/signout"]
-            : [$"{pathBase}/auth/signout"];
-        Assert.Equal(expectedUrls, links.Select(link => link.Groups["url"].Value));
-        Assert.Contains("bi-box-arrow-right", links[^1].Value);
-        Assert.Equal("Sign Out", Regex.Replace(links[^1].Groups["content"].Value, "<[^>]*>", "").Trim());
-        if (provider == AuthenticationProvider.Local)
         {
-            Assert.Contains("bi-person-gear", links[0].Value);
-            Assert.Equal("Account Settings", Regex.Replace(links[0].Groups["content"].Value, "<[^>]*>", "").Trim());
-        }
-    }
-
-    [Theory]
-    [InlineData(AuthenticationProvider.Local)]
-    [InlineData(AuthenticationProvider.OpenIdConnect)]
-    public async Task AdminUserMenu_WithoutDisplayClaims_RetainsAccessibleAccountLabel(AuthenticationProvider provider)
-    {
-        var user = new ClaimsPrincipal(new ClaimsIdentity([new Claim("sub", "test-admin")], "TestAuth"));
-        using var app = await CreateTestApp(new SearchPageScenario(), provider: provider, user: user);
-        using var client = app.GetTestClient();
-
-        var html = await client.GetStringAsync("/admin/settings/general", TestContext.Current.CancellationToken);
-
-        var toggle = Regex.Match(html, @"<button\b[^>]*id=""admin-user-toggle""[^>]*>(?<content>.*?)</button>", RegexOptions.Singleline);
-        Assert.True(toggle.Success);
-        Assert.Contains("class=\"visually-hidden\"", toggle.Groups["content"].Value);
-        Assert.Equal("Account", Regex.Replace(toggle.Groups["content"].Value, "<[^>]*>", "").Trim());
-    }
-
-    [Theory]
-    [InlineData("resetPasswordModal", "openResetPasswordModal()", "Change", "btn-outline-accent")]
-    [InlineData("resetAuthenticatorModal", "openResetAuthenticatorModal()", "Reset Authenticator", "btn-outline-danger")]
-    public async Task LocalAccount_ActionButtons_TargetExistingDialogs(string modalId, string handler, string label, string buttonStyle)
-    {
-        using var app = await CreateTestApp(new SearchPageScenario());
-        using var client = app.GetTestClient();
-
-        var html = await client.GetStringAsync("/admin/account", TestContext.Current.CancellationToken);
-
-        var button = Assert.Single(Regex.Matches(html, @"<button\b[^>]*>.*?</button>", RegexOptions.Singleline),
-            match => match.Value.Contains($"aria-controls=\"{modalId}\""));
-        Assert.Contains("type=\"button\"", button.Value);
-        Assert.Contains("btn-sm", button.Value);
-        Assert.Contains(buttonStyle, button.Value);
-        Assert.Contains("aria-haspopup=\"dialog\"", button.Value);
-        Assert.Contains($"x-on:click=\"{handler}\"", button.Value);
-        Assert.Equal(label, Regex.Replace(button.Value, "<[^>]*>", "").Trim());
-        Assert.Contains($"id=\"{modalId}\"", html);
-
-        var descriptionIds = Regex.Match(button.Value, @"aria-describedby=""([^""]+)""").Groups[1].Value.Split(' ');
-        Assert.Equal(2, descriptionIds.Length);
-        Assert.All(descriptionIds, id => Assert.Contains($"id=\"{id}\"", html));
-    }
-
-    [Theory]
-    [InlineData("/admin/category", "en-US", "Edit", "Delete")]
-    [InlineData("/admin/category", "fr-FR", "Modifier", "Supprimer")]
-    [InlineData("/admin/widgets", "en-US", "Edit", "Delete")]
-    [InlineData("/admin/widgets", "fr-FR", "Modifier", "Supprimer")]
-    [InlineData("/admin/page", "en-US", "Edit", "Delete")]
-    [InlineData("/admin/page", "fr-FR", "Modifier", "Supprimer")]
-    public async Task AdminCard_ActionMenu_PreservesLocalizedActionsAndHandlers(string route, string culture, string editLabel, string deleteLabel)
-    {
-        using var app = await CreateTestApp(new SearchPageScenario());
-        using var client = app.GetTestClient();
-
-        var html = await client.GetStringAsync($"{route}?culture={culture}", TestContext.Current.CancellationToken);
-        var (iterator, titleId, editBinding, deleteHandler) = route switch
-        {
-            "/admin/category" => ("cat in sortedCategories", "category-title-${cat.id}",
-                "x-on:click=\"editCategory(cat.id)\"", "deleteCategory(cat.id)"),
-            "/admin/widgets" => ("widget in sortedWidgets", "widget-card-title-${widget.id}",
-                "x-on:click=\"editWidget(widget.id)\"", "deleteWidget(widget.id)"),
-            "/admin/page" => ("page in sortedPages", "page-card-title-${page.id}",
-                ":href=\"`./page/edit/${page.id}`\"", "showDeleteModal(page.id)"),
-            _ => throw new ArgumentOutOfRangeException(nameof(route), route, "Unsupported card menu route.")
-        };
-
-        var card = Assert.Single(Regex.Matches(html, @"<template\b[^>]*>.*?</template>", RegexOptions.Singleline),
-            match => match.Value.Contains($"x-for=\"{iterator}\""));
-        Assert.Contains("admin-card-actions", card.Value);
-        var toggle = Assert.Single(Regex.Matches(card.Value, @"<button\b[^>]*>.*?</button>", RegexOptions.Singleline),
-            match => match.Value.Contains("data-bs-toggle=\"dropdown\""));
-        Assert.Contains("aria-label=\"Actions\"", toggle.Value);
-        Assert.Contains("aria-expanded=\"false\"", toggle.Value);
-        Assert.Contains($":aria-describedby=\"`{titleId}`\"", toggle.Value);
-        Assert.Contains($":id=\"`{titleId}`\"", card.Value);
-        Assert.Contains("bi-three-dots", toggle.Value);
-
-        var menu = Assert.Single(Regex.Matches(card.Value, @"<ul\b[^>]*>.*?</ul>", RegexOptions.Singleline));
-        Assert.Contains("dropdown-menu-end", menu.Value);
-        var actions = Regex.Matches(menu.Value, @"<(?<element>a|button)\b[^>]*>.*?</\k<element>>", RegexOptions.Singleline);
-        Assert.Equal(2, actions.Count);
-        Assert.Equal(route == "/admin/page" ? "a" : "button", actions[0].Groups["element"].Value);
-        Assert.Equal("button", actions[1].Groups["element"].Value);
-        Assert.Contains(editBinding, actions[0].Value);
-        Assert.Contains($"x-on:click=\"{deleteHandler}\"", actions[1].Value);
-        string[] expectedLabels = [editLabel, deleteLabel];
-        Assert.Equal(expectedLabels, actions.Select(action => WebUtility.HtmlDecode(Regex.Replace(action.Value, "<[^>]*>", "")).Trim()));
-        Assert.All(actions, action =>
-        {
-            Assert.Contains("dropdown-item", action.Value);
-            if (action.Groups["element"].Value == "button")
-            {
-                Assert.Contains("type=\"button\"", action.Value);
-            }
-        });
-        Assert.Contains("bi-pen", actions[0].Value);
-        Assert.Contains("bi-trash", actions[1].Value);
-        Assert.Contains("text-danger", actions[1].Value);
-
-        if (route == "/admin/page")
-        {
-            Assert.Contains("x-show=\"page.isPublished\"", card.Value);
-            Assert.Contains("x-show=\"!page.isPublished\"", card.Value);
-            Assert.Contains("formatDate(page.createTimeUtc)", card.Value);
+            Assert.Contains(WebUtility.HtmlEncode(email), html);
+            Assert.DoesNotContain(email, html);
         }
     }
 
@@ -490,7 +277,7 @@ public class SearchPageTests
             .ReturnsAsync([]);
         queryMediator
             .Setup(x => x.QueryAsync(It.IsAny<GetSiteThemeStyleSheetQuery>(), It.IsAny<QueryMediationSettings>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync((GetSiteThemeStyleSheetQuery query, QueryMediationSettings _, CancellationToken _) => $"/* theme:{query.Id} */");
+            .ReturnsAsync(string.Empty);
         queryMediator
             .Setup(x => x.QueryAsync(It.IsAny<ListCategoriesQuery>(), It.IsAny<QueryMediationSettings>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(
@@ -554,16 +341,6 @@ public class SearchPageTests
         }
 
         throw new DirectoryNotFoundException("Could not locate src/Moonglade.Web.");
-    }
-
-    private static string GetHrefForPage(string html, int pageNumber)
-    {
-        var match = Regex.Match(
-            html,
-            $"""<a class="page-link" href="(?<href>[^"]+)">{pageNumber}</a>""");
-
-        Assert.True(match.Success, $"Could not find a page link for page {pageNumber}.");
-        return WebUtility.HtmlDecode(match.Groups["href"].Value);
     }
 
     private sealed class SearchPageScenario

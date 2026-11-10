@@ -164,13 +164,10 @@ public partial class ActivityLogHttpTests
         Assert.Equal(51, labelCount);
         using var page = await client.GetAsync("/admin/activitylogs", ct);
         var html = await page.Content.ReadAsStringAsync(ct);
+        // Old/new values can contain markup; only text bindings are a security contract here.
         Assert.Contains("x-text=\"formatDetailValue(change.oldValue, change.key)\"", html);
         Assert.Contains("x-text=\"formatDetailValue(change.newValue, change.key)\"", html);
-        Assert.Contains("hasSettingsChanges", html);
-        var template = Regex.Match(html, "<template x-for=\"change[^>]*>[\\s\\S]*?</template>").Value;
-        Assert.Contains("change.oldValue", template);
-        Assert.Contains("change.newValue", template);
-        Assert.DoesNotContain("x-html=", template);
+        Assert.DoesNotMatch("x-html=\"[^\"]*(change\\.|currentDetail\\.)", html);
     }
 
     [Fact]

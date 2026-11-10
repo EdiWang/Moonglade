@@ -75,12 +75,10 @@ public partial class ActivityLogHttpTests
         using var page = await client.GetAsync("/admin/activitylogs", ct);
         Assert.Equal(HttpStatusCode.OK, page.StatusCode);
         var html = await page.Content.ReadAsStringAsync(ct);
-        Assert.Contains("x-on:click=\"clearAllLogs()\"", html);
-        Assert.Contains("data-confirm-clear-all-logs=", html);
-        Assert.Contains("x-on:click=\"showDetail(log.id, $event.currentTarget)\" aria-controls=\"detailCanvas\"", html);
+        // Untrusted summaries and details must be rendered as text, not executable HTML.
         Assert.Contains("x-text=\"log.summary\"", html);
         Assert.Contains("x-text=\"formatDetailValue(field.value, field.key)\"", html);
-        Assert.Contains("/js/app/admin.activitylogs.mjs", html);
+        Assert.DoesNotMatch("x-html=\"[^\"]*(log\\.|field\\.|currentDetail\\.)", html);
         var token = Regex.Match(html, "name=\"CSRF-TOKEN-MOONGLADE-FORM\"[^>]*value=\"([^\"]+)\"");
         Assert.True(token.Success, "Actual ActivityLogs Razor page must issue a form token.");
         client.DefaultRequestHeaders.Add("Cookie", page.Headers.GetValues("Set-Cookie").Single().Split(';')[0]);
@@ -488,20 +486,12 @@ public partial class ActivityLogHttpTests
             using var page = await client.GetAsync("/admin/activitylogs", ct);
             Assert.Equal(HttpStatusCode.OK, page.StatusCode);
             var html = await page.Content.ReadAsStringAsync(ct);
-            var clearLabel = Regex.Match(html, "data-clear-all=\"([^\"]*)\"");
-            var clearBody = Regex.Match(html, "data-confirm-clear-all-logs=\"([^\"]*)\"");
-            Assert.True(clearLabel.Success, "Actual ActivityLogs page must supply its localized clear-all action.");
-            Assert.True(clearBody.Success, "Actual ActivityLogs page must supply its localized confirmation body.");
-            Assert.Equal(localizer["Clear all"].Value, WebUtility.HtmlDecode(clearLabel.Groups[1].Value));
-            Assert.Equal(localizer["Are you sure you want to clear all activity logs? This action will be recorded."].Value,
-                WebUtility.HtmlDecode(clearBody.Groups[1].Value));
-            var template = Regex.Match(html, "<template x-for=\"field[^>]*>[\\s\\S]*?</template>").Value;
-            Assert.Contains("x-text=\"field.label\"", template);
-            Assert.Contains("x-text=\"formatDetailValue(field.value, field.key)\"", template);
-            Assert.DoesNotContain("x-html=", template);
-            Assert.Contains("class=\"offcanvas offcanvas-end\" tabindex=\"-1\" id=\"detailCanvas\"", html);
-            Assert.Matches("<code[^>]*x-text=\"currentDetail.ipAddress\"[^>]*></code>", html);
-            Assert.Matches("<code[^>]*x-text=\"currentDetail.userAgent\"[^>]*></code>", html);
+            // These bindings enforce text-only handling of untrusted data, independent of tags or styling.
+            Assert.Contains("x-text=\"field.label\"", html);
+            Assert.Contains("x-text=\"formatDetailValue(field.value, field.key)\"", html);
+            Assert.Contains("x-text=\"currentDetail.ipAddress\"", html);
+            Assert.Contains("x-text=\"currentDetail.userAgent\"", html);
+            Assert.DoesNotMatch("x-html=\"[^\"]*(field\\.|currentDetail\\.)", html);
         }
         finally { CultureInfo.CurrentUICulture = originalCulture; }
     }

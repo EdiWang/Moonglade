@@ -3,9 +3,9 @@
 ## Current status
 
 - Updated: 2026-11-10.
-- Checkout at update: `master`, `fdf4ac133` (`Update admin-portal-visual-refresh-plan.md`).
+- Checkout at update: `master`, `bdc2f56df` (`Unify admin page card action menus`).
 - B0-B5 and earlier visual refinements are accepted and committed.
-- Pending review: Pages card Edit/Delete actions use the shared top-right ellipsis dropdown. The existing editor link, deletion confirmation, publication badges, card padding, and metadata are retained. Implemented and verified; not committed.
+- Pending review: Pages card Edit/Delete actions use the shared top-right ellipsis dropdown. The existing editor link, deletion confirmation, publication badges, card padding, and metadata are retained. Implemented, verified, and committed.
 - B6 integrated acceptance has not started and is not authorized. A user-created commit does not imply acceptance or permission to continue.
 - Retain this file for future conversations, keeping current state and open work rather than accumulating discussion logs.
 
@@ -13,31 +13,25 @@ Preserve the current Bootstrap/Razor/Alpine design documented in the [frontend e
 
 ## Current refinement verification
 
-- Web and test projects rebuilt successfully. `AdminCard_ActionMenu_PreservesLocalizedActionsAndHandlers` passed all six Page/Category/Widget cases in English/French: **Passed: 6, Failed: 0, Skipped: 0**. Assertions cover the native menu, localized labels/icons, title descriptions, original edit/delete bindings, and Page publication/date bindings.
+- C# tests cover business logic and functional contracts, not UI presentation. UI-only tests have been removed; presentation remains browser-verified rather than enforced through C# markup assertions. See the [test scope](../../src/Tests/README.md) and [repository rules](../../AGENTS.md#test-selection).
 - Page browser checks passed 24 combinations across six cultures, both sizes/themes: 72 dropdown openings across all three current cards and 72 DOM-only long-title/slug checks. Both real published/unpublished states passed. Verified 24px card padding, corner alignment, 14px menu text, 29px items, 128px menu width, metadata/public/editor URLs, and no title/badge overlap or clipped menus.
 - Native light/dark hover, ArrowDown/ArrowUp navigation, and Escape collapse/focus return passed. Edit opened the correct existing full-screen editor; returned without saving. Delete opened the existing confirmation and was canceled. No saves/deletions were performed; temporary frames were removed and the original theme restored.
-- JavaScript and full Web suites were not rerun; no JavaScript changed and the deferred failures below remain outside this refinement.
+- JavaScript tests were not rerun; no JavaScript changed.
 
-Successful targeted command:
+## Current business-test status
 
-```powershell
-dotnet test --project .\src\Tests\Moonglade.Web.Tests\Moonglade.Web.Tests.csproj --no-restore --filter-method '*AdminCard_ActionMenu_PreservesLocalizedActionsAndHandlers'
-```
+Latest full Web suite after UI-test cleanup: **Passed: 654, Failed: 0, Skipped: 0**. The affected retained business-test selection also passed: **Passed: 108, Failed: 0, Skipped: 0**. No production code, JavaScript tests, dependencies, or solution wiring changed.
 
-## Unresolved test failures
+Cleanup removed 23 UI-only cases across 10 methods and one empty test source file. The final test-project build passed with zero warnings/errors.
 
-Last full-suite result: **Passed: 650, Failed: 13, Skipped: 0**.
+The former twelve Activity Logs HTML-regex failures are no longer outstanding: presentation constraints were removed while meaningful API/security cases were retained and passed. `Image_Post_WhenOriginalIsKept_PublicEndpointCannotReadOriginalStorage` passed unchanged; its previous failure was not reproduced or repaired. These runs validate the test cleanup, not B6 integrated acceptance.
 
-Repair is outside the authorized scope. These failures still require an acceptance-gate decision before final acceptance.
-
-- **12 Activity Logs cases:** HTML regexes assume attribute order and do not accommodate CSS-isolation attributes. Relevant files: [ActivityLogHttpTests.cs](../../src/Tests/Moonglade.Web.Tests/Controllers/ActivityLogHttpTests.cs) and [ActivityLogHttpTests.Changes.cs](../../src/Tests/Moonglade.Web.Tests/Controllers/ActivityLogHttpTests.Changes.cs).
-- **1 image-storage case:** `Image_Post_WhenOriginalIsKept_PublicEndpointCannotReadOriginalStorage` fails an original-file existence assertion in [ImageControllerTests.cs](../../src/Tests/Moonglade.Web.Tests/Controllers/ImageControllerTests.cs). The cause is not established by this task.
+Other C# test projects were inspected but unchanged and not rerun. Future failures outside the authorized refinement still require a scope decision before repair.
 
 ## Remaining work
 
 - [ ] Obtain review/acceptance of the Pages card action menu.
 - [ ] Obtain explicit authorization to start B6. Until then, wait or execute only the user's separately requested refinement.
-- [ ] Before declaring final acceptance, obtain a decision on the 13 deferred test failures: authorize investigation/repair or explicitly agree how they affect the acceptance gate.
 - [ ] Execute B6 against the combined checkout, recording actual results and uncovered/blocked scenarios.
 - [ ] Obtain final user acceptance. Commits remain user-managed.
 

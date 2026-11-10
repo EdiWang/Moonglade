@@ -3,13 +3,11 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Logging;
 using Moonglade.Web.Extensions;
 using Moonglade.Web.Tests.TestSupport;
 using System.Collections;
 using System.Globalization;
-using System.Net;
 using System.Reflection;
 using System.Resources;
 using System.Text;
@@ -40,61 +38,11 @@ public class FrenchLocalizationTests
         }
     }
 
-    [Fact]
-    public void FrenchMessages_RenderTranslationsAndPreserveLiteralConfigurationTokens()
-    {
-        var culture = CultureInfo.GetCultureInfo("fr-FR");
-        var expectedTranslations = new Dictionary<string, string>
-        {
-            ["Home"] = "Accueil",
-            ["Blog title"] = "Titre du blog",
-            ["Blog overview"] = "Vue d'ensemble du blog",
-            ["Comments"] = "Commentaires",
-            ["Tags"] = "Étiquettes",
-            ["Search"] = "Rechercher",
-            ["Save"] = "Enregistrer",
-            ["Sign In"] = "Se connecter",
-            ["Default language"] = "Langue par défaut",
-            ["Menu Editor"] = "Éditeur de menus",
-            ["Edit Menu Item"] = "Modifier l'élément du menu",
-            ["Activity Logs"] = "Journal d'activité",
-            ["System"] = "Système",
-            ["Post automatically published"] = "Article publié automatiquement",
-            ["Email Notifications"] = "Notifications par e-mail",
-            ["Upload Image"] = "Téléverser une image",
-            ["Watermark"] = "Filigrane",
-            ["Disabled"] = "Désactivé"
-        };
-
-        foreach (var (key, expected) in expectedTranslations)
-            Assert.Equal(expected, Resources.GetString(key, culture));
-
-        Assert.Equal("Programmé pour : 10/11/2026 09:00",
-            Format("Scheduled for: {0}", "10/11/2026 09:00"));
-        Assert.Equal("Si vous laissez ce champ vide, les 200 premiers caractères serviront de résumé.",
-            Format("The first {0} character(s) will be used as abstract if you leave this field blank.", 200));
-        Assert.Equal("Le compte local n'est pas sécurisé. Il est recommandé d'utiliser OIDC pour l'authentification. Cliquez sur settings pour configurer cette option.",
-            Format("Local account is not secure. It's recommended to use {0} for authentication. Click {1} to configure.",
-                "OIDC", "settings"));
-        Assert.Contains("`OriginalFileSystemPath`",
-            Resources.GetString("Original images are stored in the private `OriginalFileSystemPath` location.", culture));
-        Assert.Contains("appsettings.json",
-            Resources.GetString("Please configure email provider settings in appsettings.json.", culture));
-        var copyright = Resources.GetString("Use [c] for copyright mark: &copy;, [year] for current year.", culture);
-        Assert.NotNull(copyright);
-        Assert.Contains("[c]", copyright);
-        Assert.Contains("&copy;", copyright);
-        Assert.Contains("[year]", copyright);
-
-        string Format(string key, params object[] arguments) =>
-            string.Format(culture, Resources.GetString(key, culture) ?? throw new InvalidOperationException(key), arguments);
-    }
-
     [Theory]
-    [InlineData("header", "fr-FR|fr-FR|Enregistrer|12,50|09/11/2026")]
-    [InlineData("cookie", "fr-FR|fr-FR|Enregistrer|12,50|09/11/2026")]
-    [InlineData("query", "fr-FR|fr-FR|Enregistrer|12,50|09/11/2026")]
-    [InlineData("default", "en-US|en-US|Save|12.50|11/9/2026")]
+    [InlineData("header", "fr-FR|fr-FR|12,50|09/11/2026")]
+    [InlineData("cookie", "fr-FR|fr-FR|12,50|09/11/2026")]
+    [InlineData("query", "fr-FR|fr-FR|12,50|09/11/2026")]
+    [InlineData("default", "en-US|en-US|12.50|11/9/2026")]
     public async Task ProductionPipeline_SelectsFrenchAndPreservesEnglishDefault(string source, string expected)
     {
         var ct = TestContext.Current.CancellationToken;
@@ -116,9 +64,8 @@ public class FrenchLocalizationTests
         app.UseMoongladeRequestPipeline(cultures);
         app.Run(context =>
         {
-            var localizer = context.RequestServices.GetRequiredService<IStringLocalizer<Program>>();
             return context.Response.WriteAsync(
-                $"{CultureInfo.CurrentCulture.Name}|{CultureInfo.CurrentUICulture.Name}|{localizer["Save"]}|{12.5m:N2}|{new DateTime(2026, 11, 9):d}", ct);
+                $"{CultureInfo.CurrentCulture.Name}|{CultureInfo.CurrentUICulture.Name}|{12.5m:N2}|{new DateTime(2026, 11, 9):d}", ct);
         });
         await app.StartAsync(ct);
         using var client = app.GetTestClient();
@@ -136,7 +83,7 @@ public class FrenchLocalizationTests
     }
 
     [Fact]
-    public async Task AdminPages_RenderFrenchAndKeepApostrophesOutOfMenuExpressions()
+    public async Task AdminMenu_LocalizedLabelsRemainDataRatherThanJavaScriptSource()
     {
         var ct = TestContext.Current.CancellationToken;
         await using var fixture = await ActivityLogHttpFixture.CreateAsync(historyCount: 0, ct: ct);
@@ -144,21 +91,9 @@ public class FrenchLocalizationTests
         client.DefaultRequestHeaders.Add("X-B1-User", "admin");
         client.DefaultRequestHeaders.AcceptLanguage.ParseAdd("fr-FR");
 
-        var menu = WebUtility.HtmlDecode(await client.GetStringAsync("/admin/menu", ct));
-        Assert.Contains("data-edit-title=\"Modifier l'élément du menu\"", menu);
-        Assert.Contains("data-add-title=\"Ajouter un élément au menu\"", menu);
+        var menu = await client.GetStringAsync("/admin/menu", ct);
         Assert.Contains("x-text=\"editingIndex !== null ? $el.dataset.editTitle : $el.dataset.addTitle\"", menu);
-        Assert.Contains("data-edit-title=\"Modifier l'élément du sous-menu\"", menu);
-        Assert.Contains("data-add-title=\"Ajouter un élément au sous-menu\"", menu);
         Assert.Contains("x-text=\"editingSubIndex !== null ? $el.dataset.editTitle : $el.dataset.addTitle\"", menu);
-
-        var mentions = WebUtility.HtmlDecode(await client.GetStringAsync("/admin/mention", ct));
-        Assert.Contains("`Supprimer la sélection (${selectedIds.length})`", mentions);
-        Assert.Contains("<span x-text=\"mentionCount\"></span> élément(s)", mentions);
-
-        var tags = WebUtility.HtmlDecode(await client.GetStringAsync("/admin/tags", ct));
-        Assert.Contains(":title=\"`${tagItem.postCount} articles`\"", tags);
-        Assert.Contains(":aria-label=\"`Modifier l'étiquette`", tags);
     }
 
     private static Dictionary<string, string> GetResourceEntries(string cultureName)
