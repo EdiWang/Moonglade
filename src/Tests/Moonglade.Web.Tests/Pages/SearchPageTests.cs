@@ -332,29 +332,37 @@ public class SearchPageTests
     }
 
     [Theory]
-    [InlineData("en-US", "Edit", "Delete")]
-    [InlineData("fr-FR", "Modifier", "Supprimer")]
-    public async Task CategoryCard_ActionMenu_PreservesLocalizedActionsAndHandlers(string culture, string editLabel, string deleteLabel)
+    [InlineData("/admin/category", "en-US", "Edit", "Delete")]
+    [InlineData("/admin/category", "fr-FR", "Modifier", "Supprimer")]
+    [InlineData("/admin/widgets", "en-US", "Edit", "Delete")]
+    [InlineData("/admin/widgets", "fr-FR", "Modifier", "Supprimer")]
+    public async Task AdminCard_ActionMenu_PreservesLocalizedActionsAndHandlers(string route, string culture, string editLabel, string deleteLabel)
     {
         using var app = await CreateTestApp(new SearchPageScenario());
         using var client = app.GetTestClient();
 
-        var html = await client.GetStringAsync($"/admin/category?culture={culture}", TestContext.Current.CancellationToken);
+        var html = await client.GetStringAsync($"{route}?culture={culture}", TestContext.Current.CancellationToken);
+        var isWidget = route == "/admin/widgets";
+        var iterator = isWidget ? "widget in sortedWidgets" : "cat in sortedCategories";
+        var titleId = isWidget ? "widget-card-title-${widget.id}" : "category-title-${cat.id}";
 
         var card = Assert.Single(Regex.Matches(html, @"<template\b[^>]*>.*?</template>", RegexOptions.Singleline),
-            match => match.Value.Contains("x-for=\"cat in sortedCategories\""));
+            match => match.Value.Contains($"x-for=\"{iterator}\""));
+        Assert.Contains("admin-card-actions", card.Value);
         var toggle = Assert.Single(Regex.Matches(card.Value, @"<button\b[^>]*>.*?</button>", RegexOptions.Singleline),
             match => match.Value.Contains("data-bs-toggle=\"dropdown\""));
         Assert.Contains("aria-label=\"Actions\"", toggle.Value);
         Assert.Contains("aria-expanded=\"false\"", toggle.Value);
-        Assert.Contains(":aria-describedby=\"`category-title-${cat.id}`\"", toggle.Value);
-        Assert.Contains(":id=\"`category-title-${cat.id}`\"", card.Value);
+        Assert.Contains($":aria-describedby=\"`{titleId}`\"", toggle.Value);
+        Assert.Contains($":id=\"`{titleId}`\"", card.Value);
         Assert.Contains("bi-three-dots", toggle.Value);
 
         var menu = Assert.Single(Regex.Matches(card.Value, @"<ul\b[^>]*>.*?</ul>", RegexOptions.Singleline));
         Assert.Contains("dropdown-menu-end", menu.Value);
         var actions = Regex.Matches(menu.Value, @"<button\b[^>]*>.*?</button>", RegexOptions.Singleline);
-        string[] expectedHandlers = ["editCategory(cat.id)", "deleteCategory(cat.id)"];
+        string[] expectedHandlers = isWidget
+            ? ["editWidget(widget.id)", "deleteWidget(widget.id)"]
+            : ["editCategory(cat.id)", "deleteCategory(cat.id)"];
         string[] expectedLabels = [editLabel, deleteLabel];
         Assert.Equal(expectedHandlers, actions.Select(action => Regex.Match(action.Value, @"x-on:click=""([^""]+)""").Groups[1].Value));
         Assert.Equal(expectedLabels, actions.Select(action => WebUtility.HtmlDecode(Regex.Replace(action.Value, "<[^>]*>", "")).Trim()));

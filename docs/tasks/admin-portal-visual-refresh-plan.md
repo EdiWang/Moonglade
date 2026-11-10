@@ -3,12 +3,13 @@
 ## Current status
 
 - Updated: 2026-11-10.
-- Checkout at update: `master`, `80345a087` (`Add category card action dropdown`).
+- Checkout at update: `master`, `601c2a1f3` (`Refine admin tag groups and warning styles`).
 - Accepted: B0-B5, secondary navigation, sidebar background highlighting with 4px horizontal insets, and the username/avatar dropdown with its Local/OIDC menu difference.
 - Pending review: unified Account/Settings item grid, typography, 5px gaps, independent right-side Account action buttons, and theme-aware gray hover backgrounds. Implemented, verified, and committed.
 - Pending review: separately requested offcanvas action rows, with the primary action on the left and Cancel/Clear on the right in shared 2:1 columns. Eight action rows are implemented, verified, and committed.
 - Pending review: Category card actions sit against the top-right inner border with a theme-aware hover/open background; Category-only body padding is reduced from 24px to 19px. Original localized actions and edit/delete flows are retained. Implemented, verified, and committed.
-- Pending review: Tags letter-group separators are removed, and zero-reference tag pills use Bootstrap warning borders instead of triangle icons. Localized accessible warning text and existing tag operations are retained. Implemented and verified; not committed.
+- Pending review: Tags letter-group separators are removed, and zero-reference tag pills use Bootstrap warning borders instead of triangle icons. Localized accessible warning text and existing tag operations are retained. Implemented, verified, and committed.
+- Pending review: Widget Edit/Delete actions use the same top-right ellipsis dropdown and shared hover/corner styles as Categories. Widget padding, previews, enabled badges, and existing edit/delete flows are retained. Implemented and verified; not committed.
 - B6 integrated acceptance has not started and is not authorized. A user-created commit does not imply acceptance or permission to continue.
 - Retain this file for future conversations, keeping current state and open work rather than accumulating discussion logs.
 
@@ -20,21 +21,22 @@ These results cover the current refinements awaiting review, not B6.
 
 | Check | Result and coverage |
 | --- | --- |
-| Web build | Passed with zero warnings/errors after the Tags markup change. |
+| Web build | Web and test projects rebuilt successfully during the latest targeted Razor regression run. |
+| Widget browser checks | 24 combinations passed across six cultures, both sizes/themes: 120 dropdown openings across all five current cards, plus 24 DOM-only long-title/disabled-badge checks. Verified 24px content padding, matching corner placement, no title overlap/clipped menus, accessible title descriptions, and unchanged action bindings. All five preview HTML fragments match the pre-change page, covering Button Link, Image Link, and Link List previews. Native light/dark hover, keyboard opening/ArrowDown navigation, and Escape collapse/focus return passed. Edit loaded the correct existing drawer; Delete opened the existing confirmation. Both were canceled without saves/deletions. Temporary frames were removed and the original theme restored. |
 | Tags browser checks | 24 combinations passed across six cultures, both sizes/themes, covering all 148 current tags and 24 letter groups, including two real zero-reference tags. Group borders are absent while shared spacing remains; only zero-reference pills use Bootstrap's `rgb(255, 193, 7)` warning border. Normal borders follow the light/dark theme. Localized screen-reader warnings and edit/delete bindings remain. Browser input-event checks passed zero-reference, referenced-tag, and no-results filtering; the original filter was restored. No tag data was written; temporary frames/probes were removed. |
-| Category browser checks | 24 combinations passed across six cultures, both sizes/themes: 264 dropdown openings across all 11 current cards, plus 24 DOM-only long-title checks. Verified exactly 19px content padding, triggers flush with the 1px top/right inner borders, a matching 7px upper-right button radius, no title overlap/clipped menus, and 32x31px targets. Two native pointer checks confirmed the light/dark gray hover backgrounds. Keyboard opening/ArrowDown navigation and Escape collapse/focus return passed. A shared-card CSS probe retained 24px padding. The existing edit/delete handlers are unchanged; their drawer/confirmation-and-cancel flows were verified when the menu was introduced, without saves/deletions. Temporary frames/probes were removed and the original theme restored. |
+| Category browser checks | Regression checks after sharing the menu styles passed 24 combinations across six cultures, both sizes/themes: 264 dropdown openings across all 11 current cards, plus 24 DOM-only long-title checks. Verified retained 19px padding, triggers flush with the 1px top/right inner borders, no rendered-title overlap, and unclipped menus. Existing native light/dark hover, keyboard navigation/focus return, and edit/delete-and-cancel verification remains valid; action handlers are unchanged. Temporary frames were removed. |
 | Offcanvas browser checks | 192 combinations passed: eight action rows across six cultures, both sizes/themes. Verified side-by-side 2:1 widths, 8px gaps, matching button heights, drawer containment, wrapping without clipped labels, and existing form/submit/dismiss/clear bindings. Native Category keyboard checks confirmed Tab from Submit to Cancel and Enter dismissal. No save/reset submissions were made. Temporary verification frames were removed. |
 | Account/Settings browser checks | 48 Account/General Settings combinations across six cultures, both sizes/themes passed exact grid/spacing/typography comparisons, control alignment, accessible descriptions, and DOM-only long-description checks. Another 32 combinations cover the other eight Settings routes in English at both sizes/themes; Verification Files has no settings entries and retains its table. Eight native hover checks passed for Account, ordinary Settings, expander headers, and nested entries in both themes. Both Account dialogs opened and dismissed correctly, including keyboard activation; clicking row text does not open them. No credential changes or resets were submitted. |
-| Web tests | Not rerun for the Tags markup-only refinement. Most recent targeted run: **Passed: 2, Failed: 0, Skipped: 0**, covering the English/French Category menu cases. Last full-suite run remains **Passed: 650, Failed: 13, Skipped: 0**; the failures below are unresolved. |
+| Web tests | Latest targeted run: **Passed: 4, Failed: 0, Skipped: 0**, covering English/French Category and Widget menus, localized accessible labels/icons, shared menu hooks, and existing action bindings. Last full-suite run remains **Passed: 650, Failed: 13, Skipped: 0**; the failures below are unresolved. |
 | JavaScript tests | Not rerun for the latest presentation-only refinements; no JavaScript changed. Run during B6. |
 
-Most recent targeted test command (Category refinement, after rebuilding the Web/test projects):
+Most recent targeted test command (shared Category/Widget menus, including rebuilding the Web/test projects):
 
 ```powershell
-dotnet test --project .\src\Tests\Moonglade.Web.Tests\Moonglade.Web.Tests.csproj --no-build --no-restore --filter-method '*CategoryCard_ActionMenu_PreservesLocalizedActionsAndHandlers'
+dotnet test --project .\src\Tests\Moonglade.Web.Tests\Moonglade.Web.Tests.csproj --no-restore --filter-method '*AdminCard_ActionMenu_PreservesLocalizedActionsAndHandlers'
 ```
 
-Latest regression method in [SearchPageTests.cs](../../src/Tests/Moonglade.Web.Tests/Pages/SearchPageTests.cs): `CategoryCard_ActionMenu_PreservesLocalizedActionsAndHandlers` (English/French cases).
+Latest regression method in [SearchPageTests.cs](../../src/Tests/Moonglade.Web.Tests/Pages/SearchPageTests.cs): `AdminCard_ActionMenu_PreservesLocalizedActionsAndHandlers` (Category/Widgets, English/French cases).
 
 ## Unresolved test failures
 
@@ -49,6 +51,7 @@ Repair is outside the authorized scope. These failures still require an acceptan
 - [ ] Obtain review/acceptance of the horizontal offcanvas action rows.
 - [ ] Obtain review/acceptance of the Category card action menu.
 - [ ] Obtain review/acceptance of the Tags separators and zero-reference warning borders.
+- [ ] Obtain review/acceptance of the Widget card action menu.
 - [ ] Obtain explicit authorization to start B6. Until then, wait or execute only the user's separately requested refinement.
 - [ ] Before declaring final acceptance, obtain a decision on the 13 deferred test failures: authorize investigation/repair or explicitly agree how they affect the acceptance gate.
 - [ ] Execute B6 against the combined checkout, recording actual results and uncovered/blocked scenarios.

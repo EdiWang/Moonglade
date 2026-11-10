@@ -62,21 +62,32 @@
             <div class="card admin-card">
                 <div class="card-body">
                     <div class="d-flex justify-content-between align-items-start mb-2">
-                        <h6 class="card-title mb-0">
-                            <span x-text="widget.title"></span>
+                        <h6 class="card-title mb-0 pe-3">
+                            <span :id="`widget-card-title-${widget.id}`" x-text="widget.title"></span>
                             <span x-show="!widget.isEnabled" class="badge bg-secondary ms-1">@SharedLocalizer["Disabled"]</span>
                         </h6>
                     </div>
                     <hr class="my-2" />
                     <div x-html="renderWidgetContent(widget)" class="small admin-widget-preview"></div>
                 </div>
-                <div class="card-footer">
-                    <button type="button" x-on:click="editWidget(widget.id)" class="btn btn-sm btn-outline-accent">
-                        <i class="bi-pen" aria-hidden="true"></i> @SharedLocalizer["Edit"]
+                <div class="dropdown admin-card-actions position-absolute top-0 end-0">
+                    <button type="button" class="btn btn-sm btn-link text-body-secondary text-decoration-none"
+                            data-bs-toggle="dropdown" aria-expanded="false"
+                            aria-label="@SharedLocalizer["Actions"]" :aria-describedby="`widget-card-title-${widget.id}`">
+                        <i class="bi-three-dots" aria-hidden="true"></i>
                     </button>
-                    <button type="button" x-on:click="deleteWidget(widget.id)" class="btn btn-sm btn-outline-danger" aria-label="@SharedLocalizer["Delete"]">
-                        <i class="bi-trash" aria-hidden="true"></i>
-                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end">
+                        <li>
+                            <button type="button" class="dropdown-item" x-on:click="editWidget(widget.id)">
+                                <i class="bi-pen me-2" aria-hidden="true"></i>@SharedLocalizer["Edit"]
+                            </button>
+                        </li>
+                        <li>
+                            <button type="button" class="dropdown-item text-danger" x-on:click="deleteWidget(widget.id)">
+                                <i class="bi-trash me-2" aria-hidden="true"></i>@SharedLocalizer["Delete"]
+                            </button>
+                        </li>
+                    </ul>
                 </div>
             </div>
         </div>

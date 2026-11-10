@@ -354,7 +354,7 @@
     --bs-card-spacer-y: 19px;
 }
 
-.admin-category-card > .dropdown > .btn {
+.admin-card-actions > .btn {
     --bs-btn-hover-bg: var(--bs-tertiary-bg);
     --bs-btn-active-bg: var(--bs-tertiary-bg);
     border-top-right-radius: calc(var(--bs-card-border-radius) - var(--bs-card-border-width));
