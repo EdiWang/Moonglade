@@ -101,6 +101,8 @@ public partial class SettingsControllerTests
     [InlineData("notification", true)]
     [InlineData("watermark", true)]
     [InlineData("advanced", true)]
+    [InlineData("seo", false)]
+    [InlineData("seo", true)]
     [InlineData("appearance", true)]
     public async Task RestrictedOnly_FullAndPatch_WritesEmptyChangesWithoutRestrictedNamesOrValues(string group, bool patch)
     {
@@ -399,8 +401,8 @@ public partial class SettingsControllerTests
         "comment" => root.CommentSettings with { WordFilterKeywords = "B3-private-keywords" },
         "notification" => root.NotificationSettings with { EmailDisplayName = "B3-private-sender" },
         "watermark" => root.ImageSettings with { WatermarkText = "B3-private-watermark" },
-        "advanced" => root.AdvancedSettings with { RobotsTxtContent = "B3-private-robots" },
-        "seo" => root.SEOSettings with { CanonicalPrefix = "https://private.example.invalid" },
+        "advanced" => root.AdvancedSettings with { HeadScripts = "<script>B3-private-head()</script>" },
+        "seo" => root.SEOSettings with { RobotsTxtContent = "B3-private-robots" },
         "appearance" => root.AppearanceSettings with { CssCode = "B3-private-css" },
         _ => root.CustomMenuSettings with { Menus = [new Menu { Title = "B3-private-menu" }] }
     };

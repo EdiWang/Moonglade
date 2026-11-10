@@ -27,6 +27,11 @@ public sealed record SEOSettings : IBlogSettings<SEOSettings>
     [Display(Name = "Dublin Core License URL")]
     public string DcLicenseUrl { get; init; }
 
+    [Display(Name = "robots.txt")]
+    [DataType(DataType.MultilineText)]
+    [MaxLength(1024)]
+    public string RobotsTxtContent { get; init; }
+
     [JsonIgnore]
     public static SEOSettings DefaultValue => new() { MetaKeyword = "moonglade" };
 }

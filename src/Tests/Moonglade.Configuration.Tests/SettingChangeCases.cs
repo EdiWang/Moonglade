@@ -33,7 +33,8 @@ internal static class SettingChangeCases
         SEOSettings = SEOSettings.DefaultValue with
         {
             CanonicalPrefix = "https://before.example.invalid",
-            DcLicenseUrl = "https://before.example.invalid/license"
+            DcLicenseUrl = "https://before.example.invalid/license",
+            RobotsTxtContent = "User-agent: Before"
         },
         ContentSettings = ContentSettings.DefaultValue with { PostFooterHtmlPitch = "<p>Before footer</p>" },
         CommentSettings = CommentSettings.DefaultValue with { ThirdPartyCommentHtmlPitch = "<p>Before comments</p>" },
@@ -42,7 +43,6 @@ internal static class SettingChangeCases
         ImageSettings = ImageSettings.DefaultValue with { CDNEndpoint = "https://before.example.invalid/images" },
         AdvancedSettings = AdvancedSettings.DefaultValue with
         {
-            RobotsTxtContent = "User-agent: Before",
             HeadScripts = "<script>beforeHead()</script>",
             FootScripts = "<script>beforeFoot()</script>"
         },

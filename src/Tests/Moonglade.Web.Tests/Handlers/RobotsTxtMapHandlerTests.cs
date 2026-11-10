@@ -17,7 +17,7 @@ public class RobotsTxtMapHandlerTests
 
         var blogConfig = new BlogConfig(new BlogSettingsSnapshot
         {
-            AdvancedSettings = new AdvancedSettings
+            SEOSettings = new SEOSettings
             {
                 RobotsTxtContent = string.Empty
             }
@@ -43,7 +43,7 @@ public class RobotsTxtMapHandlerTests
 
         var blogConfig = new BlogConfig(new BlogSettingsSnapshot
         {
-            AdvancedSettings = new AdvancedSettings
+            SEOSettings = new SEOSettings
             {
                 RobotsTxtContent = robotsTxt
             }

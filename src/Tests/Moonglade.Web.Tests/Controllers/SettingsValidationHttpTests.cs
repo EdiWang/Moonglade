@@ -56,6 +56,7 @@ public class SettingsValidationHttpTests
     [InlineData("general", """{"avatarUrl":"https://example.com"}""", "avatarUrl")]
     [InlineData("general", """{"canonicalPrefix":"https://example.com"}""", "canonicalPrefix")]
     [InlineData("advanced", """{"enableSiteMap":false}""", "enableSiteMap")]
+    [InlineData("advanced", """{"robotsTxtContent":"User-agent: *"}""", "robotsTxtContent")]
     [InlineData("seo", """{"metaKeyword":""}""", "MetaKeyword")]
     [InlineData("seo", """{"indexNow":true}""", "indexNow")]
     [InlineData("subscription", """{"feedItemCount":null}""", "FeedItemCount")]

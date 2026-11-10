@@ -6,11 +6,6 @@ namespace Moonglade.Configuration;
 
 public sealed record AdvancedSettings : IBlogSettings<AdvancedSettings>, IValidatableObject
 {
-    [Display(Name = "robots.txt")]
-    [DataType(DataType.MultilineText)]
-    [MaxLength(1024)]
-    public string RobotsTxtContent { get; init; }
-
     [Display(Name = "Head JavaScript")]
     [DataType(DataType.MultilineText)]
     [MaxLength(4096)]

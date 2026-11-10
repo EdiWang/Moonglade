@@ -7,6 +7,51 @@ namespace Moonglade.Setup.Tests.Database;
 public class SeoSettingsDatabaseTests(DisposableCategoryDatabases databases) : IClassFixture<DisposableCategoryDatabases>
 {
     [DisposableDatabaseTheory]
+    [InlineData("PostgreSql", "User-agent: *\r\nDisallow: /private\r\n# \"example\" \U0001F680")]
+    [InlineData("PostgreSql", null)]
+    [InlineData("SqlServer", "User-agent: *\r\nDisallow: /private\r\n# \"example\" \U0001F680")]
+    [InlineData("SqlServer", null)]
+    public async Task RobotsUpgrade_CopiesIntoExistingSeoRow_AndPreservesLaterEdits(string provider, string content)
+    {
+        var ct = TestContext.Current.CancellationToken;
+        await using var database = await databases.CreateAsync(provider);
+        await using var db = database.Context();
+        await db.Database.EnsureCreatedAsync(ct);
+
+        var originalTime = new DateTime(2026, 11, 10, 0, 0, 0, DateTimeKind.Utc);
+        var advancedJson = $$"""{"RobotsTXTContent":{{System.Text.Json.JsonSerializer.Serialize(content)}},"enableFoaf":false}""";
+        const string seoJson = """{"metaKeyword":"Original","MetaKeyword":"Saved","enableSiteMap":false}""";
+        db.BlogConfiguration.AddRange(
+            new BlogConfigurationEntity { CfgKey = nameof(AdvancedSettings), CfgValue = advancedJson, LastModifiedTimeUtc = originalTime },
+            new BlogConfigurationEntity { CfgKey = nameof(SEOSettings), CfgValue = seoJson, LastModifiedTimeUtc = originalTime });
+        await db.SaveChangesAsync(ct);
+        db.ChangeTracker.Clear();
+
+        await database.MigrateAsync("seo-robots-txt.sql");
+        var rows = await db.BlogConfiguration.ToDictionaryAsync(row => row.CfgKey, ct);
+        Assert.Equal(2, rows.Count);
+        Assert.Equal(advancedJson, rows[nameof(AdvancedSettings)].CfgValue);
+        Assert.Equal(originalTime, rows[nameof(AdvancedSettings)].LastModifiedTimeUtc);
+        var migrated = rows[nameof(SEOSettings)];
+        var saved = migrated.CfgValue.FromJson<SEOSettings>();
+        Assert.Equal(content, saved.RobotsTxtContent);
+        Assert.Equal("Saved", saved.MetaKeyword);
+        Assert.False(saved.EnableSiteMap);
+        using var migratedJson = System.Text.Json.JsonDocument.Parse(migrated.CfgValue);
+        Assert.True(migratedJson.RootElement.TryGetProperty("robotsTxtContent", out _));
+
+        var edited = saved with { RobotsTxtContent = content is null ? "" : null };
+        migrated.CfgValue = edited.ToJson();
+        migrated.LastModifiedTimeUtc = originalTime.AddDays(1);
+        await db.SaveChangesAsync(ct);
+
+        await database.MigrateAsync("seo-robots-txt.sql");
+        var retained = await db.BlogConfiguration.AsNoTracking().SingleAsync(row => row.CfgKey == nameof(SEOSettings), ct);
+        Assert.Equal(edited.ToJson(), retained.CfgValue);
+        Assert.Equal(migrated.LastModifiedTimeUtc, retained.LastModifiedTimeUtc);
+    }
+
+    [DisposableDatabaseTheory]
     [InlineData("PostgreSql")]
     [InlineData("SqlServer")]
     public async Task Upgrade_CopiesLegacySeoValues_AndRerunPreservesEdits(string provider)
