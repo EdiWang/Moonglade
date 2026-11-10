@@ -3,9 +3,10 @@
 ## Current status
 
 - Updated: 2026-11-10.
-- Checkout at update: `master`, `84bca3ede` (`Align Account actions with Settings styling`).
+- Checkout at update: `master`, `8c21e5569` (`Update admin refresh acceptance status`).
 - Accepted: B0-B5, secondary navigation, sidebar background highlighting with 4px horizontal insets, and the username/avatar dropdown with its Local/OIDC menu difference.
 - Pending review: unified Account/Settings item grid, typography, 5px gaps, independent right-side Account action buttons, and theme-aware gray hover backgrounds. Implemented, verified, and committed.
+- Pending review: separately requested offcanvas action rows, with the primary action on the left and Cancel/Clear on the right in shared 2:1 columns. Eight action rows are implemented and verified; not committed.
 - B6 integrated acceptance has not started and is not authorized. A user-created commit does not imply acceptance or permission to continue.
 - Retain this file for future conversations, keeping current state and open work rather than accumulating discussion logs.
 
@@ -13,11 +14,12 @@ Preserve the current Bootstrap/Razor/Alpine design documented in the [frontend e
 
 ## Pending refinement: verification
 
-These results cover the Account/Settings refinement awaiting review, not B6.
+These results cover the current refinements awaiting review, not B6.
 
 | Check | Result and coverage |
 | --- | --- |
-| Web build | Passed with zero warnings/errors after the Account/Settings row change. |
+| Web build | Passed with zero warnings/errors after the offcanvas action-row change. |
+| Offcanvas browser checks | 192 combinations passed: eight action rows across six cultures, both sizes/themes. Verified side-by-side 2:1 widths, 8px gaps, matching button heights, drawer containment, wrapping without clipped labels, and existing form/submit/dismiss/clear bindings. Native Category keyboard checks confirmed Tab from Submit to Cancel and Enter dismissal. No save/reset submissions were made. Temporary verification frames were removed. |
 | Account/Settings browser checks | 48 Account/General Settings combinations across six cultures, both sizes/themes passed exact grid/spacing/typography comparisons, control alignment, accessible descriptions, and DOM-only long-description checks. Another 32 combinations cover the other eight Settings routes in English at both sizes/themes; Verification Files has no settings entries and retains its table. Eight native hover checks passed for Account, ordinary Settings, expander headers, and nested entries in both themes. Both Account dialogs opened and dismissed correctly, including keyboard activation; clicking row text does not open them. No credential changes or resets were submitted. |
 | Web tests | Latest targeted run: **Passed: 15, Failed: 0, Skipped: 0**, covering `SearchPageTests`, including two new compiled-Razor cases for the Account action buttons, their existing dialog handlers/targets, danger styling, and descriptive context. Existing page/menu cases also passed. Last full-suite run remains **Passed: 650, Failed: 13, Skipped: 0**; the failures below are unresolved and the full suite was not rerun for this refinement. |
 | JavaScript tests | Not rerun for the latest presentation-only refinements; no JavaScript changed. Run during B6. |
@@ -40,6 +42,7 @@ Repair is outside the authorized scope. These failures still require an acceptan
 ## Remaining work
 
 - [ ] Obtain review/acceptance of the unified Account/Settings entries, independent Account buttons, and shared hover background.
+- [ ] Obtain review/acceptance of the horizontal offcanvas action rows.
 - [ ] Obtain explicit authorization to start B6. Until then, wait or execute only the user's separately requested refinement.
 - [ ] Before declaring final acceptance, obtain a decision on the 13 deferred test failures: authorize investigation/repair or explicitly agree how they affect the acceptance gate.
 - [ ] Execute B6 against the combined checkout, recording actual results and uncovered/blocked scenarios.

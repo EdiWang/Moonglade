@@ -262,6 +262,10 @@
     gap: 8px;
 }
 
+.admin-offcanvas-actions {
+    grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
+}
+
 .admin-panel {
     padding: 24px;
     background-color: var(--bs-body-bg);
