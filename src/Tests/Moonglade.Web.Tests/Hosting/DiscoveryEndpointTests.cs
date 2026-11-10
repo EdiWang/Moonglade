@@ -27,7 +27,8 @@ public class DiscoveryEndpointTests
         var ct = TestContext.Current.CancellationToken;
         var disabled = new BlogSettingsSnapshot
         {
-            AdvancedSettings = new AdvancedSettings { EnableFoaf = false, EnableSiteMap = false }
+            AdvancedSettings = new AdvancedSettings { EnableFoaf = false },
+            SEOSettings = new SEOSettings { EnableSiteMap = false }
         };
         var config = new BlogConfig(disabled);
 
@@ -71,7 +72,8 @@ public class DiscoveryEndpointTests
 
         config.Publish(disabled with
         {
-            AdvancedSettings = new AdvancedSettings { EnableFoaf = enableFoaf, EnableSiteMap = !enableFoaf }
+            AdvancedSettings = new AdvancedSettings { EnableFoaf = enableFoaf },
+            SEOSettings = new SEOSettings { EnableSiteMap = !enableFoaf }
         });
         using var enabled = await client.GetAsync(path, ct);
         Assert.Equal(HttpStatusCode.OK, enabled.StatusCode);

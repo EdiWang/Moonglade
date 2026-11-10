@@ -40,6 +40,7 @@ public partial class ActivityLogHttpTests
             "subscription" => before.FeedSettings with { FeedItemCount = 7 },
             "watermark" => before.ImageSettings with { KeepOriginImage = true },
             "advanced" => before.AdvancedSettings with { EnableOpml = false },
+            "seo" => before.SEOSettings with { EnableSiteMap = false },
             "appearance" => before.AppearanceSettings with { ThemeId = 777 },
             _ => new CustomMenuSettingsJsonModel { IsEnabled = false, MenuJson = before.CustomMenuSettings.Menus.ToJson() }
         };
@@ -52,6 +53,7 @@ public partial class ActivityLogHttpTests
             "subscription" => "FeedItemCount",
             "watermark" => "KeepOriginImage",
             "advanced" => "EnableOpml",
+            "seo" => "EnableSiteMap",
             "appearance" => "ThemeId",
             _ => "IsEnabled"
         };

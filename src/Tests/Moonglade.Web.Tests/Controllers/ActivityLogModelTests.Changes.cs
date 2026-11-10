@@ -16,18 +16,25 @@ public partial class ActivityLogModelTests
 
     [Theory]
     [MemberData(nameof(ActivitySettingsGroups))]
-    public async Task SettingChanges_All51B0Fields_AreExactEventAllowlistAndPersistTypedValues(string group)
+    public async Task SettingChanges_CurrentAndHistoricalFields_PersistTypedValues(string group)
     {
         var ct = TestContext.Current.CancellationToken;
         var expected = SettingsActivityCases.Groups.Single(item => item.Group == group);
-        Assert.Equal(expected.Allowed.Order(), ActivityEvents.Get(expected.EventKey).SettingKeys!.Order());
+        var historicalKeys = group switch
+        {
+            "general" => new[] { "UseDublinCoreMetaData" },
+            "advanced" => new[] { "EnableSiteMap", "EnableJsonLdBlogPosting" },
+            _ => []
+        };
+        Assert.Equal(expected.Allowed.Concat(historicalKeys).Order(), ActivityEvents.Get(expected.EventKey).SettingKeys!.Order());
         await using var store = await ActivityLogTestStore.CreateAsync(ct: ct);
         using var scope = store.Services.CreateScope();
         var db = scope.ServiceProvider.GetRequiredService<BlogDbContext>();
         var model = SettingsActivityCases.Get(store.Config.Capture(), group);
-        var changes = expected.Allowed.Select(key =>
+        var changes = expected.Allowed.Concat(historicalKeys).Select(key =>
         {
-            var old = model.GetType().GetProperty(key)!.GetValue(model);
+            var owner = historicalKeys.Contains(key) ? store.Config.Capture().SEOSettings : model;
+            var old = owner.GetType().GetProperty(key)!.GetValue(owner);
             object? value = old switch
             {
                 bool boolean => !boolean,

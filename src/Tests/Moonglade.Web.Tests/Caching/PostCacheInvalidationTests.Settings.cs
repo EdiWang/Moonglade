@@ -66,14 +66,14 @@ public partial class PostCacheInvalidationTests
         http.Request.Host = new HostString("before.example.com");
         owner.Publish(owner.Capture() with
         {
-            GeneralSettings = owner.Capture().GeneralSettings with { CanonicalPrefix = "https://before.example.com" }
+            SEOSettings = owner.Capture().SEOSettings with { CanonicalPrefix = "https://before.example.com" }
         });
         var first = Assert.IsType<ContentHttpResult>(await SiteMapMapHandler.Handle(http, owner, environment.Cache, environment.Invalidator, db));
         var generation = environment.Invalidator.SiteMapCacheKey;
 
         owner.Publish(owner.Capture() with
         {
-            GeneralSettings = owner.Capture().GeneralSettings with { CanonicalPrefix = "https://after.example.com" }
+            SEOSettings = owner.Capture().SEOSettings with { CanonicalPrefix = "https://after.example.com" }
         });
         var next = Assert.IsType<ContentHttpResult>(await SiteMapMapHandler.Handle(http, owner, environment.Cache, environment.Invalidator, db));
 
@@ -143,7 +143,7 @@ public partial class PostCacheInvalidationTests
     }
 
     [Fact]
-    public async Task GeneralAndImageSaves_RefreshWarmFeedMetadataSitemapAndCdnContent()
+    public async Task GeneralImageAndSeoSaves_RefreshWarmFeedMetadataSitemapAndCdnContent()
     {
         using var environment = await TestEnvironment.CreateAsync();
         using (var scope = environment.Services.CreateScope())
@@ -168,8 +168,7 @@ public partial class PostCacheInvalidationTests
         await SaveSetting(environment, config.Capture().GeneralSettings with
         {
             SiteTitle = "Updated blog",
-            OwnerEmail = "changed@example.com",
-            CanonicalPrefix = "https://canonical.example.com"
+            OwnerEmail = "changed@example.com"
         });
         foreach (var atom in new[] { false, true })
         {
@@ -194,6 +193,9 @@ public partial class PostCacheInvalidationTests
                 if (atom) Assert.Contains("changed@example.com", feed);
             }
         var sitemapAfter = Assert.IsType<ContentHttpResult>(await SiteMapMapHandler.Handle(context, config, environment.Cache, environment.Invalidator, readDb));
+        Assert.DoesNotContain("canonical.example.com", sitemapAfter.ResponseContent);
+        await SaveSetting(environment, config.Capture().SEOSettings with { CanonicalPrefix = "https://canonical.example.com" });
+        sitemapAfter = Assert.IsType<ContentHttpResult>(await SiteMapMapHandler.Handle(context, config, environment.Cache, environment.Invalidator, readDb));
         Assert.Contains("https://canonical.example.com/post/", sitemapAfter.ResponseContent);
         Assert.DoesNotContain("blog.example.com", sitemapAfter.ResponseContent);
     }
@@ -254,7 +256,7 @@ public partial class PostCacheInvalidationTests
         var token = wakeUp.GetWakeToken();
         var feedKey = environment.Invalidator.GetFeedCacheKey("rss");
         var sitemapKey = environment.Invalidator.SiteMapCacheKey;
-        await SaveSetting(environment, new AdvancedSettings { EnablePostScheduler = false, EnableSiteMap = false, EnableFoaf = true });
+        await SaveSetting(environment, new AdvancedSettings { EnablePostScheduler = false, EnableFoaf = true });
         Assert.True(token.IsCancellationRequested);
         Assert.Equal(feedKey, environment.Invalidator.GetFeedCacheKey("rss"));
         Assert.Equal(sitemapKey, environment.Invalidator.SiteMapCacheKey);

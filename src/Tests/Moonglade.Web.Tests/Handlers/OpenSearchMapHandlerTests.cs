@@ -41,7 +41,10 @@ public class OpenSearchMapHandlerTests
             GeneralSettings = new GeneralSettings
             {
                 SiteTitle = "My Blog",
-                Description = "Search the blog",
+                Description = "Search the blog"
+            },
+            SEOSettings = new SEOSettings
+            {
                 CanonicalPrefix = "https://canonical.example.com/base/"
             },
             AdvancedSettings = new AdvancedSettings

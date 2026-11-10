@@ -126,7 +126,7 @@ public class ActivityLogDatabaseTests(DisposableCategoryDatabases databases) : I
             await db.SaveChangesAsync(ct);
         }
         db.ChangeTracker.Clear();
-        Assert.Equal(11, await db.BlogConfiguration.CountAsync(ct));
+        Assert.Equal(12, await db.BlogConfiguration.CountAsync(ct));
         Assert.Equal(1, await db.Post.CountAsync(ct));
         Assert.Equal(100, (await db.Category.AsNoTracking().SingleAsync(ct)).Id);
         Assert.Equal(2, await db.Tag.CountAsync(ct));

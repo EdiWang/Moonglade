@@ -13,8 +13,8 @@
 <meta name="DC.Format.SysReq" content="Internet browser" />
 <meta name="DC.Subject" content="@string.Join(", ", Model.Post.PostCategory.Select(p => p.Category.DisplayName))" />
 <meta name="DC.Subject.Keyword" content="@string.Join(", ", Model.Post.Tags.Select(t => t.NormalizedName))" />
-@if (snapshot.GeneralSettings.DcLicenseUrl != null)
+@if (snapshot.SEOSettings.DcLicenseUrl != null)
 {
-    <meta name="DCTERMS.license" scheme="DCTERMS.URI" content="@snapshot.GeneralSettings.DcLicenseUrl" />
+    <meta name="DCTERMS.license" scheme="DCTERMS.URI" content="@snapshot.SEOSettings.DcLicenseUrl" />
     <meta name="DCTERMS.rightsHolder" content="@(string.IsNullOrWhiteSpace(Model.Post.Author) ? snapshot.GeneralSettings.OwnerName : Model.Post.Author) " />
 }

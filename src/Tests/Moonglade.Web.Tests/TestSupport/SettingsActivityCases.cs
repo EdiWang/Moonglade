@@ -11,7 +11,7 @@ internal static class SettingsActivityCases
     internal static readonly GroupCase[] Groups =
     [
         new("general", ActivityEvents.SettingsGeneralUpdated, ["LogoText", "SiteTitle", "SideBarOption", "WidgetsProfile", "HotTagAmount",
-            "WidgetsCategoryList", "WidgetsSubscriptionButtons", "UseGravatarAsProfilePicture", "DefaultLanguageCode", "UseDublinCoreMetaData"]),
+            "WidgetsCategoryList", "WidgetsSubscriptionButtons", "UseGravatarAsProfilePicture", "DefaultLanguageCode"]),
         new("content", ActivityEvents.SettingsContentUpdated, ["DefaultEditor", "PostListPageSize", "PostTitleAlignment", "ShowCalloutSection",
             "ShowPostFooter", "DocumentOutline", "EnableViewCount", "MaximumPageNumbersToDisplay"]),
         new("comment", ActivityEvents.SettingsCommentUpdated, ["CommentProvider", "CommentOrder", "EnableComments", "EnableGravatar",
@@ -20,8 +20,9 @@ internal static class SettingsActivityCases
         new("subscription", ActivityEvents.SettingsSubscriptionUpdated, ["FeedItemCount", "UseFullContent"]),
         new("watermark", ActivityEvents.SettingsImageUpdated, ["IsWatermarkEnabled", "KeepOriginImage", "WatermarkFontSize", "WatermarkColorA",
             "WatermarkSkipPixel", "EnableCDNRedirect"]),
-        new("advanced", ActivityEvents.SettingsAdvancedUpdated, ["EnableWebmention", "EnableOpenSearch", "EnableFoaf", "EnableOpml", "EnableSiteMap",
-            "EnablePostScheduler", "WarnPostExternalLink", "WarnCommentExternalLink", "EnableJsonLdBlogPosting"]),
+        new("advanced", ActivityEvents.SettingsAdvancedUpdated, ["EnableWebmention", "EnableOpenSearch", "EnableFoaf", "EnableOpml",
+            "EnablePostScheduler", "WarnPostExternalLink", "WarnCommentExternalLink"]),
+        new("seo", ActivityEvents.SettingsSeoUpdated, ["EnableSiteMap", "EnableJsonLdBlogPosting", "UseDublinCoreMetaData"]),
         new("appearance", ActivityEvents.SettingsAppearanceUpdated, ["ThemeId", "EnableCustomCss"]),
         new("custom-menu", ActivityEvents.SettingsCustomMenuUpdated, ["IsEnabled"])
     ];
@@ -90,6 +91,7 @@ internal static class SettingsActivityCases
         "subscription" => root.FeedSettings,
         "watermark" => root.ImageSettings,
         "advanced" => root.AdvancedSettings,
+        "seo" => root.SEOSettings,
         "appearance" => root.AppearanceSettings,
         _ => root.CustomMenuSettings
     };

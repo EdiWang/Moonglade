@@ -6,16 +6,6 @@ namespace Moonglade.Configuration;
 public sealed record GeneralSettings : IBlogSettings<GeneralSettings>
 {
     [Required]
-    [Display(Name = "Meta keyword")]
-    [MaxLength(256)]
-    public string MetaKeyword { get; init; }
-
-    [Display(Name = "Canonical URL prefix")]
-    [DataType(DataType.Url)]
-    [MaxLength(64)]
-    public string CanonicalPrefix { get; init; }
-
-    [Required]
     [Display(Name = "Logo text")]
     [MaxLength(16)]
     public string LogoText { get; init; }
@@ -76,12 +66,6 @@ public sealed record GeneralSettings : IBlogSettings<GeneralSettings>
     [RegularExpression("^[a-z]{2}-[a-zA-Z]{2,4}$")]
     public string DefaultLanguageCode { get; init; } = "en-us";
 
-    [Display(Name = "Use Dublin Core Metadata")]
-    public bool UseDublinCoreMetaData { get; init; }
-
-    [Display(Name = "Dublin Core License URL")]
-    public string DcLicenseUrl { get; init; }
-
     [JsonIgnore]
     public static GeneralSettings DefaultValue => new()
     {
@@ -90,7 +74,6 @@ public sealed record GeneralSettings : IBlogSettings<GeneralSettings>
         SiteTitle = "Moonglade",
         Description = "Moonglade Admin",
         LogoText = "moonglade",
-        MetaKeyword = "moonglade",
         Copyright = $"[c] {DateTime.UtcNow.Year}",
         HotTagAmount = 10
     };

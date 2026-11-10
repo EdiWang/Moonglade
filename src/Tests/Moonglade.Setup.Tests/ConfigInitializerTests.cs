@@ -157,7 +157,7 @@ public sealed class ConfigInitializerTests
 
         db.ChangeTracker.Clear();
         var saved = await db.BlogConfiguration.ToListAsync(ct);
-        Assert.Equal(11, saved.Count);
+        Assert.Equal(12, saved.Count);
         var repaired = Assert.Single(saved, row => row.CfgKey == nameof(FeedSettings));
         Assert.Equal(FeedSettings.DefaultValue.ToJson(), repaired.CfgValue);
         Assert.Equal(config.Capture().FeedSettings.ToJson(), repaired.CfgValue);
@@ -183,6 +183,7 @@ public sealed class ConfigInitializerTests
     [InlineData(nameof(ImageSettings))]
     [InlineData(nameof(AppearanceSettings))]
     [InlineData(nameof(AdvancedSettings))]
+    [InlineData(nameof(SEOSettings))]
     [InlineData(nameof(CustomMenuSettings))]
     public async Task Initialize_PartialOrdinaryGroup_LoadsDefaultsWithoutRewritingJsonOrTimestamp(string name)
     {
@@ -255,7 +256,7 @@ public sealed class ConfigInitializerTests
         await initializer.Initialize(isNew: false, cancellationToken);
 
         Assert.Equal("16.3.0", SystemManifestSettings.ParseStored(persistedSettings[nameof(SystemManifestSettings)]).VersionString);
-        Assert.Equal(9, commandMediator.Commands.Count);
+        Assert.Equal(10, commandMediator.Commands.Count);
         Assert.DoesNotContain(
             commandMediator.Commands.OfType<AddDefaultConfigurationCommand>(),
             command => command.CfgKey == nameof(SystemManifestSettings));

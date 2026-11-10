@@ -1542,6 +1542,9 @@
   <data name="Image URL is required" xml:space="preserve">
     <value>Bild-URL ist erforderlich</value>
   </data>
+  <data name="SEO" xml:space="preserve">
+    <value>SEO</value>
+  </data>
   <data name="Index Now" xml:space="preserve">
     <value>IndexNow</value>
   </data>
@@ -2041,6 +2044,7 @@
   <data name="Enable watermark" xml:space="preserve"><value>Wasserzeichen aktivieren</value></data>
   <data name="File ID" xml:space="preserve"><value>Datei-ID</value></data>
   <data name="File size" xml:space="preserve"><value>Dateigröße</value></data>
+  <data name="SEO settings updated" xml:space="preserve"><value>SEO-Einstellungen aktualisiert</value></data>
   <data name="General settings updated" xml:space="preserve"><value>Allgemeine Einstellungen aktualisiert</value></data>
   <data name="Hours" xml:space="preserve"><value>Stunden</value></data>
   <data name="Image dimensions" xml:space="preserve"><value>Bildabmessungen</value></data>

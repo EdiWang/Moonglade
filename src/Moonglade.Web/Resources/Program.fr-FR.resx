@@ -1437,6 +1437,9 @@
   <data name="Image URL is required" xml:space="preserve">
     <value>L'URL de l'image est obligatoire</value>
   </data>
+  <data name="SEO" xml:space="preserve">
+    <value>SEO</value>
+  </data>
   <data name="Index Now" xml:space="preserve">
     <value>Index Now</value>
   </data>
@@ -1986,6 +1989,7 @@
   <data name="File size" xml:space="preserve">
     <value>Taille du fichier</value>
   </data>
+  <data name="SEO settings updated" xml:space="preserve"><value>Paramètres SEO mis à jour</value></data>
   <data name="General settings updated" xml:space="preserve">
     <value>Paramètres généraux mis à jour</value>
   </data>

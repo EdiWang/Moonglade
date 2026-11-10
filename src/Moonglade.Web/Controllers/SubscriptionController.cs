@@ -20,7 +20,7 @@ public class SubscriptionController(
 
         var cats = await queryMediator.QueryAsync(new ListCategoriesQuery());
         var catInfos = cats.Select(c => new KeyValuePair<string, string>(c.DisplayName, c.Slug));
-        var rootUrl = UrlHelper.ResolveRootUrl(HttpContext, settings.GeneralSettings.CanonicalPrefix);
+        var rootUrl = UrlHelper.ResolveRootUrl(HttpContext, settings.SEOSettings.CanonicalPrefix);
 
         var oi = new OpmlDoc
         {

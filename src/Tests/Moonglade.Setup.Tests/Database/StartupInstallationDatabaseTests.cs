@@ -53,8 +53,8 @@ public class StartupInstallationDatabaseTests(DisposableCategoryDatabases databa
     [InlineData("SqlServer", 1, false)]
     [InlineData("PostgreSql", 6, false)]
     [InlineData("SqlServer", 6, false)]
-    [InlineData("PostgreSql", 11, false)]
-    [InlineData("SqlServer", 11, false)]
+    [InlineData("PostgreSql", 12, false)]
+    [InlineData("SqlServer", 12, false)]
     [InlineData("PostgreSql", 6, true)]
     [InlineData("SqlServer", 6, true)]
     public async Task FailedInstallation_RollsBackAndCanRestart(string provider, int settingNumber, bool cancelled)
@@ -262,7 +262,7 @@ public class StartupInstallationDatabaseTests(DisposableCategoryDatabases databa
         Assert.Single(await db.Post.ToListAsync(ct));
         Assert.Single(await db.Category.ToListAsync(ct));
         Assert.Equal(2, await db.Tag.CountAsync(ct));
-        Assert.Equal(11, await db.BlogConfiguration.CountAsync(ct));
+        Assert.Equal(12, await db.BlogConfiguration.CountAsync(ct));
         Assert.False(string.IsNullOrWhiteSpace((await db.BlogConfiguration.SingleAsync(
             row => row.CfgKey == nameof(LocalAccountSettings), ct)).CfgValue.FromJson<LocalAccountSettings>().Username));
     }
@@ -335,7 +335,7 @@ public class StartupInstallationDatabaseTests(DisposableCategoryDatabases databa
         public override Task TransactionCommittedAsync(DbTransaction transaction, TransactionEndEventData eventData,
             CancellationToken cancellationToken = default)
         {
-            if (!Triggered && eventData.Context!.ChangeTracker.Entries<BlogConfigurationEntity>().Count() == 11)
+            if (!Triggered && eventData.Context!.ChangeTracker.Entries<BlogConfigurationEntity>().Count() == 12)
             {
                 Triggered = true;
                 BeforeThrow();

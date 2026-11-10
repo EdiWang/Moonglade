@@ -1,7 +1,4 @@
 ﻿@page "/admin/settings/general"
-@{
-    var snapshot = ViewData.CaptureSettings(SettingsReader);
-}
 @inject IOptions<RequestLocalizationOptions> LocOptions
 
 @{
@@ -69,18 +66,6 @@
 
                     <div class="settings-entry row align-items-center">
                         <div class="col-auto">
-                            <i class="bi-file-word settings-entry-icon"></i>
-                        </div>
-                        <div class="col">
-                            <label asp-for="@ViewModel.MetaKeyword"></label>
-                        </div>
-                        <div class="col-5 text-end">
-                            <input asp-for="@ViewModel.MetaKeyword" data-setting-edit="" class="form-control" required />
-                        </div>
-                    </div>
-
-                    <div class="settings-entry row align-items-center">
-                        <div class="col-auto">
                             <i class="bi-app-indicator settings-entry-icon"></i>
                         </div>
 
@@ -91,19 +76,6 @@
                         <div class="col-5 text-end">
                             <img src="@Url.Action("SiteIconOrigin", "Assets")" class="blogadmin-siteicon" />
                             <a class="btn btn-sm btn-outline-accent" href="#" data-bs-toggle="modal" data-bs-target="#siteiconmodal">@SharedLocalizer["Change"]</a>
-                        </div>
-                    </div>
-
-                    <div class="settings-entry row align-items-center">
-                        <div class="col-auto">
-                            <i class="bi-link settings-entry-icon"></i>
-                        </div>
-                        <div class="col">
-                            <label asp-for="@ViewModel.CanonicalPrefix"></label>
-                            <div class="form-text">@SharedLocalizer["Set a primary domain if your website binds to multiple domian names."]</div>
-                        </div>
-                        <div class="col-5 text-end">
-                            <input asp-for="@ViewModel.CanonicalPrefix" data-setting-edit="" class="form-control" />
                         </div>
                     </div>
 
@@ -130,47 +102,6 @@
                         </div>
                         <div class="col-5 text-end">
                             <input asp-for="@ViewModel.Copyright" data-setting-edit="" class="form-control" required />
-                        </div>
-                    </div>
-                </div>
-
-                <div>
-                    <h4 class="admin-subtitle fw-bold">
-                        @SharedLocalizer["Dublin Core Metadata"]
-                    </h4>
-                    <div class="admin-settings-expander">
-                        <div class="settings-entry admin-settings-expander-header">
-                            <div class="col-auto">
-                                <i class="bi bi-globe settings-entry-icon"></i>
-                            </div>
-                            <div class="col">
-                                <label asp-for="@snapshot.GeneralSettings.UseDublinCoreMetaData" class="form-check-label"></label>
-                            </div>
-                            <div class="col-5 text-end">
-                                <div class="form-check form-switch form-control-lg">
-                                    <input type="hidden" name="UseDublinCoreMetaData" value="false">
-                                    <input type="checkbox" name="UseDublinCoreMetaData" value="true" class="form-check-input" @(snapshot.GeneralSettings.UseDublinCoreMetaData ? "checked" : null)>
-                                </div>
-                            </div>
-                            <button type="button" class="admin-settings-expander-toggle" data-bs-toggle="collapse" data-bs-target="#settings-dublin-core" aria-controls="settings-dublin-core" aria-expanded="@(snapshot.GeneralSettings.UseDublinCoreMetaData ? "true" : "false")" aria-label="@SharedLocalizer["Dublin Core Metadata"]">
-                                <i class="bi bi-chevron-down" aria-hidden="true"></i>
-                            </button>
-                        </div>
-
-                        <div id="settings-dublin-core" class="collapse @(snapshot.GeneralSettings.UseDublinCoreMetaData ? "show" : null)">
-                            <div class="admin-settings-expander-body">
-                                <div class="settings-entry row align-items-center">
-                                    <div class="col-auto">
-                                        <i class="bi-link settings-entry-icon"></i>
-                                    </div>
-                                    <div class="col">
-                                        <label asp-for="@snapshot.GeneralSettings.DcLicenseUrl"></label>
-                                    </div>
-                                    <div class="col-5 text-end">
-                                        <input asp-for="@snapshot.GeneralSettings.DcLicenseUrl" data-setting-edit="" class="form-control" />
-                                    </div>
-                                </div>
-                            </div>
                         </div>
                     </div>
                 </div>

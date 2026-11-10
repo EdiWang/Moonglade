@@ -373,6 +373,7 @@ public partial class SettingsControllerTests
         "subscription" => "FeedItemCount",
         "watermark" => "KeepOriginImage",
         "advanced" => "EnableOpml",
+        "seo" => "EnableSiteMap",
         "appearance" => "ThemeId",
         _ => "IsEnabled"
     };
@@ -386,6 +387,7 @@ public partial class SettingsControllerTests
         "subscription" => root.FeedSettings with { FeedItemCount = 7 },
         "watermark" => root.ImageSettings with { KeepOriginImage = true },
         "advanced" => root.AdvancedSettings with { EnableOpml = false },
+        "seo" => root.SEOSettings with { EnableSiteMap = false },
         "appearance" => root.AppearanceSettings with { ThemeId = 777 },
         _ => root.CustomMenuSettings with { IsEnabled = false }
     };
@@ -398,6 +400,7 @@ public partial class SettingsControllerTests
         "notification" => root.NotificationSettings with { EmailDisplayName = "B3-private-sender" },
         "watermark" => root.ImageSettings with { WatermarkText = "B3-private-watermark" },
         "advanced" => root.AdvancedSettings with { RobotsTxtContent = "B3-private-robots" },
+        "seo" => root.SEOSettings with { CanonicalPrefix = "https://private.example.invalid" },
         "appearance" => root.AppearanceSettings with { CssCode = "B3-private-css" },
         _ => root.CustomMenuSettings with { Menus = [new Menu { Title = "B3-private-menu" }] }
     };
@@ -415,6 +418,7 @@ public partial class SettingsControllerTests
                 FeedSettings value => controller.Subscription(value),
                 ImageSettings value => controller.Image(value),
                 AdvancedSettings value => controller.Advanced(value),
+                SEOSettings value => controller.Seo(value),
                 AppearanceSettings value => controller.Appearance(value),
                 CustomMenuSettings value => controller.CustomMenu(new CustomMenuSettingsJsonModel { IsEnabled = value.IsEnabled, MenuJson = value.Menus.ToJson() }),
                 _ => throw new InvalidOperationException("Unsupported test settings group.")

@@ -49,7 +49,7 @@ public class StartUpInitializerTests
         Assert.Empty(savedPost.ContentType);
         Assert.Equal(originalTime, savedPost.CreateTimeUtc);
         var settings = await db.BlogConfiguration.OrderBy(row => row.CfgKey).ToListAsync(ct);
-        Assert.Equal(11, settings.Count);
+        Assert.Equal(12, settings.Count);
         Assert.Equal(originalTime, settings.Single(row => row.CfgKey == nameof(ContentSettings)).LastModifiedTimeUtc);
         Assert.Equal(originalTime, settings.Single(row => row.CfgKey == nameof(LocalAccountSettings)).LastModifiedTimeUtc);
         if (manifestVersion is not null)

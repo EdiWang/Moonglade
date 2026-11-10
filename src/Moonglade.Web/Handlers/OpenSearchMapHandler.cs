@@ -20,8 +20,8 @@ public class OpenSearchMapHandler
             return;
         }
 
-        var hasCanonicalPrefix = !string.IsNullOrWhiteSpace(settings.GeneralSettings.CanonicalPrefix);
-        var siteRootUrl = UrlHelper.ResolveRootUrl(httpContext, settings.GeneralSettings.CanonicalPrefix, hasCanonicalPrefix);
+        var hasCanonicalPrefix = !string.IsNullOrWhiteSpace(settings.SEOSettings.CanonicalPrefix);
+        var siteRootUrl = UrlHelper.ResolveRootUrl(httpContext, settings.SEOSettings.CanonicalPrefix, hasCanonicalPrefix);
         var baseUrl = siteRootUrl.TrimEnd('/');
 
         await using var ms = new MemoryStream();

@@ -49,6 +49,7 @@ Apply upgrades in order when required:
 1. [Category integer IDs](docs/upgrade-category-int-identity.md): converts GUID keys; public category/feed URLs retain their slugs, while admin APIs use integers.
 2. [PostgreSQL snake_case names](docs/upgrade-postgresql-snake-case.md): requires integer category IDs first. SQL Server retains PascalCase names.
 3. [Canonical activity events](docs/upgrade-activity-log-events.md): replaces legacy activity wording with stable event keys on both providers. Stop the old host first; this one-time upgrade discards only legacy activity history. Reruns preserve new history.
+4. [SEO settings](docs/upgrade-seo-settings.md) copies existing SEO values from General and Advanced into a dedicated configuration row before startup.
 
 ### Quick Local Deployment (Docker)
 

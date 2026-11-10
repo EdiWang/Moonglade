@@ -13,7 +13,7 @@ namespace Moonglade.Web.Tests.Controllers;
 public partial class ActivityLogModelTests
 {
     [Fact]
-    public void Catalog_All50ActiveEvents_HaveExactUniqueKeysGroupsAndLabels()
+    public void Catalog_AllActiveEvents_HaveExactUniqueKeysGroupsAndLabels()
     {
         (string Key, string Group, string Label)[] expected =
         [
@@ -52,6 +52,7 @@ public partial class ActivityLogModelTests
             ("settings.subscription.updated", "Settings", "Subscription settings updated"),
             ("settings.images.updated", "Settings", "Image settings updated"),
             ("settings.advanced.updated", "Settings", "Advanced settings updated"),
+            ("settings.seo.updated", "Settings", "SEO settings updated"),
             ("settings.appearance.updated", "Settings", "Appearance settings updated"),
             ("settings.custom-menu.updated", "Settings", "Custom menu settings updated"),
             ("account.password.updated", "Account", "Account password updated"),
@@ -69,10 +70,10 @@ public partial class ActivityLogModelTests
             ("activity-log.cleared", "Activity log", "Activity log cleared")
         ];
         var actual = ActivityEvents.All;
-        Assert.Equal(50, actual.Count);
+        Assert.Equal(51, actual.Count);
         Assert.Equal(expected.OrderBy(item => item.Key), actual.Select(item => (item.Key, item.Group, item.Label)).OrderBy(item => item.Key));
-        Assert.Equal(50, actual.Select(item => item.Key).Distinct(StringComparer.Ordinal).Count());
-        Assert.Equal(50, actual.Select(item => item.Label).Distinct(StringComparer.Ordinal).Count());
+        Assert.Equal(51, actual.Select(item => item.Key).Distinct(StringComparer.Ordinal).Count());
+        Assert.Equal(51, actual.Select(item => item.Label).Distinct(StringComparer.Ordinal).Count());
         Assert.Equal(expected.Select(item => item.Key).Order(), typeof(ActivityEvents)
             .GetFields(BindingFlags.Public | BindingFlags.Static).Where(field => field.IsLiteral)
             .Select(field => Assert.IsType<string>(field.GetRawConstantValue())).Order());

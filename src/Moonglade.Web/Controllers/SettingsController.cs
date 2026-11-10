@@ -82,6 +82,12 @@ public class SettingsController(
         }
     }
 
+    [HttpPost("seo")]
+    public async Task<IActionResult> Seo(SEOSettings model)
+    {
+        return await UpdateSettingsAsync(model);
+    }
+
     [HttpPost("subscription")]
     public async Task<IActionResult> Subscription(FeedSettings model)
     {
@@ -112,15 +118,13 @@ public class SettingsController(
         var command = group switch
         {
             "general" => PatchConfigurationCommand.Create<GeneralSettings>(static value => value with { }, fields,
-                nameof(GeneralSettings.MetaKeyword), nameof(GeneralSettings.CanonicalPrefix),
                 nameof(GeneralSettings.LogoText), nameof(GeneralSettings.Copyright),
                 nameof(GeneralSettings.SiteTitle), nameof(GeneralSettings.OwnerName),
                 nameof(GeneralSettings.OwnerEmail), nameof(GeneralSettings.Description),
                 nameof(GeneralSettings.SideBarOption), nameof(GeneralSettings.WidgetsProfile),
                 nameof(GeneralSettings.HotTagAmount), nameof(GeneralSettings.WidgetsCategoryList),
                 nameof(GeneralSettings.WidgetsSubscriptionButtons), nameof(GeneralSettings.UseGravatarAsProfilePicture),
-                nameof(GeneralSettings.DefaultLanguageCode), nameof(GeneralSettings.UseDublinCoreMetaData),
-                nameof(GeneralSettings.DcLicenseUrl)),
+                nameof(GeneralSettings.DefaultLanguageCode)),
             "content" => PatchConfigurationCommand.Create<ContentSettings>(static value => value with { }, fields,
                 nameof(ContentSettings.DefaultEditor), nameof(ContentSettings.PostListPageSize),
                 nameof(ContentSettings.PostTitleAlignment), nameof(ContentSettings.CalloutSectionHtmlPitch),
@@ -148,9 +152,12 @@ public class SettingsController(
                 nameof(AdvancedSettings.RobotsTxtContent), nameof(AdvancedSettings.HeadScripts),
                 nameof(AdvancedSettings.FootScripts), nameof(AdvancedSettings.EnableWebmention),
                 nameof(AdvancedSettings.EnableOpenSearch), nameof(AdvancedSettings.EnableFoaf),
-                nameof(AdvancedSettings.EnableOpml), nameof(AdvancedSettings.EnableSiteMap),
-                nameof(AdvancedSettings.EnablePostScheduler), nameof(AdvancedSettings.WarnPostExternalLink),
-                nameof(AdvancedSettings.WarnCommentExternalLink), nameof(AdvancedSettings.EnableJsonLdBlogPosting)),
+                nameof(AdvancedSettings.EnableOpml), nameof(AdvancedSettings.EnablePostScheduler),
+                nameof(AdvancedSettings.WarnPostExternalLink), nameof(AdvancedSettings.WarnCommentExternalLink)),
+            "seo" => PatchConfigurationCommand.Create<SEOSettings>(static value => value with { }, fields,
+                nameof(SEOSettings.CanonicalPrefix), nameof(SEOSettings.MetaKeyword),
+                nameof(SEOSettings.EnableSiteMap), nameof(SEOSettings.EnableJsonLdBlogPosting),
+                nameof(SEOSettings.UseDublinCoreMetaData), nameof(SEOSettings.DcLicenseUrl)),
             "appearance" => PatchConfigurationCommand.Create<AppearanceSettings>(static value => value with { }, fields,
                 nameof(AppearanceSettings.ThemeId), nameof(AppearanceSettings.EnableCustomCss),
                 nameof(AppearanceSettings.CssCode)),
@@ -175,6 +182,7 @@ public class SettingsController(
             nameof(AppearanceSettings) => ActivityEvents.SettingsAppearanceUpdated,
             nameof(ContentSettings) => ActivityEvents.SettingsContentUpdated,
             nameof(NotificationSettings) => ActivityEvents.SettingsNotificationUpdated,
+            nameof(SEOSettings) => ActivityEvents.SettingsSeoUpdated,
             nameof(FeedSettings) => ActivityEvents.SettingsSubscriptionUpdated,
             nameof(AdvancedSettings) => ActivityEvents.SettingsAdvancedUpdated,
             nameof(CustomMenuSettings) => ActivityEvents.SettingsCustomMenuUpdated,

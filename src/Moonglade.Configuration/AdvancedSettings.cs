@@ -33,9 +33,6 @@ public sealed record AdvancedSettings : IBlogSettings<AdvancedSettings>, IValida
     [Display(Name = "Enable OPML")]
     public bool EnableOpml { get; init; } = true;
 
-    [Display(Name = "Enable Site Map")]
-    public bool EnableSiteMap { get; init; } = true;
-
     [Display(Name = "Enable Post Scheduler")]
     public bool EnablePostScheduler { get; init; } = true;
 
@@ -44,9 +41,6 @@ public sealed record AdvancedSettings : IBlogSettings<AdvancedSettings>, IValida
 
     [Display(Name = "Show warning when clicking external links in comments")]
     public bool WarnCommentExternalLink { get; init; } = true;
-
-    [Display(Name = "Enable JSON-LD BlogPosting")]
-    public bool EnableJsonLdBlogPosting { get; init; } = true;
 
     public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
     {

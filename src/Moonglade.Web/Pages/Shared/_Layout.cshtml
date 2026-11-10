@@ -37,16 +37,16 @@
 }
 <!DOCTYPE html>
 <html lang="@langCode" data-bs-theme="@(clientPreferDarkMode ? "dark" : null)">
-<head profile=@(snapshot.GeneralSettings.UseDublinCoreMetaData ? "http://dublincore.org/documents/dcq-html/" : null)>
+<head profile=@(snapshot.SEOSettings.UseDublinCoreMetaData ? "http://dublincore.org/documents/dcq-html/" : null)>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    @if (snapshot.GeneralSettings.UseDublinCoreMetaData)
+    @if (snapshot.SEOSettings.UseDublinCoreMetaData)
     {
         <link rel="schema.DC" href="http://purl.org/dc/elements/1.1/" />
         <link rel="schema.DCTERMS" href="http://purl.org/dc/terms/" />
     }
 
-    <meta name="keywords" content="@(ViewBag.Keywords ?? Html.Raw(snapshot.GeneralSettings.MetaKeyword))" />
+    <meta name="keywords" content="@(ViewBag.Keywords ?? Html.Raw(snapshot.SEOSettings.MetaKeyword))" />
 
     @await RenderSectionAsync("meta", false)
     @if (IsSectionDefined("opengraph"))
@@ -70,9 +70,9 @@
         <link rel="dns-prefetch" href="@UrlHelper.GetDNSPrefetchUrl(snapshot.ImageSettings.CDNEndpoint)" />
     }
 
-    @if (!string.IsNullOrWhiteSpace(snapshot.GeneralSettings.CanonicalPrefix))
+    @if (!string.IsNullOrWhiteSpace(snapshot.SEOSettings.CanonicalPrefix))
     {
-        <link rel="canonical" href="@(UrlHelper.ResolveCanonicalUrl(snapshot.GeneralSettings.CanonicalPrefix, Context.Request.Path))" />
+        <link rel="canonical" href="@(UrlHelper.ResolveCanonicalUrl(snapshot.SEOSettings.CanonicalPrefix, Context.Request.Path))" />
     }
 
     <link rel="start" title="@snapshot.GeneralSettings.SiteTitle" href="~/" />

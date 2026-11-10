@@ -248,7 +248,6 @@ public class SearchPageTests
             SiteTitle = "Moonglade",
             LogoText = "moonglade",
             Description = "Test blog",
-            MetaKeyword = "moonglade",
             OwnerName = "Admin",
             OwnerEmail = "admin@example.com",
             Copyright = "[c] 2026",

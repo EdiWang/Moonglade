@@ -8,7 +8,7 @@ internal static class SettingChangeCases
     internal static readonly IReadOnlyDictionary<string, string[]> Allowed = new Dictionary<string, string[]>
     {
         [nameof(GeneralSettings)] = ["LogoText", "SiteTitle", "SideBarOption", "WidgetsProfile", "HotTagAmount", "WidgetsCategoryList",
-            "WidgetsSubscriptionButtons", "UseGravatarAsProfilePicture", "DefaultLanguageCode", "UseDublinCoreMetaData"],
+            "WidgetsSubscriptionButtons", "UseGravatarAsProfilePicture", "DefaultLanguageCode"],
         [nameof(ContentSettings)] = ["DefaultEditor", "PostListPageSize", "PostTitleAlignment", "ShowCalloutSection", "ShowPostFooter",
             "DocumentOutline", "EnableViewCount", "MaximumPageNumbersToDisplay"],
         [nameof(CommentSettings)] = ["CommentProvider", "CommentOrder", "EnableComments", "EnableGravatar", "EnableMarkdownLinks",
@@ -16,8 +16,9 @@ internal static class SettingChangeCases
         [nameof(NotificationSettings)] = ["EnableEmailSending", "SendEmailOnCommentReply", "SendEmailOnNewComment"],
         [nameof(FeedSettings)] = ["FeedItemCount", "UseFullContent"],
         [nameof(ImageSettings)] = ["IsWatermarkEnabled", "KeepOriginImage", "WatermarkFontSize", "WatermarkColorA", "WatermarkSkipPixel", "EnableCDNRedirect"],
-        [nameof(AdvancedSettings)] = ["EnableWebmention", "EnableOpenSearch", "EnableFoaf", "EnableOpml", "EnableSiteMap", "EnablePostScheduler",
-            "WarnPostExternalLink", "WarnCommentExternalLink", "EnableJsonLdBlogPosting"],
+        [nameof(AdvancedSettings)] = ["EnableWebmention", "EnableOpenSearch", "EnableFoaf", "EnableOpml", "EnablePostScheduler",
+            "WarnPostExternalLink", "WarnCommentExternalLink"],
+        [nameof(SEOSettings)] = ["EnableSiteMap", "EnableJsonLdBlogPosting", "UseDublinCoreMetaData"],
         [nameof(AppearanceSettings)] = ["ThemeId", "EnableCustomCss"],
         [nameof(CustomMenuSettings)] = ["IsEnabled"]
     };
@@ -27,8 +28,11 @@ internal static class SettingChangeCases
         GeneralSettings = GeneralSettings.DefaultValue with
         {
             Copyright = "[c] 2026",
+            AvatarUrl = "/legacy-avatar"
+        },
+        SEOSettings = SEOSettings.DefaultValue with
+        {
             CanonicalPrefix = "https://before.example.invalid",
-            AvatarUrl = "/legacy-avatar",
             DcLicenseUrl = "https://before.example.invalid/license"
         },
         ContentSettings = ContentSettings.DefaultValue with { PostFooterHtmlPitch = "<p>Before footer</p>" },
@@ -89,7 +93,7 @@ internal static class SettingChangeCases
                 nameof(GeneralSettings.DefaultLanguageCode) => "de-DE",
                 nameof(GeneralSettings.Copyright) => "[c] 2025",
                 nameof(GeneralSettings.OwnerEmail) => "changed@example.invalid",
-                nameof(GeneralSettings.CanonicalPrefix) or nameof(GeneralSettings.DcLicenseUrl) or nameof(ImageSettings.CDNEndpoint) =>
+                nameof(SEOSettings.CanonicalPrefix) or nameof(SEOSettings.DcLicenseUrl) or nameof(ImageSettings.CDNEndpoint) =>
                     "https://after.example.invalid",
                 nameof(AdvancedSettings.HeadScripts) or nameof(AdvancedSettings.FootScripts) => "<script>changed()</script>",
                 nameof(AppearanceSettings.CssCode) => "body { color: red; }",

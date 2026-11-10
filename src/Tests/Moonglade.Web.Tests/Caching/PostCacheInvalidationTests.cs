@@ -325,6 +325,7 @@ public partial class PostCacheInvalidationTests
             services.AddSingleton(new BlogConfig(new BlogSettingsSnapshot
             {
                 GeneralSettings = GeneralSettings.DefaultValue,
+                SEOSettings = SEOSettings.DefaultValue,
                 ContentSettings = new ContentSettings { EnableViewCount = false },
                 FeedSettings = new FeedSettings { FeedItemCount = 20 }
             }));

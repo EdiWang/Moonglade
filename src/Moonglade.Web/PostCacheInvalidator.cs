@@ -14,7 +14,7 @@ public class PostCacheInvalidator(ICacheAside cache)
         $"{GetFeedCacheKey(key)}:{Fingerprint(settings.GeneralSettings.ToJson() + settings.FeedSettings.ToJson() + settings.ImageSettings.ToJson())}";
 
     public string GetSiteMapCacheKey(BlogSettingsSnapshot settings) =>
-        $"{SiteMapCacheKey}:{Fingerprint(settings.GeneralSettings.ToJson())}";
+        $"{SiteMapCacheKey}:{Fingerprint(settings.SEOSettings.CanonicalPrefix ?? string.Empty)}";
 
     private static string Fingerprint(string value) => Convert.ToHexString(SHA256.HashData(Encoding.UTF8.GetBytes(value)));
 

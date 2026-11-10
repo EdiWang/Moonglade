@@ -1542,6 +1542,9 @@
   <data name="Image URL is required" xml:space="preserve">
     <value>图片 URL 为必填项</value>
   </data>
+  <data name="SEO" xml:space="preserve">
+    <value>SEO</value>
+  </data>
   <data name="Index Now" xml:space="preserve">
     <value>IndexNow</value>
   </data>
@@ -2041,6 +2044,7 @@
   <data name="Enable watermark" xml:space="preserve"><value>启用水印</value></data>
   <data name="File ID" xml:space="preserve"><value>文件 ID</value></data>
   <data name="File size" xml:space="preserve"><value>文件大小</value></data>
+  <data name="SEO settings updated" xml:space="preserve"><value>SEO 设置已更新</value></data>
   <data name="General settings updated" xml:space="preserve"><value>常规设置已更新</value></data>
   <data name="Hours" xml:space="preserve"><value>小时数</value></data>
   <data name="Image dimensions" xml:space="preserve"><value>图像尺寸</value></data>

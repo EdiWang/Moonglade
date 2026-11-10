@@ -26,6 +26,9 @@
             <a class="nav-link @(currentPage == "/Admin/Settings/Notification" ? "active" : null)" aria-current="@(currentPage == "/Admin/Settings/Notification" ? "page" : null)" asp-page="/Admin/Settings/Notification">@SharedLocalizer["Notification"]</a>
         </li>
         <li class="nav-item">
+            <a class="nav-link @(currentPage == "/Admin/Settings/Seo" ? "active" : null)" aria-current="@(currentPage == "/Admin/Settings/Seo" ? "page" : null)" asp-page="/Admin/Settings/Seo">@SharedLocalizer["SEO"]</a>
+        </li>
+        <li class="nav-item">
             <a class="nav-link @(currentPage == "/Admin/Settings/Advanced" ? "active" : null)" aria-current="@(currentPage == "/Admin/Settings/Advanced" ? "page" : null)" asp-page="/Admin/Settings/Advanced">@SharedLocalizer["Advanced"]</a>
         </li>
         <li class="nav-item">

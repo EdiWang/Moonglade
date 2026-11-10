@@ -1542,6 +1542,9 @@
   <data name="Image URL is required" xml:space="preserve">
     <value>画像 URL は必須です</value>
   </data>
+  <data name="SEO" xml:space="preserve">
+    <value>SEO</value>
+  </data>
   <data name="Index Now" xml:space="preserve">
     <value>IndexNow</value>
   </data>
@@ -2041,6 +2044,7 @@
   <data name="Enable watermark" xml:space="preserve"><value>透かしを有効にする</value></data>
   <data name="File ID" xml:space="preserve"><value>ファイル ID</value></data>
   <data name="File size" xml:space="preserve"><value>ファイルサイズ</value></data>
+  <data name="SEO settings updated" xml:space="preserve"><value>SEO 設定を更新しました</value></data>
   <data name="General settings updated" xml:space="preserve"><value>一般設定を更新しました</value></data>
   <data name="Hours" xml:space="preserve"><value>時間数</value></data>
   <data name="Image dimensions" xml:space="preserve"><value>画像サイズ</value></data>

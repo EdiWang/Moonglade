@@ -40,14 +40,14 @@
     <meta name="copyright" content="(C) @DateTime.UtcNow.Year @snapshot.GeneralSettings.SiteTitle">
     <meta name="author" content="@(string.IsNullOrWhiteSpace(Model.Post.Author) ? snapshot.GeneralSettings.OwnerName : Model.Post.Author) " />
     <meta name="post-is-published" content="@((Model.Post.PostStatus == PostStatus.Published).ToString().ToLower())" />
-    @if (snapshot.GeneralSettings.UseDublinCoreMetaData)
+    @if (snapshot.SEOSettings.UseDublinCoreMetaData)
     {
         <partial name="_DublinCoreMetaData" model="Model" />
     }
 
     @if (snapshot.AdvancedSettings.EnableWebmention)
     {
-        <link rel="webmention" href="@(UrlHelper.ResolveCanonicalUrl(snapshot.GeneralSettings.CanonicalPrefix, "webmention"))">
+        <link rel="webmention" href="@(UrlHelper.ResolveCanonicalUrl(snapshot.SEOSettings.CanonicalPrefix, "webmention"))">
     }
 }
 
@@ -58,7 +58,7 @@
     {
         <link href="~/css/outline.css" rel="stylesheet" />
     }
-    @if (snapshot.AdvancedSettings.EnableJsonLdBlogPosting)
+    @if (snapshot.SEOSettings.EnableJsonLdBlogPosting)
     {
         <partial name="_JsonLdBlogPosting" model="Model" />
     }
@@ -69,9 +69,9 @@
     <meta property="og:title" content="@Model.Post.Title">
     <meta property="og:type" content="article" />
     <meta property="og:description" content="@Model.Post.ContentAbstract" />
-    @if (!string.IsNullOrWhiteSpace(snapshot.GeneralSettings.CanonicalPrefix))
+    @if (!string.IsNullOrWhiteSpace(snapshot.SEOSettings.CanonicalPrefix))
     {
-        <meta property="og:url" content="@(UrlHelper.ResolveCanonicalUrl(snapshot.GeneralSettings.CanonicalPrefix, HttpContext.Request.Path))" />
+        <meta property="og:url" content="@(UrlHelper.ResolveCanonicalUrl(snapshot.SEOSettings.CanonicalPrefix, HttpContext.Request.Path))" />
     }
 }
 

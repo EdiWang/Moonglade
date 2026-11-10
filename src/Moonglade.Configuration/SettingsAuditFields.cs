@@ -14,7 +14,7 @@ public static class SettingsAuditFields
             nameof(GeneralSettings.SideBarOption), nameof(GeneralSettings.WidgetsProfile),
             nameof(GeneralSettings.HotTagAmount), nameof(GeneralSettings.WidgetsCategoryList),
             nameof(GeneralSettings.WidgetsSubscriptionButtons), nameof(GeneralSettings.UseGravatarAsProfilePicture),
-            nameof(GeneralSettings.DefaultLanguageCode), nameof(GeneralSettings.UseDublinCoreMetaData)
+            nameof(GeneralSettings.DefaultLanguageCode)
         ],
         nameof(ContentSettings) =>
         [
@@ -36,6 +36,11 @@ public static class SettingsAuditFields
             nameof(NotificationSettings.EnableEmailSending), nameof(NotificationSettings.SendEmailOnCommentReply),
             nameof(NotificationSettings.SendEmailOnNewComment)
         ],
+        nameof(SEOSettings) =>
+        [
+            nameof(SEOSettings.EnableSiteMap), nameof(SEOSettings.EnableJsonLdBlogPosting),
+            nameof(SEOSettings.UseDublinCoreMetaData)
+        ],
         nameof(FeedSettings) => [nameof(FeedSettings.FeedItemCount), nameof(FeedSettings.UseFullContent)],
         nameof(ImageSettings) =>
         [
@@ -47,9 +52,8 @@ public static class SettingsAuditFields
         [
             nameof(AdvancedSettings.EnableWebmention), nameof(AdvancedSettings.EnableOpenSearch),
             nameof(AdvancedSettings.EnableFoaf), nameof(AdvancedSettings.EnableOpml),
-            nameof(AdvancedSettings.EnableSiteMap), nameof(AdvancedSettings.EnablePostScheduler),
-            nameof(AdvancedSettings.WarnPostExternalLink), nameof(AdvancedSettings.WarnCommentExternalLink),
-            nameof(AdvancedSettings.EnableJsonLdBlogPosting)
+            nameof(AdvancedSettings.EnablePostScheduler), nameof(AdvancedSettings.WarnPostExternalLink),
+            nameof(AdvancedSettings.WarnCommentExternalLink)
         ],
         nameof(AppearanceSettings) => [nameof(AppearanceSettings.ThemeId), nameof(AppearanceSettings.EnableCustomCss)],
         nameof(CustomMenuSettings) => [nameof(CustomMenuSettings.IsEnabled)],
