@@ -331,6 +331,43 @@ public class SearchPageTests
         Assert.All(descriptionIds, id => Assert.Contains($"id=\"{id}\"", html));
     }
 
+    [Theory]
+    [InlineData("en-US", "Edit", "Delete")]
+    [InlineData("fr-FR", "Modifier", "Supprimer")]
+    public async Task CategoryCard_ActionMenu_PreservesLocalizedActionsAndHandlers(string culture, string editLabel, string deleteLabel)
+    {
+        using var app = await CreateTestApp(new SearchPageScenario());
+        using var client = app.GetTestClient();
+
+        var html = await client.GetStringAsync($"/admin/category?culture={culture}", TestContext.Current.CancellationToken);
+
+        var card = Assert.Single(Regex.Matches(html, @"<template\b[^>]*>.*?</template>", RegexOptions.Singleline),
+            match => match.Value.Contains("x-for=\"cat in sortedCategories\""));
+        var toggle = Assert.Single(Regex.Matches(card.Value, @"<button\b[^>]*>.*?</button>", RegexOptions.Singleline),
+            match => match.Value.Contains("data-bs-toggle=\"dropdown\""));
+        Assert.Contains("aria-label=\"Actions\"", toggle.Value);
+        Assert.Contains("aria-expanded=\"false\"", toggle.Value);
+        Assert.Contains(":aria-describedby=\"`category-title-${cat.id}`\"", toggle.Value);
+        Assert.Contains(":id=\"`category-title-${cat.id}`\"", card.Value);
+        Assert.Contains("bi-three-dots", toggle.Value);
+
+        var menu = Assert.Single(Regex.Matches(card.Value, @"<ul\b[^>]*>.*?</ul>", RegexOptions.Singleline));
+        Assert.Contains("dropdown-menu-end", menu.Value);
+        var actions = Regex.Matches(menu.Value, @"<button\b[^>]*>.*?</button>", RegexOptions.Singleline);
+        string[] expectedHandlers = ["editCategory(cat.id)", "deleteCategory(cat.id)"];
+        string[] expectedLabels = [editLabel, deleteLabel];
+        Assert.Equal(expectedHandlers, actions.Select(action => Regex.Match(action.Value, @"x-on:click=""([^""]+)""").Groups[1].Value));
+        Assert.Equal(expectedLabels, actions.Select(action => WebUtility.HtmlDecode(Regex.Replace(action.Value, "<[^>]*>", "")).Trim()));
+        Assert.All(actions, action =>
+        {
+            Assert.Contains("type=\"button\"", action.Value);
+            Assert.Contains("dropdown-item", action.Value);
+        });
+        Assert.Contains("bi-pen", actions[0].Value);
+        Assert.Contains("bi-trash", actions[1].Value);
+        Assert.Contains("text-danger", actions[1].Value);
+    }
+
     private static async Task<WebApplication> CreateTestApp(SearchPageScenario scenario, BlogConfig? config = null, string pathBase = "",
         AuthenticationProvider provider = AuthenticationProvider.Local, ClaimsPrincipal? user = null)
     {
