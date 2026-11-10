@@ -3,12 +3,26 @@
 ## Current status
 
 - Updated: 2026-11-10.
-- Checkout at update: `master`, `d9a8e959b` (`Refine admin card action menus`).
-- B0-B5 and all separately requested visual refinements are accepted and committed.
+- Checkout at update: `master`, `fdf4ac133` (`Update admin-portal-visual-refresh-plan.md`).
+- B0-B5 and earlier visual refinements are accepted and committed.
+- Pending review: Pages card Edit/Delete actions use the shared top-right ellipsis dropdown. The existing editor link, deletion confirmation, publication badges, card padding, and metadata are retained. Implemented and verified; not committed.
 - B6 integrated acceptance has not started and is not authorized. A user-created commit does not imply acceptance or permission to continue.
 - Retain this file for future conversations, keeping current state and open work rather than accumulating discussion logs.
 
 Preserve the current Bootstrap/Razor/Alpine design documented in the [frontend engineering reference](../agent-reference.md#frontend-and-localization). Keep implementation details there rather than duplicating completed work here.
+
+## Current refinement verification
+
+- Web and test projects rebuilt successfully. `AdminCard_ActionMenu_PreservesLocalizedActionsAndHandlers` passed all six Page/Category/Widget cases in English/French: **Passed: 6, Failed: 0, Skipped: 0**. Assertions cover the native menu, localized labels/icons, title descriptions, original edit/delete bindings, and Page publication/date bindings.
+- Page browser checks passed 24 combinations across six cultures, both sizes/themes: 72 dropdown openings across all three current cards and 72 DOM-only long-title/slug checks. Both real published/unpublished states passed. Verified 24px card padding, corner alignment, 14px menu text, 29px items, 128px menu width, metadata/public/editor URLs, and no title/badge overlap or clipped menus.
+- Native light/dark hover, ArrowDown/ArrowUp navigation, and Escape collapse/focus return passed. Edit opened the correct existing full-screen editor; returned without saving. Delete opened the existing confirmation and was canceled. No saves/deletions were performed; temporary frames were removed and the original theme restored.
+- JavaScript and full Web suites were not rerun; no JavaScript changed and the deferred failures below remain outside this refinement.
+
+Successful targeted command:
+
+```powershell
+dotnet test --project .\src\Tests\Moonglade.Web.Tests\Moonglade.Web.Tests.csproj --no-restore --filter-method '*AdminCard_ActionMenu_PreservesLocalizedActionsAndHandlers'
+```
 
 ## Unresolved test failures
 
@@ -21,6 +35,7 @@ Repair is outside the authorized scope. These failures still require an acceptan
 
 ## Remaining work
 
+- [ ] Obtain review/acceptance of the Pages card action menu.
 - [ ] Obtain explicit authorization to start B6. Until then, wait or execute only the user's separately requested refinement.
 - [ ] Before declaring final acceptance, obtain a decision on the 13 deferred test failures: authorize investigation/repair or explicitly agree how they affect the acceptance gate.
 - [ ] Execute B6 against the combined checkout, recording actual results and uncovered/blocked scenarios.
@@ -28,7 +43,7 @@ Repair is outside the authorized scope. These failures still require an acceptan
 
 ### B6 execution scope
 
-Remaining prerequisite: explicit user authorization to start B6.
+Remaining prerequisites: acceptance/commit confirmation of the Pages refinement and explicit user authorization to start B6.
 
 1. Run the Web build, Web tests, and JavaScript tests once against the combined checkout.
 2. Verify the complete route/state matrix below. Do not reuse sample counts as proof of scenarios that were not exercised.

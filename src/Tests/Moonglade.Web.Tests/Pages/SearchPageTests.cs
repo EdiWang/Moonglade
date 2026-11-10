@@ -336,15 +336,24 @@ public class SearchPageTests
     [InlineData("/admin/category", "fr-FR", "Modifier", "Supprimer")]
     [InlineData("/admin/widgets", "en-US", "Edit", "Delete")]
     [InlineData("/admin/widgets", "fr-FR", "Modifier", "Supprimer")]
+    [InlineData("/admin/page", "en-US", "Edit", "Delete")]
+    [InlineData("/admin/page", "fr-FR", "Modifier", "Supprimer")]
     public async Task AdminCard_ActionMenu_PreservesLocalizedActionsAndHandlers(string route, string culture, string editLabel, string deleteLabel)
     {
         using var app = await CreateTestApp(new SearchPageScenario());
         using var client = app.GetTestClient();
 
         var html = await client.GetStringAsync($"{route}?culture={culture}", TestContext.Current.CancellationToken);
-        var isWidget = route == "/admin/widgets";
-        var iterator = isWidget ? "widget in sortedWidgets" : "cat in sortedCategories";
-        var titleId = isWidget ? "widget-card-title-${widget.id}" : "category-title-${cat.id}";
+        var (iterator, titleId, editBinding, deleteHandler) = route switch
+        {
+            "/admin/category" => ("cat in sortedCategories", "category-title-${cat.id}",
+                "x-on:click=\"editCategory(cat.id)\"", "deleteCategory(cat.id)"),
+            "/admin/widgets" => ("widget in sortedWidgets", "widget-card-title-${widget.id}",
+                "x-on:click=\"editWidget(widget.id)\"", "deleteWidget(widget.id)"),
+            "/admin/page" => ("page in sortedPages", "page-card-title-${page.id}",
+                ":href=\"`./page/edit/${page.id}`\"", "showDeleteModal(page.id)"),
+            _ => throw new ArgumentOutOfRangeException(nameof(route), route, "Unsupported card menu route.")
+        };
 
         var card = Assert.Single(Regex.Matches(html, @"<template\b[^>]*>.*?</template>", RegexOptions.Singleline),
             match => match.Value.Contains($"x-for=\"{iterator}\""));
@@ -359,21 +368,32 @@ public class SearchPageTests
 
         var menu = Assert.Single(Regex.Matches(card.Value, @"<ul\b[^>]*>.*?</ul>", RegexOptions.Singleline));
         Assert.Contains("dropdown-menu-end", menu.Value);
-        var actions = Regex.Matches(menu.Value, @"<button\b[^>]*>.*?</button>", RegexOptions.Singleline);
-        string[] expectedHandlers = isWidget
-            ? ["editWidget(widget.id)", "deleteWidget(widget.id)"]
-            : ["editCategory(cat.id)", "deleteCategory(cat.id)"];
+        var actions = Regex.Matches(menu.Value, @"<(?<element>a|button)\b[^>]*>.*?</\k<element>>", RegexOptions.Singleline);
+        Assert.Equal(2, actions.Count);
+        Assert.Equal(route == "/admin/page" ? "a" : "button", actions[0].Groups["element"].Value);
+        Assert.Equal("button", actions[1].Groups["element"].Value);
+        Assert.Contains(editBinding, actions[0].Value);
+        Assert.Contains($"x-on:click=\"{deleteHandler}\"", actions[1].Value);
         string[] expectedLabels = [editLabel, deleteLabel];
-        Assert.Equal(expectedHandlers, actions.Select(action => Regex.Match(action.Value, @"x-on:click=""([^""]+)""").Groups[1].Value));
         Assert.Equal(expectedLabels, actions.Select(action => WebUtility.HtmlDecode(Regex.Replace(action.Value, "<[^>]*>", "")).Trim()));
         Assert.All(actions, action =>
         {
-            Assert.Contains("type=\"button\"", action.Value);
             Assert.Contains("dropdown-item", action.Value);
+            if (action.Groups["element"].Value == "button")
+            {
+                Assert.Contains("type=\"button\"", action.Value);
+            }
         });
         Assert.Contains("bi-pen", actions[0].Value);
         Assert.Contains("bi-trash", actions[1].Value);
         Assert.Contains("text-danger", actions[1].Value);
+
+        if (route == "/admin/page")
+        {
+            Assert.Contains("x-show=\"page.isPublished\"", card.Value);
+            Assert.Contains("x-show=\"!page.isPublished\"", card.Value);
+            Assert.Contains("formatDate(page.createTimeUtc)", card.Value);
+        }
     }
 
     private static async Task<WebApplication> CreateTestApp(SearchPageScenario scenario, BlogConfig? config = null, string pathBase = "",

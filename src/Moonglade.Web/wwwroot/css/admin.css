@@ -367,16 +367,6 @@
     --bs-dropdown-item-padding-y: .25rem;
 }
 
-.admin-card > .card-footer {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: 8px;
-    margin: 0 24px 24px;
-    padding: 16px 0 0;
-    background-color: transparent;
-}
-
 .admin-widget-preview img {
     max-width: 100%;
     height: auto;
