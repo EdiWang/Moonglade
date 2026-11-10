@@ -765,6 +765,12 @@
   <data name="Account" xml:space="preserve">
     <value>账号</value>
   </data>
+  <data name="Account Settings" xml:space="preserve">
+    <value>账号设置</value>
+  </data>
+  <data name="Sign Out" xml:space="preserve">
+    <value>退出登录</value>
+  </data>
   <data name="Include in feed and sitemap" xml:space="preserve">
     <value>加入订阅及网站地图</value>
   </data>

@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
+using Moonglade.Auth;
 using Moonglade.Configuration;
 using Moonglade.Data.DTO;
 using Moonglade.Data.Entities;
@@ -21,6 +22,7 @@ using Moq;
 using System.Globalization;
 using System.Net;
 using System.Reflection;
+using System.Security.Claims;
 using System.Text.RegularExpressions;
 
 namespace Moonglade.Web.Tests.Pages;
@@ -242,7 +244,70 @@ public class SearchPageTests
         }
     }
 
-    private static async Task<WebApplication> CreateTestApp(SearchPageScenario scenario, BlogConfig? config = null, string pathBase = "")
+    [Theory]
+    [InlineData(AuthenticationProvider.Local, "")]
+    [InlineData(AuthenticationProvider.Local, "/blog")]
+    [InlineData(AuthenticationProvider.OpenIdConnect, "")]
+    [InlineData(AuthenticationProvider.OpenIdConnect, "/blog")]
+    public async Task AdminUserMenu_RendersProviderActionsAndPreservesPathBase(AuthenticationProvider provider, string pathBase)
+    {
+        const string name = "<Admin & Owner>";
+        const string email = "owner&portal@example.test";
+        var user = new ClaimsPrincipal(new ClaimsIdentity(
+            [new Claim("name", name), new Claim("email", email)], "TestAuth"));
+        using var app = await CreateTestApp(new SearchPageScenario(), pathBase: pathBase, provider: provider, user: user);
+        using var client = app.GetTestClient();
+
+        var html = await client.GetStringAsync("/admin/settings/general", TestContext.Current.CancellationToken);
+
+        var toggle = Regex.Match(html, @"<button\b[^>]*id=""admin-user-toggle""[^>]*>(?<content>.*?)</button>", RegexOptions.Singleline);
+        Assert.True(toggle.Success);
+        Assert.Contains("data-bs-toggle=\"dropdown\"", toggle.Value);
+        Assert.Contains("aria-expanded=\"false\"", toggle.Value);
+        Assert.Contains("aria-controls=\"admin-user-menu\"", toggle.Value);
+        Assert.Contains(WebUtility.HtmlEncode(name), toggle.Groups["content"].Value);
+        Assert.Contains($"src=\"{pathBase}/avatar\"", toggle.Value);
+        Assert.DoesNotContain("<div", toggle.Value);
+        if (provider == AuthenticationProvider.OpenIdConnect)
+            Assert.Contains(WebUtility.HtmlEncode(email), toggle.Value);
+        else
+            Assert.DoesNotContain(WebUtility.HtmlEncode(email), toggle.Value);
+
+        var menu = Regex.Match(html, @"<ul\b[^>]*aria-labelledby=""admin-user-toggle""[^>]*>(?<content>.*?)</ul>", RegexOptions.Singleline);
+        Assert.True(menu.Success);
+        var links = Regex.Matches(menu.Groups["content"].Value, @"<a\b[^>]*href=""(?<url>[^""]+)""[^>]*>(?<content>.*?)</a>", RegexOptions.Singleline);
+        string[] expectedUrls = provider == AuthenticationProvider.Local
+            ? [$"{pathBase}/admin/account", $"{pathBase}/auth/signout"]
+            : [$"{pathBase}/auth/signout"];
+        Assert.Equal(expectedUrls, links.Select(link => link.Groups["url"].Value));
+        Assert.Contains("bi-box-arrow-right", links[^1].Value);
+        Assert.Equal("Sign Out", Regex.Replace(links[^1].Groups["content"].Value, "<[^>]*>", "").Trim());
+        if (provider == AuthenticationProvider.Local)
+        {
+            Assert.Contains("bi-person-gear", links[0].Value);
+            Assert.Equal("Account Settings", Regex.Replace(links[0].Groups["content"].Value, "<[^>]*>", "").Trim());
+        }
+    }
+
+    [Theory]
+    [InlineData(AuthenticationProvider.Local)]
+    [InlineData(AuthenticationProvider.OpenIdConnect)]
+    public async Task AdminUserMenu_WithoutDisplayClaims_RetainsAccessibleAccountLabel(AuthenticationProvider provider)
+    {
+        var user = new ClaimsPrincipal(new ClaimsIdentity([new Claim("sub", "test-admin")], "TestAuth"));
+        using var app = await CreateTestApp(new SearchPageScenario(), provider: provider, user: user);
+        using var client = app.GetTestClient();
+
+        var html = await client.GetStringAsync("/admin/settings/general", TestContext.Current.CancellationToken);
+
+        var toggle = Regex.Match(html, @"<button\b[^>]*id=""admin-user-toggle""[^>]*>(?<content>.*?)</button>", RegexOptions.Singleline);
+        Assert.True(toggle.Success);
+        Assert.Contains("class=\"visually-hidden\"", toggle.Groups["content"].Value);
+        Assert.Equal("Account", Regex.Replace(toggle.Groups["content"].Value, "<[^>]*>", "").Trim());
+    }
+
+    private static async Task<WebApplication> CreateTestApp(SearchPageScenario scenario, BlogConfig? config = null, string pathBase = "",
+        AuthenticationProvider provider = AuthenticationProvider.Local, ClaimsPrincipal? user = null)
     {
         var webRoot = FindWebProjectRoot();
         var builder = WebApplication.CreateBuilder(new WebApplicationOptions
@@ -264,6 +329,7 @@ public class SearchPageTests
             .ToList();
 
         builder.Services.AddRouting();
+        builder.Services.Configure<AuthenticationSettings>(options => options.Provider = provider);
         builder.Services.AddLocalization(options => options.ResourcesPath = "Resources");
         builder.Services.Configure<RequestLocalizationOptions>(options =>
         {
@@ -286,6 +352,8 @@ public class SearchPageTests
         app.Use((context, next) =>
         {
             context.Request.PathBase = pathBase;
+            if (user is not null)
+                context.User = user;
             return next(context);
         });
         app.UseRequestLocalization(app.Services.GetRequiredService<IOptions<RequestLocalizationOptions>>().Value);
@@ -377,6 +445,7 @@ public class SearchPageTests
         {
             feature.Controllers.Clear();
             feature.Controllers.Add(typeof(AssetsController).GetTypeInfo());
+            feature.Controllers.Add(typeof(AuthController).GetTypeInfo());
         }
     }
 

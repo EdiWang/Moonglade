@@ -3,9 +3,9 @@
 ## Current status
 
 - Updated: 2026-11-10.
-- Branch: `master`. Base checkout: `ad5bb6b8eaf4d3a13d33f6291e0a1b8a7d304aff` (`Add symmetric admin sidebar menu insets`).
-- Current refinement: both sidebar menu groups have symmetric 4px horizontal insets, keeping selection/hover highlights away from the screen edge. Implemented, verified, and committed; awaiting explicit user review.
-- All planned implementation work is complete. B0-B5 and the secondary-navigation work are accepted; B5 acceptance was confirmed on 2026-11-10. The latest sidebar refinement still awaits explicit user acceptance.
+- Branch: `master`. Base checkout: `0e5cedc2de3d618a867677960c082cf5877901ec` (`Update admin visual refresh status`).
+- Current refinement: the username/avatar opens a Bootstrap dropdown with localized, icon-bearing Account Settings and Sign Out actions, using Bootstrap's default page-theme colors rather than accent colors. As confirmed by the user, OpenID Connect shows Sign Out only. Implemented and verified; not committed and awaiting user review.
+- All planned implementation work is complete. B0-B5 and the secondary-navigation work are accepted; B5 acceptance was confirmed on 2026-11-10. The committed sidebar highlight/inset refinement and the new user menu still await explicit user acceptance.
 - B6 integrated acceptance has not started and is not authorized. A user-created commit does not imply acceptance or permission to continue.
 - Retain this file for future conversations, keeping current state and open work rather than accumulating discussion logs.
 
@@ -17,6 +17,7 @@ Detailed implementation conventions live in the [frontend engineering reference]
 | --- | --- |
 | Shell | Existing font, accent colors, and blue top bar; white sidebar and light-gray workspace in light mode, corresponding dark surfaces. Content-height panels use 24px padding, 16px gaps, 8px radii, theme-aware 1px borders, and no shadows. |
 | Sidebar | Main and bottom menu groups use Bootstrap `mx-1` for 4px horizontal insets. Current-menu and hover states share a background, without vertical markers: `--bs-gray-200` in light mode and `--bs-tertiary-bg` in dark mode. Preserve route selection, text colors, and keyboard focus. |
+| User menu | Username/avatar is a native Bootstrap dropdown button, not an account-page link or separate sign-out icon. Use Bootstrap's default page-theme background/text/hover/focus/active colors, not navbar accent colors. Local authentication shows Account Settings and Sign Out; OpenID Connect shows Sign Out only. Both actions retain their destinations and use localized labels/icons. Preserve claim fallback, safe inline text, an accessible Account label without display claims, keyboard operation, and long-name truncation without clipping the menu. The shared control also appears in editors without changing their other actions/layout. |
 | Navigation and toolbar | Posts, Pages, and Settings classifications are independently scrolling secondary navigation in the top bar. Actions remain in the fixed toolbar outside `.admin-main-body`; only content scrolls. Use `btn-sm` for toolbar buttons, actions on the left and counts/search/filters on the right. Omit empty toolbars. |
 | Lists and data tables | Lists stay lists in shared panels. Activity Logs and Verification Files use shared unstriped `.admin-data-table` styling and feature-specific columns. Ordinary action rows are about 44px tall; multiline content grows naturally. Activity Logs detail actions use accent colors; preserve Verification Files' distinct action colors. |
 | Pagination | Posts, Comments, Mentions, and Activity Logs use `.admin-pagination` outside their cards, with a 16px gap and approximately 35px page links/page-size selects. Preserve navigation destinations and focused controls during populated refresh; hide empty footers with row-based `x-show.important`. |
@@ -32,11 +33,21 @@ These are the most recent recorded checks, not a completed B6 acceptance run.
 
 | Check | Result and coverage |
 | --- | --- |
-| Web build | Passed with zero warnings/errors after the sidebar inset change. |
+| Web build | Passed with zero warnings/errors after the user-menu change. |
+| User-menu browser checks | 80 combinations passed normal and DOM-only long/missing-identity checks: Dashboard, Posts, and General Settings across six cultures, both sizes, and both themes, plus both editor headers in English at both sizes/themes. Verified labels/icons, destinations, opening/dismissal, hit testing, bounded identities, stable header heights, and secondary-navigation separation. Native pointer/Enter/Space/arrow/Escape/Tab checks, account navigation, local sign-out/re-login, and light/dark appearance passed. No external OIDC sign-out was performed. |
+| User-menu colors | 12 combinations passed: Dashboard, Posts, and Post editor at both sizes/themes. Background/text/focus/active colors match the shipped Bootstrap dropdown variables; native hover also passed in both themes. Menu dimensions and dismissal are unchanged. This palette follow-up is CSS-only; build and .NET tests were not repeated. |
 | Sidebar browser checks | 72 samples: Posts, Activity Logs, and General Settings across all six cultures, both approved sizes, and both themes. Main and bottom groups retain 4px left/right insets, visible selected backgrounds, no markers, and no overflow; sidebar width and main alignment are unchanged. A source comparison confirmed only two spacing classes changed in the shared partial. Native-page appearance was reviewed. |
 | Shared table/pagination checks | Five affected routes across six cultures, both sizes, and both themes: 120 combinations passed normal layout, DOM-only long-content, and loading/empty checks. Verification Files was rechecked after its final column adjustment. Native page-size refresh/focus, pagination, drawers, and 16 public/About/editor boundary samples passed. |
-| Web tests | Most recent execution: **Passed: 650, Failed: 13, Skipped: 0**. Not rerun for subsequent presentation-only adjustments. The failures below remain unresolved; do not substitute older passing totals. |
+| Web tests | Latest targeted run: **Passed: 23, Failed: 0, Skipped: 0**, covering `SearchPageTests` and `AuthControllerTests`. Six new compiled-Razor cases cover Local/OIDC menu actions, root/`/blog` URLs, encoded display-claim fallback, and an accessible label without display claims. Last full-suite run remains **Passed: 650, Failed: 13, Skipped: 0**; the failures below are unresolved and the full suite was not rerun for this refinement. |
 | JavaScript tests | Not rerun for the latest presentation-only refinements; no JavaScript changed. Run during B6. |
+
+Targeted command:
+
+```powershell
+dotnet test --project .\src\Tests\Moonglade.Web.Tests\Moonglade.Web.Tests.csproj --no-restore --filter-class '*SearchPageTests' --filter-class '*AuthControllerTests'
+```
+
+New regression methods in [SearchPageTests.cs](../../src/Tests/Moonglade.Web.Tests/Pages/SearchPageTests.cs): `AdminUserMenu_RendersProviderActionsAndPreservesPathBase` and `AdminUserMenu_WithoutDisplayClaims_RetainsAccessibleAccountLabel`.
 
 ### Deferred test failures
 
@@ -48,6 +59,7 @@ The user explicitly chose to record these failures without expanding the visual 
 ## Remaining work
 
 - [ ] Obtain review/acceptance of the latest sidebar background highlight and 4px horizontal inset.
+- [ ] Obtain review/acceptance of the username/avatar dropdown and its confirmed Local/OIDC menu difference.
 - [ ] Obtain explicit authorization to start B6. Until then, wait or execute only the user's separately requested refinement.
 - [ ] Before declaring final acceptance, obtain a decision on the 13 deferred test failures: authorize investigation/repair or explicitly agree how they affect the acceptance gate.
 - [ ] Execute B6 against the combined checkout, recording actual results and uncovered/blocked scenarios.
@@ -92,7 +104,7 @@ Acceptance conditions:
 - Ask about material design/scope/behavior choices, with alternatives and a recommendation. Verification, acceptance, commit confirmation, and continuation are separate gates.
 - Local host stop/start and README default-account login are authorized. Verify process ownership before stopping a specific PID; do not reset accounts.
 - Local test-data creation/changes are authorized without restoration. This does not authorize production changes, external sends/services, or unrelated repairs.
-- Preserve public pages, both full-screen editors, authentication, protocols, business behavior, and existing save semantics.
+- Preserve public pages, full-screen-editor layouts/actions, authentication, protocols, business behavior, and existing save semantics. The shared user-menu interaction applies to editor headers too.
 - Keep this tracker concise after future updates: replace stale state, record current verification and unresolved work, and do not append discussion histories.
 
 ## Resume instructions and commands

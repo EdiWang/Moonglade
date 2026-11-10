@@ -765,6 +765,12 @@
   <data name="Account" xml:space="preserve">
     <value>アカウント</value>
   </data>
+  <data name="Account Settings" xml:space="preserve">
+    <value>アカウント設定</value>
+  </data>
+  <data name="Sign Out" xml:space="preserve">
+    <value>ログアウト</value>
+  </data>
   <data name="Include in feed and sitemap" xml:space="preserve">
     <value>サブスクリプションとサイトマップを追加する</value>
   </data>

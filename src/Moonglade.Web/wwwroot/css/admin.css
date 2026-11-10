@@ -19,6 +19,10 @@
 
 .admin-body {
     --admin-sidebar-width: 190px;
+    /* Keep dropdown colors tied to the page theme, not the dark navbar. */
+    --admin-user-menu-bg: var(--bs-body-bg);
+    --admin-user-menu-color: var(--bs-body-color);
+    --admin-user-menu-hover-bg: var(--bs-tertiary-bg);
     display: flex;
     flex-direction: column;
     height: 100dvh;
@@ -90,11 +94,45 @@
     width: auto;
 }
 
-.admin-navbar-has-navigation .navbar-text.me-2 {
+.admin-user-toggle {
     max-width: 180px;
+}
+
+.admin-user-toggle:focus-visible {
+    outline: 2px solid currentColor;
+    outline-offset: 2px;
+    box-shadow: none;
+}
+
+.admin-user-name {
+    min-width: 0;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+}
+
+#admin-user-menu {
+    --bs-dropdown-bg: var(--admin-user-menu-bg);
+    --bs-dropdown-color: var(--admin-user-menu-color);
+    --bs-dropdown-link-color: var(--admin-user-menu-color);
+    --bs-dropdown-link-hover-color: var(--admin-user-menu-color);
+    --bs-dropdown-link-hover-bg: var(--admin-user-menu-hover-bg);
+    background-color: var(--bs-dropdown-bg);
+    color: var(--bs-dropdown-color);
+}
+
+#admin-user-menu .dropdown-item {
+    color: var(--bs-dropdown-link-color);
+}
+
+#admin-user-menu .dropdown-item:is(:hover, :focus) {
+    background-color: var(--bs-dropdown-link-hover-bg);
+    color: var(--bs-dropdown-link-hover-color);
+}
+
+#admin-user-menu .dropdown-item:is(.active, :active) {
+    background-color: var(--bs-dropdown-link-active-bg);
+    color: var(--bs-dropdown-link-active-color);
 }
 
 .admin-secondary-nav {
