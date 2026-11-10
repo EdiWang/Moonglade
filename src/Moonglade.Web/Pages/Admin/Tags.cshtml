@@ -54,17 +54,15 @@
 
     <div x-show="!isLoading && hasTags" class="tag-manager-container admin-list">
         <template x-for="group in groupedTags" :key="group.letter">
-            <div class="tag-letter-group admin-list-item gap-3" :id="'tag-group-' + group.letter">
+            <div class="tag-letter-group admin-list-item border-0 gap-3" :id="'tag-group-' + group.letter">
                 <div class="tag-letter-tile">
                     <span x-text="group.letter"></span>
                 </div>
                 <ul class="list-unstyled ul-tag-mgr mb-0" role="list">
                     <template x-for="tagItem in group.tags" :key="tagItem.id">
-                        <li :id="`li-tag-${tagItem.id}`" class="admin-tag-item border rounded me-1">
-                            <i x-show="tagItem.postCount === 0"
-                               class="bi-exclamation-triangle-fill text-warning tag-warning"
-                               title="@SharedLocalizer["Tags without posts"]"
-                               aria-label="@SharedLocalizer["Tags without posts"]"></i>
+                        <li :id="`li-tag-${tagItem.id}`" class="admin-tag-item border rounded me-1"
+                            :class="{ 'border-warning': tagItem.postCount === 0 }">
+                            <span x-show="tagItem.postCount === 0" class="visually-hidden">@SharedLocalizer["Tags without posts"]</span>
                             <span class="span-tagcontent-editable"
                                   contenteditable="true"
                                   spellcheck="false"
