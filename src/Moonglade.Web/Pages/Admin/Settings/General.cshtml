@@ -302,7 +302,17 @@
                             <div class="text-muted">@SharedLocalizer["Set to 0 to hide tags widget"]</div>
                         </div>
                         <div class="col-4">
-                            <input asp-for="@ViewModel.HotTagAmount" data-setting-edit="" class="form-control" min="0" max="20" required />
+                            <select asp-for="@ViewModel.HotTagAmount" data-setting-number="" class="form-select" required>
+                                @if (ViewModel.HotTagAmount is not (0 or 5 or 10 or 15 or 20))
+                                {
+                                    <option value="@ViewModel.HotTagAmount" disabled hidden>@ViewModel.HotTagAmount</option>
+                                }
+                                <option value="0">0</option>
+                                <option value="5">5</option>
+                                <option value="10">10</option>
+                                <option value="15">15</option>
+                                <option value="20">20</option>
+                            </select>
                         </div>
                     </div>
 
