@@ -3,9 +3,10 @@
 ## Current status
 
 - Updated: 2026-11-10.
-- Checkout at update: `master`, `bdc2f56df` (`Unify admin page card action menus`).
+- Checkout at update: `master`, `f2a77640b` (`Focus C# tests on functional contracts`).
 - B0-B5 and earlier visual refinements are accepted and committed.
 - Pending review: Pages card Edit/Delete actions use the shared top-right ellipsis dropdown. The existing editor link, deletion confirmation, publication badges, card padding, and metadata are retained. Implemented, verified, and committed.
+- Pending review: Settings disclosure buttons cover their full header rows, with switches/radios and their labels remaining independently interactive. Implemented and browser-verified through shared CSS only; not committed.
 - B6 integrated acceptance has not started and is not authorized. A user-created commit does not imply acceptance or permission to continue.
 - Retain this file for future conversations, keeping current state and open work rather than accumulating discussion logs.
 
@@ -16,11 +17,14 @@ Preserve the current Bootstrap/Razor/Alpine design documented in the [frontend e
 - C# tests cover business logic and functional contracts, not UI presentation. UI-only tests have been removed; presentation remains browser-verified rather than enforced through C# markup assertions. See the [test scope](../../src/Tests/README.md) and [repository rules](../../AGENTS.md#test-selection).
 - Page browser checks passed 24 combinations across six cultures, both sizes/themes: 72 dropdown openings across all three current cards and 72 DOM-only long-title/slug checks. Both real published/unpublished states passed. Verified 24px card padding, corner alignment, 14px menu text, 29px items, 128px menu width, metadata/public/editor URLs, and no title/badge overlap or clipped menus.
 - Native light/dark hover, ArrowDown/ArrowUp navigation, and Escape collapse/focus return passed. Edit opened the correct existing full-screen editor; returned without saving. Delete opened the existing confirmation and was canceled. No saves/deletions were performed; temporary frames were removed and the original theme restored.
+- Settings checks passed for all 11 disclosure headers on six pages across 24 culture/viewport/theme combinations: 264 header checks, 528 title/blank-space clicks, and 1,632 row/control hit-target checks. Full-row coverage, arrow alignment, expansion events, ARIA state, unchanged field values, and no document overflow passed.
+- All 312 switch/radio/label activations were DOM-only checks with change propagation blocked and values restored; no setting writes or form submissions occurred. Native Enter/Space activation and visible focus passed on heading-only, radio, and switch headers with normal transitions. Matrix checks disabled transition duration only. Temporary frames/helpers were removed; the original route and theme were retained.
+- No build or C# tests were run for this CSS/documentation-only refinement; no C# UI tests were added.
 - JavaScript tests were not rerun; no JavaScript changed.
 
 ## Current business-test status
 
-Latest full Web suite after UI-test cleanup: **Passed: 654, Failed: 0, Skipped: 0**. The affected retained business-test selection also passed: **Passed: 108, Failed: 0, Skipped: 0**. No production code, JavaScript tests, dependencies, or solution wiring changed.
+Latest full Web suite after UI-test cleanup: **Passed: 654, Failed: 0, Skipped: 0**. The affected retained business-test selection also passed: **Passed: 108, Failed: 0, Skipped: 0**. That cleanup changed no production code, JavaScript tests, dependencies, or solution wiring.
 
 Cleanup removed 23 UI-only cases across 10 methods and one empty test source file. The final test-project build passed with zero warnings/errors.
 
@@ -31,13 +35,14 @@ Other C# test projects were inspected but unchanged and not rerun. Future failur
 ## Remaining work
 
 - [ ] Obtain review/acceptance of the Pages card action menu.
+- [ ] Obtain review/acceptance of full-row Settings disclosure interaction.
 - [ ] Obtain explicit authorization to start B6. Until then, wait or execute only the user's separately requested refinement.
 - [ ] Execute B6 against the combined checkout, recording actual results and uncovered/blocked scenarios.
 - [ ] Obtain final user acceptance. Commits remain user-managed.
 
 ### B6 execution scope
 
-Remaining prerequisites: acceptance/commit confirmation of the Pages refinement and explicit user authorization to start B6.
+Remaining prerequisites: acceptance/commit confirmation of the Pages and Settings disclosure refinements and explicit user authorization to start B6.
 
 1. Run the Web build, Web tests, and JavaScript tests once against the combined checkout.
 2. Verify the complete route/state matrix below. Do not reuse sample counts as proof of scenarios that were not exercised.
