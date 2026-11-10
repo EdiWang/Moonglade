@@ -53,7 +53,16 @@
                             <label asp-for="@settings.PostListPageSize"></label>
                         </div>
                         <div class="col-4">
-                            <input asp-for="@settings.PostListPageSize" data-setting-edit="" class="form-control" min="5" max="30" required />
+                            <select asp-for="@settings.PostListPageSize" data-setting-number="" class="form-select" required>
+                                @if (settings.PostListPageSize is not (5 or 10 or 15 or 20))
+                                {
+                                    <option value="@settings.PostListPageSize" disabled hidden>@settings.PostListPageSize</option>
+                                }
+                                <option value="5">5</option>
+                                <option value="10">10</option>
+                                <option value="15">15</option>
+                                <option value="20">20</option>
+                            </select>
                         </div>
                     </div>
 
@@ -65,7 +74,14 @@
                             <label asp-for="@settings.MaximumPageNumbersToDisplay"></label>
                         </div>
                         <div class="col-4">
-                            <input asp-for="@settings.MaximumPageNumbersToDisplay" data-setting-edit="" class="form-control" min="2" max="10" required />
+                            <select asp-for="@settings.MaximumPageNumbersToDisplay" data-setting-number="" class="form-select" required>
+                                @if (settings.MaximumPageNumbersToDisplay is not (5 or 10))
+                                {
+                                    <option value="@settings.MaximumPageNumbersToDisplay" disabled hidden>@settings.MaximumPageNumbersToDisplay</option>
+                                }
+                                <option value="5">5</option>
+                                <option value="10">10</option>
+                            </select>
                         </div>
                     </div>
                 </div>
