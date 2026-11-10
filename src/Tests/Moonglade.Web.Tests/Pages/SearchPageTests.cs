@@ -306,6 +306,31 @@ public class SearchPageTests
         Assert.Equal("Account", Regex.Replace(toggle.Groups["content"].Value, "<[^>]*>", "").Trim());
     }
 
+    [Theory]
+    [InlineData("resetPasswordModal", "openResetPasswordModal()", "Change", "btn-outline-accent")]
+    [InlineData("resetAuthenticatorModal", "openResetAuthenticatorModal()", "Reset Authenticator", "btn-outline-danger")]
+    public async Task LocalAccount_ActionButtons_TargetExistingDialogs(string modalId, string handler, string label, string buttonStyle)
+    {
+        using var app = await CreateTestApp(new SearchPageScenario());
+        using var client = app.GetTestClient();
+
+        var html = await client.GetStringAsync("/admin/account", TestContext.Current.CancellationToken);
+
+        var button = Assert.Single(Regex.Matches(html, @"<button\b[^>]*>.*?</button>", RegexOptions.Singleline),
+            match => match.Value.Contains($"aria-controls=\"{modalId}\""));
+        Assert.Contains("type=\"button\"", button.Value);
+        Assert.Contains("btn-sm", button.Value);
+        Assert.Contains(buttonStyle, button.Value);
+        Assert.Contains("aria-haspopup=\"dialog\"", button.Value);
+        Assert.Contains($"x-on:click=\"{handler}\"", button.Value);
+        Assert.Equal(label, Regex.Replace(button.Value, "<[^>]*>", "").Trim());
+        Assert.Contains($"id=\"{modalId}\"", html);
+
+        var descriptionIds = Regex.Match(button.Value, @"aria-describedby=""([^""]+)""").Groups[1].Value.Split(' ');
+        Assert.Equal(2, descriptionIds.Length);
+        Assert.All(descriptionIds, id => Assert.Contains($"id=\"{id}\"", html));
+    }
+
     private static async Task<WebApplication> CreateTestApp(SearchPageScenario scenario, BlogConfig? config = null, string pathBase = "",
         AuthenticationProvider provider = AuthenticationProvider.Local, ClaimsPrincipal? user = null)
     {
