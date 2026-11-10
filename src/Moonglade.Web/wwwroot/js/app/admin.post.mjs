@@ -4,6 +4,7 @@ import { formatUtcTime, getLocalizedString, toUtcDatePath } from './utils.module
 import { success, error } from './toastService.mjs';
 import { showDeleteConfirmModal, hideConfirmModal } from './adminModal.mjs';
 import { withPagination } from './admin.pagination.mjs';
+import { createOffcanvas } from './admin.offcanvas.mjs';
 
 Alpine.data('postManager', () => withPagination(4, {
     posts: [],
@@ -82,7 +83,7 @@ Alpine.data('postManager', () => withPagination(4, {
     },
 
     openFilter() {
-        this.filterCanvas ??= new bootstrap.Offcanvas(this.$refs.filterCanvas);
+        this.filterCanvas ??= createOffcanvas(this.$refs.filterCanvas);
         this.filterCanvas.show();
     },
 

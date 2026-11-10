@@ -6,6 +6,7 @@ import { showDeleteConfirmModal, hideConfirmModal } from './adminModal.mjs';
 import { renderWidgetContent } from './admin.widgets.render.mjs';
 import { createLinkMixin } from './admin.widgets.links.mjs';
 import { createButtonMixin } from './admin.widgets.buttons.mjs';
+import { createOffcanvas } from './admin.offcanvas.mjs';
 
 const emptyImageLink = () => ({ imageUrl: '', cssClass: '', title: '', altText: '', linkUrl: '', openInNewTab: true });
 const emptyFormData = () => ({
@@ -31,7 +32,7 @@ Alpine.data('widgetManager', () => ({
     ...createButtonMixin(),
 
     async init() {
-        this.editCanvas = new bootstrap.Offcanvas(this.$refs.editWidgetCanvas);
+        this.editCanvas = createOffcanvas(this.$refs.editWidgetCanvas);
         this.linkModal = new bootstrap.Modal(this.$refs.linkDialogModal);
         this.buttonModal = new bootstrap.Modal(this.$refs.buttonDialogModal);
         await this.loadWidgets();
@@ -72,7 +73,7 @@ Alpine.data('widgetManager', () => ({
         this.editCanvas.show();
     },
 
-    async editWidget(id) {
+    async editWidget(id, trigger = document.activeElement) {
         try {
             const widget = await fetch2(`/api/widgets/${id}`, 'GET');
             this.currentWidgetId = widget.id;
@@ -99,7 +100,7 @@ Alpine.data('widgetManager', () => ({
                 buttons
             };
 
-            this.editCanvas.show();
+            this.editCanvas.show(trigger);
         } catch (err) {
             error(err);
         }

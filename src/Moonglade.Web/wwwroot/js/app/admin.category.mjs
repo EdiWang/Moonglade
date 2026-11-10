@@ -3,6 +3,7 @@ import { fetch2 } from './httpService.mjs?v=1500';
 import { success, error } from './toastService.mjs';
 import { getLocalizedString } from './utils.module.mjs';
 import { showDeleteConfirmModal, hideConfirmModal } from './adminModal.mjs';
+import { createOffcanvas } from './admin.offcanvas.mjs';
 
 Alpine.data('categoryManager', () => ({
     categories: [],
@@ -17,7 +18,7 @@ Alpine.data('categoryManager', () => ({
     },
 
     async init() {
-        this.editCanvas = new bootstrap.Offcanvas(this.$refs.editCatCanvas);
+        this.editCanvas = createOffcanvas(this.$refs.editCatCanvas);
         await this.loadCategories();
     },
 
@@ -48,7 +49,7 @@ Alpine.data('categoryManager', () => ({
         this.editCanvas.show();
     },
 
-    async editCategory(id) {
+    async editCategory(id, trigger = document.activeElement) {
         try {
             const data = await fetch2(`/api/category/${id}`, 'GET');
             this.currentCategoryId = data.id;
@@ -57,7 +58,7 @@ Alpine.data('categoryManager', () => ({
                 displayName: data.displayName,
                 note: data.note
             };
-            this.editCanvas.show();
+            this.editCanvas.show(trigger);
         } catch (err) {
             error(err);
         }

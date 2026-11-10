@@ -4,6 +4,7 @@ import { formatUtcTime, getLocalizedString, localDateBoundaryToUtcIso } from './
 import { success, error } from './toastService.mjs';
 import { showConfirmModal, hideConfirmModal } from './adminModal.mjs';
 import { withPagination } from './admin.pagination.mjs';
+import { createOffcanvas } from './admin.offcanvas.mjs';
 
 Alpine.data('activityLogManager', () => withPagination(10, {
     logs: [],
@@ -20,7 +21,7 @@ Alpine.data('activityLogManager', () => withPagination(10, {
         this.initPageFromUrl();
 
         this.detailCanvas = new bootstrap.Offcanvas(this.$refs.detailCanvas);
-        this.filterCanvas = new bootstrap.Offcanvas(this.$refs.filterCanvas);
+        this.filterCanvas = createOffcanvas(this.$refs.filterCanvas);
 
         await this.loadEventTypes();
         await this.loadData();
