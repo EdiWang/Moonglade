@@ -25,6 +25,7 @@ export function initializeSettings({ createEditor, onSaved } = {}) {
     const dialogForm = dialog.querySelector('form');
     const dialogTitle = dialog.querySelector('.modal-title');
     const dialogError = document.getElementById('setting-edit-error');
+    const helpHost = document.getElementById('setting-edit-help');
     const fieldHost = document.getElementById('setting-edit-field');
     const saveButton = dialogForm.querySelector('[type=submit]');
     const cancelButton = dialogForm.querySelector('[data-bs-dismiss]');
@@ -71,11 +72,13 @@ export function initializeSettings({ createEditor, onSaved } = {}) {
     }
 
     function openEditor(edits, trigger, { label = edits[0].label, dependency } = {}) {
-        const { control } = edits[0];
+        const { control, help } = edits[0];
         currentEdit = { edits, trigger, dependency, required: control.required };
         dialogTitle.textContent = label;
         dialog.querySelector('.modal-dialog').classList.toggle('modal-lg', control.tagName === 'TEXTAREA');
         control.required ||= Boolean(dependency);
+        helpHost.replaceChildren(...(help ? [help.content.cloneNode(true)] : []));
+        helpHost.hidden = !help;
         const grouped = edits.length > 1;
         fieldHost.classList.toggle('d-grid', grouped);
         fieldHost.classList.toggle('gap-3', grouped);
@@ -108,10 +111,11 @@ export function initializeSettings({ createEditor, onSaved } = {}) {
         preview.className = group ? 'd-block text-break' : 'text-body-secondary text-truncate';
         preview.textContent = control.value || '—';
 
-        const edit = { control, name, label, preview };
+        const help = control.closest('.settings-entry')?.querySelector('template[data-setting-help]');
+        const edit = { control, name, label, preview, help };
         control.parentElement.classList.remove('form-floating');
         control.setAttribute('aria-labelledby', dialogTitle.id);
-        control.setAttribute('aria-describedby', dialogError.id);
+        control.setAttribute('aria-describedby', help ? `${helpHost.id} ${dialogError.id}` : dialogError.id);
         if (group) {
             if (!editGroups.has(group)) editGroups.set(group, []);
             editGroups.get(group).push(edit);
@@ -206,6 +210,8 @@ export function initializeSettings({ createEditor, onSaved } = {}) {
         editor?.destroy();
         editor = null;
         edits[0].control.required = required;
+        helpHost.replaceChildren();
+        helpHost.hidden = true;
         fieldHost.replaceChildren();
         currentEdit = null;
         trigger.focus();

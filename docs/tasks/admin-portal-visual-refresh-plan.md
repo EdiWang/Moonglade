@@ -3,13 +3,14 @@
 ## Current status
 
 - Updated: 2026-11-10.
-- Checkout at update: `master`, `0d5530376` (`Move robots.txt into SEO settings`).
+- Checkout at update: `master`, `45b5970bf` (`Refresh admin menu with collapsible groups`).
 - B0-B5 and earlier visual refinements are accepted and committed.
 - Pending review: Pages card Edit/Delete actions use the shared top-right ellipsis dropdown. The existing editor link, deletion confirmation, publication badges, card padding, and metadata are retained. Implemented, verified, and committed.
 - Pending review: Settings disclosure buttons cover their full header rows, with switches/radios and their labels remaining independently interactive. Implemented, browser-verified, and committed.
 - Pending review: General Settings' Profile uses three separated rows: avatar/name/description with one combined Change dialog, independent email editing, and Gravatar. The avatar has a camera/mask hover and keyboard-focus overlay opening the existing upload dialog. Implemented, verified, and committed.
-- Pending review: Menu now uses independent Settings-style expandable groups, default collapsed, with flat child rows and separators instead of nested panels. The enable row is independent; ordering buttons remain direct, while parent/child Edit and Delete use compact ellipsis dropdowns. The user confirmed these choices. Implemented and verified; not committed.
-- Local development host is stopped. The user authorized a temporary Menu verification host only; it was stopped after verification and port 10210 is no longer listening.
+- Pending review: Menu now uses independent Settings-style expandable groups, default collapsed, with flat child rows and separators instead of nested panels. The enable row is independent; ordering buttons remain direct, while parent/child Edit and Delete use compact ellipsis dropdowns. The user confirmed these choices. Implemented, verified, and committed.
+- Pending review: Advanced Settings' Head/Foot JavaScript warnings and usage guidance now appear in their respective Change dialogs instead of the list. Existing localized content, editing, and saving behavior are retained. Implemented and verified; not committed.
+- Local development host is stopped. The user authorized a temporary script-dialog verification host only; it was stopped after verification and port 10210 is no longer listening.
 - B6 integrated acceptance has not started and is not authorized. A user-created commit does not imply acceptance or permission to continue.
 - Retain this file for future conversations, keeping current state and open work rather than accumulating discussion logs.
 
@@ -30,6 +31,8 @@ Preserve the current Bootstrap/Razor/Alpine design documented in the [frontend e
 - Menu verification: Web build passed with zero warnings/errors; Menu JavaScript syntax and all 34 existing JavaScript tests passed. Browser checks passed all 24 culture/viewport/theme combinations: 144 disclosure clicks, 120 parent/child dropdown openings, 48 flat-child separator checks, and 72 DOM-only long-text checks. Dropdown hit testing identified and verified a fix for following-row overlap.
 - Menu draft checks passed ordering boundaries, expansion following reordered/edited items, parent/child editing, adding to a null child list, delete/clear confirmation and cancellation, expansion cleanup, and the unchanged toolbar Save envelope. Native Enter/Space disclosure, visible focus, dropdown ArrowDown navigation, and Escape focus return passed. Empty, single-menu, loading, and 20-group long-scroll states passed in both sizes/themes, including fixed-toolbar and final-edge reachability.
 - Menu fixtures and the single simulated Save were browser-only; no real menu settings were changed. Temporary frames/helpers were removed, the original theme restored, and reload confirmed the original two saved menus default to collapsed. No C# UI tests were added or run. These checks are a refinement, not B6.
+- Script-dialog verification: Web build passed with zero warnings/errors; both changed JavaScript modules passed syntax checks and all 34 existing JavaScript tests passed. Browser checks passed 24 culture/viewport/theme combinations with 48 dialog visits: correct localized warning/instructions, encoded script examples, accessible help, focus return, viewport fit, reachable actions, and help cleanup. Alternating Head/Foot, cancel rollback, no-op suppression, error retention/retry, and unchanged PATCH fields passed through DOM-only checks and two intercepted requests; no real settings were saved.
+- Updated-helper regressions passed grouped Profile, ordinary single-field editing, and the CSS code editor without script-help leakage. Temporary frames/helpers were removed and the original settings remained unchanged. No C# UI tests were added or run.
 
 ## Current business-test status
 
@@ -47,13 +50,14 @@ Other C# test projects were inspected but unchanged and not rerun. Future failur
 - [ ] Obtain review/acceptance of full-row Settings disclosure interaction.
 - [ ] Obtain review/acceptance of the three-row Profile layout, combined name/description editor, and avatar action.
 - [ ] Obtain review/acceptance of the flat Menu groups, default-collapsed disclosure, and compact action menus.
+- [ ] Obtain review/acceptance of Head/Foot JavaScript guidance inside the Change dialogs.
 - [ ] Obtain explicit authorization to start B6. Until then, wait or execute only the user's separately requested refinement.
 - [ ] Execute B6 against the combined checkout, recording actual results and uncovered/blocked scenarios.
 - [ ] Obtain final user acceptance. Commits remain user-managed.
 
 ### B6 execution scope
 
-Remaining prerequisites: acceptance/commit confirmation of the Pages, Settings disclosure, Profile, and Menu refinements and explicit user authorization to start B6.
+Remaining prerequisites: acceptance/commit confirmation of the Pages, Settings disclosure, Profile, Menu, and script-dialog refinements and explicit user authorization to start B6.
 
 1. Run the Web build, Web tests, and JavaScript tests once against the combined checkout.
 2. Verify the complete route/state matrix below. Do not reuse sample counts as proof of scenarios that were not exercised.

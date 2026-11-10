@@ -1,3 +1,3 @@
-import { initializeSettings } from './admin.settings.mjs';
+import { initializeSettings } from './admin.settings.mjs?v=3';
 
 initializeSettings();

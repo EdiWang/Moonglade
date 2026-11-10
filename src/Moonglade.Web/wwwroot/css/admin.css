@@ -532,11 +532,6 @@
     outline-offset: 2px;
 }
 
-.admin-settings-note {
-    grid-column: 2 / -1;
-    min-width: 0;
-}
-
 .admin-settings-gallery .theme-selector-footer {
     display: flex;
     flex-wrap: wrap;
