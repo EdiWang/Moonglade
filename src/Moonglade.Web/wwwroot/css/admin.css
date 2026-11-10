@@ -360,6 +360,13 @@
     border-top-right-radius: calc(var(--bs-card-border-radius) - var(--bs-card-border-width));
 }
 
+.admin-card-actions > .dropdown-menu {
+    --bs-dropdown-min-width: 8rem;
+    --bs-dropdown-font-size: .875rem;
+    --bs-dropdown-item-padding-x: .75rem;
+    --bs-dropdown-item-padding-y: .25rem;
+}
+
 .admin-card > .card-footer {
     display: flex;
     flex-wrap: wrap;
