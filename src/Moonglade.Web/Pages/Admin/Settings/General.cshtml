@@ -240,33 +240,37 @@
 
                         <div id="settings-profile" class="collapse @(ViewModel.WidgetsProfile ? "show" : null)">
                             <div class="admin-settings-expander-body">
-                                <div class="admin-settings-detail">
-                                    <div class="row">
-                                        <div class="col-2">
-                                            <div class="mb-3">
-                                                <img src="@avatarUrl" class="img-thumbnail img-fluid blogadmin-avatar" />
-                                            </div>
-                                            <a class="btn w-100 btn-sm btn-outline-accent" href="#" data-bs-toggle="modal" data-bs-target="#avatarmodal">@SharedLocalizer["Change"]</a>
+                                <div class="settings-entry admin-profile-entry" data-setting-edit-group="@SharedLocalizer["Profile"]">
+                                    <button type="button" class="admin-profile-avatar" data-bs-toggle="modal" data-bs-target="#avatarmodal" aria-label="@SharedLocalizer["Change Avatar"]">
+                                        <img src="@avatarUrl" class="img-thumbnail blogadmin-avatar" alt="" />
+                                        <span class="admin-profile-avatar-overlay" aria-hidden="true">
+                                            <i class="bi bi-camera"></i>
+                                        </span>
+                                    </button>
+                                    <div class="col">
+                                        <div class="fw-semibold">
+                                            <label class="visually-hidden" asp-for="@ViewModel.OwnerName"></label>
+                                            <input asp-for="@ViewModel.OwnerName" data-setting-edit="" class="form-control" required />
                                         </div>
-                                        <div class="col-10">
-                                            <div class="row mb-2 gap-0">
-                                                <div class="col">
-                                                    <label class="form-label" asp-for="@ViewModel.OwnerName"></label>
-                                                    <input asp-for="@ViewModel.OwnerName" data-setting-edit="" class="form-control" required />
-                                                </div>
-                                                <div class="col">
-                                                    <label class="form-label" asp-for="@ViewModel.OwnerEmail"></label>
-                                                    <input asp-for="@ViewModel.OwnerEmail" data-setting-edit="" class="form-control" required title="@SharedLocalizer["Email address to receive notifications from this blog."]" />
-                                                </div>
-                                            </div>
+                                        <div class="form-text">
+                                            <label class="visually-hidden" asp-for="@ViewModel.Description"></label>
+                                            <input asp-for="@ViewModel.Description" data-setting-edit=""
+                                                   placeholder="@Html.DisplayName(ViewModel.Description)"
+                                                   class="form-control" required>
+                                        </div>
+                                    </div>
+                                    <button type="button" class="btn btn-sm btn-outline-accent" data-setting-edit-trigger aria-haspopup="dialog">@SharedLocalizer["Change"]</button>
+                                </div>
 
-                                            <div class="mb-2">
-                                                <label class="form-label" asp-for="@ViewModel.Description"></label>
-                                                <input asp-for="@ViewModel.Description" data-setting-edit=""
-                                                       placeholder="@Html.DisplayName(ViewModel.Description)"
-                                                       class="form-control" required>
-                                            </div>
-                                        </div>
+                                <div class="settings-entry row align-items-center">
+                                    <div class="col-auto">
+                                        <i class="bi-envelope settings-entry-icon"></i>
+                                    </div>
+                                    <div class="col">
+                                        <label asp-for="@ViewModel.OwnerEmail"></label>
+                                    </div>
+                                    <div class="col-5 text-end">
+                                        <input asp-for="@ViewModel.OwnerEmail" data-setting-edit="" class="form-control" required title="@SharedLocalizer["Email address to receive notifications from this blog."]" />
                                     </div>
                                 </div>
 

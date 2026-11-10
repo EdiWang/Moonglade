@@ -1,4 +1,4 @@
-import { initializeSettings } from './admin.settings.mjs';
+import { initializeSettings } from './admin.settings.mjs?v=2';
 import { ImageUploader } from './imageuploader.mjs';
 
 var avatarUploader = new ImageUploader('avatar', 300, 'image/jpeg');

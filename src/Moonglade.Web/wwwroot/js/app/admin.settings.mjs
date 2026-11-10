@@ -31,6 +31,7 @@ export function initializeSettings({ createEditor, onSaved } = {}) {
     const saveText = saveButton.textContent;
 
     const editFields = new Map();
+    const editGroups = new Map();
     const controlsByField = new Map();
     const confirmed = new Map();
     const fieldErrors = new Map();
@@ -69,14 +70,32 @@ export function initializeSettings({ createEditor, onSaved } = {}) {
         onSaved?.(fields);
     }
 
-    function openEditor(edit, trigger, dependency) {
-        const { control, label, name } = edit;
-        currentEdit = { edit, trigger, dependency, required: control.required };
+    function openEditor(edits, trigger, { label = edits[0].label, dependency } = {}) {
+        const { control } = edits[0];
+        currentEdit = { edits, trigger, dependency, required: control.required };
         dialogTitle.textContent = label;
         dialog.querySelector('.modal-dialog').classList.toggle('modal-lg', control.tagName === 'TEXTAREA');
-        control.value = confirmed.get(name);
         control.required ||= Boolean(dependency);
-        fieldHost.replaceChildren(control);
+        const grouped = edits.length > 1;
+        fieldHost.classList.toggle('d-grid', grouped);
+        fieldHost.classList.toggle('gap-3', grouped);
+        fieldHost.replaceChildren(...edits.map(({ control, name, label }) => {
+            control.value = confirmed.get(name);
+            if (!grouped) {
+                control.setAttribute('aria-labelledby', dialogTitle.id);
+                return control;
+            }
+
+            const field = document.createElement('div');
+            const fieldLabel = document.createElement('label');
+            fieldLabel.className = 'form-label';
+            fieldLabel.id = control.id + '-edit-label';
+            fieldLabel.htmlFor = control.id;
+            fieldLabel.textContent = label;
+            control.setAttribute('aria-labelledby', fieldLabel.id);
+            field.append(fieldLabel, control);
+            return field;
+        }));
         showError(dialogError, '');
         modal.show(trigger);
     }
@@ -84,32 +103,45 @@ export function initializeSettings({ createEditor, onSaved } = {}) {
     for (const control of form.querySelectorAll('[data-setting-edit]')) {
         const name = fieldName(control);
         const label = control.dataset.settingEdit || control.labels[0]?.textContent.trim() || name;
-        const summary = document.createElement('div');
-        summary.className = 'd-flex align-items-center justify-content-between gap-2';
+        const group = control.closest('[data-setting-edit-group]');
         const preview = document.createElement('span');
-        preview.className = 'text-body-secondary text-truncate';
+        preview.className = group ? 'd-block text-break' : 'text-body-secondary text-truncate';
         preview.textContent = control.value || '—';
-        const button = document.createElement('button');
-        button.type = 'button';
-        button.className = 'btn btn-sm btn-outline-accent flex-shrink-0';
-        button.textContent = dialog.dataset.change;
-        button.setAttribute('aria-label', label + ' · ' + dialog.dataset.change);
-        button.setAttribute('aria-haspopup', 'dialog');
 
         const edit = { control, name, label, preview };
-        summary.append(preview, button);
         control.parentElement.classList.remove('form-floating');
         control.setAttribute('aria-labelledby', dialogTitle.id);
         control.setAttribute('aria-describedby', dialogError.id);
-        control.replaceWith(summary);
+        if (group) {
+            if (!editGroups.has(group)) editGroups.set(group, []);
+            editGroups.get(group).push(edit);
+            control.replaceWith(preview);
+        } else {
+            const summary = document.createElement('div');
+            summary.className = 'd-flex align-items-center justify-content-between gap-2';
+            const button = document.createElement('button');
+            button.type = 'button';
+            button.className = 'btn btn-sm btn-outline-accent flex-shrink-0';
+            button.textContent = dialog.dataset.change;
+            button.setAttribute('aria-label', label + ' · ' + dialog.dataset.change);
+            button.setAttribute('aria-haspopup', 'dialog');
+            summary.append(preview, button);
+            control.replaceWith(summary);
+            button.addEventListener('click', () => openEditor([edit], button));
+        }
         if (control.tagName === 'TEXTAREA') {
             control.classList.remove('h-100px');
             if (!control.hasAttribute('rows')) control.rows = 10;
         }
 
-        button.addEventListener('click', () => openEditor(edit, button));
         editFields.set(name, edit);
         confirmed.set(name, fieldValue(control));
+    }
+
+    for (const [group, edits] of editGroups) {
+        const button = group.querySelector('[data-setting-edit-trigger]');
+        button.setAttribute('aria-label', group.dataset.settingEditGroup + ' · ' + dialog.dataset.change);
+        button.addEventListener('click', () => openEditor(edits, button, { label: group.dataset.settingEditGroup }));
     }
 
     const directControls = form.querySelectorAll('select[name], input[type=checkbox][name], input[type=radio][name], input[type=range][name]');
@@ -138,7 +170,7 @@ export function initializeSettings({ createEditor, onSaved } = {}) {
             const needsHttps = editFields.get(dependency).control.type === 'url';
             if (!current || (needsHttps && (!/^https:\/\//i.test(current) || !URL.canParse(current)))) {
                 setFieldValue(controls, previous);
-                openEditor(editFields.get(dependency), control, name);
+                openEditor([editFields.get(dependency)], control, { dependency: name });
                 return;
             }
         }
@@ -159,7 +191,7 @@ export function initializeSettings({ createEditor, onSaved } = {}) {
     });
 
     dialog.addEventListener('shown.bs.modal', () => {
-        const { control, name } = currentEdit.edit;
+        const { control, name } = currentEdit.edits[0];
         editor = createEditor?.(name, control);
         if (editor) editor.focus();
         else control.focus();
@@ -170,10 +202,10 @@ export function initializeSettings({ createEditor, onSaved } = {}) {
     });
 
     dialog.addEventListener('hidden.bs.modal', () => {
-        const { edit, trigger, required } = currentEdit;
+        const { edits, trigger, required } = currentEdit;
         editor?.destroy();
         editor = null;
-        edit.control.required = required;
+        edits[0].control.required = required;
         fieldHost.replaceChildren();
         currentEdit = null;
         trigger.focus();
@@ -183,16 +215,15 @@ export function initializeSettings({ createEditor, onSaved } = {}) {
         event.preventDefault();
         if (saving) return;
 
-        const { edit: { control, name }, dependency } = currentEdit;
+        const { edits, dependency } = currentEdit;
         editor?.syncToTextarea();
-        if (!editor && !control.reportValidity()) return;
-        const value = fieldValue(control);
-        if (!dependency && value === confirmed.get(name)) {
+        if (!editor && edits.some(({ control }) => !control.reportValidity())) return;
+        const fields = Object.fromEntries(edits.map(({ control, name }) => [name, fieldValue(control)]));
+        if (!dependency && Object.entries(fields).every(([name, value]) => value === confirmed.get(name))) {
             modal.hide();
             return;
         }
 
-        const fields = { [name]: value };
         if (dependency) fields[dependency] = true;
         showError(dialogError, '');
         saving = saveButton.disabled = cancelButton.disabled = fieldHost.inert = true;

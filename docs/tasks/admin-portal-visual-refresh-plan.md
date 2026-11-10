@@ -3,10 +3,11 @@
 ## Current status
 
 - Updated: 2026-11-10.
-- Checkout at update: `master`, `f2a77640b` (`Focus C# tests on functional contracts`).
+- Checkout at update: `master`, `38881172a` (`Make settings disclosure headers fully clickable`).
 - B0-B5 and earlier visual refinements are accepted and committed.
 - Pending review: Pages card Edit/Delete actions use the shared top-right ellipsis dropdown. The existing editor link, deletion confirmation, publication badges, card padding, and metadata are retained. Implemented, verified, and committed.
-- Pending review: Settings disclosure buttons cover their full header rows, with switches/radios and their labels remaining independently interactive. Implemented and browser-verified through shared CSS only; not committed.
+- Pending review: Settings disclosure buttons cover their full header rows, with switches/radios and their labels remaining independently interactive. Implemented, browser-verified, and committed.
+- Pending review: General Settings' Profile uses three separated rows: avatar/name/description with one combined Change dialog, independent email editing, and Gravatar. The avatar has a camera/mask hover and keyboard-focus overlay opening the existing upload dialog. Implemented and verified; not committed.
 - B6 integrated acceptance has not started and is not authorized. A user-created commit does not imply acceptance or permission to continue.
 - Retain this file for future conversations, keeping current state and open work rather than accumulating discussion logs.
 
@@ -19,8 +20,11 @@ Preserve the current Bootstrap/Razor/Alpine design documented in the [frontend e
 - Native light/dark hover, ArrowDown/ArrowUp navigation, and Escape collapse/focus return passed. Edit opened the correct existing full-screen editor; returned without saving. Delete opened the existing confirmation and was canceled. No saves/deletions were performed; temporary frames were removed and the original theme restored.
 - Settings checks passed for all 11 disclosure headers on six pages across 24 culture/viewport/theme combinations: 264 header checks, 528 title/blank-space clicks, and 1,632 row/control hit-target checks. Full-row coverage, arrow alignment, expansion events, ARIA state, unchanged field values, and no document overflow passed.
 - All 312 switch/radio/label activations were DOM-only checks with change propagation blocked and values restored; no setting writes or form submissions occurred. Native Enter/Space activation and visible focus passed on heading-only, radio, and switch headers with normal transitions. Matrix checks disabled transition duration only. Temporary frames/helpers were removed; the original route and theme were retained.
-- No build or C# tests were run for this CSS/documentation-only refinement; no C# UI tests were added.
-- JavaScript tests were not rerun; no JavaScript changed.
+- No build or C# tests were run for the earlier CSS/documentation-only disclosure refinement; no C# UI tests were added.
+- Profile browser checks passed all 24 culture/viewport/theme combinations, including three stacked rows, both separators, aligned Change buttons, 80px avatars, 24 DOM-only long-name/description stress checks, 24 grouped-dialog open/cancel checks, and 24 independent DOM-only Gravatar activations.
+- Native avatar hover showed the camera and 50% black mask; Enter opened the existing uploader, and Escape returned visible keyboard focus. No avatar was uploaded.
+- DOM-only API simulations verified a single PATCH containing both profile fields, independent email/single-field requests, required validation, cancel rollback, no-op suppression, error retention/retry, pending-save locking, preview updates, and focus return. New shared-module regressions passed direct switches, CDN dependency prompts/cancellation/required-state restoration, combined dependency saves, and CSS/HTML code-editor creation, sync, no-op, destruction, and focus behavior. No simulated request reached the server; no real settings were changed.
+- Profile verification: Web build passed with zero warnings/errors; JavaScript syntax checks passed; the existing ImageUploader tests passed 9/9. No C# presentation tests were added or run. Pages/disclosure JavaScript tests were not rerun for their earlier CSS/markup changes.
 
 ## Current business-test status
 
@@ -36,13 +40,14 @@ Other C# test projects were inspected but unchanged and not rerun. Future failur
 
 - [ ] Obtain review/acceptance of the Pages card action menu.
 - [ ] Obtain review/acceptance of full-row Settings disclosure interaction.
+- [ ] Obtain review/acceptance of the three-row Profile layout, combined name/description editor, and avatar action.
 - [ ] Obtain explicit authorization to start B6. Until then, wait or execute only the user's separately requested refinement.
 - [ ] Execute B6 against the combined checkout, recording actual results and uncovered/blocked scenarios.
 - [ ] Obtain final user acceptance. Commits remain user-managed.
 
 ### B6 execution scope
 
-Remaining prerequisites: acceptance/commit confirmation of the Pages and Settings disclosure refinements and explicit user authorization to start B6.
+Remaining prerequisites: acceptance/commit confirmation of the Pages, Settings disclosure, and Profile refinements and explicit user authorization to start B6.
 
 1. Run the Web build, Web tests, and JavaScript tests once against the combined checkout.
 2. Verify the complete route/state matrix below. Do not reuse sample counts as proof of scenarios that were not exercised.

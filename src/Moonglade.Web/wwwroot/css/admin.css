@@ -489,6 +489,49 @@
     padding: 16px 24px;
 }
 
+.admin-settings-page .settings-entry.admin-profile-entry {
+    grid-template-columns: 80px minmax(0, 1fr) auto;
+}
+
+.admin-profile-avatar {
+    position: relative;
+    width: 80px;
+    height: 80px;
+    padding: 0;
+    border: 0;
+    border-radius: var(--bs-border-radius);
+    background: transparent;
+}
+
+.admin-profile-avatar > img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.admin-profile-avatar-overlay {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    border-radius: inherit;
+    background-color: rgb(0 0 0 / 50%);
+    color: #fff;
+    font-size: 1.5rem;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.admin-profile-avatar:is(:hover, :focus-visible) .admin-profile-avatar-overlay {
+    opacity: 1;
+}
+
+.admin-profile-avatar:focus-visible {
+    outline: 2px solid var(--bs-primary);
+    outline-offset: 2px;
+}
+
 .admin-settings-note {
     grid-column: 2 / -1;
     min-width: 0;
