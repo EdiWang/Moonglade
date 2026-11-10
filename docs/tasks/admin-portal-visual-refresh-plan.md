@@ -3,10 +3,11 @@
 ## Current status
 
 - Updated: 2026-11-10.
-- Branch: `master`. Implementation is committed through `d115fbb5ddffb0432c915a3e284418ef04f48f89` (`Use background highlights for admin sidebar`).
+- Branch: `master`. Base checkout: `71678230645d7ec6d526a93169085b914d4b66f3` (`Condense admin visual refresh tracker`).
+- Current refinement: both sidebar menu groups have symmetric 4px horizontal insets, keeping selection/hover highlights away from the screen edge. Implemented and verified; not committed.
 - All planned implementation work is complete. B0-B4 and the secondary-navigation work are accepted. B5 and the latest sidebar refinement await explicit user acceptance.
 - B6 integrated acceptance has not started and is not authorized. A user-created commit does not imply acceptance or permission to continue.
-- This update changes only this tracker. Retain the file for future conversations, keeping current state and open work rather than accumulating discussion logs.
+- Retain this file for future conversations, keeping current state and open work rather than accumulating discussion logs.
 
 ## Current design
 
@@ -15,7 +16,7 @@ Detailed implementation conventions live in the [frontend engineering reference]
 | Area | Current design |
 | --- | --- |
 | Shell | Existing font, accent colors, and blue top bar; white sidebar and light-gray workspace in light mode, corresponding dark surfaces. Content-height panels use 24px padding, 16px gaps, 8px radii, theme-aware 1px borders, and no shadows. |
-| Sidebar | Current-menu and hover states share a background, without vertical markers: `--bs-gray-200` in light mode and `--bs-tertiary-bg` in dark mode. Preserve route selection, text colors, and keyboard focus. |
+| Sidebar | Main and bottom menu groups use Bootstrap `mx-1` for 4px horizontal insets. Current-menu and hover states share a background, without vertical markers: `--bs-gray-200` in light mode and `--bs-tertiary-bg` in dark mode. Preserve route selection, text colors, and keyboard focus. |
 | Navigation and toolbar | Posts, Pages, and Settings classifications are independently scrolling secondary navigation in the top bar. Actions remain in the fixed toolbar outside `.admin-main-body`; only content scrolls. Use `btn-sm` for toolbar buttons, actions on the left and counts/search/filters on the right. Omit empty toolbars. |
 | Lists and data tables | Lists stay lists in shared panels. Activity Logs and Verification Files use shared unstriped `.admin-data-table` styling and feature-specific columns. Ordinary action rows are about 44px tall; multiline content grows naturally. Activity Logs detail actions use accent colors; preserve Verification Files' distinct action colors. |
 | Pagination | Posts, Comments, Mentions, and Activity Logs use `.admin-pagination` outside their cards, with a 16px gap and approximately 35px page links/page-size selects. Preserve navigation destinations and focused controls during populated refresh; hide empty footers with row-based `x-show.important`. |
@@ -31,11 +32,11 @@ These are the most recent recorded checks, not a completed B6 acceptance run.
 
 | Check | Result and coverage |
 | --- | --- |
-| Web build | Passed with zero warnings/errors after the sidebar change. |
-| Sidebar browser checks | 12 English samples: Posts, Activity Logs, and General Settings at both approved sizes and themes. Selection, marker removal, overflow, matching native hover backgrounds, and keyboard focus passed. Top secondary-navigation underlines are unchanged. |
+| Web build | Passed with zero warnings/errors after the sidebar inset change. |
+| Sidebar browser checks | 72 samples: Posts, Activity Logs, and General Settings across all six cultures, both approved sizes, and both themes. Main and bottom groups retain 4px left/right insets, visible selected backgrounds, no markers, and no overflow; sidebar width and main alignment are unchanged. A source comparison confirmed only two spacing classes changed in the shared partial. Native-page appearance was reviewed. |
 | Shared table/pagination checks | Five affected routes across six cultures, both sizes, and both themes: 120 combinations passed normal layout, DOM-only long-content, and loading/empty checks. Verification Files was rechecked after its final column adjustment. Native page-size refresh/focus, pagination, drawers, and 16 public/About/editor boundary samples passed. |
-| Web tests | Most recent execution: **Passed: 650, Failed: 13, Skipped: 0**. Not rerun after subsequent CSS-only adjustments. The failures below remain unresolved; do not substitute older passing totals. |
-| JavaScript tests | Not rerun for the latest CSS-only refinements. Run during B6. |
+| Web tests | Most recent execution: **Passed: 650, Failed: 13, Skipped: 0**. Not rerun for subsequent presentation-only adjustments. The failures below remain unresolved; do not substitute older passing totals. |
+| JavaScript tests | Not rerun for the latest presentation-only refinements; no JavaScript changed. Run during B6. |
 
 ### Deferred test failures
 
@@ -47,7 +48,7 @@ The user explicitly chose to record these failures without expanding the visual 
 ## Remaining work
 
 - [ ] Obtain explicit acceptance of B5: Dashboard, Account, and About.
-- [ ] Obtain review/acceptance of the latest sidebar background highlight.
+- [ ] Obtain review/acceptance of the latest sidebar background highlight and 4px horizontal inset.
 - [ ] Obtain explicit authorization to start B6. Until then, wait or execute only the user's separately requested refinement.
 - [ ] Before declaring final acceptance, obtain a decision on the 13 deferred test failures: authorize investigation/repair or explicitly agree how they affect the acceptance gate.
 - [ ] Execute B6 against the combined checkout, recording actual results and uncovered/blocked scenarios.
