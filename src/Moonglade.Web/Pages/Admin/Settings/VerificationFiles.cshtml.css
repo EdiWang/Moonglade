@@ -1,0 +1,23 @@
+.admin-verification-table {
+    table-layout: fixed;
+}
+
+.verification-column-type {
+    width: 10rem;
+}
+
+.verification-column-size {
+    width: 5rem;
+}
+
+.verification-column-status {
+    width: 7rem;
+}
+
+.verification-column-modified {
+    width: 12rem;
+}
+
+.verification-column-actions {
+    width: 10rem;
+}

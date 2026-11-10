@@ -99,50 +99,51 @@
         </template>
     </div>
 
-    <div x-show.important="hasMentions" class="admin-panel-footer">
-        <nav x-show="totalPages > 1" aria-label="Page navigation">
-            <ul class="pagination mb-0">
-                <li class="page-item" :class="{ 'disabled': currentPage === 1 }">
-                    <a class="page-link" href="#" x-on:click.prevent="goToPage(1)">
-                        <span aria-hidden="true">&laquo;&laquo;</span>
-                    </a>
+</div>
+
+<div x-show.important="hasMentions" class="admin-pagination d-flex flex-wrap justify-content-between align-items-center gap-3 mt-3">
+    <nav x-show="totalPages > 1" aria-label="Page navigation">
+        <ul class="pagination pagination-sm mb-0">
+            <li class="page-item" :class="{ 'disabled': currentPage === 1 }">
+                <a class="page-link" href="#" x-on:click.prevent="goToPage(1)">
+                    <span aria-hidden="true">&laquo;&laquo;</span>
+                </a>
+            </li>
+
+            <li class="page-item" :class="{ 'disabled': currentPage === 1 }">
+                <a class="page-link" href="#" x-on:click.prevent="goToPage(currentPage - 1)">
+                    <span aria-hidden="true">&laquo;</span>
+                </a>
+            </li>
+
+            <template x-for="page in paginationPages" :key="page">
+                <li class="page-item" :class="{ 'active': page === currentPage }">
+                    <a class="page-link" href="#" x-on:click.prevent="goToPage(page)" x-text="page"></a>
                 </li>
+            </template>
 
-                <li class="page-item" :class="{ 'disabled': currentPage === 1 }">
-                    <a class="page-link" href="#" x-on:click.prevent="goToPage(currentPage - 1)">
-                        <span aria-hidden="true">&laquo;</span>
-                    </a>
-                </li>
+            <li class="page-item" :class="{ 'disabled': currentPage === totalPages }">
+                <a class="page-link" href="#" x-on:click.prevent="goToPage(currentPage + 1)">
+                    <span aria-hidden="true">&raquo;</span>
+                </a>
+            </li>
 
-                <template x-for="page in paginationPages" :key="page">
-                    <li class="page-item" :class="{ 'active': page === currentPage }">
-                        <a class="page-link" href="#" x-on:click.prevent="goToPage(page)" x-text="page"></a>
-                    </li>
-                </template>
+            <li class="page-item" :class="{ 'disabled': currentPage === totalPages }">
+                <a class="page-link" href="#" x-on:click.prevent="goToPage(totalPages)">
+                    <span aria-hidden="true">&raquo;&raquo;</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
 
-                <li class="page-item" :class="{ 'disabled': currentPage === totalPages }">
-                    <a class="page-link" href="#" x-on:click.prevent="goToPage(currentPage + 1)">
-                        <span aria-hidden="true">&raquo;</span>
-                    </a>
-                </li>
-
-                <li class="page-item" :class="{ 'disabled': currentPage === totalPages }">
-                    <a class="page-link" href="#" x-on:click.prevent="goToPage(totalPages)">
-                        <span aria-hidden="true">&raquo;&raquo;</span>
-                    </a>
-                </li>
-            </ul>
-        </nav>
-
-        <div class="d-flex align-items-center gap-2 ms-auto">
-            <label class="form-label mb-0 text-nowrap">@SharedLocalizer["Page Size"]</label>
-            <select class="form-select form-select-sm" style="width: auto;"
-                    x-on:change="changePageSize($event.target.value)">
-                <template x-for="size in pageSizeOptions" :key="size">
-                    <option :value="size" x-text="size" :selected="size === pageSize"></option>
-                </template>
-            </select>
-        </div>
+    <div class="d-flex align-items-center gap-2 ms-auto">
+        <label class="form-label mb-0 text-nowrap">@SharedLocalizer["Page Size"]</label>
+        <select class="form-select form-select-sm" style="width: auto;"
+                x-on:change="changePageSize($event.target.value)">
+            <template x-for="size in pageSizeOptions" :key="size">
+                <option :value="size" x-text="size" :selected="size === pageSize"></option>
+            </template>
+        </select>
     </div>
 </div>
 

@@ -231,19 +231,28 @@
     border-radius: 8px;
 }
 
-.admin-panel .table > thead {
-    --bs-table-bg: var(--bs-tertiary-bg);
+.admin-data-table > thead {
+    --bs-table-bg: var(--bs-body-bg);
 }
 
-.admin-panel-footer {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
-    align-items: center;
-    gap: 16px;
-    margin-top: 16px;
-    padding-top: 16px;
-    border-top: 1px solid var(--bs-border-color);
+.admin-data-table td {
+    padding-top: 6px;
+    padding-bottom: 6px;
+    overflow-wrap: anywhere;
+}
+
+.admin-data-table > tbody > tr:last-child > td {
+    border-bottom: 0;
+}
+
+.admin-pagination .pagination {
+    --bs-pagination-padding-x: .75rem;
+    --bs-pagination-padding-y: .375rem;
+}
+
+.admin-pagination .form-select-sm {
+    padding-top: .375rem;
+    padding-bottom: .375rem;
 }
 
 .admin-list-item {
