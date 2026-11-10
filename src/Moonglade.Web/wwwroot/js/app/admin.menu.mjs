@@ -10,6 +10,7 @@ Alpine.data('menuManager', () => ({
         menus: []
     },
     isLoading: true,
+    expandedMenus: new Set(),
     currentMenuItem: {},
     currentSubMenuItem: {},
     editingIndex: null,
@@ -37,12 +38,18 @@ Alpine.data('menuManager', () => ({
                     isEnabled: data.isEnabled || false,
                     menus: data.menus || []
                 };
+                this.expandedMenus.clear();
             }
         } catch (err) {
             error(err);
         } finally {
             this.isLoading = false;
         }
+    },
+
+    toggleMenuItem(item) {
+        if (this.expandedMenus.has(item)) this.expandedMenus.delete(item);
+        else this.expandedMenus.add(item);
     },
 
     async saveSettings() {
@@ -96,7 +103,10 @@ Alpine.data('menuManager', () => ({
         };
 
         if (this.editingIndex !== null) {
+            const previous = this.settings.menus[this.editingIndex];
+            const wasExpanded = this.expandedMenus.delete(previous);
             this.settings.menus[this.editingIndex] = menuItem;
+            if (wasExpanded) this.expandedMenus.add(menuItem);
         } else {
             this.settings.menus.push(menuItem);
         }
@@ -155,6 +165,7 @@ Alpine.data('menuManager', () => ({
 
     deleteMenuItem(index) {
         showDeleteConfirmModal(getLocalizedString('confirmDeleteMenu'), () => {
+            this.expandedMenus.delete(this.settings.menus[index]);
             this.settings.menus.splice(index, 1);
             hideConfirmModal();
         });
@@ -170,6 +181,7 @@ Alpine.data('menuManager', () => ({
     clearMenus() {
         showDeleteConfirmModal(getLocalizedString('confirmClearMenus'), () => {
             this.settings.menus = [];
+            this.expandedMenus.clear();
             hideConfirmModal();
         });
     },

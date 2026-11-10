@@ -2097,4 +2097,10 @@
   <data name="Settings changes" xml:space="preserve"><value>設定の変更</value></data>
   <data name="Show comment section on mobile screens" xml:space="preserve"><value>モバイル画面にコメント欄を表示する</value></data>
   <data name="Watermark opacity" xml:space="preserve"><value>透かしの不透明度</value></data>
+  <data name="Move up" xml:space="preserve">
+    <value>上へ移動</value>
+  </data>
+  <data name="Move down" xml:space="preserve">
+    <value>下へ移動</value>
+  </data>
 </root>

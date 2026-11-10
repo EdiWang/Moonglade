@@ -2146,4 +2146,10 @@
   <data name="Watermark opacity" xml:space="preserve">
     <value>Opacité du filigrane</value>
   </data>
+  <data name="Move up" xml:space="preserve">
+    <value>Déplacer vers le haut</value>
+  </data>
+  <data name="Move down" xml:space="preserve">
+    <value>Déplacer vers le bas</value>
+  </data>
 </root>

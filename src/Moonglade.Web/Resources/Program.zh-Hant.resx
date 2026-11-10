@@ -2097,4 +2097,10 @@
   <data name="Settings changes" xml:space="preserve"><value>設定變更</value></data>
   <data name="Show comment section on mobile screens" xml:space="preserve"><value>在流動裝置上顯示留言區</value></data>
   <data name="Watermark opacity" xml:space="preserve"><value>水印不透明度</value></data>
+  <data name="Move up" xml:space="preserve">
+    <value>上移</value>
+  </data>
+  <data name="Move down" xml:space="preserve">
+    <value>下移</value>
+  </data>
 </root>

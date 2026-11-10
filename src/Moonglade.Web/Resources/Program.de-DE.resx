@@ -2097,4 +2097,10 @@
   <data name="Settings changes" xml:space="preserve"><value>Einstellungsänderungen</value></data>
   <data name="Show comment section on mobile screens" xml:space="preserve"><value>Kommentarbereich auf Mobilgeräten anzeigen</value></data>
   <data name="Watermark opacity" xml:space="preserve"><value>Deckkraft des Wasserzeichens</value></data>
+  <data name="Move up" xml:space="preserve">
+    <value>Nach oben verschieben</value>
+  </data>
+  <data name="Move down" xml:space="preserve">
+    <value>Nach unten verschieben</value>
+  </data>
 </root>
