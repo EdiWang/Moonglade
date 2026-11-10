@@ -1,0 +1,38 @@
+.admin-activity-table {
+    table-layout: fixed;
+}
+
+.activity-log-column-time {
+    width: 14rem;
+}
+
+.activity-log-column-actor {
+    width: 11rem;
+}
+
+.activity-log-column-actions {
+    width: 6rem;
+}
+
+.admin-activity-table > thead {
+    --bs-table-bg: var(--bs-body-bg);
+}
+
+.admin-activity-table td {
+    padding-top: 6px;
+    padding-bottom: 6px;
+}
+
+.admin-activity-table > tbody > tr:last-child > td {
+    border-bottom: 0;
+}
+
+.activity-log-pagination .pagination {
+    --bs-pagination-padding-x: .75rem;
+    --bs-pagination-padding-y: .375rem;
+}
+
+.activity-log-pagination .form-select-sm {
+    padding-top: .375rem;
+    padding-bottom: .375rem;
+}

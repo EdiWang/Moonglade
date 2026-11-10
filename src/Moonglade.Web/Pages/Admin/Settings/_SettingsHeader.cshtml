@@ -8,14 +8,14 @@
     <div class="admin-toolbar admin-toolbar-row">
         @if (currentPage == "/Admin/Settings/VerificationFiles")
         {
-            <button type="button" class="btn btn-outline-accent" x-on:click="initCreateFile()">
+            <button type="button" class="btn btn-sm btn-outline-accent" x-on:click="initCreateFile()">
                 <i class="bi-plus-lg" aria-hidden="true"></i>
                 @SharedLocalizer["New"]
             </button>
         }
         @if (currentPage == "/Admin/Settings/Appearance" && ViewData["CanCreateTheme"] is true)
         {
-            <button type="button" class="btn btn-outline-accent" data-bs-toggle="modal" data-bs-target="#thememodal">
+            <button type="button" class="btn btn-sm btn-outline-accent" data-bs-toggle="modal" data-bs-target="#thememodal">
                 <i class="bi-plus-lg" aria-hidden="true"></i>
                 @SharedLocalizer["New"]
             </button>

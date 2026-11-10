@@ -6,17 +6,17 @@
     <div class="admin-toolbar-group">
         @if (currentPage == "/Admin/RecycleBin")
         {
-            <button type="button" x-show="hasItems" x-cloak x-on:click="confirmEmptyRecycleBin" class="btn btn-outline-danger btn-empty-recbin">
+            <button type="button" x-show="hasItems" x-cloak x-on:click="confirmEmptyRecycleBin" class="btn btn-sm btn-outline-danger btn-empty-recbin">
                 <i class="bi-trash"></i>
                 @SharedLocalizer["Empty Recycle Bin"]
             </button>
         }
-        <a class="btn btn-outline-accent" asp-page="./EditPost">
+        <a class="btn btn-sm btn-outline-accent" asp-page="./EditPost">
             <i class="bi-plus-lg"></i>
             @SharedLocalizer["New"]
         </a>
         
-        <a asp-action="ExportDownload" asp-controller="DataPorting" asp-route-type="Posts" class="btn btn-outline-accent" target="_blank">
+        <a asp-action="ExportDownload" asp-controller="DataPorting" asp-route-type="Posts" class="btn btn-sm btn-outline-accent" target="_blank">
             <i class="bi-upload"></i>
             @SharedLocalizer["Export"]
         </a>
@@ -27,7 +27,7 @@
             <div class="text-muted admin-toolbar-text">
                 <span x-text="postCount"></span> @SharedLocalizer["item(s)"]
             </div>
-            <button type="button" x-on:click="openFilter()" class="btn btn-outline-accent">
+            <button type="button" x-on:click="openFilter()" class="btn btn-sm btn-outline-accent">
                 <i class="bi-funnel" aria-hidden="true"></i>
                 @SharedLocalizer["Filter"]
                 <span x-show="activeFilterCount > 0" class="badge bg-danger ms-1" x-text="activeFilterCount"></span>

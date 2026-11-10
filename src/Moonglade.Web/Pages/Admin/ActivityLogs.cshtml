@@ -13,13 +13,13 @@
 @section admintoolbar {
     <div class="admin-toolbar admin-toolbar-row">
         <div class="admin-toolbar-group">
-            <button type="button" x-on:click="clearAllLogs()" class="btn btn-outline-danger">
+            <button type="button" x-on:click="clearAllLogs()" class="btn btn-sm btn-outline-danger">
                 <i class="bi-trash" aria-hidden="true"></i>
                 @SharedLocalizer["Clear all"]
             </button>
         </div>
         <div class="admin-toolbar-group ms-auto">
-            <button type="button" x-on:click="openFilter()" class="btn btn-outline-accent">
+            <button type="button" x-on:click="openFilter()" class="btn btn-sm btn-outline-accent">
                 <i class="bi-funnel" aria-hidden="true"></i>
                 @SharedLocalizer["Filter"]
                 <span x-show="activeFilterCount > 0" class="badge bg-danger ms-1" x-text="activeFilterCount"></span>
@@ -51,46 +51,52 @@
      data-confirm-clear-all-logs="@SharedLocalizer["Are you sure you want to clear all activity logs? This action will be recorded."]">
 </div>
 
-<div class="admin-panel">
+<div class="admin-panel p-0 overflow-hidden">
     <div x-show="isLoading"
-         class="text-muted"
+         class="text-muted p-4"
          :class="{ 'd-flex align-items-center': isLoading }">
         <div class="spinner-border spinner-border-sm me-2" role="status"></div>
         <span>@SharedLocalizer["Loading..."]</span>
     </div>
 
-    <div x-show="!isLoading && !hasLogs">
+    <div x-show="!isLoading && !hasLogs" class="p-4">
         <div class="alert alert-info mb-0">
             @SharedLocalizer["No activity logs found."]
         </div>
     </div>
 
     <div x-show="!isLoading && hasLogs" class="table-responsive">
-        <table class="table table-hover table-striped align-middle mb-0">
+        <table class="table table-sm table-hover admin-activity-table align-middle mb-0">
+            <colgroup>
+                <col class="activity-log-column-time" />
+                <col class="activity-log-column-actor" />
+                <col />
+                <col class="activity-log-column-actions" />
+            </colgroup>
             <thead>
                 <tr>
-                    <th>@SharedLocalizer["Time"]</th>
-                    <th>@SharedLocalizer["Actor"]</th>
-                    <th>@SharedLocalizer["Activity"]</th>
-                    <th class="text-end">@SharedLocalizer["Actions"]</th>
+                    <th scope="col" class="px-3 py-2 fw-semibold text-body-secondary">@SharedLocalizer["Time"]</th>
+                    <th scope="col" class="px-3 py-2 fw-semibold text-body-secondary">@SharedLocalizer["Actor"]</th>
+                    <th scope="col" class="px-3 py-2 fw-semibold text-body-secondary">@SharedLocalizer["Activity"]</th>
+                    <th scope="col" class="px-3 py-2 fw-semibold text-body-secondary text-end">@SharedLocalizer["Actions"]</th>
                 </tr>
             </thead>
             <tbody>
                 <template x-for="log in logs" :key="log.id">
                     <tr :id="`log-${log.id}`">
-                        <td>
+                        <td class="px-3 text-body-secondary text-break">
                             <time :data-utc-label="log.eventTimeUtc" x-text="log.eventTimeUtc"></time>
                         </td>
-                        <td>
+                        <td class="px-3 text-body-secondary text-break">
                             <i :class="log.actorKind === 'System' ? 'bi-gear' : 'bi-person'"
                                :title="log.actorKind === 'System' ? '@SharedLocalizer["System"]' : '@SharedLocalizer["Administrator"]'"></i>
                             <span x-text="log.actor"></span>
                         </td>
-                        <td>
+                        <td class="px-3 text-break">
                             <span x-text="log.summary"></span>
                         </td>
-                        <td class="text-end">
-                            <button class="btn btn-outline-primary btn-sm" 
+                        <td class="px-3 text-end">
+                            <button class="btn btn-outline-accent btn-sm"
                                     x-on:click="showDetail(log.id, $event.currentTarget)" aria-controls="detailCanvas"
                                     aria-label="@SharedLocalizer["Detail"]" title="@SharedLocalizer["Detail"]">
                                 <i class="bi-info-circle" aria-hidden="true"></i>
@@ -101,39 +107,39 @@
             </tbody>
         </table>
     </div>
+</div>
 
-    <div x-show.important="hasLogs" class="admin-panel-footer">
-        <nav x-show="totalPages > 1" aria-label="Page navigation">
-            <ul class="pagination mb-0">
-                <li class="page-item" :class="{ 'disabled': currentPage === 1 }">
-                    <a class="page-link" href="#" x-on:click.prevent="goToPage(currentPage - 1)">
-                        <span aria-hidden="true">&laquo;</span>
-                    </a>
+<div x-show.important="hasLogs" class="activity-log-pagination d-flex flex-wrap justify-content-between align-items-center gap-3 mt-3">
+    <nav x-show="totalPages > 1" aria-label="Page navigation">
+        <ul class="pagination pagination-sm mb-0">
+            <li class="page-item" :class="{ 'disabled': currentPage === 1 }">
+                <a class="page-link" href="#" x-on:click.prevent="goToPage(currentPage - 1)">
+                    <span aria-hidden="true">&laquo;</span>
+                </a>
+            </li>
+
+            <template x-for="page in paginationPages" :key="page">
+                <li class="page-item" :class="{ 'active': page === currentPage }">
+                    <a class="page-link" href="#" x-on:click.prevent="goToPage(page)" x-text="page"></a>
                 </li>
+            </template>
 
-                <template x-for="page in paginationPages" :key="page">
-                    <li class="page-item" :class="{ 'active': page === currentPage }">
-                        <a class="page-link" href="#" x-on:click.prevent="goToPage(page)" x-text="page"></a>
-                    </li>
-                </template>
+            <li class="page-item" :class="{ 'disabled': currentPage === totalPages }">
+                <a class="page-link" href="#" x-on:click.prevent="goToPage(currentPage + 1)">
+                    <span aria-hidden="true">&raquo;</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
 
-                <li class="page-item" :class="{ 'disabled': currentPage === totalPages }">
-                    <a class="page-link" href="#" x-on:click.prevent="goToPage(currentPage + 1)">
-                        <span aria-hidden="true">&raquo;</span>
-                    </a>
-                </li>
-            </ul>
-        </nav>
-
-        <div class="d-flex align-items-center gap-2 ms-auto">
-            <label class="form-label mb-0 text-nowrap">@SharedLocalizer["Page Size"]</label>
-            <select class="form-select form-select-sm" style="width: auto;"
-                    x-on:change="changePageSize($event.target.value)">
-                <template x-for="size in pageSizeOptions" :key="size">
-                    <option :value="size" x-text="size" :selected="size === pageSize"></option>
-                </template>
-            </select>
-        </div>
+    <div class="d-flex align-items-center gap-2 ms-auto">
+        <label class="form-label mb-0 text-nowrap">@SharedLocalizer["Page Size"]</label>
+        <select class="form-select form-select-sm" style="width: auto;"
+                x-on:change="changePageSize($event.target.value)">
+            <template x-for="size in pageSizeOptions" :key="size">
+                <option :value="size" x-text="size" :selected="size === pageSize"></option>
+            </template>
+        </select>
     </div>
 </div>
 

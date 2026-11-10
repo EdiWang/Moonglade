@@ -6,16 +6,16 @@
     <div class="admin-toolbar-group">
         @if (currentPage == "/Admin/PageRecycleBin")
         {
-            <button type="button" x-show="hasPages" x-cloak x-on:click="confirmEmptyRecycleBin" class="btn btn-outline-danger btn-empty-recbin">
+            <button type="button" x-show="hasPages" x-cloak x-on:click="confirmEmptyRecycleBin" class="btn btn-sm btn-outline-danger btn-empty-recbin">
                 <i class="bi-trash"></i>
                 @SharedLocalizer["Empty Recycle Bin"]
             </button>
         }
-        <a class="btn btn-outline-accent" asp-page="./EditPage">
+        <a class="btn btn-sm btn-outline-accent" asp-page="./EditPage">
             <i class="bi-plus-lg"></i>
             @SharedLocalizer["New"]
         </a>
-        <a asp-action="ExportDownload" asp-controller="DataPorting" asp-route-type="Pages" class="btn btn-outline-accent" target="_blank">
+        <a asp-action="ExportDownload" asp-controller="DataPorting" asp-route-type="Pages" class="btn btn-sm btn-outline-accent" target="_blank">
             <i class="bi-upload"></i>
             @SharedLocalizer["Export"]
         </a>

@@ -23,13 +23,13 @@
 @section admintoolbar{
     <div class="admin-toolbar admin-toolbar-row">
         <div class="admin-toolbar-group">
-            <button type="button" class="btn btn-outline-danger"
+            <button type="button" class="btn btn-sm btn-outline-danger"
                     x-on:click="deleteSelectedMentions()"
                     x-show="selectedIds.length > 0">
                 <i class="bi-trash" aria-hidden="true"></i>
                 <span x-text="`@SharedLocalizer["Delete selected"] (${selectedIds.length})`"></span>
             </button>
-            <button type="button" class="btn btn-outline-danger" x-on:click="clearAllMentions()">
+            <button type="button" class="btn btn-sm btn-outline-danger" x-on:click="clearAllMentions()">
                 <i class="bi-trash" aria-hidden="true"></i>
                 @SharedLocalizer["Clear all"]
             </button>
@@ -38,7 +38,7 @@
             <div class="text-muted admin-toolbar-text">
                 <span x-text="mentionCount"></span> @SharedLocalizer["item(s)"]
             </div>
-            <button type="button" x-on:click="openFilter()" class="btn btn-outline-accent">
+            <button type="button" x-on:click="openFilter()" class="btn btn-sm btn-outline-accent">
                 <i class="bi-funnel" aria-hidden="true"></i>
                 @SharedLocalizer["Filter"]
                 <span x-show="activeFilterCount > 0" class="badge bg-danger ms-1" x-text="activeFilterCount"></span>

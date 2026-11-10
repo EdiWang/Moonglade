@@ -36,7 +36,7 @@
         <div class="admin-toolbar-group">
             <button type="button"
                     x-on:click="deleteSelectedComments()"
-                    class="btn btn-outline-danger btn-delete-selected"
+                    class="btn btn-sm btn-outline-danger btn-delete-selected"
                     x-show="selectedCommentIds.length > 0">
                 <i class="bi-trash" aria-hidden="true"></i>
                 <span x-text="`@SharedLocalizer["Delete selected"] (${selectedCommentIds.length})`"></span>
@@ -46,7 +46,7 @@
             <div class="text-muted admin-toolbar-text">
                 <span x-text="commentCount"></span> @SharedLocalizer["item(s)"]
             </div>
-            <button type="button" x-on:click="openFilter()" class="btn btn-outline-accent">
+            <button type="button" x-on:click="openFilter()" class="btn btn-sm btn-outline-accent">
                 <i class="bi-funnel" aria-hidden="true"></i>
                 @SharedLocalizer["Filter"]
                 <span x-show="activeFilterCount > 0" class="badge bg-danger ms-1" x-text="activeFilterCount"></span>
