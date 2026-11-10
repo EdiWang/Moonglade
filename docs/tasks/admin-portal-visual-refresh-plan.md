@@ -3,9 +3,9 @@
 ## Current status
 
 - Updated: 2026-11-10.
-- Branch: `master`. Base checkout: `71678230645d7ec6d526a93169085b914d4b66f3` (`Condense admin visual refresh tracker`).
-- Current refinement: both sidebar menu groups have symmetric 4px horizontal insets, keeping selection/hover highlights away from the screen edge. Implemented and verified; not committed.
-- All planned implementation work is complete. B0-B4 and the secondary-navigation work are accepted. B5 and the latest sidebar refinement await explicit user acceptance.
+- Branch: `master`. Base checkout: `ad5bb6b8eaf4d3a13d33f6291e0a1b8a7d304aff` (`Add symmetric admin sidebar menu insets`).
+- Current refinement: both sidebar menu groups have symmetric 4px horizontal insets, keeping selection/hover highlights away from the screen edge. Implemented, verified, and committed; awaiting explicit user review.
+- All planned implementation work is complete. B0-B5 and the secondary-navigation work are accepted; B5 acceptance was confirmed on 2026-11-10. The latest sidebar refinement still awaits explicit user acceptance.
 - B6 integrated acceptance has not started and is not authorized. A user-created commit does not imply acceptance or permission to continue.
 - Retain this file for future conversations, keeping current state and open work rather than accumulating discussion logs.
 
@@ -47,7 +47,6 @@ The user explicitly chose to record these failures without expanding the visual 
 
 ## Remaining work
 
-- [ ] Obtain explicit acceptance of B5: Dashboard, Account, and About.
 - [ ] Obtain review/acceptance of the latest sidebar background highlight and 4px horizontal inset.
 - [ ] Obtain explicit authorization to start B6. Until then, wait or execute only the user's separately requested refinement.
 - [ ] Before declaring final acceptance, obtain a decision on the 13 deferred test failures: authorize investigation/repair or explicitly agree how they affect the acceptance gate.
