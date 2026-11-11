@@ -2,15 +2,15 @@
 
 ## Current status
 
-B1 was accepted on 2026-11-11 and committed by the user as `9a36a68d2`. The configured development database was backed up and the additive script applied twice without changing any of the 19 unrelated tables. B2 was accepted and committed by the user as `89a6dc1ff`. The user authorized B3 on 2026-11-11. B3 implementation and verification are complete, awaiting acceptance: six suites passed 1,556 cases, including both database providers; frontend passed 42 cases; the final Web build had no warnings or errors. No further changes to the configured development database were made. End-to-end B4 release acceptance remains required.
+B1 was accepted on 2026-11-11 and committed by the user as `9a36a68d2`; B2 was accepted and committed as `89a6dc1ff`. B3 was accepted and committed by the user as `48de287c4`: six suites passed 1,556 cases, including both database providers; frontend passed 42 cases; the final Web build had no warnings or errors. At the user's request, the configured PostgreSQL development database was backed up, rehearsed on a restored copy, and migrated with both scripts run twice. Its initialized account and all unrelated data were preserved. B4 has not started and is paused at the user's explicit request; end-to-end release acceptance remains required.
 
 | Batch | Dependency | Status | Verification | Implementation commit | User acceptance |
 | --- | --- | --- | --- | --- | --- |
 | B0. Establish the baseline | Execution authorization | Verified; progression to B1 authorized | Auth 63 passed; Setup 78 passed, 23 opt-in skips; Web 668 passed; corrected opt-in Setup 169 passed, 0 skipped | Baseline correction and plan committed in `4ad36f2d3` before B1 | Progression authorized 2026-11-11 |
 | B1. Add independent account storage | B0 accepted | Accepted; development database migrated | Auth 75 passed; Setup 79 passed, 28 opt-in skips; opt-in Setup 196 passed, 0 skipped; Web build 0 warnings/errors | User-created commit `9a36a68d2` | Accepted 2026-11-11 |
 | B2. Switch authentication and enable first-run setup | B1 accepted | Accepted | Auth 108 passed; Web 733 passed; full opt-in Setup 193 passed, 0 skipped; frontend 42 passed; Web build 0 warnings/errors | User-created commit `89a6dc1ff` | Accepted 2026-11-11 |
-| B3. Move Owner Email editing and public consumers | B2 accepted | Implemented and verified; awaiting acceptance | Configuration 311, Auth 133, Web 750, Email 113, Syndication 18, full opt-in Setup 231 passed; frontend 42 passed; Web build 0 warnings/errors | Uncommitted; no agent commit authorized | Pending |
-| B4. Verify fresh installation and upgrade end to end | B3 accepted | Pending | Pending | Verification gate | Pending |
+| B3. Move Owner Email editing and public consumers | B2 accepted | Accepted; development database migrated | Configuration 311, Auth 133, Web 750, Email 113, Syndication 18, full opt-in Setup 231 passed; frontend 42 passed; Web build 0 warnings/errors; development cutover/repeat verified | User-created commit `48de287c4` | Accepted 2026-11-11 |
+| B4. Verify fresh installation and upgrade end to end | B3 accepted | Not started; paused at user request | Pending | Verification gate | Pending |
 
 Intermediate commits are for development and review. The deployable upgrade is the combined result after B4. Administrators apply the final SQL script for their provider before starting that version.
 
@@ -231,3 +231,13 @@ The default Setup run skipped the opt-in relational theories. The opt-in run exe
 | Provider-specific controls, navigation, localization and operational guidance | Local/OIDC and `zh-Hant` browser verification; [permanent upgrade guide](upgrade-owner-account.md), README, AGENTS, engineering/database/test references updated. |
 
 - All synthetic browser hosts, issuer processes, containers and runtime scratch files were removed. Temporary test research/plan/status records were removed after preserving this evidence; raw reports and the private development backup remain outside the repository. Final diff/whitespace checks passed. No development/production database operation, commit, push or deployment was performed during B3. B4 has not started; B3 awaits user acceptance.
+
+### B3 development database cutover (2026-11-11)
+
+- The user accepted B3 at the user-created `48de287c4`, explicitly requested development database migration, and instructed that B4 must not start. No application or browser acceptance work was started for B4.
+- Verified the configured PostgreSQL development target without exposing its connection string, credentials or email. No local Moonglade host was running, and database checks rejected any other connected client before backup/migration. The source had 20 application tables and an already initialized independent owner account.
+- Saved a new full custom-format backup, `development-before-owner-email-cutover-20261111-110005.dump` (1,139,280 bytes), in private session storage outside the repository. Verified its archive catalog and restored it into an isolated PostgreSQL container. Collation-independent, ordered full-row fingerprints matched every restored table to the source before applying any live changes.
+- On the restored copy, ran the accepted `owner-account.sql` and `owner-account-cutover.sql` in order, then repeated both scripts. Verified the retained General JSON members and timestamp, every unrelated setting row and timestamp, unchanged schema, all 18 unrelated tables, and the complete existing owner row. Reruns produced identical data and schema. The rehearsal container and its temporary database volume were removed.
+- Rechecked the accepted checkout, backup SHA-256, target identity and full development database fingerprints immediately before applying the same scripts to the development database. Both first execution and repeat passed. Configuration rows changed from 13 to 12 solely by removing the one obsolete `LocalAccountSettings` row; only the legacy General email member was removed from its retained row. All 18 unrelated tables were unchanged.
+- The existing independent account's ID, email, revision, initialization time, password hash/salt and bound authenticator were preserved exactly. No legacy credentials were imported, no account was reset, and initial Local setup was not reopened.
+- Private backups and verification metadata remain outside the repository. Temporary migration helpers were removed. No application startup, production migration, code commit, push or deployment was performed. B4 remains explicitly paused.
