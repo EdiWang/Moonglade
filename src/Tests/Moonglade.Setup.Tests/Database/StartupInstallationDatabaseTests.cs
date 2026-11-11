@@ -159,11 +159,14 @@ public class StartupInstallationDatabaseTests(DisposableCategoryDatabases databa
         else
             await db.BlogConfiguration.ExecuteDeleteAsync(ct);
         db.ChangeTracker.Clear();
+        var settingsBeforeRestart = await db.BlogConfiguration.AsNoTracking().OrderBy(row => row.CfgKey).ToListAsync(ct);
         using var restarted = new StartupTestHarness(db);
 
         Assert.Equal(InitStartUpResult.FailedInitBlogConfig, await restarted.Initializer.InitStartUpAsync(ct));
 
-        Assert.Equal(accountOnly ? 10 : 0, await db.BlogConfiguration.CountAsync(ct));
+        var settingsAfterRestart = await db.BlogConfiguration.AsNoTracking().OrderBy(row => row.CfgKey).ToListAsync(ct);
+        Assert.Equal(settingsBeforeRestart.Select(row => (row.CfgKey, row.CfgValue, row.LastModifiedTimeUtc)),
+            settingsAfterRestart.Select(row => (row.CfgKey, row.CfgValue, row.LastModifiedTimeUtc)));
         var savedPost = await db.Post.AsNoTracking().SingleAsync(ct);
         Assert.Equal(post.Id, savedPost.Id);
         Assert.Equal(post.PostContent, savedPost.PostContent);
