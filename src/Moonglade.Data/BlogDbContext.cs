@@ -33,6 +33,7 @@ public class BlogDbContext : DbContext
     public virtual DbSet<ActivityLogEntity> ActivityLog { get; set; }
     public virtual DbSet<EmailOutboxMessageEntity> EmailOutboxMessage { get; set; }
     public virtual DbSet<SiteVerificationFileEntity> SiteVerificationFile { get; set; }
+    public virtual DbSet<OwnerAccountEntity> OwnerAccount { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -53,6 +54,8 @@ public class BlogDbContext : DbContext
         modelBuilder.ApplyConfiguration(new EmailOutboxMessageConfiguration());
         modelBuilder.ApplyConfiguration(new SiteVerificationFileConfiguration());
         modelBuilder.ApplyConfiguration(new PostViewDailyConfiguration());
+        modelBuilder.ApplyConfiguration(new OwnerAccountConfiguration());
+        OwnerAccountConfiguration.ConfigureConstraints(modelBuilder);
         modelBuilder
             .Entity<PostEntity>()
             .HasMany(p => p.Tags)
@@ -130,6 +133,7 @@ public static class BlogDbContextExtension
             await context.ActivityLog.ExecuteDeleteAsync();
             await context.EmailOutboxMessage.ExecuteDeleteAsync();
             await context.SiteVerificationFile.ExecuteDeleteAsync();
+            await context.OwnerAccount.ExecuteDeleteAsync();
 
             await transaction.CommitAsync();
         });

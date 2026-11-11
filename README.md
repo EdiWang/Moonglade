@@ -50,6 +50,7 @@ Apply upgrades in order when required:
 2. [PostgreSQL snake_case names](docs/upgrade-postgresql-snake-case.md): requires integer category IDs first. SQL Server retains PascalCase names.
 3. [Canonical activity events](docs/upgrade-activity-log-events.md): replaces legacy activity wording with stable event keys on both providers. Stop the old host first; this one-time upgrade discards only legacy activity history. Reruns preserve new history.
 4. [SEO settings](docs/upgrade-seo-settings.md) copies existing SEO values from General and Advanced into a dedicated configuration row before startup. A follow-up moves robots.txt into that row.
+5. [Independent owner-account storage](database/README.md#available-scripts) adds the account table for preparatory development builds. This additive stage does not transfer Owner Email, remove legacy credentials, or enable first-run setup; it is not the completed account/setup upgrade.
 
 ### Quick Local Deployment (Docker)
 

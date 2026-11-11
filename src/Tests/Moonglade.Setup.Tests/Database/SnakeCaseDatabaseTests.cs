@@ -150,10 +150,12 @@ public class SnakeCaseDatabaseTests(DisposableCategoryDatabases databases) : ICl
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
+            modelBuilder.Ignore<OwnerAccountEntity>();
             foreach (var set in typeof(BlogDbContext).GetProperties()
                          .Where(p => p.PropertyType.IsGenericType && p.PropertyType.GetGenericTypeDefinition() == typeof(DbSet<>)))
             {
-                var entity = modelBuilder.Model.FindEntityType(set.PropertyType.GenericTypeArguments[0])!;
+                var entity = modelBuilder.Model.FindEntityType(set.PropertyType.GenericTypeArguments[0]);
+                if (entity is null) continue;
                 entity.SetTableName(set.Name);
                 foreach (var property in entity.GetProperties()) property.SetColumnName(property.Name);
             }

@@ -106,6 +106,7 @@ HTML email bodies encode ordinary mapped values. Only wrap the already-rendered 
 ### Authentication And Security
 
 - Authentication logic lives in `Moonglade.Auth` and supports local accounts with TOTP or one standards-based OpenID Connect provider.
+- Preparatory independent storage uses `OwnerAccount` in `BlogDbContext` and the scoped Auth-owned `OwnerAccountStore`. It is not yet connected to runtime sign-in or ordinary Owner Email consumers; preserve the legacy flow until the runtime cutover. `IOwnerProfileReader` projects only stable ID and public email. Email is trimmed and normalized with `ToUpperInvariant`; database indexes enforce normalized-email uniqueness and a singleton slot constrained to 1. A profile has no local credentials. `LocalInitializedUtc` marks committed local initialization independently of the bound TOTP secret, so clearing that secret does not reopen setup. A revision concurrency token prevents overlapping profile completions; failed writes detach the attempted entity. Store writes reject enclosing transactions so a returned initialization represents its own commit.
 - OIDC admin authorization uses the provider-validated issuer boundary plus an exact allowlist of stable `sub` claims. Do not authorize by email, display name, or preferred username.
 - `/auth/identity` is available only to an authenticated OIDC user and returns that user's own `iss`, `sub`, and display name for allowlist bootstrap; it does not grant admin access. It returns 404 when local authentication is configured.
 - Local-account password sign-in and TOTP setup/verification are protected by `LocalAccountRateLimitPolicy`; keep the default 10 attempts per 1 minute unless there is a deployment-specific reason to adjust `Authentication:LocalAccountRateLimit`.
@@ -177,6 +178,7 @@ HTML email bodies encode ordinary mapped values. Only wrap the already-rendered 
 - Persisted `DateTime` properties whose names end in `Utc` use the shared UTC contract: SQL Server `datetime2(7)`, PostgreSQL `timestamp with time zone`, UTC materialization, and rejection of local or unspecified tracked writes. `PostViewDaily.ViewDateUtc` is a `DateOnly` stored as `date`.
 - Browser wall-clock values are accepted only by Web request DTOs. Convert them with the supplied IANA time zone before dispatching feature commands; feature models and persisted values must contain UTC timestamps only.
 - Follow the [manual migration rules](../database/README.md) for schema/data changes. Preserve fresh creation/seeding; do not restore automatic upgrades or enable `Npgsql.EnableLegacyTimestampBehavior`.
+- Independent owner-account storage has additive manual `owner-account.sql` scripts for both providers. Apply them before starting this preparatory build on an existing database; they do not transfer or remove legacy settings. Fresh creation includes the table, and startup emptiness checks and full-database clearing include it. PostgreSQL reapplies the shared account check constraints after translating column names; keep fresh mappings and manual schema definitions aligned.
 
 ## Caching And Side Effects
 

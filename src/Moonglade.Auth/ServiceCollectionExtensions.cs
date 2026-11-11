@@ -14,6 +14,8 @@ public static class ServiceCollectionExtensions
     {
         services.AddSingleton<LocalAccountState>();
         services.AddSingleton<ILocalAccountReader>(sp => sp.GetRequiredService<LocalAccountState>());
+        services.AddScoped<OwnerAccountStore>();
+        services.AddScoped<IOwnerProfileReader>(sp => sp.GetRequiredService<OwnerAccountStore>());
         services.TryAddSingleton<ConfigurationWriteGate>();
         var section = configuration.GetSection("Authentication");
         var authentication = section.Get<AuthenticationSettings>() ?? new AuthenticationSettings();
