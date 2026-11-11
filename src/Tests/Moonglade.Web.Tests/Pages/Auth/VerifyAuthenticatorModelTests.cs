@@ -1,16 +1,12 @@
-using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 using Moonglade.Auth;
 using Moonglade.Web.Pages;
 using Moonglade.Web.Tests.TestSupport;
 using Moq;
-using System.Security.Claims;
 
 namespace Moonglade.Web.Tests.Pages.Auth;
 

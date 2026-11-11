@@ -4,16 +4,12 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 using Moonglade.Auth;
-using Moonglade.Configuration;
 using Moonglade.Web.Pages;
 using Moonglade.Web.Tests.TestSupport;
 using Moq;
 using System.Security.Claims;
-using System.Text.Json;
 
 namespace Moonglade.Web.Tests.Pages.Auth;
 

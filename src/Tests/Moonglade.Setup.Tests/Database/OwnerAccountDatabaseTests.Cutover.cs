@@ -384,14 +384,22 @@ public partial class OwnerAccountDatabaseTests
             new BlogConfigurationEntity { CfgKey = "UnrelatedLegacyGroup", CfgValue = """{"retained":"literal space","enabled":false}""" });
         db.Comment.Add(new CommentEntity
         {
-            Id = Guid.NewGuid(), PostId = (await db.Post.SingleAsync(ct)).Id, Username = "Retained visitor",
-            Email = "visitor@example.test", IPAddress = "192.0.2.1", CommentContent = "Retained comment",
+            Id = Guid.NewGuid(),
+            PostId = (await db.Post.SingleAsync(ct)).Id,
+            Username = "Retained visitor",
+            Email = "visitor@example.test",
+            IPAddress = "192.0.2.1",
+            CommentContent = "Retained comment",
             CreateTimeUtc = new DateTime(2026, 1, 2, 3, 4, 5, DateTimeKind.Utc)
         });
         db.ActivityLog.Add(new ActivityLogEntity
         {
-            EventKey = "post.created", EventTimeUtc = new DateTime(2026, 1, 2, 3, 4, 5, DateTimeKind.Utc),
-            ActorKind = ActivityActorKind.Administrator, ActorDisplayName = "Historical owner", TargetDisplayName = "Retained post", Details = "{}"
+            EventKey = "post.created",
+            EventTimeUtc = new DateTime(2026, 1, 2, 3, 4, 5, DateTimeKind.Utc),
+            ActorKind = ActivityActorKind.Administrator,
+            ActorDisplayName = "Historical owner",
+            TargetDisplayName = "Retained post",
+            Details = "{}"
         });
         await db.SaveChangesAsync(ct);
         db.ChangeTracker.Clear();

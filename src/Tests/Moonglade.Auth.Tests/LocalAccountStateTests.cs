@@ -141,15 +141,21 @@ public class LocalAccountStateTests
         var valid = await store.Accounts.PrepareLocalSetupAsync(OwnerAccountTestStore.Email, OwnerAccountTestStore.Password, ct);
         var pending = new PendingOwnerSetup
         {
-            Email = valid.Email, ExpectedRevision = valid.ExpectedRevision, RequiresTotp = false,
+            Email = valid.Email,
+            ExpectedRevision = valid.ExpectedRevision,
+            RequiresTotp = false,
             PasswordHash = scenario switch
             {
-                "invalid-hash" => "not-base64", "empty-hash" => "", "oversized-hash" => new string('A', 260),
+                "invalid-hash" => "not-base64",
+                "empty-hash" => "",
+                "oversized-hash" => new string('A', 260),
                 _ => valid.PasswordHash
             },
             PasswordSalt = scenario switch
             {
-                "invalid-salt" => "not-base64", "empty-salt" => "", "oversized-salt" => new string('A', 132),
+                "invalid-salt" => "not-base64",
+                "empty-salt" => "",
+                "oversized-salt" => new string('A', 132),
                 _ => valid.PasswordSalt
             },
             TotpSecret = scenario == "unexpected-secret" ? store.Totp.GenerateSecret() : null,

@@ -1,10 +1,8 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Moonglade.Auth;
 using Moonglade.Web.Tests.TestSupport;
 using System.Net;
-using System.Net.Http.Json;
 using System.Security.Claims;
 using System.Text.Json;
 

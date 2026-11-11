@@ -361,7 +361,10 @@ public partial class PostCacheInvalidationTests
             await db.Database.EnsureCreatedAsync(TestContext.Current.CancellationToken);
             db.OwnerAccount.Add(new Moonglade.Data.Entities.OwnerAccountEntity
             {
-                Id = Guid.NewGuid(), Email = "owner@example.test", NormalizedEmail = "OWNER@EXAMPLE.TEST", Revision = Guid.NewGuid()
+                Id = Guid.NewGuid(),
+                Email = "owner@example.test",
+                NormalizedEmail = "OWNER@EXAMPLE.TEST",
+                Revision = Guid.NewGuid()
             });
             var config = environment.Services.GetRequiredService<IBlogConfig>();
             foreach (var property in typeof(BlogSettingsSnapshot).GetProperties())

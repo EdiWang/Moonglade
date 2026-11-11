@@ -1,8 +1,8 @@
+using LiteBus.Events.Abstractions;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.Options;
-using LiteBus.Events.Abstractions;
 using Moonglade.Data;
 using Moq;
 

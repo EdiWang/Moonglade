@@ -1,7 +1,7 @@
 #nullable enable annotations
 
-using Moonglade.Configuration;
 using Moonglade.Auth;
+using Moonglade.Configuration;
 using Moonglade.Email.Core;
 using System.Text.Json;
 

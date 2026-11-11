@@ -2,15 +2,14 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.Options;
 using Moonglade.Auth;
-using Moonglade.Configuration;
 using Moonglade.Data;
 using Moonglade.Data.Entities;
 using Moonglade.Data.PostgreSql;
 using Moonglade.Data.SqlServer;
 using Moonglade.Setup.Tests.TestSupport;
+using OtpNet;
 using System.Data.Common;
 using System.Text.Json;
-using OtpNet;
 
 namespace Moonglade.Setup.Tests.Database;
 

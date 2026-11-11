@@ -259,7 +259,9 @@ public partial class SettingsValidationHttpTests
         builder.Services.AddSingleton(new EmailCapabilityStatusEvaluator(new EmailServiceOptionsValidator(), new EmailOutboxWorkerOptionsValidator())
             .Evaluate(emailAvailable ? new EmailServiceOptions
             {
-                SmtpServer = "smtp.example.test", SmtpUserName = "sender@example.test", SmtpPassword = "synthetic-test-value"
+                SmtpServer = "smtp.example.test",
+                SmtpUserName = "sender@example.test",
+                SmtpPassword = "synthetic-test-value"
             } : new EmailServiceOptions(), new EmailOutboxWorkerOptions()));
         builder.Services.AddInMemoryCacheAside();
         builder.Services.AddSingleton<PostCacheInvalidator>();

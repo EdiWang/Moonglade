@@ -1,6 +1,5 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using Moonglade.Auth;
 using Moonglade.Configuration;
 using Moonglade.Data;
 using Moonglade.Data.Entities;
@@ -157,20 +156,29 @@ public class StartUpInitializerTests
         var settings = StartupSettings.Defaults();
         db.BlogConfiguration.AddRange(settings.Select(pair => new BlogConfigurationEntity
         {
-            CfgKey = pair.Key, CfgValue = pair.Value, LastModifiedTimeUtc = timestamp
+            CfgKey = pair.Key,
+            CfgValue = pair.Value,
+            LastModifiedTimeUtc = timestamp
         }));
         var post = new PostEntity { Id = Guid.NewGuid(), Title = "Existing title", PostContent = "Existing content", CreateTimeUtc = timestamp };
         db.Post.Add(post);
         db.Comment.Add(new CommentEntity
         {
-            Id = Guid.NewGuid(), PostId = post.Id, Username = "Visitor", Email = "visitor@example.test",
-            CommentContent = "Existing comment", CreateTimeUtc = timestamp
+            Id = Guid.NewGuid(),
+            PostId = post.Id,
+            Username = "Visitor",
+            Email = "visitor@example.test",
+            CommentContent = "Existing comment",
+            CreateTimeUtc = timestamp
         });
         var profileId = Guid.NewGuid();
         if (profileOnly)
             db.OwnerAccount.Add(new OwnerAccountEntity
             {
-                Id = profileId, Email = "profile@example.test", NormalizedEmail = "PROFILE@EXAMPLE.TEST", Revision = Guid.NewGuid()
+                Id = profileId,
+                Email = "profile@example.test",
+                NormalizedEmail = "PROFILE@EXAMPLE.TEST",
+                Revision = Guid.NewGuid()
             });
         await db.SaveChangesAsync(ct);
 

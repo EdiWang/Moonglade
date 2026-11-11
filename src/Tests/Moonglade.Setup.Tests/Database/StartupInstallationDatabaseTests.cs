@@ -1,6 +1,5 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
-using Moonglade.Auth;
 using Moonglade.Configuration;
 using Moonglade.Data;
 using Moonglade.Data.Entities;
@@ -153,7 +152,9 @@ public class StartupInstallationDatabaseTests(DisposableCategoryDatabases databa
         db.Comment.Add(comment);
         db.BlogConfiguration.Add(new BlogConfigurationEntity
         {
-            CfgKey = "LocalAccountSettings", CfgValue = "inert-legacy-json", LastModifiedTimeUtc = comment.CreateTimeUtc
+            CfgKey = "LocalAccountSettings",
+            CfgValue = "inert-legacy-json",
+            LastModifiedTimeUtc = comment.CreateTimeUtc
         });
         await db.SaveChangesAsync(ct);
         post = await db.Post.AsNoTracking().SingleAsync(ct);

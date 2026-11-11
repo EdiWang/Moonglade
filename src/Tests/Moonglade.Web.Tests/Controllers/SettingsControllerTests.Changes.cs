@@ -8,7 +8,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Moonglade.ActivityLog;
-using Moonglade.Auth;
 using Moonglade.BackgroundServices;
 using Moonglade.Configuration;
 using Moonglade.Data;

@@ -25,7 +25,9 @@ public partial class UpdateConfigurationCommandTests
         var config = new BlogConfig(parsed.Snapshot);
         var account = new OwnerAccountEntity
         {
-            Id = Guid.NewGuid(), Email = "authoritative@example.test", NormalizedEmail = "AUTHORITATIVE@EXAMPLE.TEST",
+            Id = Guid.NewGuid(),
+            Email = "authoritative@example.test",
+            NormalizedEmail = "AUTHORITATIVE@EXAMPLE.TEST",
             Revision = Guid.NewGuid()
         };
         db.OwnerAccount.Add(account);

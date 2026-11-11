@@ -37,7 +37,8 @@ internal sealed class LocalAccountPageFixture : IAsyncDisposable
         Db.Database.EnsureCreated();
         Options = Microsoft.Extensions.Options.Options.Create(new AuthenticationSettings
         {
-            Provider = provider, Totp = new TotpAuthenticationSettings { Required = required }
+            Provider = provider,
+            Totp = new TotpAuthenticationSettings { Required = required }
         });
         Accounts = new OwnerAccountStore(Db, Totp, Options, Clock, Mock.Of<LiteBus.Events.Abstractions.IEventMediator>());
         Authentication.Setup(value => value.AuthenticateAsync(It.IsAny<HttpContext>(), It.IsAny<string>()))

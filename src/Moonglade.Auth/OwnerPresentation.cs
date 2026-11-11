@@ -16,9 +16,9 @@ public sealed record OwnerPresentation
 
     internal static async Task<OwnerPresentation> ReadAsync(BlogDbContext db, CancellationToken ct) =>
         await db.OwnerAvatar.Select(profile => new OwnerPresentation
-            {
-                Name = profile.Name ?? Default.Name,
-                Description = profile.Description ?? Default.Description
-            })
+        {
+            Name = profile.Name ?? Default.Name,
+            Description = profile.Description ?? Default.Description
+        })
             .SingleOrDefaultAsync(ct) ?? Default;
 }

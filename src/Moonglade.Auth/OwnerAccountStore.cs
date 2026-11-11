@@ -22,9 +22,9 @@ public sealed class OwnerAccountStore(
 
     public Task<OwnerProfile?> ReadProfileAsync(CancellationToken ct = default) =>
         db.OwnerAccount.AsNoTracking().Select(account => new OwnerProfile(account.Id, account.Email)
-            {
-                UseGravatar = db.OwnerAvatar.Any(avatar => avatar.UseGravatar)
-            })
+        {
+            UseGravatar = db.OwnerAvatar.Any(avatar => avatar.UseGravatar)
+        })
             .SingleOrDefaultAsync(ct);
 
     public Task<OwnerAccountSnapshot?> ReadAsync(CancellationToken ct = default) =>

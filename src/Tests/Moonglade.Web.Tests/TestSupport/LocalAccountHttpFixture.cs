@@ -18,16 +18,15 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Moonglade.Auth;
 using Moonglade.Configuration;
-using Moonglade.Features.Asset;
 using Moonglade.Web.Configuration;
 using Moonglade.Web.Controllers;
 using Moonglade.Web.Extensions;
 using Moonglade.Web.Services;
+using Moq;
 using System.Globalization;
 using System.Net;
 using System.Security.Claims;
 using System.Text.RegularExpressions;
-using Moq;
 
 namespace Moonglade.Web.Tests.TestSupport;
 
@@ -61,8 +60,10 @@ internal sealed class LocalAccountHttpFixture : IAsyncDisposable
         var root = Path.Combine(directory?.FullName ?? throw new DirectoryNotFoundException(), "src", "Moonglade.Web");
         var builder = WebApplication.CreateBuilder(new WebApplicationOptions
         {
-            ApplicationName = typeof(Program).Assembly.GetName().Name, ContentRootPath = root,
-            WebRootPath = Path.Combine(root, "wwwroot"), EnvironmentName = environment
+            ApplicationName = typeof(Program).Assembly.GetName().Name,
+            ContentRootPath = root,
+            WebRootPath = Path.Combine(root, "wwwroot"),
+            EnvironmentName = environment
         });
         builder.Configuration.Sources.Clear();
         builder.Configuration.AddInMemoryCollection(new Dictionary<string, string?>

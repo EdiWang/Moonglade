@@ -2,7 +2,6 @@ using Edi.CacheAside.InMemory;
 using LiteBus.Commands;
 using LiteBus.Commands.Abstractions;
 using LiteBus.Events;
-using LiteBus.Events.Abstractions;
 using LiteBus.Extensions.Microsoft.DependencyInjection;
 using LiteBus.Messaging;
 using Microsoft.EntityFrameworkCore;
