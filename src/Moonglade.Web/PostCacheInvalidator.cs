@@ -12,8 +12,8 @@ public class PostCacheInvalidator(ICacheAside cache)
     public string GetFeedCacheKey(string key) => $"{Volatile.Read(ref _feedVersion)}:{key}";
     public string GetFeedCacheKey(string key, BlogSettingsSnapshot settings) =>
         $"{GetFeedCacheKey(key)}:{Fingerprint(settings.GeneralSettings.ToJson() + settings.FeedSettings.ToJson() + settings.ImageSettings.ToJson())}";
-    public string GetFeedCacheKey(string key, BlogSettingsSnapshot settings, OwnerProfile owner) =>
-        $"{GetFeedCacheKey(key, settings)}:{Fingerprint(owner?.Email ?? string.Empty)}";
+    public string GetFeedCacheKey(string key, BlogSettingsSnapshot settings, OwnerProfile owner, string description = null) =>
+        $"{GetFeedCacheKey(key, settings)}:{Fingerprint(owner?.Email ?? string.Empty)}:{Fingerprint(description ?? OwnerPresentation.Default.Description)}";
 
     public string GetSiteMapCacheKey(BlogSettingsSnapshot settings) =>
         $"{SiteMapCacheKey}:{Fingerprint(settings.SEOSettings.CanonicalPrefix ?? string.Empty)}";

@@ -13,7 +13,7 @@ public static class SettingsAuditFields
             nameof(GeneralSettings.LogoText), nameof(GeneralSettings.SiteTitle),
             nameof(GeneralSettings.SideBarOption), nameof(GeneralSettings.WidgetsProfile),
             nameof(GeneralSettings.HotTagAmount), nameof(GeneralSettings.WidgetsCategoryList),
-            nameof(GeneralSettings.WidgetsSubscriptionButtons), nameof(GeneralSettings.UseGravatarAsProfilePicture),
+            nameof(GeneralSettings.WidgetsSubscriptionButtons),
             nameof(GeneralSettings.DefaultLanguageCode)
         ],
         nameof(ContentSettings) =>

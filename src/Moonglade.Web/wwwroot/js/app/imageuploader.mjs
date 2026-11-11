@@ -22,8 +22,10 @@ export class ImageUploader {
                     if (modal) modal.hide();
 
                     success(getLocalizedString('imageUpdated'));
-                    var d = new Date();
-                    document.querySelector(`.blogadmin-${targetName}`).src = `/${targetName}?${d.getTime()}`;
+                    const preview = document.querySelector(`.blogadmin-${targetName}`);
+                    const previewUrl = new URL(preview.src);
+                    previewUrl.searchParams.set('v', Date.now());
+                    preview.src = previewUrl.href;
                 } catch (err) {
                     error(err);
                 } finally {

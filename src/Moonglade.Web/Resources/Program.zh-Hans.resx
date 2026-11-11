@@ -2020,6 +2020,9 @@
     <value>更改会唤醒定时发布任务。已经开始的发布不会被取消。</value>
   </data>
   <data name="Account authenticator reset" xml:space="preserve"><value>账户验证器已重置</value></data>
+  <data name="Account profile updated" xml:space="preserve">
+    <value>账户资料已更新</value>
+  </data>
   <data name="Account password updated" xml:space="preserve"><value>账户密码已更新</value></data>
   <data name="Activity" xml:space="preserve"><value>活动</value></data>
   <data name="Activity log" xml:space="preserve"><value>活动日志</value></data>

@@ -2020,6 +2020,9 @@
     <value>変更するとスケジューラーが起動します。すでに開始した公開処理は取り消されません。</value>
   </data>
   <data name="Account authenticator reset" xml:space="preserve"><value>アカウントの認証アプリをリセットしました</value></data>
+  <data name="Account profile updated" xml:space="preserve">
+    <value>アカウントプロフィールを更新しました</value>
+  </data>
   <data name="Account password updated" xml:space="preserve"><value>アカウントのパスワードを更新しました</value></data>
   <data name="Activity" xml:space="preserve"><value>操作</value></data>
   <data name="Activity log" xml:space="preserve"><value>操作ログ</value></data>

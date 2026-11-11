@@ -12,6 +12,7 @@ public static class ServiceCollectionExtensions
     public static IServiceCollection AddBlogAuthentication(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddScoped<OwnerAccountStore>();
+        services.AddScoped<OwnerAvatarStore>();
         services.AddScoped<LocalAccountCookieEvents>();
         services.TryAddSingleton(TimeProvider.System);
         services.AddScoped<IOwnerProfileReader>(sp => sp.GetRequiredService<OwnerAccountStore>());

@@ -6,14 +6,15 @@ public class WebManifestMapHandler
 {
     public static Delegate Handler => Handle;
 
-    public static IResult Handle(HttpContext httpContext, IBlogConfig blogConfig)
+    public static async Task<IResult> Handle(HttpContext httpContext, IBlogConfig blogConfig, IOwnerProfileReader ownerProfiles)
     {
         var settings = blogConfig.Capture();
+        var presentation = await ownerProfiles.ReadPresentationAsync(httpContext.RequestAborted);
         var model = new ManifestModel
         {
             ShortName = settings.GeneralSettings.SiteTitle,
             Name = settings.GeneralSettings.SiteTitle,
-            Description = settings.GeneralSettings.Description,
+            Description = presentation.Description,
             StartUrl = "/",
             Icons =
             [

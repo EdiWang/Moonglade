@@ -11,7 +11,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Moonglade.Auth;
 using Moonglade.BackgroundServices;
 using Moonglade.Configuration;
-using Moonglade.Features.Asset;
 using Moonglade.Web.Handlers;
 using Moonglade.Web.Tests.TestSupport;
 
@@ -20,29 +19,23 @@ namespace Moonglade.Web.Tests.Hosting;
 public class ConfigurationCommandRegistrationTests
 {
     [Fact]
-    public async Task AvatarEvent_WithActualHandlerDiscovery_PersistsUploadedData()
+    public async Task AuthRegistration_ResolvesIndependentAvatarStore()
     {
         using var store = new ConfigurationCommandRecorder();
         var services = new ServiceCollection();
         services.AddLogging();
         services.AddSingleton(store.Db);
-        services.AddLiteBus(bus =>
-        {
-            bus.AddMessaging(_ => { });
-            bus.AddEvents(module =>
-            {
-                module.RegisterFromAssembly(typeof(SaveAssetEvent).Assembly);
-                module.RegisterFromAssembly(typeof(ConfigurationChangedEventHandler).Assembly);
-            });
-        });
+        services.AddBlogAuthentication(new ConfigurationBuilder().Build());
         using var provider = services.BuildServiceProvider();
-        var data = Convert.ToBase64String([1, 2, 3]);
+        using var scope = provider.CreateScope();
+        var avatars = scope.ServiceProvider.GetRequiredService<OwnerAvatarStore>();
+        var ct = TestContext.Current.CancellationToken;
 
-        await provider.GetRequiredService<IEventMediator>().PublishAsync(new SaveAssetEvent(AssetId.AvatarBase64, data),
-            TestContext.Current.CancellationToken);
+        await avatars.SetGravatarAsync(true, ct);
 
-        Assert.Equal(data, (await store.Db.BlogAsset.SingleAsync(TestContext.Current.CancellationToken)).Base64Data);
-        Assert.False(await store.Db.BlogConfiguration.AnyAsync(TestContext.Current.CancellationToken));
+        Assert.True(await avatars.UsesGravatarAsync(ct));
+        Assert.False(await store.Db.OwnerAccount.AnyAsync(ct));
+        Assert.False(await store.Db.BlogConfiguration.AnyAsync(ct));
     }
 
     [Fact]

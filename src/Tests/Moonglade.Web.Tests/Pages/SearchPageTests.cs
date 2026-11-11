@@ -248,8 +248,6 @@ public class SearchPageTests
         {
             SiteTitle = "Moonglade",
             LogoText = "moonglade",
-            Description = "Test blog",
-            OwnerName = "Admin",
             Copyright = "[c] 2026",
             DefaultLanguageCode = "en-us",
             SideBarOption = SideBarOption.Disabled,
@@ -320,7 +318,7 @@ public class SearchPageTests
         public void PopulateFeature(IEnumerable<ApplicationPart> parts, ControllerFeature feature)
         {
             feature.Controllers.Clear();
-            feature.Controllers.Add(typeof(AssetsController).GetTypeInfo());
+            feature.Controllers.Add(typeof(OwnerAvatarController).GetTypeInfo());
             feature.Controllers.Add(typeof(AuthController).GetTypeInfo());
         }
     }

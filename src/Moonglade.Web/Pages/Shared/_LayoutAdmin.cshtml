@@ -8,7 +8,7 @@
 @inject ThemeCacheInvalidator ThemeCache
 
 @{
-    var avatarUrl = Url.Action("Avatar", "Assets");
+    var avatarUrl = Url.Action("Avatar", "OwnerAvatar");
     var userInfoDisplay = AuthOptions.Value.Provider == AuthenticationProvider.Local
         ? UserInfoDisplay.PreferName
         : UserInfoDisplay.Both;

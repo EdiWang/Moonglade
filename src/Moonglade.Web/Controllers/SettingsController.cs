@@ -23,9 +23,6 @@ public class SettingsController(
     [HttpPost("general")]
     public async Task<IActionResult> General(GeneralSettings model)
     {
-        var settings = blogConfig.Capture();
-        model = model with { AvatarUrl = settings.GeneralSettings.AvatarUrl };
-
         return await UpdateSettingsAsync(model);
     }
     [HttpPost("content")]
@@ -119,11 +116,10 @@ public class SettingsController(
         {
             "general" => PatchConfigurationCommand.Create<GeneralSettings>(static value => value with { }, fields,
                 nameof(GeneralSettings.LogoText), nameof(GeneralSettings.Copyright),
-                nameof(GeneralSettings.SiteTitle), nameof(GeneralSettings.OwnerName),
-                nameof(GeneralSettings.Description),
+                nameof(GeneralSettings.SiteTitle),
                 nameof(GeneralSettings.SideBarOption), nameof(GeneralSettings.WidgetsProfile),
                 nameof(GeneralSettings.HotTagAmount), nameof(GeneralSettings.WidgetsCategoryList),
-                nameof(GeneralSettings.WidgetsSubscriptionButtons), nameof(GeneralSettings.UseGravatarAsProfilePicture),
+                nameof(GeneralSettings.WidgetsSubscriptionButtons),
                 nameof(GeneralSettings.DefaultLanguageCode)),
             "content" => PatchConfigurationCommand.Create<ContentSettings>(static value => value with { }, fields,
                 nameof(ContentSettings.DefaultEditor), nameof(ContentSettings.PostListPageSize),

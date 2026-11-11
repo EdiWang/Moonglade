@@ -34,7 +34,6 @@ public partial class SettingsControllerTests
         var content = new ContentSettings { DefaultEditor = EditorChoice.Markdown };
         var site = GeneralSettings.DefaultValue;
         site = site with { SiteTitle = "Saved title" };
-        site = site with { AvatarUrl = config.Capture().GeneralSettings.AvatarUrl };
         var expectedJson = general ? site.ToJson() : content.ToJson();
         var key = general ? nameof(GeneralSettings) : nameof(ContentSettings);
 

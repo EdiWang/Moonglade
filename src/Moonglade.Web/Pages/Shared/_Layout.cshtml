@@ -1,5 +1,6 @@
 ﻿@{
     var snapshot = ViewData.CaptureSettings(SettingsReader);
+    var presentation = await ViewData.CaptureOwnerPresentationAsync(OwnerProfiles, Context.RequestAborted);
 }
 @using Moonglade.Utils
 @using Microsoft.AspNetCore.Localization
@@ -10,7 +11,7 @@
 @inject Moonglade.Auth.IOwnerProfileReader OwnerProfiles
 
 @{
-    var avatarUrl = Url.Action("Avatar", "Assets");
+    var avatarUrl = Url.Action("Avatar", "OwnerAvatar");
     var owner = await ViewData.CaptureOwnerAsync(OwnerProfiles, Context.RequestAborted);
 
     // Resolve culture
@@ -60,7 +61,7 @@
         <partial name="_OpenGraph" />
     }
 
-    <metadesc description="@(ViewBag.MetaDescription ?? snapshot.GeneralSettings.Description)" />
+    <metadesc description="@(ViewBag.MetaDescription ?? presentation.Description)" />
 
     <title>
         @(ViewBag.TitlePrefix)@(null == ViewBag.TitlePrefix ? string.Empty : " - ")@snapshot.GeneralSettings.SiteTitle
@@ -191,7 +192,7 @@
         {
             <section class="profile-mobile d-block d-sm-none d-print-none">
                 <div class="card-background-container">
-                    @if (snapshot.GeneralSettings.UseGravatarAsProfilePicture && owner is not null)
+                    @if (owner?.UseGravatar == true)
                     {
                         <gravatar class="card-bkimg" email="@owner.Email" size="256" />
                     }
@@ -203,23 +204,23 @@
                 <div class="blogger-intro-content">
                     <div class="row">
                         <div class="col-3">
-                            @if (snapshot.GeneralSettings.UseGravatarAsProfilePicture && owner is not null)
+                            @if (owner?.UseGravatar == true)
                             {
                                 <gravatar class="rounded-circle blogger-head-pic"
                                           size="256"
-                                          alt="@snapshot.GeneralSettings.OwnerName"
+                                          alt="@presentation.Name"
                                           email="@owner.Email" />
                             }
                             else
                             {
                                 <img src="@avatarUrl"
-                                     alt="@snapshot.GeneralSettings.OwnerName"
+                                     alt="@presentation.Name"
                                      class="rounded-circle blogger-head-pic" />
                             }
                         </div>
                         <div class="col-9 position-relative">
                             <h4 class="text-center w-100 position-absolute top-50 start-50 translate-middle">
-                                @snapshot.GeneralSettings.Description
+                                @presentation.Description
                             </h4>
                         </div>
                     </div>

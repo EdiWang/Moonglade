@@ -39,5 +39,6 @@ public class PostgreSqlBlogDbContext : BlogDbContext
         }
 
         Data.Configurations.OwnerAccountConfiguration.ConfigureConstraints(modelBuilder);
+        ConfigureOwnerAvatarConstraint(modelBuilder);
     }
 }

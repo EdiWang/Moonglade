@@ -18,7 +18,7 @@ public partial class SettingsValidationHttpTests
     [Theory]
     [InlineData(false)]
     [InlineData(true)]
-    public async Task GeneralEmailInput_CannotOverrideAccount_AndOrdinaryWritesPreserveOwnerNameAndOtherValues(bool patch)
+    public async Task GeneralInput_CannotOverrideAccountProfile(bool patch)
     {
         var ct = TestContext.Current.CancellationToken;
         using var store = new ConfigurationCommandRecorder();
@@ -29,7 +29,8 @@ public partial class SettingsValidationHttpTests
         using var client = app.GetTestClient();
         var submitted = JsonSerializer.SerializeToNode(before.GeneralSettings, new JsonSerializerOptions(JsonSerializerDefaults.Web))!.AsObject();
         submitted["siteTitle"] = "New title";
-        submitted["ownerName"] = "New owner";
+        submitted["ownerName"] = "Attempted name";
+        submitted["description"] = "Attempted description";
         submitted["ownerEmail"] = "attempt@example.test";
         if (patch)
         {
@@ -37,7 +38,8 @@ public partial class SettingsValidationHttpTests
             Assert.Equal(HttpStatusCode.BadRequest, invalid.StatusCode);
             Assert.Equal(account, await store.Accounts.ReadAsync(ct));
             submitted.Remove("ownerEmail");
-            submitted.Remove("avatarUrl");
+            submitted.Remove("ownerName");
+            submitted.Remove("description");
         }
 
         using var response = patch
@@ -47,12 +49,11 @@ public partial class SettingsValidationHttpTests
         Assert.Equal(HttpStatusCode.NoContent, response.StatusCode);
         Assert.Equal(account, await store.Accounts.ReadAsync(ct));
         Assert.Equal("New title", config.Capture().GeneralSettings.SiteTitle);
-        Assert.Equal("New owner", config.Capture().GeneralSettings.OwnerName);
-        Assert.Equal(before.GeneralSettings.Description, config.Capture().GeneralSettings.Description);
+        Assert.Equal(Moonglade.Auth.OwnerPresentation.Default, await store.Accounts.ReadPresentationAsync(ct));
         Assert.Same(before.FeedSettings, config.Capture().FeedSettings);
         var json = await store.Db.BlogConfiguration.AsNoTracking().SingleAsync(row => row.CfgKey == nameof(GeneralSettings), ct);
         using var persisted = JsonDocument.Parse(json.CfgValue);
-        Assert.Equal("New owner", persisted.RootElement.GetProperty("ownerName").GetString());
+        Assert.Equal("New title", persisted.RootElement.GetProperty("siteTitle").GetString());
         Assert.DoesNotContain(persisted.RootElement.EnumerateObject(), property => property.Name.Equals("OwnerEmail", StringComparison.OrdinalIgnoreCase));
         var activity = Assert.Single(store.Commands.OfType<Moonglade.ActivityLog.CreateActivityLogCommand>());
         Assert.DoesNotContain("attempt@example.test", JsonSerializer.Serialize(activity.Details));

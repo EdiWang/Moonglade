@@ -13,6 +13,64 @@ namespace Moonglade.Web.Tests.Hosting;
 
 public partial class AccountSecurityHttpTests
 {
+    [Fact]
+    public async Task AvatarPreference_RequiresAdminAndAntiforgery_AndPreservesAccountAndOrdinarySettings()
+    {
+        var ct = TestContext.Current.CancellationToken;
+        await using var fixture = await LocalAccountHttpFixture.CreateAsync();
+        var account = await InitializeAsync(fixture);
+        const string route = "/api/account/avatar/gravatar";
+        using var anonymous = await fixture.SendAsync(HttpMethod.Put, route, JsonContent.Create(true));
+        Assert.Equal(HttpStatusCode.Unauthorized, anonymous.StatusCode);
+
+        fixture.SetTicket(LocalAccountPrincipal.Create(account, CookieAuthenticationDefaults.AuthenticationScheme),
+            CookieAuthenticationDefaults.AuthenticationScheme);
+        using var noToken = await fixture.SendAsync(HttpMethod.Put, route, JsonContent.Create(true));
+        Assert.Equal(HttpStatusCode.BadRequest, noToken.StatusCode);
+        Assert.False(await fixture.Store.Db.OwnerAvatar.AnyAsync(ct));
+
+        var token = await AdminTokenAsync(fixture);
+        var before = fixture.Store.Config.Capture();
+        using var accountPage = await fixture.SendAsync(HttpMethod.Get, "/admin/account");
+        Assert.Equal(HttpStatusCode.OK, accountPage.StatusCode);
+        using var saved = await fixture.SendAsync(HttpMethod.Put, route, JsonContent.Create(true), token);
+        Assert.Equal(HttpStatusCode.NoContent, saved.StatusCode);
+        Assert.True((await fixture.Store.Accounts.ReadProfileAsync(ct))!.UseGravatar);
+        Assert.Equal(account, await fixture.Store.Accounts.ReadAsync(ct));
+        Assert.Same(before, fixture.Store.Config.Capture());
+        using var admin = await fixture.SendAsync(HttpMethod.Get, "/admin/probe");
+        Assert.Equal(HttpStatusCode.OK, admin.StatusCode);
+    }
+
+    [Fact]
+    public async Task ProfileEndpoint_ValidatesAndUpdatesPublicFieldsWithoutChangingLoginOrAvatar()
+    {
+        var ct = TestContext.Current.CancellationToken;
+        await using var fixture = await LocalAccountHttpFixture.CreateAsync();
+        var account = await InitializeAsync(fixture);
+        fixture.SetTicket(LocalAccountPrincipal.Create(account, CookieAuthenticationDefaults.AuthenticationScheme),
+            CookieAuthenticationDefaults.AuthenticationScheme);
+        var token = await AdminTokenAsync(fixture);
+        var avatar = new OwnerAvatarStore(fixture.Store.Db);
+        await avatar.SetGravatarAsync(true, ct);
+        var snapshot = fixture.Store.Config.Capture();
+        var profile = OwnerPresentation.Default with { Name = "New name", Description = "New description" };
+        const string route = "/api/account/profile";
+
+        using var invalid = await fixture.SendAsync(HttpMethod.Put, route,
+            JsonContent.Create(profile with { Name = new string('x', 33) }), token);
+        Assert.Equal(HttpStatusCode.BadRequest, invalid.StatusCode);
+        Assert.Equal(OwnerPresentation.Default, await fixture.Store.Accounts.ReadPresentationAsync(ct));
+
+        using var saved = await fixture.SendAsync(HttpMethod.Put, route, JsonContent.Create(profile), token);
+
+        Assert.Equal(HttpStatusCode.NoContent, saved.StatusCode);
+        Assert.Equal(profile, await fixture.Store.Accounts.ReadPresentationAsync(ct));
+        Assert.Equal(account, await fixture.Store.Accounts.ReadAsync(ct));
+        Assert.True(await avatar.UsesGravatarAsync(ct));
+        Assert.Same(snapshot, fixture.Store.Config.Capture());
+    }
+
     [Theory]
     [InlineData(false)]
     [InlineData(true)]

@@ -91,11 +91,10 @@ public class DiscoveryEndpointTests
     public async Task Foaf_ProfileMissingOrConfigured_UsesCurrentMailboxHashAndRetainsOwnerIdentity()
     {
         var ct = TestContext.Current.CancellationToken;
-        var profiles = new Moonglade.Web.Tests.TestSupport.TestOwnerProfileReader { Owner = null };
+        var profiles = new Moonglade.Web.Tests.TestSupport.TestOwnerProfileReader { Owner = null, Presentation = OwnerPresentation.Default with { Name = "Protocol owner" } };
         var config = new BlogConfig(BlogConfig.Parse(new Dictionary<string, string>()).Snapshot);
         config.Publish(config.Capture() with
         {
-            GeneralSettings = config.Capture().GeneralSettings with { OwnerName = "Protocol owner" },
             AdvancedSettings = config.Capture().AdvancedSettings with { EnableFoaf = true }
         });
         var queries = new Mock<IQueryMediator>();
@@ -138,8 +137,7 @@ public class DiscoveryEndpointTests
         var pending = client.GetStringAsync("/foaf.xml", ct);
         await widgetsStarted.Task.WaitAsync(TimeSpan.FromSeconds(10), ct);
         profiles.Owner = profiles.Owner with { Email = "next@example.test" };
-        config.Publish(config.Capture() with
-        { GeneralSettings = config.Capture().GeneralSettings with { OwnerName = "Next owner" } });
+        profiles.Presentation = profiles.Presentation with { Name = "Next owner" };
         widgetsResume.TrySetResult();
         var configured = XDocument.Parse(await pending);
 

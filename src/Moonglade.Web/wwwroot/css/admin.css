@@ -515,6 +515,12 @@
     grid-template-columns: 80px minmax(0, 1fr) auto;
 }
 
+@media (max-width: 575.98px) {
+    .admin-settings-page .settings-entry.admin-profile-entry > :last-child {
+        grid-column: 2;
+    }
+}
+
 .admin-profile-avatar {
     position: relative;
     width: 80px;

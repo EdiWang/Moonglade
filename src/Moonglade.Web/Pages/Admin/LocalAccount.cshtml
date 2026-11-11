@@ -1,6 +1,11 @@
 ﻿@page "/admin/account"
+@inject Moonglade.Auth.IOwnerProfileReader OwnerProfiles
+@inject Moonglade.Auth.OwnerAvatarStore OwnerAvatars
 @inject IOptions<Moonglade.Auth.AuthenticationSettings> AuthOptions
 @{
+    var presentation = await OwnerProfiles.ReadPresentationAsync(HttpContext.RequestAborted);
+    var useGravatar = await OwnerAvatars.UsesGravatarAsync(HttpContext.RequestAborted);
+    var avatarUrl = Url.Action("Avatar", "OwnerAvatar");
     ViewBag.Title = SharedLocalizer["Account"];
     ViewBag.XData = "accountManager";
     var local = AuthOptions.Value.Provider == Moonglade.Auth.AuthenticationProvider.Local;
@@ -13,11 +18,16 @@
 }
 
 <div id="localizedStrings" style="display:none"
+     data-image-updated="@SharedLocalizer["Updated"]"
+     data-please-select-image="@SharedLocalizer["Please select an image"]"
+     data-please-select-image-file="@SharedLocalizer["Please select an image file."]"
+     data-file-apis-not-supported="@SharedLocalizer["The File APIs are not fully supported in this browser."]"
      data-password-updated="@SharedLocalizer["Password updated."]"
      data-email-updated="@SharedLocalizer["Owner email updated."]">
 </div>
 
 <div id="account-settings" class="admin-settings-page" data-local-auth="@local.ToString().ToLowerInvariant()"
+     data-avatar-upload-url="@Url.Content("~/api/account/avatar")"
      data-email-url="@Url.Content("~/api/account/email")" data-signin-url="@Url.Page("/SignIn")">
     <div class="settings-entry row align-items-center">
         <div class="col-auto">
@@ -33,6 +43,42 @@
                     aria-haspopup="dialog" aria-controls="ownerEmailModal"
                     aria-describedby="account-email-title account-email-description"
                     x-on:click="openEmailModal()">@SharedLocalizer["Change"]</button>
+        </div>
+    </div>
+    <div class="settings-entry admin-profile-entry">
+        <div class="col-auto">
+            <button type="button" class="admin-profile-avatar" data-bs-toggle="modal" data-bs-target="#avatarmodal"
+                    aria-label="@SharedLocalizer["Change Avatar"]">
+                <img src="@avatarUrl" class="img-thumbnail blogadmin-avatar" alt="" />
+                <span class="admin-profile-avatar-overlay" aria-hidden="true">
+                    <i class="bi bi-camera"></i>
+                </span>
+            </button>
+        </div>
+        <div class="col">
+            <div class="fw-semibold">@presentation.Name</div>
+            <div class="form-text">@presentation.Description</div>
+        </div>
+        <div class="col-auto text-end">
+            <button type="button" class="btn btn-sm btn-outline-accent" data-bs-toggle="modal"
+                    data-bs-target="#ownerProfileModal" aria-haspopup="dialog"
+                    aria-controls="ownerProfileModal">@SharedLocalizer["Change"]</button>
+        </div>
+    </div>
+    <div class="settings-entry row align-items-center">
+        <div class="col-auto">
+            <i class="bi-person-circle settings-entry-icon" aria-hidden="true"></i>
+        </div>
+        <div class="col">
+            <label for="account-gravatar">@SharedLocalizer["Use my Gravatar as profile picture"]</label>
+            <div class="form-text" id="account-gravatar-description">@SharedLocalizer["Please make sure you have setup Gravatar with your email address"]</div>
+        </div>
+        <div class="col-5 text-end">
+            <div class="form-check form-switch form-control-lg">
+                <input type="checkbox" id="account-gravatar" class="form-check-input"
+                       checked="@useGravatar" aria-describedby="account-gravatar-description"
+                       data-save-url="@Url.Content("~/api/account/avatar/gravatar")" />
+            </div>
         </div>
     </div>
     @if (local)
@@ -69,6 +115,35 @@
     </div>
     }
 </div>
+
+<div class="modal fade" id="ownerProfileModal" tabindex="-1" aria-labelledby="ownerProfileModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="ownerProfileModalLabel">@SharedLocalizer["Profile"]</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="@SharedLocalizer["Close"]"></button>
+            </div>
+            <form action="@Url.Content("~/api/account/profile")" x-on:submit.prevent="updateProfile($event.currentTarget)">
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="ownerProfileName" class="form-label">@SharedLocalizer["Your name"]</label>
+                        <input id="ownerProfileName" name="name" class="form-control" value="@presentation.Name" maxlength="32" required />
+                    </div>
+                    <div>
+                        <label for="ownerProfileDescription" class="form-label">@SharedLocalizer["Your description"]</label>
+                        <textarea id="ownerProfileDescription" name="description" class="form-control" rows="3" maxlength="256" required>@presentation.Description</textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-outline-accent" x-bind:disabled="savingProfile">@SharedLocalizer["Submit"]</button>
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">@SharedLocalizer["Cancel"]</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<partial name="_AvatarModal" />
 
 <div class="modal fade" id="ownerEmailModal" tabindex="-1" aria-labelledby="ownerEmailModalLabel" aria-hidden="true">
     <div class="modal-dialog">

@@ -17,6 +17,79 @@ public partial class OwnerAccountDatabaseTests
     [DisposableDatabaseTheory]
     [InlineData("PostgreSql")]
     [InlineData("SqlServer")]
+    public async Task PresentationCutover_PreservesAvatarAndRerunPreservesProfileEdits(string provider)
+    {
+        var ct = TestContext.Current.CancellationToken;
+        await using var database = await databases.CreateAsync(provider);
+        await using var db = database.Context();
+        await SeedCutoverAsync(db, """{"siteTitle":"Moonglade","OWNERNAME":"Sample owner","description":"Sample bio"}""", ct);
+        db.OwnerAvatar.Add(new OwnerAvatarEntity { UseGravatar = true, ImageBase64 = "AQID" });
+        await db.SaveChangesAsync(ct);
+        db.ChangeTracker.Clear();
+        await database.ExecuteAsync(provider == "PostgreSql"
+            ? "ALTER TABLE public.owner_avatar DROP COLUMN name, DROP COLUMN description;"
+            : "ALTER TABLE dbo.OwnerAvatar DROP COLUMN Name, Description;");
+
+        await database.MigrateAsync("owner-presentation.sql");
+
+        var row = await db.OwnerAvatar.AsNoTracking().SingleAsync(ct);
+        Assert.Equal("Sample owner", row.Name);
+        Assert.Equal("Sample bio", row.Description);
+        Assert.Equal("AQID", row.ImageBase64);
+        Assert.True(row.UseGravatar);
+        Assert.False(await db.OwnerAccount.AnyAsync(ct));
+        var general = await db.BlogConfiguration.AsNoTracking().SingleAsync(setting => setting.CfgKey == nameof(GeneralSettings), ct);
+        using var json = JsonDocument.Parse(general.CfgValue);
+        Assert.Equal("siteTitle", Assert.Single(json.RootElement.EnumerateObject()).Name);
+        Assert.Equal(new DateTime(2026, 1, 2, 3, 4, 5, DateTimeKind.Utc), general.LastModifiedTimeUtc);
+
+        var edited = OwnerPresentation.Default with { Name = "Edited name" };
+        await new OwnerAvatarStore(db).SetPresentationAsync(edited, ct);
+        await database.MigrateAsync("owner-presentation.sql");
+        Assert.Equal(edited, await CreateStore(db).ReadPresentationAsync(ct));
+    }
+
+    [DisposableDatabaseTheory]
+    [InlineData("PostgreSql")]
+    [InlineData("SqlServer")]
+    public async Task AvatarCutover_MovesBothValues_AndRerunPreservesAccountEdits(string provider)
+    {
+        var ct = TestContext.Current.CancellationToken;
+        await using var database = await databases.CreateAsync(provider);
+        await using var db = database.Context();
+        await SeedCutoverAsync(db, """{"siteTitle":"Moonglade","UseGravatarAsProfilePicture":true,"avatarUrl":"/inactive"}""", ct);
+        var assetId = Guid.Parse("0922e4dc-b47b-44e2-a493-05d4e624381c");
+        db.BlogAsset.Add(new BlogAssetEntity { Id = assetId, Base64Data = "AQID", LastModifiedTimeUtc = DateTime.UtcNow });
+        await db.SaveChangesAsync(ct);
+        var before = await db.BlogConfiguration.AsNoTracking().SingleAsync(row => row.CfgKey == nameof(GeneralSettings), ct);
+
+        await database.ExecuteAsync(provider == "PostgreSql" ? "DROP TABLE public.owner_avatar;" : "DROP TABLE dbo.OwnerAvatar;");
+        await database.MigrateAsync("owner-avatar.sql");
+
+        var avatars = new OwnerAvatarStore(db);
+        Assert.True(await avatars.UsesGravatarAsync(ct));
+        Assert.Equal("AQID", await avatars.ReadImageAsync(ct));
+        Assert.False(await db.BlogAsset.AnyAsync(asset => asset.Id == assetId, ct));
+        var after = await db.BlogConfiguration.AsNoTracking().SingleAsync(row => row.CfgKey == nameof(GeneralSettings), ct);
+        Assert.Equal(before.LastModifiedTimeUtc, after.LastModifiedTimeUtc);
+        using var general = JsonDocument.Parse(after.CfgValue);
+        var retained = Assert.Single(general.RootElement.EnumerateObject());
+        Assert.Equal("siteTitle", retained.Name);
+        Assert.Equal("Moonglade", retained.Value.GetString());
+        Assert.False(await db.OwnerAccount.AnyAsync(ct));
+
+        await database.ExecuteAsync(provider == "PostgreSql"
+            ? "UPDATE public.owner_avatar SET use_gravatar = false WHERE id = 1;"
+            : "UPDATE dbo.OwnerAvatar SET UseGravatar = 0 WHERE Id = 1;");
+        await database.MigrateAsync("owner-avatar.sql");
+
+        Assert.False(await avatars.UsesGravatarAsync(ct));
+        Assert.Equal("AQID", await avatars.ReadImageAsync(ct));
+    }
+
+    [DisposableDatabaseTheory]
+    [InlineData("PostgreSql")]
+    [InlineData("SqlServer")]
     public async Task Cutover_EmailAtMaximumLength_RemainsUsableForActualLocalSetup(string provider)
     {
         var ct = TestContext.Current.CancellationToken;
@@ -296,7 +369,7 @@ public partial class OwnerAccountDatabaseTests
     }
 
     private static string LegacyGeneral(string key, string value) =>
-        (GeneralSettings.DefaultValue with { OwnerName = "Retained owner", Description = "Retained description" }).ToJson()[..^1]
+        GeneralSettings.DefaultValue.ToJson()[..^1] + ",\"ownerName\":\"Retained owner\",\"description\":\"Retained description\""
         + $",\"{key}\":{value},\"futureObject\":{{\"ownerEmail\":\"nested@example.test\",\"enabled\":false}},\"futureArray\":[1,null,\"literal space\"]}}";
 
     private static async Task SeedCutoverAsync(BlogDbContext db, string generalJson, CancellationToken ct)

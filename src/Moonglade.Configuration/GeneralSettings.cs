@@ -21,17 +21,6 @@ public sealed record GeneralSettings : IBlogSettings<GeneralSettings>
     [MaxLength(16)]
     public string SiteTitle { get; init; }
 
-    [Required]
-    [Display(Name = "Your name")]
-    [MaxLength(32)]
-    public string OwnerName { get; init; }
-
-    [Required]
-    [Display(Name = "Your description")]
-    [DataType(DataType.MultilineText)]
-    [MaxLength(256)]
-    public string Description { get; init; }
-
     [Display(Name = "Side bar display")]
     [EnumDataType(typeof(SideBarOption))]
     public SideBarOption SideBarOption { get; init; }
@@ -50,12 +39,6 @@ public sealed record GeneralSettings : IBlogSettings<GeneralSettings>
     [Display(Name = "Subscription buttons")]
     public bool WidgetsSubscriptionButtons { get; init; } = true;
 
-    // Retained for legacy JSON compatibility; avatars use the local asset endpoint.
-    public string AvatarUrl { get; init; }
-
-    [Display(Name = "Use my Gravatar as profile picture")]
-    public bool UseGravatarAsProfilePicture { get; init; }
-
     [Required]
     [RegularExpression("^[a-z]{2}-[a-zA-Z]{2,4}$")]
     public string DefaultLanguageCode { get; init; } = "en-us";
@@ -63,9 +46,7 @@ public sealed record GeneralSettings : IBlogSettings<GeneralSettings>
     [JsonIgnore]
     public static GeneralSettings DefaultValue => new()
     {
-        OwnerName = "Admin",
         SiteTitle = "Moonglade",
-        Description = "Moonglade Admin",
         LogoText = "moonglade",
         Copyright = $"[c] {DateTime.UtcNow.Year}",
         HotTagAmount = 10

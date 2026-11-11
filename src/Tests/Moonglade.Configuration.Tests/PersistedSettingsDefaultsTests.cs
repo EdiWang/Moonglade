@@ -46,7 +46,7 @@ public class PersistedSettingsDefaultsTests
         Assert.Equal(SEOSettings.DefaultValue.MetaKeyword, snapshot.SEOSettings.MetaKeyword);
         Assert.Equal(0, snapshot.GeneralSettings.HotTagAmount);
         Assert.False(snapshot.GeneralSettings.WidgetsProfile);
-        Assert.Equal(GeneralSettings.DefaultValue.OwnerName, snapshot.GeneralSettings.OwnerName);
+        Assert.Equal(GeneralSettings.DefaultValue.Copyright, snapshot.GeneralSettings.Copyright);
         Assert.Null(snapshot.ContentSettings.CalloutSectionHtmlPitch);
         Assert.Equal(20, snapshot.ContentSettings.PostListPageSize);
         Assert.False(snapshot.CommentSettings.RequireCommentReview);

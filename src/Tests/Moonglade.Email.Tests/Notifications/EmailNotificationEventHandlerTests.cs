@@ -291,6 +291,9 @@ public partial class EmailNotificationEventHandlerTests
 
     private sealed class ProfileReader : IOwnerProfileReader
     {
+        public Task<OwnerPresentation> ReadPresentationAsync(CancellationToken ct = default) =>
+            Task.FromResult(OwnerPresentation.Default);
+
         public OwnerProfile? Owner { get; set; } = new(Guid.NewGuid(), "admin@example.com");
         public int Reads { get; private set; }
         public Task<OwnerProfile?> ReadProfileAsync(CancellationToken ct = default)

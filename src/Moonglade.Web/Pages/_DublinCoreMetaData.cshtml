@@ -1,12 +1,14 @@
-﻿@{
+﻿@inject Moonglade.Auth.IOwnerProfileReader OwnerProfiles
+@{
     var snapshot = ViewData.CaptureSettings(SettingsReader);
+    var presentation = await ViewData.CaptureOwnerPresentationAsync(OwnerProfiles, Context.RequestAborted);
 }
 @model Moonglade.Web.Pages.PostModel
 
 <meta name="DC.Title" content="@Model.Post.Title" />
-<meta name="DC.Publisher" content="@(string.IsNullOrWhiteSpace(Model.Post.Author) ? snapshot.GeneralSettings.OwnerName : Model.Post.Author)" />
+<meta name="DC.Publisher" content="@(string.IsNullOrWhiteSpace(Model.Post.Author) ? presentation.Name : Model.Post.Author)" />
 <meta name="DC.Language" content="@Model.Post.ContentLanguageCode" />
-<meta name="DC.Creator" content="@(string.IsNullOrWhiteSpace(Model.Post.Author) ? snapshot.GeneralSettings.OwnerName : Model.Post.Author)" />
+<meta name="DC.Creator" content="@(string.IsNullOrWhiteSpace(Model.Post.Author) ? presentation.Name : Model.Post.Author)" />
 <meta name="DC.Type" content="Text" />
 <meta name="DC.Format" content="text/html" />
 <meta name="DC.Format.MIME" content="text/html" />
@@ -16,5 +18,5 @@
 @if (snapshot.SEOSettings.DcLicenseUrl != null)
 {
     <meta name="DCTERMS.license" scheme="DCTERMS.URI" content="@snapshot.SEOSettings.DcLicenseUrl" />
-    <meta name="DCTERMS.rightsHolder" content="@(string.IsNullOrWhiteSpace(Model.Post.Author) ? snapshot.GeneralSettings.OwnerName : Model.Post.Author) " />
+    <meta name="DCTERMS.rightsHolder" content="@(string.IsNullOrWhiteSpace(Model.Post.Author) ? presentation.Name : Model.Post.Author) " />
 }

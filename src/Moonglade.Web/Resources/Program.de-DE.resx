@@ -2020,6 +2020,9 @@
     <value>Änderungen wecken den Zeitplaner. Bereits laufende Veröffentlichungen werden nicht abgebrochen.</value>
   </data>
   <data name="Account authenticator reset" xml:space="preserve"><value>Konto-Authentifikator zurückgesetzt</value></data>
+  <data name="Account profile updated" xml:space="preserve">
+    <value>Kontoprofil aktualisiert</value>
+  </data>
   <data name="Account password updated" xml:space="preserve"><value>Kontopasswort aktualisiert</value></data>
   <data name="Activity" xml:space="preserve"><value>Aktivität</value></data>
   <data name="Activity log" xml:space="preserve"><value>Aktivitätsprotokoll</value></data>

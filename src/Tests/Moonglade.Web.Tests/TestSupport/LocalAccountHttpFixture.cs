@@ -83,6 +83,7 @@ internal sealed class LocalAccountHttpFixture : IAsyncDisposable
         builder.Services.AddSingleton(Mock.Of<IQueryMediator>());
         builder.Services.AddInMemoryCacheAside();
         builder.Services.AddSingleton<ThemeCacheInvalidator>();
+        builder.Services.AddSingleton<PostCacheInvalidator>();
         builder.Services.AddLocalization(options => options.ResourcesPath = "Resources");
         builder.Services.AddDataProtection().UseEphemeralDataProtectionProvider();
         builder.Services.AddBlogAuthentication(builder.Configuration);
@@ -213,7 +214,7 @@ internal sealed class LocalAccountHttpFixture : IAsyncDisposable
     {
         public void PopulateFeature(IEnumerable<ApplicationPart> parts, ControllerFeature feature)
         {
-            foreach (var controller in feature.Controllers.Where(type => type.AsType() != typeof(AccountController)).ToArray())
+            foreach (var controller in feature.Controllers.Where(type => type.AsType() != typeof(AccountController) && type.AsType() != typeof(OwnerAvatarController)).ToArray())
                 feature.Controllers.Remove(controller);
         }
     }

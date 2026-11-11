@@ -134,7 +134,7 @@ public partial class SettingsControllerTests
         var after = config.Capture().GeneralSettings with
         {
             SiteTitle = "Changed title",
-            Description = "B3-private-description"
+            Copyright = "[c] B3-private-description"
         };
 
         Assert.IsType<NoContentResult>(await SaveController(controller, "general", after, patch));
@@ -207,7 +207,7 @@ public partial class SettingsControllerTests
         var after = config.Capture().GeneralSettings with
         {
             SiteTitle = "Saved title",
-            Description = "B2-private-description"
+            Copyright = "[c] B2-private-description"
         };
         var pending = new BlogConfigurationEntity
         {
@@ -397,7 +397,7 @@ public partial class SettingsControllerTests
 
     private static object RestrictedGroup(BlogSettingsSnapshot root, string group) => group switch
     {
-        "general" => root.GeneralSettings with { Description = "B3-private-description" },
+        "general" => root.GeneralSettings with { Copyright = "[c] B3-private-description" },
         "content" => root.ContentSettings with { PostFooterHtmlPitch = "B3-private-footer" },
         "comment" => root.CommentSettings with { WordFilterKeywords = "B3-private-keywords" },
         "notification" => root.NotificationSettings with { EmailDisplayName = "B3-private-sender" },
@@ -410,7 +410,7 @@ public partial class SettingsControllerTests
 
     private static Task<IActionResult> SaveController(SettingsController controller, string group, object model, bool patch) =>
         patch ? controller.Patch(group, JsonSerializer.SerializeToElement(model.GetType().GetProperties()
-                .Where(property => property.GetMethod?.IsStatic == false && property.Name != nameof(GeneralSettings.AvatarUrl))
+                .Where(property => property.GetMethod?.IsStatic == false)
                 .ToDictionary(property => property.Name, property => property.GetValue(model))))
             : model switch
             {

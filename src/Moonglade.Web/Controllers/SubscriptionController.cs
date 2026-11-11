@@ -44,7 +44,7 @@ public class SubscriptionController(
             slug,
             BlogCachePartition.RssCategory,
             "rss",
-            (s, settings, _) => new GetRssStringQuery(s, settings));
+            (s, settings, _, presentation) => new GetRssStringQuery(s, settings, presentation));
     }
 
     [HttpGet("atom/{slug?}")]
@@ -54,28 +54,29 @@ public class SubscriptionController(
             slug,
             BlogCachePartition.AtomCategory,
             "atom",
-            (s, settings, owner) => new GetAtomStringQuery(s, settings, owner));
+            (s, settings, owner, presentation) => new GetAtomStringQuery(s, settings, owner, presentation));
     }
 
     private async Task<IActionResult> GetFeedAsync<TQuery>(
         string slug,
         BlogCachePartition categoryPartition,
         string defaultCacheKey,
-        Func<string, BlogSettingsSnapshot, OwnerProfile, TQuery> queryFactory)
+        Func<string, BlogSettingsSnapshot, OwnerProfile, OwnerPresentation, TQuery> queryFactory)
         where TQuery : IQuery<string>
     {
         var settings = blogConfig.Capture();
         var owner = defaultCacheKey == "atom"
             ? await ownerProfiles.ReadProfileAsync(HttpContext.RequestAborted) : null;
+        var presentation = await ownerProfiles.ReadPresentationAsync(HttpContext.RequestAborted);
         bool hasRoute = !string.IsNullOrWhiteSpace(slug);
         var route = hasRoute ? slug.ToLower().Trim() : null;
 
         return await cache.GetOrCreateAsync(
             hasRoute ? categoryPartition.ToString() : BlogCachePartition.General.ToString(),
-            postCacheInvalidator.GetFeedCacheKey(route ?? defaultCacheKey, settings, owner),
+            postCacheInvalidator.GetFeedCacheKey(route ?? defaultCacheKey, settings, owner, presentation.Description),
             async () =>
             {
-                var xml = await queryMediator.QueryAsync(queryFactory(slug, settings, owner));
+                var xml = await queryMediator.QueryAsync(queryFactory(slug, settings, owner, presentation));
                 if (string.IsNullOrWhiteSpace(xml))
                 {
                     return (IActionResult)NotFound();

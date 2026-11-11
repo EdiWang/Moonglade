@@ -1,5 +1,7 @@
+@inject Moonglade.Auth.IOwnerProfileReader OwnerProfiles
 @{
     var snapshot = ViewData.CaptureSettings(SettingsReader);
+    var presentation = await ViewData.CaptureOwnerPresentationAsync(OwnerProfiles, Context.RequestAborted);
 }
 @model Moonglade.Web.Pages.PostModel
 @using Moonglade.Utils
@@ -8,7 +10,7 @@
 
 @{
     var authorName = string.IsNullOrWhiteSpace(Model.Post.Author)
-        ? snapshot.GeneralSettings.OwnerName
+        ? presentation.Name
         : Model.Post.Author;
 
     var postUrl = !string.IsNullOrWhiteSpace(snapshot.SEOSettings.CanonicalPrefix)

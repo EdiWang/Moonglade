@@ -1,6 +1,8 @@
 ﻿@page "/post/{year:int:min(1900):length(4)}/{month:int:range(1,12)}/{day:int:range(1,31)}/{slug:regex(^(?!-)([a-zA-Z0-9-]){{1,128}}$)}"
+@inject Moonglade.Auth.IOwnerProfileReader OwnerProfiles
 @{
     var snapshot = ViewData.CaptureSettings(SettingsReader);
+    var presentation = await ViewData.CaptureOwnerPresentationAsync(OwnerProfiles, HttpContext.RequestAborted);
 }
 @model Moonglade.Web.Pages.PostModel
 @using Moonglade.Data.DTO
@@ -38,7 +40,7 @@
     <meta name="title" content="@Model.Post.Title" />
     <meta name="displaydate" content="@UtcDateTimeFormatter.ToIsoString(Model.Post.PubDateUtc.GetValueOrDefault())">
     <meta name="copyright" content="(C) @DateTime.UtcNow.Year @snapshot.GeneralSettings.SiteTitle">
-    <meta name="author" content="@(string.IsNullOrWhiteSpace(Model.Post.Author) ? snapshot.GeneralSettings.OwnerName : Model.Post.Author) " />
+    <meta name="author" content="@(string.IsNullOrWhiteSpace(Model.Post.Author) ? presentation.Name : Model.Post.Author) " />
     <meta name="post-is-published" content="@((Model.Post.PostStatus == PostStatus.Published).ToString().ToLower())" />
     @if (snapshot.SEOSettings.UseDublinCoreMetaData)
     {

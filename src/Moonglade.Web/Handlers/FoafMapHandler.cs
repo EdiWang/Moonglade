@@ -29,11 +29,10 @@ public class FoafMapHandler
             return;
         }
 
-        var general = settings.GeneralSettings ?? throw new InvalidOperationException("GeneralSettings is null.");
-
         try
         {
             var owner = await ownerProfiles.ReadProfileAsync(httpContext.RequestAborted);
+            var presentation = await ownerProfiles.ReadPresentationAsync(httpContext.RequestAborted);
             var widgets = await queryMediator.QueryAsync(new ListWidgetsQuery());
             var linksJson = widgets.Where(p => p.WidgetType == WidgetType.LinkList && !string.IsNullOrWhiteSpace(p.ContentCode)).Select(p => p.ContentCode).ToList();
 
@@ -52,10 +51,10 @@ public class FoafMapHandler
             }
 
             var foafDoc = new FoafDoc(
-                Name: general.OwnerName,
+                Name: presentation.Name,
                 BlogUrl: UrlHelper.ResolveRootUrl(httpContext, settings.SEOSettings.CanonicalPrefix, preferCanonical: true),
                 Email: owner?.Email,
-                PhotoUrl: linkGenerator.GetUriByAction(httpContext, "Avatar", "Assets") ?? string.Empty
+                PhotoUrl: linkGenerator.GetUriByAction(httpContext, "Avatar", "OwnerAvatar") ?? string.Empty
             );
 
             // Use DisplayUrl for more robust URL representation

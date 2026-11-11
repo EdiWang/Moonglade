@@ -123,7 +123,7 @@ public class PostControllerTests
         var controller = new PostController(Mock.Of<ICommandMediator>(), queryMediator.Object,
             new BlogConfig(), Mock.Of<IStringLocalizer<Program>>(), Mock.Of<ILogger<PostController>>());
 
-        var result = await controller.GetMeta(Options.Create(new RequestLocalizationOptions()));
+        var result = await controller.GetMeta(Options.Create(new RequestLocalizationOptions()), new Moonglade.Web.Tests.TestSupport.TestOwnerProfileReader());
         var metadata = Assert.IsType<PostEditorMeta>(Assert.IsType<OkObjectResult>(result).Value);
         using var document = JsonDocument.Parse(JsonSerializer.Serialize(metadata, JsonSerializerOptions.Web));
         var categories = document.RootElement.GetProperty("categories").EnumerateArray().ToArray();
@@ -172,13 +172,13 @@ public class PostControllerTests
             Mock.Of<IStringLocalizer<Program>>(), Mock.Of<ILogger<PostController>>());
         var localizationOptions = Options.Create(new RequestLocalizationOptions());
 
-        var initialResult = await controller.GetMeta(localizationOptions);
+        var initialResult = await controller.GetMeta(localizationOptions, new Moonglade.Web.Tests.TestSupport.TestOwnerProfileReader());
         var initialMeta = Assert.IsType<PostEditorMeta>(Assert.IsType<OkObjectResult>(initialResult).Value);
         Assert.Equal("html", initialMeta.EditorChoice);
 
         blogConfig.Publish(blogConfig.Capture() with { ContentSettings = new ContentSettings { DefaultEditor = EditorChoice.Markdown } });
 
-        var updatedResult = await controller.GetMeta(localizationOptions);
+        var updatedResult = await controller.GetMeta(localizationOptions, new Moonglade.Web.Tests.TestSupport.TestOwnerProfileReader());
         var updatedMeta = Assert.IsType<PostEditorMeta>(Assert.IsType<OkObjectResult>(updatedResult).Value);
         Assert.Equal("markdown", updatedMeta.EditorChoice);
     }

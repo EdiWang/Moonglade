@@ -94,6 +94,8 @@ public class StartUpInitializerTests
             if (property.PropertyType == typeof(DateTime) || property.PropertyType == typeof(DateTime?))
                 property.SetValue(entity, DateTime.UtcNow.AddDays(-1));
         }
+        if (entity is OwnerAvatarEntity)
+            entity = new OwnerAvatarEntity { UseGravatar = true };
         if (entity is ActivityLogEntity activity)
         {
             activity.EventKey = "post.created";

@@ -11,7 +11,7 @@ internal static class SettingsActivityCases
     internal static readonly GroupCase[] Groups =
     [
         new("general", ActivityEvents.SettingsGeneralUpdated, ["LogoText", "SiteTitle", "SideBarOption", "WidgetsProfile", "HotTagAmount",
-            "WidgetsCategoryList", "WidgetsSubscriptionButtons", "UseGravatarAsProfilePicture", "DefaultLanguageCode"]),
+            "WidgetsCategoryList", "WidgetsSubscriptionButtons", "DefaultLanguageCode"]),
         new("content", ActivityEvents.SettingsContentUpdated, ["DefaultEditor", "PostListPageSize", "PostTitleAlignment", "ShowCalloutSection",
             "ShowPostFooter", "DocumentOutline", "EnableViewCount", "MaximumPageNumbersToDisplay"]),
         new("comment", ActivityEvents.SettingsCommentUpdated, ["CommentProvider", "CommentOrder", "EnableComments", "EnableGravatar",

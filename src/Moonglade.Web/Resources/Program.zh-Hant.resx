@@ -2020,6 +2020,9 @@
     <value>變更會喚醒定時發佈工作。已經開始的發佈不會被取消。</value>
   </data>
   <data name="Account authenticator reset" xml:space="preserve"><value>帳戶驗證器已重設</value></data>
+  <data name="Account profile updated" xml:space="preserve">
+    <value>帳戶資料已更新</value>
+  </data>
   <data name="Account password updated" xml:space="preserve"><value>帳戶密碼已更新</value></data>
   <data name="Activity" xml:space="preserve"><value>活動</value></data>
   <data name="Activity log" xml:space="preserve"><value>活動記錄</value></data>

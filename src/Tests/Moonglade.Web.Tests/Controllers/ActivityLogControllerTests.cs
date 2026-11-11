@@ -35,7 +35,7 @@ public class ActivityLogControllerTests
         var groups = Assert.IsType<List<ActivityEventGroup>>(okResult.Value);
         Assert.Equal(new[] { "Account", "Activity log", "Categories", "Comments", "Images", "Pages", "Posts",
             "Settings", "Site assets", "Tags", "Themes", "Widgets" }, groups.Select(group => group.Label));
-        Assert.Equal(51, groups.Sum(group => group.Items.Count));
+        Assert.Equal(52, groups.Sum(group => group.Items.Count));
         foreach (var group in groups)
         {
             var expected = ActivityEvents.All.Where(definition => definition.Group == group.Label)

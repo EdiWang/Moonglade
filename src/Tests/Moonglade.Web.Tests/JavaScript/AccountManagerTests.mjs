@@ -14,6 +14,7 @@ const stubs = new Map([
     };`],
     ['./toastService.mjs', `export const success = message => globalThis.accountRegression.events.push(['success', message]);
         export const error = failure => globalThis.accountRegression.events.push(['error', failure]);`],
+    ['./imageuploader.mjs', 'export class ImageUploader { bindEvents() {} }'],
     ['./utils.module.mjs', `export const getLocalizedString = key => key;`]
 ]);
 const originalRevision = '11111111-1111-1111-1111-111111111111';
@@ -25,8 +26,15 @@ test('accountManager password and email revision coordination', async t => {
     const globals = ['accountRegression', 'document', 'bootstrap', 'window'];
     const previous = new Map(globals.map(name => [name, Object.getOwnPropertyDescriptor(globalThis, name)]));
     const bridge = globalThis.accountRegression = {};
+    const gravatar = {
+        checked: false,
+        disabled: false,
+        dataset: { saveUrl: '/api/account/avatar/gravatar' },
+        addEventListener: (_, listener) => { bridge.changeGravatar = listener; }
+    };
     globalThis.document = {
-        getElementById: () => ({
+        getElementById: id => id === 'account-gravatar' ? gravatar : ({
+            addEventListener: () => {},
             dataset: { localAuth: 'true', emailUrl: '/api/account/email', signinUrl: '/auth/signin' }
         })
     };
@@ -75,6 +83,27 @@ test('accountManager password and email revision coordination', async t => {
         bridge.calls.length = 0;
         return manager;
     };
+
+    await t.test('Gravatar save is independent and rolls back a rejected change', async () => {
+        bridge.events = [];
+        bridge.calls = [];
+        bridge.fetch = async () => {};
+        gravatar.checked = true;
+
+        await bridge.changeGravatar();
+
+        assert.deepEqual(bridge.calls, [['/api/account/avatar/gravatar', 'PUT', true]]);
+        assert.equal(gravatar.checked, true);
+        assert.equal(gravatar.disabled, false);
+
+        bridge.fetch = async () => { throw new Error('Save rejected'); };
+        gravatar.checked = false;
+        await bridge.changeGravatar();
+
+        assert.equal(gravatar.checked, true);
+        assert.equal(gravatar.disabled, false);
+        assert.equal(bridge.events.at(-1)[0], 'error');
+    });
 
     await t.test('password success refreshes revision before same-page email save', async () => {
         const manager = await createManager();

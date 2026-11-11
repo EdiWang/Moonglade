@@ -38,14 +38,12 @@ public partial class UpdateConfigurationCommandTests
         var result = await Save(Handler(db, config), submitted, patch, ["SiteTitle"], ct);
 
         Assert.Equal("After", config.Capture().GeneralSettings.SiteTitle);
-        Assert.Equal("Retained owner", config.Capture().GeneralSettings.OwnerName);
-        Assert.Equal("Retained description", config.Capture().GeneralSettings.Description);
         Assert.Equal(new SettingValueChange("SiteTitle", "Before", "After"), Assert.Single(result.Changes));
         Assert.Equal("authoritative@example.test", (await db.OwnerAccount.AsNoTracking().SingleAsync(ct)).Email);
         Assert.Equal(account.Revision, (await db.OwnerAccount.AsNoTracking().SingleAsync(ct)).Revision);
         using var json = JsonDocument.Parse(row.CfgValue);
         Assert.DoesNotContain(json.RootElement.EnumerateObject(), value => value.Name.Equals("OwnerEmail", StringComparison.OrdinalIgnoreCase));
-        Assert.Equal("Retained owner", json.RootElement.GetProperty("ownerName").GetString());
+        Assert.Equal("After", json.RootElement.GetProperty("siteTitle").GetString());
     }
 
     public static IEnumerable<object[]> OrdinaryFieldCases()

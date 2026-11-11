@@ -2,6 +2,29 @@ import { Alpine } from './alpine-init.mjs';
 import { fetch2 } from './httpService.mjs?v=1500';
 import { success, error } from './toastService.mjs';
 import { getLocalizedString } from './utils.module.mjs';
+import { ImageUploader } from './imageuploader.mjs';
+
+const avatarUploader = new ImageUploader('avatar', 300, 'image/jpeg');
+avatarUploader.bindEvents();
+document.getElementById('btn-upload-avatar').addEventListener('click', async () => {
+    const settings = document.getElementById('account-settings');
+    await avatarUploader.uploadImage(settings.dataset.avatarUploadUrl);
+});
+
+const gravatar = document.getElementById('account-gravatar');
+gravatar.addEventListener('change', async () => {
+    const enabled = gravatar.checked;
+    gravatar.disabled = true;
+    try {
+        await fetch2(gravatar.dataset.saveUrl, 'PUT', enabled);
+        success(getLocalizedString('imageUpdated'));
+    } catch (err) {
+        gravatar.checked = !enabled;
+        error(err);
+    } finally {
+        gravatar.disabled = false;
+    }
+});
 
 Alpine.data('accountManager', () => ({
     resetPasswordModal: null,
@@ -11,6 +34,7 @@ Alpine.data('accountManager', () => ({
     revision: null,
     emailLoaded: false,
     savingEmail: false,
+    savingProfile: false,
     savingPassword: false,
     localAuth: false,
     formData: {
@@ -32,6 +56,19 @@ Alpine.data('accountManager', () => ({
             this.resetAuthenticatorModal = new bootstrap.Modal('#resetAuthenticatorModal');
         }
         await this.loadEmail();
+    },
+
+    async updateProfile(form) {
+        if (this.savingProfile) return;
+        this.savingProfile = true;
+        try {
+            const profile = Object.fromEntries(new FormData(form));
+            await fetch2(form.action, 'PUT', profile);
+            window.location.reload();
+        } catch (err) {
+            error(err);
+            this.savingProfile = false;
+        }
     },
 
     async loadEmail() {

@@ -1917,6 +1917,9 @@
   <data name="Account authenticator reset" xml:space="preserve">
     <value>Authentification du compte réinitialisée</value>
   </data>
+  <data name="Account profile updated" xml:space="preserve">
+    <value>Profil du compte mis à jour</value>
+  </data>
   <data name="Account password updated" xml:space="preserve">
     <value>Mot de passe du compte mis à jour</value>
   </data>

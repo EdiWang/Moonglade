@@ -16,6 +16,19 @@ public class AccountController(
     ICommandMediator commandMediator,
     ILogger<AccountController> logger) : BlogControllerBase(commandMediator, logger)
 {
+    [HttpPut("profile")]
+    public async Task<IActionResult> UpdateProfile(OwnerPresentation profile, [FromServices] OwnerAvatarStore store,
+        [FromServices] PostCacheInvalidator cache, CancellationToken ct)
+    {
+        if (await store.SetPresentationAsync(profile, ct))
+        {
+            cache.InvalidateFeeds();
+            await LogActivityAsync(ActivityEvents.AccountProfileUpdated, null);
+        }
+
+        return NoContent();
+    }
+
     [HttpGet("email")]
     public async Task<IActionResult> GetEmail()
     {

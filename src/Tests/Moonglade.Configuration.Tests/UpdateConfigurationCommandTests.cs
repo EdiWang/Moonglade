@@ -21,7 +21,7 @@ public partial class UpdateConfigurationCommandTests
         await SeedAsync(db, config.Capture().GeneralSettings);
         var original = config.Capture().GeneralSettings;
         var model = General("New");
-        model = model with { Description = "Description" };
+        model = model with { Copyright = "Copyright" };
         var submitted = model;
         var command = UpdateConfigurationCommand.Create(model);
         model = model with { SiteTitle = "Changed after dispatch" };
@@ -35,8 +35,8 @@ public partial class UpdateConfigurationCommandTests
         Assert.Same(submitted, config.Capture().GeneralSettings);
         Assert.NotSame(model, config.Capture().GeneralSettings);
         Assert.Equal(config.Capture().GeneralSettings.ToJson(), (await db.BlogConfiguration.SingleAsync(TestContext.Current.CancellationToken)).CfgValue);
-        model = model with { Description = "Changed after save" };
-        Assert.Equal("Description", config.Capture().GeneralSettings.Description);
+        model = model with { Copyright = "Changed after save" };
+        Assert.Equal("Copyright", config.Capture().GeneralSettings.Copyright);
     }
 
     [Fact]

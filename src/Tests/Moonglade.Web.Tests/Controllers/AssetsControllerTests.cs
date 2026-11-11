@@ -6,6 +6,7 @@ using LiteBus.Queries.Abstractions;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Logging;
 using Moonglade.ActivityLog;
@@ -48,23 +49,25 @@ public partial class AssetsControllerTests : IDisposable
         _environment.SetupProperty(x => x.WebRootFileProvider, Mock.Of<IFileProvider>());
     }
 
-    [Fact]
-    public async Task Avatar_Get_WhenCacheHasBytes_ReturnsFileContentResult()
+    [Theory]
+    [InlineData(new byte[] { 0x89, 0x50, 0x4E, 0x47 }, "image/png")]
+    [InlineData(new byte[] { 0xFF, 0xD8, 0xFF }, "image/jpeg")]
+    public async Task Avatar_Get_WhenCacheHasBytes_ReturnsFileWithMatchingContentType(byte[] bytes, string contentType)
     {
-        var bytes = new byte[] { 1, 2, 3 };
         _cache
             .Setup(x => x.GetOrCreateAsync(
-                BlogCachePartition.General.ToString(),
+                BlogCachePartition.Account.ToString(),
                 "avatar",
                 It.IsAny<Func<Task<byte[]>>>()))
             .ReturnsAsync(bytes);
 
-        var controller = CreateController();
+        using var store = new ConfigurationCommandRecorder();
+        var controller = CreateAvatarController(store, commandMediator: _commandMediator);
 
-        var result = await controller.Avatar(_cache.Object);
+        var result = await controller.Avatar(TestContext.Current.CancellationToken);
 
         var fileResult = Assert.IsType<FileContentResult>(result);
-        Assert.Equal("image/png", fileResult.ContentType);
+        Assert.Equal(contentType, fileResult.ContentType);
         Assert.Equal(bytes, fileResult.FileContents);
     }
 
@@ -73,14 +76,15 @@ public partial class AssetsControllerTests : IDisposable
     {
         _cache
             .Setup(x => x.GetOrCreateAsync(
-                BlogCachePartition.General.ToString(),
+                BlogCachePartition.Account.ToString(),
                 "avatar",
                 It.IsAny<Func<Task<byte[]>>>()))
             .ReturnsAsync((byte[])null!);
 
-        var controller = CreateController();
+        using var store = new ConfigurationCommandRecorder();
+        var controller = CreateAvatarController(store, commandMediator: _commandMediator);
 
-        var result = await controller.Avatar(_cache.Object);
+        var result = await controller.Avatar(TestContext.Current.CancellationToken);
 
         var fileResult = Assert.IsType<PhysicalFileResult>(result);
         Assert.Equal("image/png", fileResult.ContentType);
@@ -90,51 +94,51 @@ public partial class AssetsControllerTests : IDisposable
     [Fact]
     public async Task Avatar_Post_WhenBase64IsInvalid_ReturnsConflict()
     {
-        var controller = CreateController();
+        using var store = new ConfigurationCommandRecorder();
+        var controller = CreateAvatarController(store, commandMediator: _commandMediator);
 
-        var result = await controller.Avatar("not-base64");
+        var result = await controller.Upload("not-base64", TestContext.Current.CancellationToken);
 
         var conflictResult = Assert.IsType<ConflictObjectResult>(result);
         Assert.Equal("Bad base64 data", conflictResult.Value);
-        _eventMediator.Verify(x => x.PublishAsync(It.IsAny<SaveAssetEvent>(), It.IsAny<EventMediationSettings>(), It.IsAny<CancellationToken>()), Times.Never);
+        Assert.False(await store.Db.OwnerAvatar.AnyAsync(TestContext.Current.CancellationToken));
         Assert.Empty(_commandMediator.Commands);
     }
 
     [Fact]
     public async Task Avatar_Post_WhenImageIsNot300By300_ReturnsConflict()
     {
-        var controller = CreateController();
+        using var store = new ConfigurationCommandRecorder();
+        var controller = CreateAvatarController(store, commandMediator: _commandMediator);
         var base64 = Convert.ToBase64String(CreatePngBytes(200, 200));
 
-        var result = await controller.Avatar(base64);
+        var result = await controller.Upload(base64, TestContext.Current.CancellationToken);
 
         var conflictResult = Assert.IsType<ConflictObjectResult>(result);
         Assert.Equal("Image size must be 300x300.", conflictResult.Value);
-        _eventMediator.Verify(x => x.PublishAsync(It.IsAny<SaveAssetEvent>(), It.IsAny<EventMediationSettings>(), It.IsAny<CancellationToken>()), Times.Never);
+        Assert.False(await store.Db.OwnerAvatar.AnyAsync(TestContext.Current.CancellationToken));
         Assert.Empty(_commandMediator.Commands);
     }
 
     [Fact]
-    public async Task Avatar_Post_WhenImageIsValid_PublishesEventAndWritesActivityLog()
+    public async Task Avatar_Post_WhenImageIsValid_SavesAvatarAndWritesActivityLog()
     {
-        var controller = CreateController("admin", IPAddress.Parse("127.0.0.1"), "unit-test-agent");
+        using var store = new ConfigurationCommandRecorder();
+        var controller = CreateAvatarController(store, commandMediator: _commandMediator);
+        controller.ControllerContext = CreateController("admin", IPAddress.Parse("127.0.0.1"), "unit-test-agent").ControllerContext;
         var base64 = Convert.ToBase64String(CreatePngBytes(300, 300));
 
-        var result = await controller.Avatar(base64);
+        var result = await controller.Upload(base64, TestContext.Current.CancellationToken);
 
         Assert.IsType<OkResult>(result);
-        _eventMediator.Verify(
-            x => x.PublishAsync(
-                It.Is<SaveAssetEvent>(e => e.AssetId == AssetId.AvatarBase64 && e.AssetBase64 == base64),
-                It.IsAny<EventMediationSettings>(),
-                It.IsAny<CancellationToken>()),
-            Times.Once);
+        Assert.Equal(base64, (await store.Db.OwnerAvatar.SingleAsync(TestContext.Current.CancellationToken)).ImageBase64);
+        _cache.Verify(cache => cache.Remove(nameof(BlogCachePartition.Account), "avatar"), Times.Once);
 
         var activityCommand = _commandMediator.Single<CreateActivityLogCommand>();
         Assert.Equal(ActivityEvents.AvatarUpdated, activityCommand.EventKey);
         Assert.Equal("admin", activityCommand.ActorDisplayName);
         Assert.Equal("Avatar Image", activityCommand.TargetDisplayName);
-        Assert.Equal(AssetId.AvatarBase64.ToString(), activityCommand.TargetId);
+        Assert.Null(activityCommand.TargetId);
         Assert.Equal("127.0.0.1", activityCommand.IpAddress);
         Assert.Equal("unit-test-agent", activityCommand.UserAgent);
     }

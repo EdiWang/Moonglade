@@ -1,7 +1,9 @@
-﻿@{
+﻿@inject Moonglade.Auth.IOwnerProfileReader OwnerProfiles
+@{
     var snapshot = ViewData.CaptureSettings(SettingsReader);
+    var presentation = await ViewData.CaptureOwnerPresentationAsync(OwnerProfiles, Context.RequestAborted);
 }
 <meta property="og:site_name" content="@snapshot.GeneralSettings.SiteTitle">
 <meta property="og:title" content="@(ViewBag.TitlePrefix)@(null == ViewBag.TitlePrefix ? string.Empty : " - ")@snapshot.GeneralSettings.SiteTitle">
 <meta property="og:type" content="website" />
-<meta property="og:description" content="@snapshot.GeneralSettings.Description" />
+<meta property="og:description" content="@presentation.Description" />

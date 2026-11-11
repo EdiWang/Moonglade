@@ -117,7 +117,6 @@ public class SyndicationQueryHandlerTests
             GeneralSettings = new GeneralSettings
             {
                 SiteTitle = "Test Blog",
-                Description = "Test Description",
                 Copyright = "© Test",
                 DefaultLanguageCode = "en-us"
             }

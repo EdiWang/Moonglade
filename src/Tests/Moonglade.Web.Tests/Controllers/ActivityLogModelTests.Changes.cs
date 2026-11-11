@@ -22,7 +22,7 @@ public partial class ActivityLogModelTests
         var expected = SettingsActivityCases.Groups.Single(item => item.Group == group);
         var historicalKeys = group switch
         {
-            "general" => new[] { "UseDublinCoreMetaData" },
+            "general" => new[] { "UseDublinCoreMetaData", "UseGravatarAsProfilePicture" },
             "advanced" => new[] { "EnableSiteMap", "EnableJsonLdBlogPosting" },
             _ => []
         };
@@ -33,6 +33,7 @@ public partial class ActivityLogModelTests
         var model = SettingsActivityCases.Get(store.Config.Capture(), group);
         var changes = expected.Allowed.Concat(historicalKeys).Select(key =>
         {
+            if (key == "UseGravatarAsProfilePicture") return new ActivityLogSettingChange(key, false, true);
             var owner = historicalKeys.Contains(key) ? store.Config.Capture().SEOSettings : model;
             var old = owner.GetType().GetProperty(key)!.GetValue(owner);
             object? value = old switch

@@ -10,7 +10,8 @@ namespace Moonglade.Syndication;
 
 public record GetAtomStringQuery(string Slug = null,
     [property: JsonIgnore] BlogSettingsSnapshot Snapshot = null,
-    [property: JsonIgnore] OwnerProfile Owner = null) : IQuery<string>;
+    [property: JsonIgnore] OwnerProfile Owner = null,
+    [property: JsonIgnore] OwnerPresentation Presentation = null) : IQuery<string>;
 
 public class GetAtomStringQueryHandler(IBlogConfig blogConfig, SyndicationDataSource sdds, IHttpContextAccessor httpContextAccessor)
     : IQueryHandler<GetAtomStringQuery, string>
@@ -22,7 +23,7 @@ public class GetAtomStringQueryHandler(IBlogConfig blogConfig, SyndicationDataSo
         var generator = new FeedGenerator(
             baseUrl,
             settings.GeneralSettings.SiteTitle,
-            settings.GeneralSettings.Description,
+            (request.Presentation ?? OwnerPresentation.Default).Description,
             Helper.FormatCopyright2Html(settings.GeneralSettings.Copyright).Replace("&copy;", "©"),
             $"Moonglade v{VersionHelper.AppVersion}",
             baseUrl,

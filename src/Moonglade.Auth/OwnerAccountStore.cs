@@ -18,8 +18,13 @@ public sealed class OwnerAccountStore(
     TimeProvider timeProvider,
     IEventMediator events) : IOwnerProfileReader
 {
+    public Task<OwnerPresentation> ReadPresentationAsync(CancellationToken ct = default) => OwnerPresentation.ReadAsync(db, ct);
+
     public Task<OwnerProfile?> ReadProfileAsync(CancellationToken ct = default) =>
-        db.OwnerAccount.AsNoTracking().Select(account => new OwnerProfile(account.Id, account.Email))
+        db.OwnerAccount.AsNoTracking().Select(account => new OwnerProfile(account.Id, account.Email)
+            {
+                UseGravatar = db.OwnerAvatar.Any(avatar => avatar.UseGravatar)
+            })
             .SingleOrDefaultAsync(ct);
 
     public Task<OwnerAccountSnapshot?> ReadAsync(CancellationToken ct = default) =>

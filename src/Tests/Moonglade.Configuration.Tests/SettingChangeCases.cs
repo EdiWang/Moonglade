@@ -8,7 +8,7 @@ internal static class SettingChangeCases
     internal static readonly IReadOnlyDictionary<string, string[]> Allowed = new Dictionary<string, string[]>
     {
         [nameof(GeneralSettings)] = ["LogoText", "SiteTitle", "SideBarOption", "WidgetsProfile", "HotTagAmount", "WidgetsCategoryList",
-            "WidgetsSubscriptionButtons", "UseGravatarAsProfilePicture", "DefaultLanguageCode"],
+            "WidgetsSubscriptionButtons", "DefaultLanguageCode"],
         [nameof(ContentSettings)] = ["DefaultEditor", "PostListPageSize", "PostTitleAlignment", "ShowCalloutSection", "ShowPostFooter",
             "DocumentOutline", "EnableViewCount", "MaximumPageNumbersToDisplay"],
         [nameof(CommentSettings)] = ["CommentProvider", "CommentOrder", "EnableComments", "EnableGravatar", "EnableMarkdownLinks",
@@ -27,8 +27,7 @@ internal static class SettingChangeCases
     {
         GeneralSettings = GeneralSettings.DefaultValue with
         {
-            Copyright = "[c] 2026",
-            AvatarUrl = "/legacy-avatar"
+            Copyright = "[c] 2026"
         },
         SEOSettings = SEOSettings.DefaultValue with
         {

@@ -2,7 +2,6 @@
 @inject IOptions<RequestLocalizationOptions> LocOptions
 
 @{
-    var avatarUrl = Url.Action("Avatar", "Assets");
     var cultureItems = LocOptions.Value.SupportedUICultures
         .Select(c => new { Value = c.Name, c.NativeName });
 
@@ -150,64 +149,17 @@
                         </div>
                     </div>
 
-                    <div class="admin-settings-expander">
-                        <div class="settings-entry admin-settings-expander-header">
-                            <div class="col-auto">
-                                <i class="bi-file-person settings-entry-icon"></i>
-                            </div>
-                            <div class="col">
-                                <label asp-for="@ViewModel.WidgetsProfile" class="form-check-label"></label>
-                            </div>
-                            <div class="col-5 text-end">
-                                <div class="form-check form-switch form-control-lg">
-                                    <input type="hidden" name="WidgetsProfile" value="false">
-                                    <input type="checkbox" name="WidgetsProfile" value="true" class="form-check-input" @(ViewModel.WidgetsProfile ? "checked" : null)>
-                                </div>
-                            </div>
-                            <button type="button" class="admin-settings-expander-toggle" data-bs-toggle="collapse" data-bs-target="#settings-profile" aria-controls="settings-profile" aria-expanded="@(ViewModel.WidgetsProfile ? "true" : "false")" aria-label="@Html.DisplayNameFor(m => ViewModel.WidgetsProfile)">
-                                <i class="bi bi-chevron-down" aria-hidden="true"></i>
-                            </button>
+                    <div class="settings-entry row align-items-center">
+                        <div class="col-auto">
+                            <i class="bi-file-person settings-entry-icon"></i>
                         </div>
-
-                        <div id="settings-profile" class="collapse @(ViewModel.WidgetsProfile ? "show" : null)">
-                            <div class="admin-settings-expander-body">
-                                <div class="settings-entry admin-profile-entry" data-setting-edit-group="@SharedLocalizer["Profile"]">
-                                    <button type="button" class="admin-profile-avatar" data-bs-toggle="modal" data-bs-target="#avatarmodal" aria-label="@SharedLocalizer["Change Avatar"]">
-                                        <img src="@avatarUrl" class="img-thumbnail blogadmin-avatar" alt="" />
-                                        <span class="admin-profile-avatar-overlay" aria-hidden="true">
-                                            <i class="bi bi-camera"></i>
-                                        </span>
-                                    </button>
-                                    <div class="col">
-                                        <div class="fw-semibold">
-                                            <label class="visually-hidden" asp-for="@ViewModel.OwnerName"></label>
-                                            <input asp-for="@ViewModel.OwnerName" data-setting-edit="" class="form-control" required />
-                                        </div>
-                                        <div class="form-text">
-                                            <label class="visually-hidden" asp-for="@ViewModel.Description"></label>
-                                            <input asp-for="@ViewModel.Description" data-setting-edit=""
-                                                   placeholder="@Html.DisplayName(ViewModel.Description)"
-                                                   class="form-control" required>
-                                        </div>
-                                    </div>
-                                    <button type="button" class="btn btn-sm btn-outline-accent" data-setting-edit-trigger aria-haspopup="dialog">@SharedLocalizer["Change"]</button>
-                                </div>
-
-                                <div class="settings-entry row align-items-center">
-                                    <div class="col-auto">
-                                        <i class="bi-person-circle settings-entry-icon"></i>
-                                    </div>
-                                    <div class="col">
-                                        <label asp-for="@ViewModel.UseGravatarAsProfilePicture" class="form-check-label"></label>
-                                        <div class="form-text">@SharedLocalizer["Please make sure you have setup Gravatar with your email address"]</div>
-                                    </div>
-                                    <div class="col-5 text-end">
-                                        <div class="form-check form-switch form-control-lg">
-                                            <input type="hidden" name="UseGravatarAsProfilePicture" value="false">
-                                            <input type="checkbox" name="UseGravatarAsProfilePicture" value="true" class="form-check-input" @(ViewModel.UseGravatarAsProfilePicture ? "checked" : null)>
-                                        </div>
-                                    </div>
-                                </div>
+                        <div class="col">
+                            <label asp-for="@ViewModel.WidgetsProfile" class="form-check-label"></label>
+                        </div>
+                        <div class="col-5 text-end">
+                            <div class="form-check form-switch form-control-lg">
+                                <input type="hidden" name="WidgetsProfile" value="false">
+                                <input type="checkbox" name="WidgetsProfile" value="true" class="form-check-input" @(ViewModel.WidgetsProfile ? "checked" : null)>
                             </div>
                         </div>
                     </div>
@@ -272,7 +224,6 @@
 
 <partial name="_SettingEditModal" />
 
-<partial name="_AvatarModal" />
 <partial name="_FaviconModal" />
 
 @functions

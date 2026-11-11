@@ -1,4 +1,6 @@
 using Microsoft.AspNetCore.Http;
+using Moonglade.Auth;
+using Moonglade.Web.Tests.TestSupport;
 using Moonglade.Configuration;
 using Moonglade.Web.Handlers;
 using System.Text;
@@ -20,7 +22,8 @@ public class OpenSearchMapHandlerTests
             }
         });
 
-        await OpenSearchMapHandler.Handle(httpContext, blogConfig);
+        await OpenSearchMapHandler.Handle(httpContext, blogConfig, new TestOwnerProfileReader
+        { Presentation = OwnerPresentation.Default with { Description = "Search the blog" } });
 
         Assert.Equal(StatusCodes.Status404NotFound, httpContext.Response.StatusCode);
         Assert.Null(httpContext.Response.ContentType);
@@ -40,8 +43,7 @@ public class OpenSearchMapHandlerTests
         {
             GeneralSettings = new GeneralSettings
             {
-                SiteTitle = "My Blog",
-                Description = "Search the blog"
+                SiteTitle = "My Blog"
             },
             SEOSettings = new SEOSettings
             {
@@ -53,7 +55,8 @@ public class OpenSearchMapHandlerTests
             }
         });
 
-        await OpenSearchMapHandler.Handle(httpContext, blogConfig);
+        await OpenSearchMapHandler.Handle(httpContext, blogConfig, new TestOwnerProfileReader
+        { Presentation = OwnerPresentation.Default with { Description = "Search the blog" } });
 
         Assert.Equal("text/xml", httpContext.Response.ContentType);
         Assert.Equal("public, max-age=3600", httpContext.Response.Headers.CacheControl.ToString());

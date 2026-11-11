@@ -137,14 +137,15 @@ public partial class ActivityLogHttpTests
         var labelCount = 0;
         foreach (var group in SettingsActivityCases.Groups)
         {
-            var changes = group.Allowed.Select(key => new ActivityLogSettingChange(key, "<before>", "<script>after</script>")).ToArray();
+            var keys = group.Group == "general" ? group.Allowed.Append("UseGravatarAsProfilePicture") : group.Allowed;
+            var changes = keys.Select(key => new ActivityLogSettingChange(key, "<before>", "<script>after</script>")).ToArray();
             await new CreateActivityLogCommandHandler(db, fixture.Store.WriterLogger.Object).HandleAsync(new CreateActivityLogCommand(
                 group.EventKey, ActivityActorKind.Administrator, "admin", Details: ActivityLogDetails.Create(("Changes", changes))), ct);
             var row = db.ActivityLog.Local.OrderBy(item => item.Id).Last();
             using var details = JsonDocument.Parse(await client.GetStringAsync($"/api/activitylog/{row.Id}/metadata", ct));
             Assert.Empty(details.RootElement.GetProperty("fields").EnumerateArray());
             var actual = details.RootElement.GetProperty("changes").EnumerateArray().ToArray();
-            Assert.Equal(group.Allowed, actual.Select(change => change.GetProperty("key").GetString()));
+            Assert.Equal(keys, actual.Select(change => change.GetProperty("key").GetString()));
             foreach (var change in actual)
             {
                 var key = change.GetProperty("key").GetString();
@@ -181,7 +182,7 @@ public partial class ActivityLogHttpTests
         client.DefaultRequestHeaders.Add("X-B1-User", "admin");
         await AddPageToken(client, ct);
         using var response = await client.PatchAsJsonAsync("/api/settings/general",
-            new Dictionary<string, string> { ["Description"] = "B3-private-description" }, ct);
+            new Dictionary<string, string> { ["Copyright"] = "[c] B3-private-copyright" }, ct);
         Assert.Equal(HttpStatusCode.NoContent, response.StatusCode);
         var row = Assert.Single(await fixture.Store.ReadLogsAsync(ct));
         using var metadata = JsonDocument.Parse(await client.GetStringAsync($"/api/activitylog/{row.Id}/metadata", ct));

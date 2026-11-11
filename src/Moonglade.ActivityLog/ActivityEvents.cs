@@ -50,6 +50,7 @@ public static class ActivityEvents
     public const string SettingsAdvancedUpdated = "settings.advanced.updated";
     public const string SettingsAppearanceUpdated = "settings.appearance.updated";
     public const string SettingsCustomMenuUpdated = "settings.custom-menu.updated";
+    public const string AccountProfileUpdated = "account.profile.updated";
     public const string SettingsPasswordUpdated = "account.password.updated";
     public const string SettingsAuthenticatorReset = "account.authenticator.reset";
     public const string ImageUploaded = "image.uploaded";
@@ -94,7 +95,8 @@ public static class ActivityEvents
         Define(TagDeleted, "Tags", "Tag deleted", "TagId"),
         Define(ThemeCreated, "Themes", "Theme created", "ThemeId", "AccentColor"),
         Define(ThemeDeleted, "Themes", "Theme deleted", "ThemeId"),
-        DefineSettings<GeneralSettings>(SettingsGeneralUpdated, "General settings updated", nameof(SEOSettings.UseDublinCoreMetaData)),
+        DefineSettings<GeneralSettings>(SettingsGeneralUpdated, "General settings updated",
+            nameof(SEOSettings.UseDublinCoreMetaData), "UseGravatarAsProfilePicture"),
         DefineSettings<ContentSettings>(SettingsContentUpdated, "Content settings updated"),
         DefineSettings<CommentSettings>(SettingsCommentUpdated, "Comment settings updated"),
         DefineSettings<NotificationSettings>(SettingsNotificationUpdated, "Notification settings updated"),
@@ -105,6 +107,7 @@ public static class ActivityEvents
         DefineSettings<SEOSettings>(SettingsSeoUpdated, "SEO settings updated"),
         DefineSettings<AppearanceSettings>(SettingsAppearanceUpdated, "Appearance settings updated"),
         DefineSettings<CustomMenuSettings>(SettingsCustomMenuUpdated, "Custom menu settings updated"),
+        Define(AccountProfileUpdated, "Account", "Account profile updated"),
         Define(SettingsPasswordUpdated, "Account", "Account password updated", "Username"),
         Define(SettingsAuthenticatorReset, "Account", "Account authenticator reset", "Username"),
         Define(ImageUploaded, "Images", "Image uploaded", "FileName", "FileSize", "SkipWatermark"),
