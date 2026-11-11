@@ -2,7 +2,7 @@
 
 ## Current status
 
-B1 was accepted on 2026-11-11 and committed by the user as `9a36a68d2`; B2 was accepted and committed as `89a6dc1ff`. B3 was accepted and committed by the user as `48de287c4`. The authorized development database cutover preserved its initialized account and all unrelated data. The independent review corrections were committed by the user as `7a60447da`. The user authorized B4 on 2026-11-11. Its automated, disposable-database and browser checks are recorded below against source `7a60447dac34efd941e70ea8680842736e33d2d5` plus the uncommitted password-diagnostic correction. User release acceptance and the final accepted commit remain pending.
+B0 through B4 are complete. The user accepted B4 on 2026-11-11 and requested task closure. The accepted checkout was `master` at `b9138db04bf350d67d3226eb8c36a8b990340517`. The B4 evidence below distinguishes the end-to-end release checks from the subsequent UI checks. Retain this record as requested.
 
 | Batch | Dependency | Status | Verification | Implementation commit | User acceptance |
 | --- | --- | --- | --- | --- | --- |
@@ -10,7 +10,7 @@ B1 was accepted on 2026-11-11 and committed by the user as `9a36a68d2`; B2 was a
 | B1. Add independent account storage | B0 accepted | Accepted; development database migrated | Auth 75 passed; Setup 79 passed, 28 opt-in skips; opt-in Setup 196 passed, 0 skipped; Web build 0 warnings/errors | User-created commit `9a36a68d2` | Accepted 2026-11-11 |
 | B2. Switch authentication and enable first-run setup | B1 accepted | Accepted | Auth 108 passed; Web 733 passed; full opt-in Setup 193 passed, 0 skipped; frontend 42 passed; Web build 0 warnings/errors | User-created commit `89a6dc1ff` | Accepted 2026-11-11 |
 | B3. Move Owner Email editing and public consumers | B2 accepted | Accepted; development database migrated | Configuration 311, Auth 133, Web 750, Email 113, Syndication 18, full opt-in Setup 231 passed; frontend 42 passed; Web build 0 warnings/errors; development cutover/repeat verified | User-created commit `48de287c4` | Accepted 2026-11-11 |
-| B4. Verify fresh installation and upgrade end to end | B3 accepted | Verification complete; awaiting user acceptance | Solution 2,211, frontend 47; eight disposable runtime scenarios passed; real TOTP/OIDC browser flows passed; focused correction rechecked | Source `7a60447da` plus uncommitted focused correction/docs | Pending |
+| B4. Verify fresh installation and upgrade end to end | B3 accepted | Complete | Solution 2,211 and frontend 47 passed. Eight disposable runtime scenarios and TOTP/OIDC browser flows passed. Follow-up UI checks passed. | B4 correction and docs `5c4f3cb8e`. Final accepted checkout `b9138db04`. | Accepted 2026-11-11 |
 
 Intermediate commits are for development and review. The deployable upgrade is the combined result after B4. Administrators apply the final SQL script for their provider before starting that version.
 
@@ -253,7 +253,7 @@ The default Setup run skipped the opt-in relational theories. The opt-in run exe
 
 ### B4 end-to-end verification (2026-11-11)
 
-- The user authorized B4. The starting checkout was clean on `master` at `7a60447dac34efd941e70ea8680842736e33d2d5`. No development/production database was used, and no commit, push or deployment was performed. The final accepted SHA must be recorded only after the user accepts and commits the result.
+- The user authorized B4. The starting checkout was clean on `master` at `7a60447dac34efd941e70ea8680842736e33d2d5`. No development/production database was used, and no commit, push or deployment was performed. See the closure entry for the accepted checkout.
 - Environment: Windows x64, .NET SDK 11.0.100 building `net10.0`, Node.js 26.13.0 and Docker 29.9.3 in Linux mode. The repository-selected Microsoft.Testing.Platform runner was retained.
 
 | Executed command (repository root) | Passed | Failed | Skipped | Exit code |
@@ -279,5 +279,11 @@ The default Setup run skipped the opt-in relational theories. The opt-in run exe
 - Fresh PostgreSQL and upgraded SQL Server OIDC completed discovery, PKCE code exchange, signed ID-token validation, user-info and the actual callback. Allowed-subject sessions created/edited public email without a password or sign-out. Provider email claims never became the public owner address. OIDC sign-out/callback returned home; a non-allowlisted identity reached Access Denied and received HTTP 403 from the account API, while its own identity bootstrap endpoint remained accessible. Profile-only state and email edits survived restart.
 - Browser-rendered English, Simplified Chinese, Traditional Chinese, Japanese, French and German account/setup/sign-in surfaces were checked across these scenarios. A warm Atom feed changed to the saved owner address; a missing profile omitted Atom email and FOAF mailbox hash, and a fresh FOAF response included the hash after profile creation. Existing public FOAF browser-cache freshness was retained.
 - One focused presentation diagnostic was corrected: invalid setup passwords previously named the internal `OwnerAccountStore` type. The existing DataAnnotations password rule now identifies `Password`; validation policy, rejection/no-write semantics and accepted lengths are unchanged. No C# assertion of UI wording was added. The rebuilt application passed the final browser recheck: the field was identified correctly, the rejected password created no profile/credentials, and the original seeded post and eleven configuration rows were unchanged. The entire eight-database runtime matrix also passed again after this correction.
-- Cross-checked the published scripts and synchronized README, AGENTS, engineering reference, database catalog, upgrade guide and test instructions. Corrected the stale reference that still placed Owner Email editing in General Settings. External commercial identity-provider interoperability and actual outbound SMTP were not exercised; the configured-provider callback and notification business contracts were covered by the synthetic provider and existing tests respectively. User acceptance remains pending.
+- Cross-checked the published scripts and synchronized README, AGENTS, engineering reference, database catalog, upgrade guide and test instructions. Corrected the stale reference that still placed Owner Email editing in General Settings. External commercial identity-provider interoperability and actual outbound SMTP were not exercised; the configured-provider callback and notification business contracts were covered by the synthetic provider and existing tests respectively.
 - All acceptance hosts were stopped and their disposable containers, synthetic keys, published copies and temporary runtime helper were removed. The isolated browser tabs were closed. Raw check summaries remain private; the retained plan records the release evidence. No schema/script change or development database migration was necessary.
+
+### Task closure (2026-11-11)
+
+- The user explicitly accepted B4 and requested task closure. B4's password-diagnostic correction and release documentation are in `5c4f3cb8e`. The accepted checkout `b9138db04bf350d67d3226eb8c36a8b990340517` also contains the Setup Account accent/TOTP layout and admin account label follow-ups.
+- The Setup Account follow-up passed 37 HTTP cases and an isolated Chrome run with valid TOTP at desktop and narrow widths. The admin account label follow-up passed 754 Web cases and isolated Chrome checks of the desktop label and 320px dropdown/navigation. These checks are separate from the B4 solution and provider matrix above.
+- The separately requested development account reset cleared only local credentials and initialization state and retained the owner profile. No database operation or application change was made during closure. The workspace was clean before this tracking edit.
