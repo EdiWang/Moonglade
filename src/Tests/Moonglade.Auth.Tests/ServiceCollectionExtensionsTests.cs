@@ -57,6 +57,9 @@ public class ServiceCollectionExtensionsTests
     [Theory]
     [InlineData("allowed-subject", true)]
     [InlineData("other-subject", false)]
+    [InlineData("Allowed-subject", false)]
+    [InlineData(" allowed-subject", false)]
+    [InlineData("allowed-subject ", false)]
     public async Task AdministratorPolicy_ForOpenIdConnect_RequiresAllowedSubject(string subject, bool expected)
     {
         var services = new ServiceCollection();
@@ -75,6 +78,25 @@ public class ServiceCollectionExtensionsTests
             BlogAuthSchemas.AdministratorPolicy);
 
         Assert.Equal(expected, result.Succeeded);
+    }
+
+    [Fact]
+    public async Task AdministratorPolicy_ForOpenIdConnect_ProfileClaimsCannotReplaceExactSubject()
+    {
+        var services = new ServiceCollection();
+        services.AddLogging();
+        services.AddBlogAuthentication(CreateConfiguration("OpenIdConnect"));
+        using var provider = services.BuildServiceProvider();
+        var principal = new ClaimsPrincipal(new ClaimsIdentity(
+        [
+            new Claim("email", "allowed-subject"), new Claim("preferred_username", "allowed-subject"),
+            new Claim(ClaimTypes.Name, "allowed-subject"), new Claim(ClaimTypes.Role, "Administrator")
+        ], BlogAuthSchemas.OpenIdConnect));
+
+        var result = await provider.GetRequiredService<IAuthorizationService>()
+            .AuthorizeAsync(principal, null, BlogAuthSchemas.AdministratorPolicy);
+
+        Assert.False(result.Succeeded);
     }
 
     [Fact]

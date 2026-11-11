@@ -68,7 +68,6 @@ public class ConfigurationCommandRegistrationTests
             bus.AddCommands(module =>
             {
                 module.RegisterFromAssembly(typeof(UpdateConfigurationCommand).Assembly);
-                module.RegisterFromAssembly(typeof(UpdateLocalAccountCommand).Assembly);
             });
             bus.AddEvents(module => module.RegisterFromAssembly(typeof(ConfigurationChangedEventHandler).Assembly));
         });
@@ -96,16 +95,17 @@ public class ConfigurationCommandRegistrationTests
 
         var gate = Assert.Single(provider.GetServices<ConfigurationWriteGate>());
         Assert.Same(gate, provider.GetRequiredService<ConfigurationWriteGate>());
-        Assert.Same(provider.GetRequiredService<LocalAccountState>(), provider.GetRequiredService<ILocalAccountReader>());
-        var account = LocalAccountSettings.DefaultValue;
-        account.Username = "saved-via-auth-bus";
         var feedKeyBeforeAccountSave = feeds.GetFeedCacheKey("rss");
-
-        await provider.GetRequiredService<ICommandMediator>().SendAsync(new UpdateLocalAccountCommand(account), TestContext.Current.CancellationToken);
-
-        Assert.Equal(account.ToJson(), provider.GetRequiredService<ILocalAccountReader>().Read().ToJson());
-        Assert.Equal(account.ToJson(), (await store.Db.BlogConfiguration.SingleAsync(
-            p => p.CfgKey == nameof(LocalAccountSettings), TestContext.Current.CancellationToken)).CfgValue);
+        using var scope = provider.CreateScope();
+        var accounts = scope.ServiceProvider.GetRequiredService<OwnerAccountStore>();
+        var disabledTotpAccounts = new OwnerAccountStore(store.Db, scope.ServiceProvider.GetRequiredService<ILocalAccountTotpService>(),
+            Microsoft.Extensions.Options.Options.Create(new AuthenticationSettings
+            { Totp = new TotpAuthenticationSettings { Required = false } }), TimeProvider.System);
+        var pending = await disabledTotpAccounts.PrepareLocalSetupAsync("owner@example.test", "Synthetic123!", TestContext.Current.CancellationToken);
+        var account = await disabledTotpAccounts.CompleteLocalSetupAsync(pending, null, TestContext.Current.CancellationToken);
+        Assert.Equal(account, await accounts.AuthenticateLocalAsync(account.Email, "Synthetic123!", TestContext.Current.CancellationToken));
+        Assert.Equal(new OwnerProfile(account.Id, account.Email),
+            await scope.ServiceProvider.GetRequiredService<IOwnerProfileReader>().ReadProfileAsync(TestContext.Current.CancellationToken));
         Assert.Equal(feedKeyBeforeAccountSave, feeds.GetFeedCacheKey("rss"));
     }
 }

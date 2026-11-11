@@ -1,6 +1,7 @@
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
+using Microsoft.Extensions.Options;
 using Moonglade.Data;
 using Moonglade.Data.Entities;
 using System.ComponentModel.DataAnnotations;
@@ -19,7 +20,7 @@ public class OwnerAccountStoreTests
         await connection.OpenAsync(ct);
         await using var db = CreateContext(connection);
         await db.Database.EnsureCreatedAsync(ct);
-        var store = new OwnerAccountStore(db);
+        var store = CreateStore(db);
         Assert.Null(await store.ReadProfileAsync(ct));
         Assert.Null(await store.AuthenticateLocalAsync("owner@example.test", Password, ct));
 
@@ -34,7 +35,7 @@ public class OwnerAccountStoreTests
         Assert.Null(savedProfile.TotpSecret);
         Assert.Null(savedProfile.LocalInitializedUtc);
 
-        var initialized = await store.InitializeLocalAsync("  NewOwner@example.test ", Password, profile.Revision, ct);
+        var initialized = await InitializeAsync(store, "  NewOwner@example.test ", Password, ct);
         Assert.Equal(profile.Id, initialized.Id);
         Assert.NotEqual(profile.Revision, initialized.Revision);
         Assert.True(initialized.IsLocalInitialized);
@@ -48,7 +49,7 @@ public class OwnerAccountStoreTests
         Assert.Equal(DateTimeKind.Utc, saved.LocalInitializedUtc!.Value.Kind);
 
         await Assert.ThrowsAsync<DbUpdateConcurrencyException>(() =>
-            store.InitializeLocalAsync("attacker@example.test", "Replacement123!", initialized.Revision, ct));
+            InitializeAsync(store, "attacker@example.test", "Replacement123!", ct));
         Assert.Equal(initialized, await store.ReadAsync(ct));
     }
 
@@ -60,9 +61,9 @@ public class OwnerAccountStoreTests
         await connection.OpenAsync(ct);
         await using var db = CreateContext(connection);
         await db.Database.EnsureCreatedAsync(ct);
-        var store = new OwnerAccountStore(db);
+        var store = CreateStore(db);
 
-        var initialized = await store.InitializeLocalAsync("owner@example.test", Password, null, ct);
+        var initialized = await InitializeAsync(store, "owner@example.test", Password, ct);
         Assert.NotEqual(Guid.Empty, initialized.Id);
         Assert.NotEqual(Guid.Empty, initialized.Revision);
         Assert.Equal(initialized, await store.AuthenticateLocalAsync(initialized.Email, Password, ct));
@@ -77,24 +78,26 @@ public class OwnerAccountStoreTests
         Assert.False(reset.IsTotpEnabled);
         Assert.Equal(initialized.Id, reset.Id);
         await Assert.ThrowsAsync<DbUpdateConcurrencyException>(() =>
-            store.InitializeLocalAsync("second@example.test", Password, null, ct));
+            InitializeAsync(store, "second@example.test", Password, ct));
     }
 
     [Theory]
-    [InlineData("", Password)]
-    [InlineData("invalid", Password)]
-    [InlineData("owner@example.test", "short")]
-    [InlineData("owner@example.test", "no-digits-here")]
-    public async Task InvalidInput_CannotPersistCredentials(string email, string password)
+    [InlineData("empty-email")]
+    [InlineData("invalid-email")]
+    [InlineData("short-password")]
+    [InlineData("missing-digit")]
+    public async Task InvalidInput_CannotPersistCredentials(string scenario)
     {
         var ct = TestContext.Current.CancellationToken;
         using var connection = new SqliteConnection("Data Source=:memory:");
         await connection.OpenAsync(ct);
         await using var db = CreateContext(connection);
         await db.Database.EnsureCreatedAsync(ct);
-        var store = new OwnerAccountStore(db);
+        var store = CreateStore(db);
+        var email = scenario == "empty-email" ? "" : scenario == "invalid-email" ? "invalid" : "owner@example.test";
+        var password = scenario == "short-password" ? "short" : scenario == "missing-digit" ? "no-digits-here" : Password;
 
-        await Assert.ThrowsAsync<ValidationException>(() => store.InitializeLocalAsync(email, password, null, ct));
+        await Assert.ThrowsAsync<ValidationException>(() => InitializeAsync(store, email, password, ct));
         Assert.False(await db.OwnerAccount.AnyAsync(ct));
         Assert.Empty(db.ChangeTracker.Entries<OwnerAccountEntity>());
     }
@@ -107,16 +110,26 @@ public class OwnerAccountStoreTests
         await connection.OpenAsync(ct);
         await using var db = CreateContext(connection);
         await db.Database.EnsureCreatedAsync(ct);
-        var store = new OwnerAccountStore(db);
+        var store = CreateStore(db);
+        var pendingBeforeProfile = await store.PrepareLocalSetupAsync("replacement@example.test", Password, ct);
         var profile = await store.CreateProfileAsync("owner@example.test", ct);
 
         await Assert.ThrowsAsync<DbUpdateConcurrencyException>(() =>
-            store.InitializeLocalAsync("replacement@example.test", Password, null, ct));
+            store.CompleteLocalSetupAsync(pendingBeforeProfile, null, ct));
+        var pendingProfile = await store.PrepareLocalSetupAsync("replacement@example.test", Password, ct);
+        var row = await db.OwnerAccount.SingleAsync(ct);
+        row.Revision = Guid.NewGuid();
+        await db.SaveChangesAsync(ct);
+        db.ChangeTracker.Clear();
+        var changed = await store.ReadAsync(ct);
         await Assert.ThrowsAsync<DbUpdateConcurrencyException>(() =>
-            store.InitializeLocalAsync("replacement@example.test", Password, Guid.NewGuid(), ct));
+            store.CompleteLocalSetupAsync(pendingProfile, null, ct));
         await Assert.ThrowsAsync<DbUpdateException>(() => store.CreateProfileAsync("second@example.test", ct));
         Assert.Empty(db.ChangeTracker.Entries<OwnerAccountEntity>());
-        Assert.Equal(profile, await store.ReadAsync(ct));
+        Assert.Equal(changed, await store.ReadAsync(ct));
+        Assert.Equal(profile.Id, changed!.Id);
+        Assert.Equal(profile.Email, changed.Email);
+        Assert.False(changed.IsLocalInitialized);
     }
 
     [Theory]
@@ -132,12 +145,12 @@ public class OwnerAccountStoreTests
         var failure = new WriteFailure(cancelled);
         await using var db = CreateContext(connection, failure);
         await db.Database.EnsureCreatedAsync(ct);
-        var store = new OwnerAccountStore(db);
+        var store = CreateStore(db);
         var before = profileExists ? await store.CreateProfileAsync("original@example.test", ct) : null;
         failure.Enabled = true;
 
         var exception = await Record.ExceptionAsync(() =>
-            store.InitializeLocalAsync("changed@example.test", Password, before?.Revision, ct));
+            InitializeAsync(store, "changed@example.test", Password, ct));
         if (cancelled) Assert.IsType<OperationCanceledException>(exception);
         else Assert.IsType<DbUpdateException>(exception);
         Assert.Equal(before, await store.ReadAsync(ct));
@@ -158,18 +171,31 @@ public class OwnerAccountStoreTests
         await connection.OpenAsync(ct);
         await using var db = CreateContext(connection);
         await db.Database.EnsureCreatedAsync(ct);
-        var store = new OwnerAccountStore(db);
+        var store = CreateStore(db);
         await using var transaction = await db.Database.BeginTransactionAsync(ct);
 
         await Assert.ThrowsAsync<InvalidOperationException>(() => store.CreateProfileAsync("owner@example.test", ct));
         await Assert.ThrowsAsync<InvalidOperationException>(() =>
-            store.InitializeLocalAsync("owner@example.test", Password, null, ct));
+            InitializeAsync(store, "owner@example.test", Password, ct));
         Assert.False(await db.OwnerAccount.AnyAsync(ct));
         Assert.Empty(db.ChangeTracker.Entries<OwnerAccountEntity>());
     }
 
     private static BlogDbContext CreateContext(SqliteConnection connection, params IInterceptor[] interceptors) =>
         new(new DbContextOptionsBuilder<BlogDbContext>().UseSqlite(connection).AddInterceptors(interceptors).Options);
+
+    private static OwnerAccountStore CreateStore(BlogDbContext db) =>
+        new(db, new LocalAccountTotpService(), Options.Create(new AuthenticationSettings
+        {
+            Totp = new TotpAuthenticationSettings { Required = false }
+        }), TimeProvider.System);
+
+    private static async Task<OwnerAccountSnapshot> InitializeAsync(
+        OwnerAccountStore store, string email, string password, CancellationToken ct)
+    {
+        var pending = await store.PrepareLocalSetupAsync(email, password, ct);
+        return await store.CompleteLocalSetupAsync(pending, null, ct);
+    }
 
     private sealed class WriteFailure(bool cancelled) : SaveChangesInterceptor
     {

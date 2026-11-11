@@ -2103,4 +2103,11 @@
   <data name="Move down" xml:space="preserve">
     <value>下移</value>
   </data>
+  <data name="Set up Account" xml:space="preserve">
+    <value>設定帳戶</value>
+  </data>
+  <data name="Create Account" xml:space="preserve">
+    <value>建立帳戶</value>
+  </data>
+  <data name="Update your password for administrator sign-in." xml:space="preserve"><value>更新用於管理員登入的密碼。</value></data>
 </root>

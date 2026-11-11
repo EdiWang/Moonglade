@@ -4,7 +4,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Protocols.OpenIdConnect;
-using Moonglade.Configuration;
 
 namespace Moonglade.Auth;
 
@@ -12,11 +11,10 @@ public static class ServiceCollectionExtensions
 {
     public static IServiceCollection AddBlogAuthentication(this IServiceCollection services, IConfiguration configuration)
     {
-        services.AddSingleton<LocalAccountState>();
-        services.AddSingleton<ILocalAccountReader>(sp => sp.GetRequiredService<LocalAccountState>());
         services.AddScoped<OwnerAccountStore>();
+        services.AddScoped<LocalAccountCookieEvents>();
+        services.TryAddSingleton(TimeProvider.System);
         services.AddScoped<IOwnerProfileReader>(sp => sp.GetRequiredService<OwnerAccountStore>());
-        services.TryAddSingleton<ConfigurationWriteGate>();
         var section = configuration.GetSection("Authentication");
         var authentication = section.Get<AuthenticationSettings>() ?? new AuthenticationSettings();
         var oidc = authentication.OpenIdConnect ?? new OpenIdConnectAuthenticationSettings();
@@ -62,7 +60,11 @@ public static class ServiceCollectionExtensions
 
             case AuthenticationProvider.Local:
                 services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-                    .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme, ConfigureApplicationCookie);
+                    .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme, options =>
+                    {
+                        ConfigureApplicationCookie(options);
+                        options.EventsType = typeof(LocalAccountCookieEvents);
+                    });
                 break;
 
             default:
@@ -94,11 +96,20 @@ public static class ServiceCollectionExtensions
                 options.LoginPath = "/auth/signin";
                 options.ExpireTimeSpan = TimeSpan.FromMinutes(10);
                 options.SlidingExpiration = false;
+                options.EventsType = typeof(LocalAccountCookieEvents);
             })
             .AddCookie(BlogAuthSchemas.LocalAccountTwoFactor, options =>
             {
                 options.Cookie.Name = ".Moonglade.LocalAccount.TwoFactor";
                 options.LoginPath = "/auth/signin";
+                options.ExpireTimeSpan = TimeSpan.FromMinutes(10);
+                options.SlidingExpiration = false;
+                options.EventsType = typeof(LocalAccountCookieEvents);
+            })
+            .AddCookie(BlogAuthSchemas.InitialAccountSetup, options =>
+            {
+                options.Cookie.Name = ".Moonglade.InitialAccount.Setup";
+                options.LoginPath = "/auth/setup-account";
                 options.ExpireTimeSpan = TimeSpan.FromMinutes(10);
                 options.SlidingExpiration = false;
             });

@@ -1,110 +1,73 @@
-using Microsoft.Extensions.Logging;
-using Moq;
+using Microsoft.EntityFrameworkCore;
+using Moonglade.Data.Entities;
 
 namespace Moonglade.Auth.Tests;
 
 public class ValidateLoginCommandTests
 {
-    private readonly Mock<ILocalAccountReader> _accountsMock;
-    private readonly Mock<ILogger<ValidateLoginCommandHandler>> _loggerMock;
-    private readonly ValidateLoginCommandHandler _handler;
-
-    public ValidateLoginCommandTests()
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public async Task AuthenticateLocalAsync_AbsentOrProfileOnly_RejectsLegacyCredentials(bool profileOnly)
     {
-        _accountsMock = new Mock<ILocalAccountReader>();
-        _loggerMock = new Mock<ILogger<ValidateLoginCommandHandler>>();
-        _handler = new ValidateLoginCommandHandler(_accountsMock.Object, _loggerMock.Object);
+        var ct = TestContext.Current.CancellationToken;
+        await using var store = new OwnerAccountTestStore();
+        const string legacy = """{"username":"admin","passwordHash":"inert-private-marker","passwordSalt":"inert-salt"}""";
+        store.Db.BlogConfiguration.Add(new BlogConfigurationEntity { CfgKey = "LocalAccountSettings", CfgValue = legacy });
+        await store.Db.SaveChangesAsync(ct);
+        if (profileOnly) await store.Accounts.CreateProfileAsync(OwnerAccountTestStore.Email, ct);
+
+        Assert.Null(await store.Accounts.AuthenticateLocalAsync("admin", "admin123", ct));
+        Assert.Null(await store.Accounts.AuthenticateLocalAsync(OwnerAccountTestStore.Email, OwnerAccountTestStore.Password, ct));
+        Assert.Equal(legacy, (await store.Db.BlogConfiguration.AsNoTracking().SingleAsync(ct)).CfgValue);
+    }
+
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public async Task AuthenticateLocalAsync_CurrentEmailAndPassword_ReturnsStableIndependentIdentity(bool whitespace)
+    {
+        var ct = TestContext.Current.CancellationToken;
+        await using var store = new OwnerAccountTestStore();
+        var initialized = await store.InitializeAsync(ct);
+
+        var result = await store.Accounts.AuthenticateLocalAsync(
+            whitespace ? " owner@EXAMPLE.test " : OwnerAccountTestStore.Email,
+            whitespace ? $" {OwnerAccountTestStore.Password} " : OwnerAccountTestStore.Password, ct);
+
+        Assert.Equal(initialized, result);
+        Assert.Equal(OwnerAccountTestStore.Email, result!.Email);
+        Assert.True(result.IsLocalInitialized);
+    }
+
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public async Task AuthenticateLocalAsync_WrongEmailOrPassword_DoesNotAuthenticateOrMutateAccount(bool wrongEmail)
+    {
+        var ct = TestContext.Current.CancellationToken;
+        await using var store = new OwnerAccountTestStore();
+        var initialized = await store.InitializeAsync(ct);
+
+        var result = await store.Accounts.AuthenticateLocalAsync(
+            wrongEmail ? "other@example.test" : OwnerAccountTestStore.Email,
+            wrongEmail ? OwnerAccountTestStore.Password : "WrongPassword123!", ct);
+
+        Assert.Null(result);
+        Assert.Equal(initialized, await store.Accounts.ReadAsync(ct));
     }
 
     [Fact]
-    public async Task HandleAsync_NullAccount_ReturnsFalse()
+    public async Task AuthenticateLocalAsync_MalformedLegacyRow_DoesNotOverrideIndependentAccount()
     {
-        _accountsMock.Setup(c => c.Read()).Returns((LocalAccountSettings)null!);
+        var ct = TestContext.Current.CancellationToken;
+        await using var store = new OwnerAccountTestStore();
+        var initialized = await store.InitializeAsync(ct);
+        store.Db.BlogConfiguration.Add(new BlogConfigurationEntity { CfgKey = "LocalAccountSettings", CfgValue = "not-json-private-marker" });
+        await store.Db.SaveChangesAsync(ct);
 
-        var command = new ValidateLoginCommand("admin", "password");
-        var result = await _handler.HandleAsync(command, TestContext.Current.CancellationToken);
-
-        Assert.False(result);
-    }
-
-    [Fact]
-    public async Task HandleAsync_WrongUsername_ReturnsFalse()
-    {
-        _accountsMock.Setup(c => c.Read()).Returns(LocalAccountSettings.DefaultValue);
-
-        var command = new ValidateLoginCommand("wronguser", "admin123");
-        var result = await _handler.HandleAsync(command, TestContext.Current.CancellationToken);
-
-        Assert.False(result);
-    }
-
-    [Fact]
-    public async Task HandleAsync_CorrectUsernameWrongPassword_ReturnsFalse()
-    {
-        _accountsMock.Setup(c => c.Read()).Returns(LocalAccountSettings.DefaultValue);
-
-        var command = new ValidateLoginCommand("admin", "wrongpassword");
-        var result = await _handler.HandleAsync(command, TestContext.Current.CancellationToken);
-
-        Assert.False(result);
-    }
-
-    [Fact]
-    public async Task HandleAsync_CorrectCredentials_ReturnsTrue()
-    {
-        // DefaultValue: Username = "admin", password = "admin123"
-        _accountsMock.Setup(c => c.Read()).Returns(LocalAccountSettings.DefaultValue);
-
-        var command = new ValidateLoginCommand("admin", "admin123");
-        var result = await _handler.HandleAsync(command, TestContext.Current.CancellationToken);
-
-        Assert.True(result);
-    }
-
-    [Fact]
-    public async Task HandleAsync_CorrectCredentialsWithWhitespace_ReturnsTrue()
-    {
-        _accountsMock.Setup(c => c.Read()).Returns(LocalAccountSettings.DefaultValue);
-
-        var command = new ValidateLoginCommand("admin", " admin123 ");
-        var result = await _handler.HandleAsync(command, TestContext.Current.CancellationToken);
-
-        Assert.True(result);
-    }
-
-    [Fact]
-    public async Task HandleAsync_FailedLogin_LogsWarning()
-    {
-        _accountsMock.Setup(c => c.Read()).Returns(LocalAccountSettings.DefaultValue);
-
-        var command = new ValidateLoginCommand("admin", "wrongpassword");
-        await _handler.HandleAsync(command, TestContext.Current.CancellationToken);
-
-        _loggerMock.Verify(
-            x => x.Log(
-                LogLevel.Warning,
-                It.IsAny<EventId>(),
-                It.Is<It.IsAnyType>((v, t) => true),
-                It.IsAny<Exception>(),
-                It.IsAny<Func<It.IsAnyType, Exception, string>>()),
-            Times.Once);
-    }
-
-    [Fact]
-    public async Task HandleAsync_SuccessfulLogin_DoesNotLogWarning()
-    {
-        _accountsMock.Setup(c => c.Read()).Returns(LocalAccountSettings.DefaultValue);
-
-        var command = new ValidateLoginCommand("admin", "admin123");
-        await _handler.HandleAsync(command, TestContext.Current.CancellationToken);
-
-        _loggerMock.Verify(
-            x => x.Log(
-                LogLevel.Warning,
-                It.IsAny<EventId>(),
-                It.Is<It.IsAnyType>((v, t) => true),
-                It.IsAny<Exception>(),
-                It.IsAny<Func<It.IsAnyType, Exception, string>>()),
-            Times.Never);
+        Assert.Equal(initialized, await store.Accounts.AuthenticateLocalAsync(OwnerAccountTestStore.Email, OwnerAccountTestStore.Password, ct));
+        Assert.Null(await store.Accounts.AuthenticateLocalAsync("admin", "admin123", ct));
+        Assert.Equal("not-json-private-marker", (await store.Db.BlogConfiguration.AsNoTracking().SingleAsync(ct)).CfgValue);
     }
 }

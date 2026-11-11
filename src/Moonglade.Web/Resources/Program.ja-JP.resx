@@ -2103,4 +2103,11 @@
   <data name="Move down" xml:space="preserve">
     <value>下へ移動</value>
   </data>
+  <data name="Set up Account" xml:space="preserve">
+    <value>アカウントを設定</value>
+  </data>
+  <data name="Create Account" xml:space="preserve">
+    <value>アカウントを作成</value>
+  </data>
+  <data name="Update your password for administrator sign-in." xml:space="preserve"><value>管理者ログイン用のパスワードを更新します。</value></data>
 </root>

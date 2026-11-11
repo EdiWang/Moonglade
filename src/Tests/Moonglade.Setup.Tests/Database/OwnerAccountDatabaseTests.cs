@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
+using Microsoft.Extensions.Options;
 using Moonglade.Auth;
 using Moonglade.Configuration;
 using Moonglade.Data;
@@ -9,6 +10,7 @@ using Moonglade.Data.SqlServer;
 using Moonglade.Setup.Tests.TestSupport;
 using System.Data.Common;
 using System.Text.Json;
+using OtpNet;
 
 namespace Moonglade.Setup.Tests.Database;
 
@@ -58,17 +60,18 @@ public class OwnerAccountDatabaseTests(DisposableCategoryDatabases databases) : 
             Assert.Equal(before, await UnrelatedRowsAsync(db, database));
             using var upgraded = new StartupTestHarness(db);
             Assert.Equal(InitStartUpResult.Success, await upgraded.Initializer.InitStartUpAsync(ct));
-            Assert.Equal(LocalAccountSettings.DefaultValue.ToJson(), upgraded.Accounts.Read().ToJson());
+            Assert.False(await db.OwnerAccount.AnyAsync(ct));
             Assert.Equal(before, await UnrelatedRowsAsync(db, database));
         }
 
-        var store = new OwnerAccountStore(db);
+        var store = CreateStore(db);
         Assert.Null(await store.AuthenticateLocalAsync("owner@example.test", "Synthetic123!", ct));
         var profile = await store.CreateProfileAsync("  Owner@example.test ", ct);
         await database.MigrateAsync("owner-account.sql");
         Assert.Equal(profile, await store.ReadAsync(ct));
         Assert.Null(await store.AuthenticateLocalAsync(profile.Email, "Synthetic123!", ct));
-        var initialized = await store.InitializeLocalAsync(profile.Email, "Synthetic123!", profile.Revision, ct);
+        var pending = await store.PrepareLocalSetupAsync(profile.Email, "Synthetic123!", ct);
+        var initialized = await store.CompleteLocalSetupAsync(pending, null, ct);
         var credentials = await db.OwnerAccount.AsNoTracking().SingleAsync(ct);
         await database.MigrateAsync("owner-account.sql");
         var retained = await db.OwnerAccount.AsNoTracking().SingleAsync(ct);
@@ -94,7 +97,7 @@ public class OwnerAccountDatabaseTests(DisposableCategoryDatabases databases) : 
         await using var database = await databases.CreateAsync(provider);
         await using var db = database.Context();
         await db.Database.EnsureCreatedAsync(ct);
-        var store = new OwnerAccountStore(db);
+        var store = CreateStore(db);
         var profile = await store.CreateProfileAsync("preserved@example.test", ct);
         db.BlogConfiguration.Add(new BlogConfigurationEntity { CfgKey = "Unrelated", CfgValue = "{}" });
         await db.SaveChangesAsync(ct);
@@ -135,7 +138,7 @@ public class OwnerAccountDatabaseTests(DisposableCategoryDatabases databases) : 
         await using var database = await databases.CreateAsync(provider);
         await using var db = database.Context();
         await db.Database.EnsureCreatedAsync(ct);
-        var store = new OwnerAccountStore(db);
+        var store = CreateStore(db);
         var profile = await store.CreateProfileAsync("owner@example.test", ct);
         var attempted = new OwnerAccountEntity
         {
@@ -184,14 +187,19 @@ public class OwnerAccountDatabaseTests(DisposableCategoryDatabases databases) : 
         await using var schema = database.Context();
         await schema.Database.EnsureCreatedAsync(ct);
         var profile = profileExists
-            ? await new OwnerAccountStore(schema).CreateProfileAsync("profile@example.test", ct) : null;
+            ? await CreateStore(schema).CreateProfileAsync("profile@example.test", ct) : null;
         var barrier = new ConcurrentWriteBarrier();
         await using var firstDb = IndependentContext(database, barrier);
         await using var secondDb = IndependentContext(database, barrier);
-        var firstStore = new OwnerAccountStore(firstDb);
-        var secondStore = new OwnerAccountStore(secondDb);
-        var first = firstStore.InitializeLocalAsync("first@example.test", "FirstSynthetic123!", profile?.Revision, ct);
-        var second = secondStore.InitializeLocalAsync("second@example.test", "SecondSynthetic123!", profile?.Revision, ct);
+        var firstStore = CreateStore(firstDb, required: true);
+        var secondStore = CreateStore(secondDb, required: true);
+        var firstPending = await firstStore.PrepareLocalSetupAsync("first@example.test", "FirstSynthetic123!", ct);
+        var secondPending = await secondStore.PrepareLocalSetupAsync("second@example.test", "SecondSynthetic123!", ct);
+        Assert.Equal(profile?.Revision, firstPending.ExpectedRevision);
+        Assert.Equal(profile?.Revision, secondPending.ExpectedRevision);
+        Assert.NotEqual(firstPending.TotpSecret, secondPending.TotpSecret);
+        var first = firstStore.CompleteLocalSetupAsync(firstPending, Code(firstPending.TotpSecret!), ct);
+        var second = secondStore.CompleteLocalSetupAsync(secondPending, Code(secondPending.TotpSecret!), ct);
         try
         {
             var arrival = await Task.WhenAny(barrier.Ready.Task, first, second).WaitAsync(TimeSpan.FromSeconds(30), ct);
@@ -205,8 +213,7 @@ public class OwnerAccountDatabaseTests(DisposableCategoryDatabases databases) : 
         var tasks = new[] { first, second };
         var winner = await Assert.Single(tasks, task => task.IsCompletedSuccessfully);
         var failure = Assert.Single(tasks, task => task.IsFaulted).Exception!.GetBaseException();
-        if (profileExists) Assert.IsType<DbUpdateConcurrencyException>(failure);
-        else Assert.IsType<DbUpdateException>(failure);
+        Assert.IsType<DbUpdateConcurrencyException>(failure);
         if (profileExists) Assert.Equal(profile.Id, winner.Id);
         Assert.Equal(1, await schema.OwnerAccount.CountAsync(ct));
         Assert.Empty(firstDb.ChangeTracker.Entries<OwnerAccountEntity>());
@@ -222,6 +229,12 @@ public class OwnerAccountDatabaseTests(DisposableCategoryDatabases databases) : 
         var losingEmail = winner.Email == "first@example.test" ? "second@example.test" : "first@example.test";
         Assert.Equal(winner, await firstStore.AuthenticateLocalAsync(winner.Email, winningPassword, ct));
         Assert.Null(await firstStore.AuthenticateLocalAsync(losingEmail, "FirstSynthetic123!", ct));
+        var winnerPending = winner.Email == firstPending.Email ? firstPending : secondPending;
+        var saved = await schema.OwnerAccount.AsNoTracking().SingleAsync(ct);
+        Assert.Equal(winnerPending.PasswordHash, saved.PasswordHash);
+        Assert.Equal(winnerPending.PasswordSalt, saved.PasswordSalt);
+        Assert.Equal(winnerPending.TotpSecret, saved.TotpSecret);
+        Assert.True(winner.IsTotpEnabled);
     }
 
     [DisposableDatabaseTheory]
@@ -233,7 +246,7 @@ public class OwnerAccountDatabaseTests(DisposableCategoryDatabases databases) : 
         await using var database = await databases.CreateAsync(provider);
         await using var db = database.Context();
         await db.Database.EnsureCreatedAsync(ct);
-        var store = new OwnerAccountStore(db);
+        var store = CreateStore(db);
         var profile = await store.CreateProfileAsync("retained@example.test", ct);
         using var harness = new StartupTestHarness(db);
 
@@ -257,6 +270,14 @@ public class OwnerAccountDatabaseTests(DisposableCategoryDatabases databases) : 
             : new SqlServerBlogDbContext(new DbContextOptionsBuilder<SqlServerBlogDbContext>()
                 .UseSqlServer(connection, contextOwnsConnection: true).AddInterceptors(interceptors).Options);
     }
+
+    private static OwnerAccountStore CreateStore(BlogDbContext db, bool required = false) =>
+        new(db, new LocalAccountTotpService(), Options.Create(new AuthenticationSettings
+        {
+            Totp = new TotpAuthenticationSettings { Required = required }
+        }), TimeProvider.System);
+
+    private static string Code(string secret) => new Totp(Base32Encoding.ToBytes(secret)).ComputeTotp();
 
     private static async Task<string[]> UnrelatedRowsAsync(BlogDbContext db, CategoryTestDatabase database)
     {

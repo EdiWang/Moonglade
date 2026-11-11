@@ -1,10 +1,7 @@
 #nullable enable annotations
 
-using Edi.PasswordGenerator;
 using LiteBus.Commands.Abstractions;
 using LiteBus.Events.Abstractions;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.Cookies;
 using Moonglade.ActivityLog;
 using Moonglade.Email;
 using Moonglade.Email.Core;
@@ -20,7 +17,6 @@ public class SettingsController(
         ILogger<SettingsController> logger,
         IEventMediator eventMediator,
         EmailCapabilityStatus emailCapabilityStatus,
-        ILocalAccountReader accounts,
         ICommandMediator commandMediator) : BlogControllerBase(commandMediator, logger)
 {
     [HttpPost("general")]
@@ -31,7 +27,6 @@ public class SettingsController(
 
         return await UpdateSettingsAsync(model);
     }
-
     [HttpPost("content")]
     public async Task<IActionResult> Content(ContentSettings model)
     {
@@ -229,65 +224,6 @@ public class SettingsController(
         return await UpdateSettingsAsync(settings);
     }
 
-    [HttpGet("password/generate")]
-    public IActionResult GeneratePassword([FromServices] IPasswordGenerator passwordGenerator)
-    {
-        var password = passwordGenerator.GeneratePassword();
-        return Ok(new GeneratedPasswordResponse(DateTime.UtcNow, password));
-    }
-
-    [HttpPut("password/local")]
-    public async Task<IActionResult> UpdateLocalAccountPassword(UpdateLocalAccountPasswordRequest request)
-    {
-        var account = accounts.Read();
-        var oldPasswordValid = account.PasswordHash == SecurityHelper.HashPassword(request.OldPassword.Trim(), account.PasswordSalt);
-
-        if (!oldPasswordValid) return Conflict("Old password is incorrect.");
-
-        var newSalt = SecurityHelper.GenerateSalt();
-        var newSettings = new LocalAccountSettings
-        {
-            Username = request.NewUsername.Trim(),
-            PasswordSalt = newSalt,
-            PasswordHash = SecurityHelper.HashPassword(request.NewPassword, newSalt),
-            TotpSecret = account.TotpSecret,
-            IsTotpEnabled = account.IsTotpEnabled
-        };
-
-        await CommandMediator.SendAsync(new UpdateLocalAccountCommand(newSettings), HttpContext.RequestAborted);
-        await LogActivityAsync(ActivityEvents.SettingsPasswordUpdated, newSettings.Username);
-        return NoContent();
-    }
-
-    [HttpPut("totp/local/reset")]
-    public async Task<IActionResult> ResetLocalAccountTotp(ResetLocalAccountTotpRequest request)
-    {
-        var account = accounts.Read();
-        var passwordValid = account.PasswordHash == SecurityHelper.HashPassword(request.CurrentPassword.Trim(), account.PasswordSalt);
-
-        if (!passwordValid) return Conflict("Current password is incorrect.");
-
-        var newSettings = new LocalAccountSettings
-        {
-            Username = account.Username,
-            PasswordSalt = account.PasswordSalt,
-            PasswordHash = account.PasswordHash,
-            TotpSecret = string.Empty,
-            IsTotpEnabled = false
-        };
-
-        await CommandMediator.SendAsync(new UpdateLocalAccountCommand(newSettings), HttpContext.RequestAborted);
-        await LogActivityAsync(
-            ActivityEvents.SettingsAuthenticatorReset,
-            account.Username);
-
-        await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-        await HttpContext.SignOutAsync(BlogAuthSchemas.LocalAccountSetup);
-        await HttpContext.SignOutAsync(BlogAuthSchemas.LocalAccountTwoFactor);
-
-        return NoContent();
-    }
-
     private async Task<IActionResult> UpdateSettingsAsync<T>(T settings) where T : IBlogSettings<T>
     {
         var saved = await CommandMediator.SendAsync(UpdateConfigurationCommand.Create(settings), HttpContext.RequestAborted);
@@ -320,5 +256,3 @@ public class SettingsController(
         };
     }
 }
-
-file sealed record GeneratedPasswordResponse(DateTime ServerTimeUtc, string Password);

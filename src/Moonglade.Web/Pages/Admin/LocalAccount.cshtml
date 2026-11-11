@@ -21,7 +21,7 @@
         </div>
         <div class="col">
             <div id="account-password-title">@SharedLocalizer["Change Password"]</div>
-            <div class="form-text" id="account-password-description">@SharedLocalizer["Update your local username and password for administrator sign-in."]</div>
+            <div class="form-text" id="account-password-description">@SharedLocalizer["Update your password for administrator sign-in."]</div>
         </div>
         <div class="col-5 text-end">
             <button type="button" class="btn btn-sm btn-outline-accent"
@@ -93,17 +93,6 @@
 
             <form x-on:submit.prevent="resetPassword">
                 <div class="modal-body">
-                    <div class="mb-2">
-                        <label for="NewUsername">@SharedLocalizer["New username"]</label>
-                        <input class="form-control" type="text"
-                               id="NewUsername"
-                               x-model="formData.newUsername"
-                               minlength="3"
-                               maxlength="16"
-                               pattern="^[A-Za-z0-9]{3,16}$"
-                               required>
-                        <div class="text-muted">@SharedLocalizer["English letters and numbers only."]</div>
-                    </div>
                     <div class="mb-2">
                         <label for="OldPassword">@SharedLocalizer["Old password"]</label>
                         <input class="form-control" type="password"

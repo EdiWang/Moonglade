@@ -7,7 +7,6 @@ Alpine.data('accountManager', () => ({
     resetPasswordModal: null,
     resetAuthenticatorModal: null,
     formData: {
-        newUsername: '',
         oldPassword: '',
         newPassword: '',
         currentPassword: ''
@@ -16,18 +15,6 @@ Alpine.data('accountManager', () => ({
     async init() {
         this.resetPasswordModal = new bootstrap.Modal('#resetPasswordModal');
         this.resetAuthenticatorModal = new bootstrap.Modal('#resetAuthenticatorModal');
-        await this.loadCurrentUsername();
-    },
-
-    async loadCurrentUsername() {
-        try {
-            const response = await fetch2('/auth/me', 'GET');
-            if (response && response.userName) {
-                this.formData.newUsername = response.userName.trim();
-            }
-        } catch (error) {
-            console.error('Failed to load current username:', error);
-        }
     },
 
     openResetPasswordModal() {
@@ -43,13 +30,12 @@ Alpine.data('accountManager', () => ({
 
     async resetPassword() {
         const payload = {
-            NewUsername: this.formData.newUsername,
             OldPassword: this.formData.oldPassword,
             NewPassword: this.formData.newPassword
         };
 
         try {
-            await fetch2('/api/settings/password/local', 'PUT', payload);
+            await fetch2('/api/account/password/local', 'PUT', payload);
             this.formData.oldPassword = '';
             this.formData.newPassword = '';
             this.resetPasswordModal.hide();
@@ -65,7 +51,7 @@ Alpine.data('accountManager', () => ({
         };
 
         try {
-            await fetch2('/api/settings/totp/local/reset', 'PUT', payload);
+            await fetch2('/api/account/totp/local/reset', 'PUT', payload);
             this.formData.currentPassword = '';
             this.resetAuthenticatorModal.hide();
             window.location.href = '/auth/signin';

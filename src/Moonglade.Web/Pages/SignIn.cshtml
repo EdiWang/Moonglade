@@ -43,12 +43,12 @@
             <form method="post">
                 <div asp-validation-summary="All" class="text-danger" role="alert"></div>
                 <div class="mb-3">
-                    <label asp-for="Username" class="form-label"></label>
-                    <input asp-for="Username" class="form-control" autocomplete="username" autocapitalize="none" spellcheck="false" required minlength="2" maxlength="32" />
+                    <label asp-for="Email" class="form-label"></label>
+                    <input asp-for="Email" class="form-control" type="email" autocomplete="username" autocapitalize="none" spellcheck="false" required maxlength="254" />
                 </div>
                 <div class="mb-4">
                     <label asp-for="Password" class="form-label"></label>
-                    <input asp-for="Password" class="form-control" autocomplete="current-password" required pattern="@("^(?=.*[a-zA-Z])(?=.*[0-9])[A-Za-z0-9._~!@#$^&*]{8,}$")" minlength="8" maxlength="32" />
+                    <input asp-for="Password" class="form-control" autocomplete="current-password" required />
                 </div>
 
                 <input type="submit" value="@SharedLocalizer["Sign In"]" class="btn w-100 btn-accent" />

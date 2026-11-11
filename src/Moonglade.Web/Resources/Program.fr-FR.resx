@@ -2152,4 +2152,11 @@
   <data name="Move down" xml:space="preserve">
     <value>Déplacer vers le bas</value>
   </data>
+  <data name="Set up Account" xml:space="preserve">
+    <value>Configurer le compte</value>
+  </data>
+  <data name="Create Account" xml:space="preserve">
+    <value>Créer le compte</value>
+  </data>
+  <data name="Update your password for administrator sign-in." xml:space="preserve"><value>Modifiez votre mot de passe de connexion administrateur.</value></data>
 </root>

@@ -53,8 +53,8 @@ public class StartupInstallationDatabaseTests(DisposableCategoryDatabases databa
     [InlineData("SqlServer", 1, false)]
     [InlineData("PostgreSql", 6, false)]
     [InlineData("SqlServer", 6, false)]
-    [InlineData("PostgreSql", 12, false)]
-    [InlineData("SqlServer", 12, false)]
+    [InlineData("PostgreSql", 11, false)]
+    [InlineData("SqlServer", 11, false)]
     [InlineData("PostgreSql", 6, true)]
     [InlineData("SqlServer", 6, true)]
     public async Task FailedInstallation_RollsBackAndCanRestart(string provider, int settingNumber, bool cancelled)
@@ -71,7 +71,7 @@ public class StartupInstallationDatabaseTests(DisposableCategoryDatabases databa
                 await failed.Initializer.InitStartUpAsync(ct));
             Assert.True(failure.Triggered);
             Assert.Same(originalRuntime, failed.Config.Capture().GeneralSettings);
-            Assert.Null(failed.Accounts.Read().Username);
+            Assert.False(await failedDb.OwnerAccount.AnyAsync(ct));
         }
         await using var restartedDb = CreateContext(database);
         Assert.False(await restartedDb.Post.AnyAsync(ct));
@@ -117,14 +117,13 @@ public class StartupInstallationDatabaseTests(DisposableCategoryDatabases databa
         failure.BeforeThrow = () =>
         {
             Assert.Same(originalRuntime, harness.Config.Capture().GeneralSettings);
-            Assert.Null(harness.Accounts.Read().Username);
         };
 
         Assert.Equal(InitStartUpResult.Success, await harness.Initializer.InitStartUpAsync(ct));
 
         Assert.True(failure.Triggered);
         Assert.NotSame(originalRuntime, harness.Config.Capture().GeneralSettings);
-        Assert.Equal(LocalAccountSettings.DefaultValue.ToJson(), harness.Accounts.Read().ToJson());
+        Assert.False(await db.OwnerAccount.AnyAsync(ct));
         await AssertOneInstallationAsync(db, ct);
     }
 
@@ -152,17 +151,20 @@ public class StartupInstallationDatabaseTests(DisposableCategoryDatabases databa
             CreateTimeUtc = DateTime.UtcNow
         };
         db.Comment.Add(comment);
+        db.BlogConfiguration.Add(new BlogConfigurationEntity
+        {
+            CfgKey = "LocalAccountSettings", CfgValue = "inert-legacy-json", LastModifiedTimeUtc = comment.CreateTimeUtc
+        });
         await db.SaveChangesAsync(ct);
         post = await db.Post.AsNoTracking().SingleAsync(ct);
-        if (accountOnly)
-            await db.BlogConfiguration.Where(row => row.CfgKey == nameof(LocalAccountSettings)).ExecuteDeleteAsync(ct);
-        else
+        if (!accountOnly)
             await db.BlogConfiguration.ExecuteDeleteAsync(ct);
         db.ChangeTracker.Clear();
         var settingsBeforeRestart = await db.BlogConfiguration.AsNoTracking().OrderBy(row => row.CfgKey).ToListAsync(ct);
         using var restarted = new StartupTestHarness(db);
 
-        Assert.Equal(InitStartUpResult.FailedInitBlogConfig, await restarted.Initializer.InitStartUpAsync(ct));
+        Assert.Equal(accountOnly ? InitStartUpResult.Success : InitStartUpResult.FailedInitBlogConfig,
+            await restarted.Initializer.InitStartUpAsync(ct));
 
         var settingsAfterRestart = await db.BlogConfiguration.AsNoTracking().OrderBy(row => row.CfgKey).ToListAsync(ct);
         Assert.Equal(settingsBeforeRestart.Select(row => (row.CfgKey, row.CfgValue, row.LastModifiedTimeUtc)),
@@ -175,6 +177,7 @@ public class StartupInstallationDatabaseTests(DisposableCategoryDatabases databa
         Assert.Equal(comment.Id, savedComment.Id);
         Assert.Equal(post.Id, savedComment.PostId);
         Assert.Equal(comment.CommentContent, savedComment.CommentContent);
+        Assert.False(await db.OwnerAccount.AnyAsync(ct));
     }
 
     [DisposableDatabaseTheory]
@@ -206,11 +209,12 @@ public class StartupInstallationDatabaseTests(DisposableCategoryDatabases databa
         var failure = new SchemaCreationFailure();
         await using var db = CreateContext(database, failure);
         using var harness = new StartupTestHarness(db);
+        var originalRuntime = harness.Config.Capture().GeneralSettings;
 
         Assert.Equal(InitStartUpResult.FailedCreateDatabase, await harness.Initializer.InitStartUpAsync(ct));
 
         Assert.True(failure.Triggered);
-        Assert.Null(harness.Accounts.Read().Username);
+        Assert.Same(originalRuntime, harness.Config.Capture().GeneralSettings);
         Assert.Equal(InitStartUpResult.Success, await harness.Initializer.InitStartUpAsync(ct));
         await AssertOneInstallationAsync(db, ct);
     }
@@ -238,7 +242,7 @@ public class StartupInstallationDatabaseTests(DisposableCategoryDatabases databa
         db.BlogConfiguration.AddRange(values.Select(pair => new BlogConfigurationEntity
         {
             CfgKey = pair.Key,
-            CfgValue = pair.Key is nameof(LocalAccountSettings) or nameof(SystemManifestSettings) ? pair.Value : " { } ",
+            CfgValue = pair.Key == nameof(SystemManifestSettings) ? pair.Value : " { } ",
             LastModifiedTimeUtc = timestamp
         }));
         await db.SaveChangesAsync(ct);
@@ -265,9 +269,10 @@ public class StartupInstallationDatabaseTests(DisposableCategoryDatabases databa
         Assert.Single(await db.Post.ToListAsync(ct));
         Assert.Single(await db.Category.ToListAsync(ct));
         Assert.Equal(2, await db.Tag.CountAsync(ct));
-        Assert.Equal(12, await db.BlogConfiguration.CountAsync(ct));
-        Assert.False(string.IsNullOrWhiteSpace((await db.BlogConfiguration.SingleAsync(
-            row => row.CfgKey == nameof(LocalAccountSettings), ct)).CfgValue.FromJson<LocalAccountSettings>().Username));
+        Assert.Equal(11, await db.BlogConfiguration.CountAsync(ct));
+        Assert.False(await db.OwnerAccount.AnyAsync(ct));
+        Assert.Equal(DateTimeKind.Utc, SystemManifestSettings.ParseStored((await db.BlogConfiguration.SingleAsync(
+            row => row.CfgKey == nameof(SystemManifestSettings), ct)).CfgValue).InstallTimeUtc.Kind);
     }
 
     [DisposableDatabaseTheory]
@@ -286,7 +291,7 @@ public class StartupInstallationDatabaseTests(DisposableCategoryDatabases databa
         feed.CfgValue = """{"feedItemCount":-1,"useFullContent":true}""";
         feed.LastModifiedTimeUtc = DateTime.UtcNow.AddDays(-1);
         if (protectedInvalid)
-            (await db.BlogConfiguration.SingleAsync(row => row.CfgKey == nameof(LocalAccountSettings), ct)).CfgValue = "{}";
+            (await db.BlogConfiguration.SingleAsync(row => row.CfgKey == nameof(SystemManifestSettings), ct)).CfgValue = "{}";
         await db.SaveChangesAsync(ct);
         db.ChangeTracker.Clear();
         var before = await db.BlogConfiguration.AsNoTracking().OrderBy(row => row.CfgKey).ToListAsync(ct);
@@ -338,7 +343,7 @@ public class StartupInstallationDatabaseTests(DisposableCategoryDatabases databa
         public override Task TransactionCommittedAsync(DbTransaction transaction, TransactionEndEventData eventData,
             CancellationToken cancellationToken = default)
         {
-            if (!Triggered && eventData.Context!.ChangeTracker.Entries<BlogConfigurationEntity>().Count() == 12)
+            if (!Triggered && eventData.Context!.ChangeTracker.Entries<BlogConfigurationEntity>().Count() == 11)
             {
                 Triggered = true;
                 BeforeThrow();

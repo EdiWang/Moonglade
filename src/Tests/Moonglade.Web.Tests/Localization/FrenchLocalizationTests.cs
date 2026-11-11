@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Moonglade.Web.Extensions;
+using Moonglade.Auth;
 using Moonglade.Web.Tests.TestSupport;
 using System.Collections;
 using System.Globalization;
@@ -60,6 +61,10 @@ public class FrenchLocalizationTests
         builder.Services.AddRateLimiter();
         builder.Services.AddResponseCompression();
         builder.Services.AddLocalization(options => options.ResourcesPath = "Resources");
+        await using var accountFixture = new LocalAccountPageFixture(required: false);
+        await accountFixture.InitializeAsync();
+        builder.Services.AddSingleton(accountFixture.Accounts);
+        builder.Services.Configure<AuthenticationSettings>(options => options.Totp.Required = false);
         await using var app = builder.Build();
         app.UseMoongladeRequestPipeline(cultures);
         app.Run(context =>

@@ -183,7 +183,7 @@ public partial class SettingsControllerTests
         var controller = new SettingsController(config, logger.Object,
             scope.ServiceProvider.GetRequiredService<IEventMediator>(),
             scope.ServiceProvider.GetRequiredService<Moonglade.Email.Core.EmailCapabilityStatus>(),
-            Mock.Of<ILocalAccountReader>(), scope.ServiceProvider.GetRequiredService<ICommandMediator>())
+            scope.ServiceProvider.GetRequiredService<ICommandMediator>())
         {
             ControllerContext = new ControllerContext
             {
@@ -316,12 +316,12 @@ public partial class SettingsControllerTests
         var config = new BlogConfig();
         using var mediator = new ConfigurationCommandRecorder { PersistActivityLogs = true };
         var authentication = new Mock<IAuthenticationService>();
-        var controller = CreateController(config, mediator, authentication, account: account);
+        var controller = CreateController(account, mediator, authentication);
 
         var result = reset
             ? await controller.ResetLocalAccountTotp(new Moonglade.Auth.ResetLocalAccountTotpRequest { CurrentPassword = "Password1" })
             : await controller.UpdateLocalAccountPassword(new Moonglade.Auth.UpdateLocalAccountPasswordRequest
-            { OldPassword = "Password1", NewPassword = "NewPassword2", NewUsername = "updated-admin" });
+            { OldPassword = "Password1", NewPassword = "NewPassword2" });
 
         Assert.IsType<NoContentResult>(result);
         var row = await mediator.Db.ActivityLog.AsNoTracking().SingleAsync(ct);
@@ -334,15 +334,17 @@ public partial class SettingsControllerTests
             foreach (var scheme in new[] { Microsoft.AspNetCore.Authentication.Cookies.CookieAuthenticationDefaults.AuthenticationScheme,
                          Moonglade.Auth.BlogAuthSchemas.LocalAccountSetup, Moonglade.Auth.BlogAuthSchemas.LocalAccountTwoFactor })
                 authentication.Verify(service => service.SignOutAsync(controller.HttpContext, scheme, null), Times.Once);
-            Assert.False(mediator.Accounts.Read().IsTotpEnabled);
-            Assert.Empty(mediator.Accounts.Read().TotpSecret);
+            Assert.False((await mediator.Accounts.ReadAsync(ct))!.IsTotpEnabled);
+            Assert.Null((await mediator.Db.OwnerAccount.AsNoTracking().SingleAsync(ct)).TotpSecret);
         }
         else
         {
             authentication.Verify(service => service.SignOutAsync(It.IsAny<Microsoft.AspNetCore.Http.HttpContext>(),
                 It.IsAny<string>(), It.IsAny<AuthenticationProperties>()), Times.Never);
-            Assert.Equal("updated-admin", mediator.Accounts.Read().Username);
-            Assert.True(mediator.Accounts.Read().IsTotpEnabled);
+            Assert.Equal(account.Email, (await mediator.Accounts.ReadAsync(ct))!.Email);
+            Assert.True((await mediator.Accounts.ReadAsync(ct))!.IsTotpEnabled);
+            Assert.Null(await mediator.Accounts.AuthenticateLocalAsync(account.Email, "Password1", ct));
+            Assert.NotNull(await mediator.Accounts.AuthenticateLocalAsync(account.Email, "NewPassword2", ct));
         }
     }
 

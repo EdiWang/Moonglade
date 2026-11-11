@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Rewrite;
 using Moonglade.IndexNow.Client;
 using Moonglade.Web.Handlers;
+using Moonglade.Web.Services;
 using System.Globalization;
 using System.Net;
 
@@ -35,6 +36,7 @@ public static class WebApplicationExtensions
         app.UseRewriter(options);
         app.UseStaticFiles();
         app.UseRouting();
+        app.UseMiddleware<LocalAccountSetupGateMiddleware>();
         app.UseAuthentication().UseAuthorization();
         app.UseRateLimiter();
 
@@ -43,7 +45,7 @@ public static class WebApplicationExtensions
 
     public static WebApplication MapMoongladeEndpoints(this WebApplication app)
     {
-        app.MapStaticAssets();
+        app.MapStaticAssets().ShortCircuit();
         app.MapHealthChecks("/health", MoongladeHealthCheckOptions.CreateLivenessOptions());
         app.MapHealthChecks("/health/ready", MoongladeHealthCheckOptions.CreateReadinessOptions());
 

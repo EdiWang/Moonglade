@@ -5,6 +5,8 @@ using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
 using Moonglade.Web.Extensions;
+using Moonglade.Auth;
+using Moonglade.Web.Tests.TestSupport;
 using System.Globalization;
 using System.Net;
 
@@ -101,6 +103,11 @@ public class RequestPipelineRedirectTests
         builder.Services.AddAuthentication();
         builder.Services.AddAuthorization();
         builder.Services.AddRateLimiter();
+        var fixture = new LocalAccountPageFixture(required: false);
+        await fixture.InitializeAsync();
+        builder.Services.AddSingleton(_ => fixture);
+        builder.Services.AddSingleton(fixture.Accounts);
+        builder.Services.Configure<AuthenticationSettings>(options => options.Totp.Required = false);
         builder.Services.AddResponseCompression(options =>
         {
             options.EnableForHttps = true;

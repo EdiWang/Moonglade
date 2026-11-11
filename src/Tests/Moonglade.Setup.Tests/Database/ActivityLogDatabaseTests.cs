@@ -126,7 +126,7 @@ public class ActivityLogDatabaseTests(DisposableCategoryDatabases databases) : I
             await db.SaveChangesAsync(ct);
         }
         db.ChangeTracker.Clear();
-        Assert.Equal(12, await db.BlogConfiguration.CountAsync(ct));
+        Assert.Equal(11, await db.BlogConfiguration.CountAsync(ct));
         Assert.Equal(1, await db.Post.CountAsync(ct));
         Assert.Equal(100, (await db.Category.AsNoTracking().SingleAsync(ct)).Id);
         Assert.Equal(2, await db.Tag.CountAsync(ct));
@@ -146,7 +146,7 @@ public class ActivityLogDatabaseTests(DisposableCategoryDatabases databases) : I
         {
             Assert.Equal(InitStartUpResult.Success, await upgraded.Initializer.InitStartUpAsync(ct));
             Assert.Equal("B5 retained", upgraded.Config.Capture().GeneralSettings.SiteTitle);
-            Assert.Equal(Moonglade.Auth.LocalAccountSettings.DefaultValue.ToJson(), upgraded.Accounts.Read().ToJson());
+            Assert.False(await db.OwnerAccount.AnyAsync(ct));
             Assert.Equal(manifest, upgraded.Manifest.ToJson());
             Assert.DoesNotContain(upgraded.ConfigLogger.Entries, entry => entry.Level >= LogLevel.Warning);
         }
@@ -168,7 +168,7 @@ public class ActivityLogDatabaseTests(DisposableCategoryDatabases databases) : I
         {
             Assert.Equal(InitStartUpResult.Success, await restarted.Initializer.InitStartUpAsync(ct));
             Assert.Equal("B5 retained", restarted.Config.Capture().GeneralSettings.SiteTitle);
-            Assert.Equal(Moonglade.Auth.LocalAccountSettings.DefaultValue.ToJson(), restarted.Accounts.Read().ToJson());
+            Assert.False(await restartedDb.OwnerAccount.AnyAsync(ct));
             Assert.Equal(manifest, restarted.Manifest.ToJson());
             Assert.DoesNotContain(restarted.ConfigLogger.Entries, entry => entry.Level >= LogLevel.Warning);
         }

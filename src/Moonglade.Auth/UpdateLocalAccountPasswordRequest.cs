@@ -7,10 +7,6 @@ public class UpdateLocalAccountPasswordRequest
     internal const string PasswordPattern = "^(?=.*[a-zA-Z])(?=.*[0-9])[A-Za-z0-9._~!@#$^&*]{8,}$";
 
     [Required]
-    [RegularExpression("^[A-Za-z0-9]{3,16}$")]
-    public string NewUsername { get; set; }
-
-    [Required]
     [RegularExpression(PasswordPattern)]
     public string OldPassword { get; set; }
 
