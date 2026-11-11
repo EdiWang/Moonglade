@@ -37,6 +37,7 @@ public class LocalAccountRateLimitPolicy(IOptionsMonitor<LocalAccountRateLimitOp
     {
         var clientIp = NormalizeKeyPart(ClientIPHelper.GetClientIP(httpContext), "unknown-ip");
         var authStep = GetAuthStep(httpContext);
+        if (authStep == "setup") return $"setup|{clientIp}";
         var account = authStep == "signin"
             ? GetFormValue(httpContext, "Email")
             : httpContext.User.Identity?.Name;
@@ -47,8 +48,8 @@ public class LocalAccountRateLimitPolicy(IOptionsMonitor<LocalAccountRateLimitOp
     private static string GetAuthStep(HttpContext httpContext)
     {
         var path = httpContext.Request.Path.Value;
+        if (path?.Equals("/auth/setup-account", StringComparison.OrdinalIgnoreCase) == true) return "setup";
         return path?.Contains("signin", StringComparison.OrdinalIgnoreCase) == true
-            || path?.Contains("setup-account", StringComparison.OrdinalIgnoreCase) == true
             ? "signin"
             : "totp";
     }

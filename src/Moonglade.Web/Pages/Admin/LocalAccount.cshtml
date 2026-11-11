@@ -96,7 +96,7 @@
                     }
                 </div>
                 <div class="modal-footer">
-                    <button type="submit" class="btn btn-outline-accent" x-bind:disabled="savingEmail">@SharedLocalizer["Submit"]</button>
+                    <button type="submit" class="btn btn-outline-accent" x-bind:disabled="savingEmail || !emailLoaded">@SharedLocalizer["Submit"]</button>
                     <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">@SharedLocalizer["Cancel"]</button>
                 </div>
             </form>
@@ -125,7 +125,6 @@
                                id="ResetAuthenticatorPassword"
                                x-model="formData.currentPassword"
                                minlength="8"
-                               maxlength="32"
                                pattern="^(?=.*[a-zA-Z])(?=.*[0-9])[A-Za-z0-9._~!@@#$^&*]{8,}$"
                                required>
                     </div>
@@ -156,7 +155,6 @@
                                id="OldPassword"
                                x-model="formData.oldPassword"
                                minlength="8"
-                               maxlength="32"
                                pattern="^(?=.*[a-zA-Z])(?=.*[0-9])[A-Za-z0-9._~!@@#$^&*]{8,}$"
                                required>
                     </div>
@@ -166,7 +164,6 @@
                                id="NewPassword"
                                x-model="formData.newPassword"
                                minlength="8"
-                               maxlength="32"
                                pattern="^(?=.*[a-zA-Z])(?=.*[0-9])[A-Za-z0-9._~!@@#$^&*]{8,}$"
                                required>
                     </div>
@@ -181,7 +178,7 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="submit" class="btn btn-outline-accent">@SharedLocalizer["Submit"]</button>
+                    <button type="submit" class="btn btn-outline-accent" x-bind:disabled="savingPassword">@SharedLocalizer["Submit"]</button>
                     <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">@SharedLocalizer["Cancel"]</button>
                 </div>
             </form>

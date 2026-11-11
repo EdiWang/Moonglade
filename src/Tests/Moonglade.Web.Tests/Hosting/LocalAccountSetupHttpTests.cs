@@ -218,7 +218,7 @@ public class LocalAccountSetupHttpTests
     [Fact]
     public async Task InitialSetupProof_ConfiguredRateLimitRejectsActualValidCodeWithoutCommit()
     {
-        await using var fixture = await LocalAccountHttpFixture.CreateAsync(required: true, permits: 1);
+        await using var fixture = await LocalAccountHttpFixture.CreateAsync(required: true, permits: 2);
         var token = await fixture.SetupTokenAsync();
         using var staged = await fixture.SendAsync(HttpMethod.Post, "/auth/setup-account", SetupForm(), token);
         Assert.Equal(HttpStatusCode.Redirect, staged.StatusCode);
@@ -233,6 +233,39 @@ public class LocalAccountSetupHttpTests
 
         Assert.Equal(HttpStatusCode.TooManyRequests, throttled.StatusCode);
         Assert.False(await fixture.Store.Db.OwnerAccount.AnyAsync(TestContext.Current.CancellationToken));
+    }
+
+    [Theory]
+    [InlineData("changed", "different@example.test")]
+    [InlineData("empty", "")]
+    [InlineData("omitted", null)]
+    public async Task InitialSetupProof_ChangedOrMissingEmailCannotMintAnotherQuota(string scenario, string? email)
+    {
+        var ct = TestContext.Current.CancellationToken;
+        await using var fixture = await LocalAccountHttpFixture.CreateAsync(required: true, permits: 2);
+        var token = await fixture.SetupTokenAsync();
+        using var staged = await fixture.SendAsync(HttpMethod.Post, "/auth/setup-account", SetupForm(), token);
+        Assert.Equal(HttpStatusCode.Redirect, staged.StatusCode);
+        Assert.False(await fixture.Store.Db.OwnerAccount.AnyAsync(ct));
+        var pending = JsonSerializer.Deserialize<PendingOwnerSetup>(fixture.ReadTicket(BlogAuthSchemas.InitialAccountSetup)
+            .Principal.FindFirstValue("moonglade:pending-setup")!)!;
+        using var invalid = await fixture.SendAsync(HttpMethod.Post, "/auth/setup-account?handler=Verify",
+            new FormUrlEncodedContent(new Dictionary<string, string>
+            { ["Email"] = LocalAccountPageFixture.Email, ["AuthenticatorCode"] = "invalid-code" }), token);
+        Assert.Equal(HttpStatusCode.BadRequest, invalid.StatusCode);
+        Assert.False(await fixture.Store.Db.OwnerAccount.AnyAsync(ct));
+        var fields = new Dictionary<string, string>
+        {
+            ["AuthenticatorCode"] = LocalAccountPageFixture.Code(pending.TotpSecret!)
+        };
+        if (scenario != "omitted") fields["Email"] = email!;
+
+        using var throttled = await fixture.SendAsync(HttpMethod.Post, "/auth/setup-account?handler=Verify",
+            new FormUrlEncodedContent(fields), token);
+
+        Assert.Equal(HttpStatusCode.TooManyRequests, throttled.StatusCode);
+        Assert.Equal("application/problem+json", throttled.Content.Headers.ContentType!.MediaType);
+        Assert.False(await fixture.Store.Db.OwnerAccount.AnyAsync(ct));
     }
 
     [Fact]

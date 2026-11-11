@@ -11,6 +11,7 @@ Alpine.data('accountManager', () => ({
     revision: null,
     emailLoaded: false,
     savingEmail: false,
+    savingPassword: false,
     localAuth: false,
     formData: {
         oldPassword: '',
@@ -52,7 +53,7 @@ Alpine.data('accountManager', () => ({
     },
 
     async updateEmail() {
-        if (this.savingEmail) return;
+        if (this.savingEmail || !this.emailLoaded) return;
         this.savingEmail = true;
         const changed = this.formData.email.trim() !== this.email;
         try {
@@ -88,19 +89,29 @@ Alpine.data('accountManager', () => ({
     },
 
     async resetPassword() {
+        if (this.savingPassword) return;
+        this.savingPassword = true;
         const payload = {
             OldPassword: this.formData.oldPassword,
             NewPassword: this.formData.newPassword
         };
 
+        const emailWasLoaded = this.emailLoaded;
+        this.emailLoaded = false;
+        let passwordUpdated = false;
         try {
             await fetch2('/api/account/password/local', 'PUT', payload);
+            passwordUpdated = true;
             this.formData.oldPassword = '';
             this.formData.newPassword = '';
             this.resetPasswordModal.hide();
+            await this.loadEmail();
             success(getLocalizedString('passwordUpdated'));
         } catch (err) {
+            if (!passwordUpdated) this.emailLoaded = emailWasLoaded;
             error(err);
+        } finally {
+            this.savingPassword = false;
         }
     },
 
