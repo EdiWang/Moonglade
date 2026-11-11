@@ -29,6 +29,44 @@
 <div id="account-settings" class="admin-settings-page" data-local-auth="@local.ToString().ToLowerInvariant()"
      data-avatar-upload-url="@Url.Content("~/api/account/avatar")"
      data-email-url="@Url.Content("~/api/account/email")" data-signin-url="@Url.Page("/SignIn")">
+    <div class="admin-settings-group overflow-hidden">
+        <div class="settings-entry admin-profile-entry">
+            <div class="col-auto">
+                <button type="button" class="admin-profile-avatar" data-bs-toggle="modal" data-bs-target="#avatarmodal"
+                        aria-label="@SharedLocalizer["Change Avatar"]">
+                    <img src="@avatarUrl" class="img-thumbnail blogadmin-avatar" alt="" />
+                    <span class="admin-profile-avatar-overlay" aria-hidden="true">
+                        <i class="bi bi-camera"></i>
+                    </span>
+                </button>
+            </div>
+            <div class="col">
+                <div class="fw-semibold">@presentation.Name</div>
+                <div class="form-text">@presentation.Description</div>
+            </div>
+            <div class="col-auto text-end">
+                <button type="button" class="btn btn-sm btn-outline-accent" data-bs-toggle="modal"
+                        data-bs-target="#ownerProfileModal" aria-haspopup="dialog"
+                        aria-controls="ownerProfileModal">@SharedLocalizer["Change"]</button>
+            </div>
+        </div>
+        <div class="settings-entry row align-items-center">
+            <div class="col-auto">
+                <i class="bi-person-circle settings-entry-icon" aria-hidden="true"></i>
+            </div>
+            <div class="col">
+                <label for="account-gravatar">@SharedLocalizer["Use my Gravatar as profile picture"]</label>
+                <div class="form-text" id="account-gravatar-description">@SharedLocalizer["Please make sure you have setup Gravatar with your email address"]</div>
+            </div>
+            <div class="col-5 text-end">
+                <div class="form-check form-switch form-control-lg">
+                    <input type="checkbox" id="account-gravatar" class="form-check-input"
+                           checked="@useGravatar" aria-describedby="account-gravatar-description"
+                           data-save-url="@Url.Content("~/api/account/avatar/gravatar")" />
+                </div>
+            </div>
+        </div>
+    </div>
     <div class="settings-entry row align-items-center">
         <div class="col-auto">
             <i class="bi-envelope settings-entry-icon" aria-hidden="true"></i>
@@ -43,42 +81,6 @@
                     aria-haspopup="dialog" aria-controls="ownerEmailModal"
                     aria-describedby="account-email-title account-email-description"
                     x-on:click="openEmailModal()">@SharedLocalizer["Change"]</button>
-        </div>
-    </div>
-    <div class="settings-entry admin-profile-entry">
-        <div class="col-auto">
-            <button type="button" class="admin-profile-avatar" data-bs-toggle="modal" data-bs-target="#avatarmodal"
-                    aria-label="@SharedLocalizer["Change Avatar"]">
-                <img src="@avatarUrl" class="img-thumbnail blogadmin-avatar" alt="" />
-                <span class="admin-profile-avatar-overlay" aria-hidden="true">
-                    <i class="bi bi-camera"></i>
-                </span>
-            </button>
-        </div>
-        <div class="col">
-            <div class="fw-semibold">@presentation.Name</div>
-            <div class="form-text">@presentation.Description</div>
-        </div>
-        <div class="col-auto text-end">
-            <button type="button" class="btn btn-sm btn-outline-accent" data-bs-toggle="modal"
-                    data-bs-target="#ownerProfileModal" aria-haspopup="dialog"
-                    aria-controls="ownerProfileModal">@SharedLocalizer["Change"]</button>
-        </div>
-    </div>
-    <div class="settings-entry row align-items-center">
-        <div class="col-auto">
-            <i class="bi-person-circle settings-entry-icon" aria-hidden="true"></i>
-        </div>
-        <div class="col">
-            <label for="account-gravatar">@SharedLocalizer["Use my Gravatar as profile picture"]</label>
-            <div class="form-text" id="account-gravatar-description">@SharedLocalizer["Please make sure you have setup Gravatar with your email address"]</div>
-        </div>
-        <div class="col-5 text-end">
-            <div class="form-check form-switch form-control-lg">
-                <input type="checkbox" id="account-gravatar" class="form-check-input"
-                       checked="@useGravatar" aria-describedby="account-gravatar-description"
-                       data-save-url="@Url.Content("~/api/account/avatar/gravatar")" />
-            </div>
         </div>
     </div>
     @if (local)
