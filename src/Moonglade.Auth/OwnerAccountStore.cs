@@ -268,7 +268,7 @@ public sealed class OwnerAccountStore(
 
     private void ValidatePassword(string password)
     {
-        Validator.ValidateValue(password, new ValidationContext(this), [
+        Validator.ValidateValue(password, new ValidationContext(this) { DisplayName = "Password" }, [
             new RequiredAttribute(), new RegularExpressionAttribute(UpdateLocalAccountPasswordRequest.PasswordPattern)
         ]);
     }

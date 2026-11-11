@@ -168,6 +168,7 @@ If initialization fails, Moonglade logs the error and exits with a nonzero proce
 - `Authentication:Totp:Required=false` skips TOTP during initial setup and Local sign-in in every environment. The default is `true`.
 - To replace a configured authenticator app, verify the current password at `/admin/account` to reset it; the reset signs out the administrator and starts TOTP setup on the next sign-in when required. It does not reopen initial account setup.
 - Password changes keep the current session signed in with a refreshed revision and retain the authenticator. Pre-upgrade Local cookies and stale account-revision cookies must sign in again.
+- Initial setup submissions and authenticator proof share one client-IP rate-limit quota, independent of posted email or pending setup tickets. The default allows 10 submissions per minute; ordinary sign-in and TOTP keep their account/IP partitions.
 - Owner Email is public and managed only at `/admin/account`, for both authentication providers. It supplies Atom, FOAF, owner Gravatar and owner-directed notifications; Owner Name remains in General Settings. A real Local email change requires the current password, signs out all Local sessions and keeps the bound authenticator. Authorized OIDC sessions edit the public address without a local password or sign-out; provider email claims never overwrite it. Before an OIDC site's public address is configured, email-derived output and owner notifications are omitted, local avatars remain available, and commenter replies are unaffected.
 - TOTP options:
 

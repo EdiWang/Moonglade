@@ -32,3 +32,5 @@ All future database migration SQL scripts belong in this directory. Administrato
 | Owner email and legacy credential cutover | [PostgreSql/owner-account-cutover.sql](PostgreSql/owner-account-cutover.sql) | [SqlServer/owner-account-cutover.sql](SqlServer/owner-account-cutover.sql) | Run the additive account script first. Preserves legacy public email as a profile only when no owner exists, removes only that General member and the obsolete credentials row, and preserves configured accounts on reruns. No legacy credentials are imported. Local setup is public until completed; see the [upgrade and rollback guide](../docs/upgrade-owner-account.md). |
 
 The previous cumulative migration scripts have been discarded. These scripts do not replace older, unrelated database upgrades.
+
+The owner-account release gate includes fresh/upgraded Local and OIDC databases on both providers, stopped-host script reruns, exact unrelated-data comparisons and restart preservation. Follow the [owner-account verification checklist](../docs/upgrade-owner-account.md#verification-and-rollback); successful schema creation alone does not establish application or browser acceptance.

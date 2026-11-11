@@ -119,3 +119,11 @@ node --test src\Tests\Moonglade.Web.Tests\JavaScript\*.mjs
 ```
 
 That solution command includes both supported providers' activity, installation and category fixtures, plus the PostgreSQL naming upgrade fixtures. The Web build and isolated synthetic-data browser acceptance are separate gates. Report actual discovery, failures and skips; do not equate an omitted provider group or successful compilation with tested provider compatibility.
+
+## Owner Account Release Acceptance
+
+Run the opt-in solution command above, the frontend suite and a separate Web build. For runtime acceptance, use eight independent disposable databases: fresh/upgraded Local and fresh/upgraded OIDC on PostgreSQL and SQL Server. Use synthetic data, isolated key/image directories, loopback HTTPS and explicitly isolated configuration; never inherit a developer connection string or run faults against a real blog.
+
+Apply the published account scripts with every host stopped, compare unrelated rows and retained General values/timestamps, and repeat both scripts before restarting. Verify pending page/feed/health/static behavior, a rejected setup submission without persistence, and restart without reseeding or overwriting data. Complete real browser setup/sign-in with TOTP required and disabled, then verify password changes, immediate email editing, reset/re-enrollment, direct links and localized rendering. Recheck persisted account identity after restart and script reruns following later account edits.
+
+Use the real OIDC handler with a synthetic HTTPS provider for discovery, PKCE code exchange, signed ID-token validation, user-info, callback and sign-out. Verify an allowed subject can edit public email without a password/session reset, a different subject cannot access admin, and claim email never becomes the public owner address. Cookie-only HTTP fixtures remain valuable but do not replace this callback acceptance. Record external identity-provider interoperability as unverified unless that provider was actually exercised; do not claim user acceptance from passing checks.
