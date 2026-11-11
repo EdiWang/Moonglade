@@ -1,7 +1,17 @@
 @page "/auth/setup-account"
 @model Moonglade.Web.Pages.SetupAccountModel
+@inject ICacheAside Cache
+@inject ThemeCacheInvalidator ThemeCache
+@using Edi.AspNetCore.Utils
+@using Moonglade.Utils
 @{
     Layout = null;
+
+    var themeId = ViewData.CaptureSettings(SettingsReader).AppearanceSettings.ThemeId;
+    var themeCss = await Cache.GetOrCreateAsync(BlogCachePartition.General.ToString(), ThemeCache.GetCacheKey(themeId), async () =>
+    {
+        return await QueryMediator.QueryAsync(new GetSiteThemeStyleSheetQuery(themeId));
+    }, TimeSpan.FromMinutes(20));
 }
 <!DOCTYPE html>
 <html lang="@System.Globalization.CultureInfo.CurrentUICulture.Name">
@@ -12,6 +22,12 @@
     <partial name="_Favicons" />
     <link href="~/lib/twitter-bootstrap/css/bootstrap.min.css" rel="stylesheet" />
     <link href="~/css/base.css" rel="stylesheet" />
+    @if (!string.IsNullOrEmpty(themeCss))
+    {
+        themeCss = themeCss.Replace("</style", string.Empty, StringComparison.OrdinalIgnoreCase);
+        <style>@Html.Raw(themeCss)</style>
+    }
+    <link href="~/Moonglade.Web.styles.css" rel="stylesheet" />
 </head>
 <body class="bg-body-tertiary">
     <main class="container py-5">
@@ -30,7 +46,7 @@
                     <form method="post" asp-page-handler="Verify">
                         <div asp-validation-summary="All" class="text-danger" role="alert"></div>
                         <partial name="_AuthenticatorCode" />
-                        <button class="btn btn-primary w-100" type="submit">@SharedLocalizer["Verify"]</button>
+                        <button class="btn btn-accent w-100" type="submit">@SharedLocalizer["Verify"]</button>
                     </form>
                 }
                 else
@@ -45,13 +61,16 @@
                             <label asp-for="Password" class="form-label"></label>
                             <input asp-for="Password" class="form-control" autocomplete="new-password" minlength="8" required />
                         </div>
-                        <button class="btn btn-primary w-100" type="submit">@SharedLocalizer["Create Account"]</button>
+                        <button class="btn btn-accent w-100" type="submit">@SharedLocalizer["Create Account"]</button>
                     </form>
                 }
             </div>
         </div>
     </main>
     <script type="module" src="~/js/app/base.mjs"></script>
-    <script type="module" src="~/js/app/authenticator-code.mjs"></script>
+    @if (Model.IsVerifying)
+    {
+        <script type="module" src="~/js/app/authenticator-code.mjs" asp-append-version="true"></script>
+    }
 </body>
 </html>

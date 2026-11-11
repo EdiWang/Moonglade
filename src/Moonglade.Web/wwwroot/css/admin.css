@@ -82,7 +82,7 @@
     padding: 0 1rem;
 }
 
-.admin-navbar-has-navigation > .navbar-brand {
+.admin-navbar > .navbar-brand {
     min-width: 0;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -94,8 +94,20 @@
     width: auto;
 }
 
+@media (max-width: 575.98px) {
+    .admin-navbar-has-navigation {
+        grid-template-columns: minmax(0, 1fr) max-content;
+        grid-template-rows: 52px 40px;
+        height: auto;
+    }
+
+    .admin-navbar-has-navigation > .admin-secondary-nav {
+        grid-area: 2 / 1 / 3 / -1;
+    }
+}
+
 .admin-user-toggle {
-    max-width: 180px;
+    max-width: min(32rem, 40vw);
 }
 
 .admin-user-toggle:focus-visible {
@@ -112,6 +124,7 @@
 }
 
 #admin-user-menu {
+    max-width: min(32rem, calc(100vw - 2rem));
     --bs-dropdown-bg: var(--admin-user-menu-bg);
     --bs-dropdown-color: var(--admin-user-menu-color);
     --bs-dropdown-link-color: var(--admin-user-menu-color);
@@ -119,6 +132,15 @@
     --bs-dropdown-link-hover-bg: var(--admin-user-menu-hover-bg);
     background-color: var(--bs-dropdown-bg);
     color: var(--bs-dropdown-color);
+}
+
+#admin-user-menu .dropdown-header {
+    white-space: normal;
+    overflow-wrap: anywhere;
+}
+
+#admin-user-menu .dropdown-header:has(.aspnet-tag-moonglade-userinfo:empty) {
+    display: none;
 }
 
 #admin-user-menu .dropdown-item {
