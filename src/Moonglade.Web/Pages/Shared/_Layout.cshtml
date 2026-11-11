@@ -7,9 +7,11 @@
 @inject IConfiguration Configuration
 @inject ICacheAside Cache
 @inject ThemeCacheInvalidator ThemeCache
+@inject Moonglade.Auth.IOwnerProfileReader OwnerProfiles
 
 @{
     var avatarUrl = Url.Action("Avatar", "Assets");
+    var owner = await ViewData.CaptureOwnerAsync(OwnerProfiles, Context.RequestAborted);
 
     // Resolve culture
     // Post language > User set display language > System default language
@@ -189,9 +191,9 @@
         {
             <section class="profile-mobile d-block d-sm-none d-print-none">
                 <div class="card-background-container">
-                    @if (snapshot.GeneralSettings.UseGravatarAsProfilePicture)
+                    @if (snapshot.GeneralSettings.UseGravatarAsProfilePicture && owner is not null)
                     {
-                        <gravatar class="card-bkimg" email="@snapshot.GeneralSettings.OwnerEmail" size="256" />
+                        <gravatar class="card-bkimg" email="@owner.Email" size="256" />
                     }
                     else
                     {
@@ -201,12 +203,12 @@
                 <div class="blogger-intro-content">
                     <div class="row">
                         <div class="col-3">
-                            @if (snapshot.GeneralSettings.UseGravatarAsProfilePicture)
+                            @if (snapshot.GeneralSettings.UseGravatarAsProfilePicture && owner is not null)
                             {
                                 <gravatar class="rounded-circle blogger-head-pic"
                                           size="256"
                                           alt="@snapshot.GeneralSettings.OwnerName"
-                                          email="@snapshot.GeneralSettings.OwnerEmail" />
+                                          email="@owner.Email" />
                             }
                             else
                             {

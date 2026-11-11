@@ -1,6 +1,7 @@
 #nullable enable
 
 using Edi.AspNetCore.Utils;
+using LiteBus.Events.Abstractions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Moonglade.Data;
@@ -14,7 +15,8 @@ public sealed class OwnerAccountStore(
     BlogDbContext db,
     ILocalAccountTotpService totpService,
     IOptions<AuthenticationSettings> options,
-    TimeProvider timeProvider) : IOwnerProfileReader
+    TimeProvider timeProvider,
+    IEventMediator events) : IOwnerProfileReader
 {
     public Task<OwnerProfile?> ReadProfileAsync(CancellationToken ct = default) =>
         db.OwnerAccount.AsNoTracking().Select(account => new OwnerProfile(account.Id, account.Email))
@@ -29,6 +31,14 @@ public sealed class OwnerAccountStore(
     {
         var address = NormalizeEmail(email);
         EnsureOwnCommit();
+        var account = await SaveNewProfileAsync(address, ct);
+        await events.PublishAsync(new OwnerProfileChangedEvent(), CancellationToken.None);
+        return Snapshot(account);
+    }
+
+    private async Task<OwnerAccountEntity> SaveNewProfileAsync(
+        (string Email, string NormalizedEmail) address, CancellationToken ct)
+    {
         var account = new OwnerAccountEntity
         {
             Id = Guid.NewGuid(),
@@ -38,7 +48,7 @@ public sealed class OwnerAccountStore(
         };
         db.OwnerAccount.Add(account);
         await SaveAsync(account, ct);
-        return Snapshot(account);
+        return account;
     }
 
     public async Task<PendingOwnerSetup> PrepareLocalSetupAsync(
@@ -123,6 +133,7 @@ public sealed class OwnerAccountStore(
                 throw new DbUpdateConcurrencyException("The owner account is already initialized.");
             throw;
         }
+        await events.PublishAsync(new OwnerProfileChangedEvent(), CancellationToken.None);
         return Snapshot(account);
     }
 
@@ -136,6 +147,55 @@ public sealed class OwnerAccountStore(
             .SingleOrDefaultAsync(account => account.NormalizedEmail == normalizedEmail, ct);
         if (account?.LocalInitializedUtc is null) return null;
         return PasswordMatches(account, password) ? Snapshot(account) : null;
+    }
+
+    public async Task<OwnerAccountSnapshot?> ChangeLocalEmailAsync(
+        Guid id, Guid expectedRevision, string currentPassword, string email, CancellationToken ct = default)
+    {
+        if (options.Value.Provider != AuthenticationProvider.Local)
+            throw new InvalidOperationException("Local account updates are not enabled.");
+        EnsureOwnCommit();
+        var address = NormalizeEmail(email);
+        var account = await LoadCurrentAsync(id, expectedRevision, ct);
+        if (string.IsNullOrWhiteSpace(currentPassword) || !PasswordMatches(account, currentPassword)) return null;
+        return await SaveEmailAsync(account, address, ct);
+    }
+
+    public async Task<OwnerAccountSnapshot> UpdateProfileEmailAsync(
+        Guid? expectedRevision, string email, CancellationToken ct = default)
+    {
+        if (options.Value.Provider != AuthenticationProvider.OpenIdConnect)
+            throw new InvalidOperationException("Public profile updates require OpenID Connect authentication.");
+        EnsureOwnCommit();
+        var address = NormalizeEmail(email);
+        var account = await db.OwnerAccount.AsNoTracking().SingleOrDefaultAsync(ct);
+        if (account?.Revision != expectedRevision)
+            throw new DbUpdateConcurrencyException("The owner profile changed. Reload the account page.");
+        if (account is not null) return await SaveEmailAsync(account, address, ct);
+        try
+        {
+            account = await SaveNewProfileAsync(address, ct);
+        }
+        catch (DbUpdateException)
+        {
+            if (await db.OwnerAccount.AsNoTracking().AnyAsync(CancellationToken.None))
+                throw new DbUpdateConcurrencyException("The owner profile already exists. Reload the account page.");
+            throw;
+        }
+        await events.PublishAsync(new OwnerProfileChangedEvent(), CancellationToken.None);
+        return Snapshot(account);
+    }
+
+    private async Task<OwnerAccountSnapshot> SaveEmailAsync(
+        OwnerAccountEntity account, (string Email, string NormalizedEmail) address, CancellationToken ct)
+    {
+        if (account.Email == address.Email) return Snapshot(account);
+        db.OwnerAccount.Attach(account);
+        account.Email = address.Email;
+        account.NormalizedEmail = address.NormalizedEmail;
+        var saved = await SaveUpdatedAsync(account, ct);
+        await events.PublishAsync(new OwnerProfileChangedEvent(), CancellationToken.None);
+        return saved;
     }
 
     public async Task<OwnerAccountSnapshot?> ChangePasswordAsync(

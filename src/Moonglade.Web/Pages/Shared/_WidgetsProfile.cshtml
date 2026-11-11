@@ -1,15 +1,17 @@
-﻿@{
+@inject Moonglade.Auth.IOwnerProfileReader OwnerProfiles
+@{
     var snapshot = ViewData.CaptureSettings(SettingsReader);
 }
 @{
     var avatarUrl = Url.Action("Avatar", "Assets");
+    var owner = await ViewData.CaptureOwnerAsync(OwnerProfiles, Context.RequestAborted);
 }
 
 <section class="blog-info-desktop-lg text-light d-none d-lg-block h-card">
     <div class="card-background-container">
-        @if (snapshot.GeneralSettings.UseGravatarAsProfilePicture)
+        @if (snapshot.GeneralSettings.UseGravatarAsProfilePicture && owner is not null)
         {
-            <gravatar class="card-bkimg" email="@snapshot.GeneralSettings.OwnerEmail" size="256" />
+            <gravatar class="card-bkimg" email="@owner.Email" size="256" />
         }
         else
         {
@@ -17,12 +19,12 @@
         }
     </div>
     <div class="blog-info-photo-text text-center">
-        @if (snapshot.GeneralSettings.UseGravatarAsProfilePicture)
+        @if (snapshot.GeneralSettings.UseGravatarAsProfilePicture && owner is not null)
         {
             <gravatar class="rounded-circle blogger-head-pic u-photo"
                       size="256"
                       alt="@snapshot.GeneralSettings.OwnerName"
-                      email="@snapshot.GeneralSettings.OwnerEmail" />
+                      email="@owner.Email" />
         }
         else
         {

@@ -2,7 +2,9 @@ using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.Options;
+using LiteBus.Events.Abstractions;
 using Moonglade.Data;
+using Moq;
 
 namespace Moonglade.Auth.Tests;
 
@@ -16,6 +18,7 @@ internal sealed class OwnerAccountTestStore : IAsyncDisposable
     public TestClock Clock { get; } = new();
     public LocalAccountTotpService Totp { get; } = new();
     public OwnerAccountStore Accounts { get; }
+    public Mock<IEventMediator> Events { get; } = new();
 
     public OwnerAccountTestStore(bool required = false, params IInterceptor[] interceptors)
     {
@@ -26,11 +29,12 @@ internal sealed class OwnerAccountTestStore : IAsyncDisposable
         Accounts = CreateAccounts(required);
     }
 
-    public OwnerAccountStore CreateAccounts(bool required) =>
+    public OwnerAccountStore CreateAccounts(bool required, AuthenticationProvider provider = AuthenticationProvider.Local) =>
         new(Db, Totp, Options.Create(new AuthenticationSettings
         {
+            Provider = provider,
             Totp = new TotpAuthenticationSettings { Required = required }
-        }), Clock);
+        }), Clock, Events.Object);
 
     public async Task<OwnerAccountSnapshot> InitializeAsync(CancellationToken ct)
     {

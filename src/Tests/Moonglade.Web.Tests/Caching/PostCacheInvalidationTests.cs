@@ -316,6 +316,11 @@ public partial class PostCacheInvalidationTests
             services.AddLogging();
             services.AddDbContext<BlogDbContext>(options => options.UseSqlite(connection).AddInterceptors(interceptors));
             services.AddSingleton(TimeProvider.System);
+            services.Configure<Moonglade.Auth.AuthenticationSettings>(options =>
+                options.Provider = Moonglade.Auth.AuthenticationProvider.OpenIdConnect);
+            services.AddSingleton<Moonglade.Auth.ILocalAccountTotpService, Moonglade.Auth.LocalAccountTotpService>();
+            services.AddScoped<Moonglade.Auth.OwnerAccountStore>();
+            services.AddScoped<Moonglade.Auth.IOwnerProfileReader>(provider => provider.GetRequiredService<Moonglade.Auth.OwnerAccountStore>());
             services.AddInMemoryCacheAside();
             services.AddSingleton<IBlogConfig>(sp => sp.GetRequiredService<BlogConfig>());
             services.AddSingleton<PostCacheInvalidator>();
@@ -354,6 +359,10 @@ public partial class PostCacheInvalidationTests
             using var scope = environment.Services.CreateScope();
             var db = scope.ServiceProvider.GetRequiredService<BlogDbContext>();
             await db.Database.EnsureCreatedAsync(TestContext.Current.CancellationToken);
+            db.OwnerAccount.Add(new Moonglade.Data.Entities.OwnerAccountEntity
+            {
+                Id = Guid.NewGuid(), Email = "owner@example.test", NormalizedEmail = "OWNER@EXAMPLE.TEST", Revision = Guid.NewGuid()
+            });
             var config = environment.Services.GetRequiredService<IBlogConfig>();
             foreach (var property in typeof(BlogSettingsSnapshot).GetProperties())
                 db.BlogConfiguration.Add(new BlogConfigurationEntity
@@ -417,6 +426,7 @@ public partial class PostCacheInvalidationTests
             context.Request.Host = new HostString("blog.example.com");
             Services.GetRequiredService<IHttpContextAccessor>().HttpContext = context;
             var controller = ActivatorUtilities.CreateInstance<SubscriptionController>(scope.ServiceProvider);
+            controller.ControllerContext = new ControllerContext { HttpContext = context };
             var result = atom ? await controller.Atom(category) : await controller.Rss(category);
             return Assert.IsType<ContentResult>(result).Content!;
         }

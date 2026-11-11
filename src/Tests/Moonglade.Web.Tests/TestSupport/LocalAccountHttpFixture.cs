@@ -79,6 +79,7 @@ internal sealed class LocalAccountHttpFixture : IAsyncDisposable
         builder.Services.AddSingleton(store.Db);
         builder.Services.AddSingleton<IBlogConfig>(config);
         builder.Services.AddSingleton<ICommandMediator>(store);
+        builder.Services.AddSingleton(store.EventMediator);
         builder.Services.AddSingleton(Mock.Of<IQueryMediator>());
         builder.Services.AddInMemoryCacheAside();
         builder.Services.AddSingleton<ThemeCacheInvalidator>();

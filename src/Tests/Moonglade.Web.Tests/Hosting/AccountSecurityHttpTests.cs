@@ -8,7 +8,7 @@ using System.Security.Claims;
 
 namespace Moonglade.Web.Tests.Hosting;
 
-public class AccountSecurityHttpTests
+public partial class AccountSecurityHttpTests
 {
     [Theory]
     [InlineData("Development")]
@@ -230,7 +230,8 @@ public class AccountSecurityHttpTests
     {
         var ct = TestContext.Current.CancellationToken;
         var accounts = new OwnerAccountStore(fixture.Store.Db, new LocalAccountTotpService(),
-            Options.Create(new AuthenticationSettings { Totp = new TotpAuthenticationSettings { Required = bound } }), TimeProvider.System);
+            Options.Create(new AuthenticationSettings { Totp = new TotpAuthenticationSettings { Required = bound } }), TimeProvider.System,
+            Moq.Mock.Of<LiteBus.Events.Abstractions.IEventMediator>());
         var pending = await accounts.PrepareLocalSetupAsync(LocalAccountPageFixture.Email, LocalAccountPageFixture.Password, ct);
         return await accounts.CompleteLocalSetupAsync(pending, bound ? LocalAccountPageFixture.Code(pending.TotpSecret!) : null, ct);
     }

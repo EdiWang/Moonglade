@@ -92,7 +92,6 @@ internal static class SettingChangeCases
             {
                 nameof(GeneralSettings.DefaultLanguageCode) => "de-DE",
                 nameof(GeneralSettings.Copyright) => "[c] 2025",
-                nameof(GeneralSettings.OwnerEmail) => "changed@example.invalid",
                 nameof(SEOSettings.CanonicalPrefix) or nameof(SEOSettings.DcLicenseUrl) or nameof(ImageSettings.CDNEndpoint) =>
                     "https://after.example.invalid",
                 nameof(AdvancedSettings.HeadScripts) or nameof(AdvancedSettings.FootScripts) => "<script>changed()</script>",

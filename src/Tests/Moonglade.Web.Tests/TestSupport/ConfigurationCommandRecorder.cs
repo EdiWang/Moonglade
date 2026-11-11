@@ -36,7 +36,7 @@ internal sealed class ConfigurationCommandRecorder : ICommandMediator, IDisposab
         Db = new BlogDbContext(new DbContextOptionsBuilder<BlogDbContext>().UseSqlite(_connection).Options);
         Db.Database.EnsureCreated();
         Accounts = new OwnerAccountStore(Db, new LocalAccountTotpService(),
-            Options.Create(new AuthenticationSettings { Totp = new TotpAuthenticationSettings { Required = false } }), TimeProvider.System);
+            Options.Create(new AuthenticationSettings { Totp = new TotpAuthenticationSettings { Required = false } }), TimeProvider.System, EventMediator);
     }
 
     public void Initialize(BlogConfig config)

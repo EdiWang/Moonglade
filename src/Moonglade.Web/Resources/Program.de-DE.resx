@@ -2110,4 +2110,7 @@
     <value>Konto erstellen</value>
   </data>
   <data name="Update your password for administrator sign-in." xml:space="preserve"><value>Aktualisieren Sie Ihr Passwort für die Administratoranmeldung.</value></data>
+  <data name="Owner email updated." xml:space="preserve"><value>Die E-Mail-Adresse des Eigentümers wurde aktualisiert.</value></data>
+  <data name="This public address is used for feeds, Gravatar and blog notifications." xml:space="preserve"><value>Diese öffentliche Adresse wird für Feeds, Gravatar und Blog-Benachrichtigungen verwendet.</value></data>
+  <data name="Changing this address signs you out. Sign in again with the new email." xml:space="preserve"><value>Eine Änderung meldet Sie ab. Melden Sie sich mit der neuen E-Mail-Adresse erneut an.</value></data>
 </root>

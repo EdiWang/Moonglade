@@ -13,6 +13,41 @@ namespace Moonglade.Configuration.Tests;
 
 public partial class UpdateConfigurationCommandTests
 {
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public async Task LegacyGeneralEmail_OrdinarySavePreservesAccountAndOtherValues_WithoutEmailAudit(bool patch)
+    {
+        var ct = TestContext.Current.CancellationToken;
+        using var db = CreateDbContext();
+        const string legacy = """{"ownerEmail":"legacy@example.test","ownerName":"Retained owner","siteTitle":"Before","description":"Retained description"}""";
+        var parsed = BlogConfig.Parse(new Dictionary<string, string> { [nameof(GeneralSettings)] = legacy });
+        var config = new BlogConfig(parsed.Snapshot);
+        var account = new OwnerAccountEntity
+        {
+            Id = Guid.NewGuid(), Email = "authoritative@example.test", NormalizedEmail = "AUTHORITATIVE@EXAMPLE.TEST",
+            Revision = Guid.NewGuid()
+        };
+        db.OwnerAccount.Add(account);
+        var row = await SeedGroup(db, config.Capture().GeneralSettings, ct);
+        var submitted = BlogConfig.Parse(new Dictionary<string, string>
+        {
+            [nameof(GeneralSettings)] = """{"ownerEmail":"attempt@example.test","ownerName":"Retained owner","siteTitle":"After","description":"Retained description"}"""
+        }).Snapshot.GeneralSettings;
+
+        var result = await Save(Handler(db, config), submitted, patch, ["SiteTitle"], ct);
+
+        Assert.Equal("After", config.Capture().GeneralSettings.SiteTitle);
+        Assert.Equal("Retained owner", config.Capture().GeneralSettings.OwnerName);
+        Assert.Equal("Retained description", config.Capture().GeneralSettings.Description);
+        Assert.Equal(new SettingValueChange("SiteTitle", "Before", "After"), Assert.Single(result.Changes));
+        Assert.Equal("authoritative@example.test", (await db.OwnerAccount.AsNoTracking().SingleAsync(ct)).Email);
+        Assert.Equal(account.Revision, (await db.OwnerAccount.AsNoTracking().SingleAsync(ct)).Revision);
+        using var json = JsonDocument.Parse(row.CfgValue);
+        Assert.DoesNotContain(json.RootElement.EnumerateObject(), value => value.Name.Equals("OwnerEmail", StringComparison.OrdinalIgnoreCase));
+        Assert.Equal("Retained owner", json.RootElement.GetProperty("ownerName").GetString());
+    }
+
     public static IEnumerable<object[]> OrdinaryFieldCases()
     {
         foreach (var (group, _) in SettingChangeCases.Allowed)

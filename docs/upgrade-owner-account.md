@@ -1,0 +1,49 @@
+# Upgrade to independent owner accounts
+
+This upgrade replaces legacy local credentials and moves the public Owner Email out of General Settings. Back up and test on a restored database before deployment. Application startup does not run these scripts.
+
+## Preparation and execution order
+
+1. Stop **all** old and new application hosts, including background workers. Take a complete database backup and retain the old application files and configuration.
+2. Complete any applicable [category identity](upgrade-category-int-identity.md), [PostgreSQL naming](upgrade-postgresql-snake-case.md), [activity event](upgrade-activity-log-events.md), and [SEO](upgrade-seo-settings.md) upgrades. The account scripts do not replace them. Do not rerun an activity-history reset as part of the account upgrade.
+3. Run the additive account script for your provider, then the matching cutover script in the same database:
+
+| Provider | First: schema and validation | Second: public-email and credential cutover |
+| --- | --- | --- |
+| PostgreSQL | [`owner-account.sql`](../database/PostgreSql/owner-account.sql) | [`owner-account-cutover.sql`](../database/PostgreSql/owner-account-cutover.sql) |
+| SQL Server | [`owner-account.sql`](../database/SqlServer/owner-account.sql) | [`owner-account-cutover.sql`](../database/SqlServer/owner-account-cutover.sql) |
+
+4. Verify the resulting account/profile, remaining General Settings, and preserved content before starting the upgraded application. Both scripts are transactional and safe to rerun with hosts stopped. Run SQL tools with stop-on-error behavior; disconnect or roll back an open transaction after a reported error before retrying.
+5. Start the new application and follow the provider-specific steps below. Do not run old binaries against the upgraded database.
+
+Fresh installations need neither script: startup creates the schema and ordinary settings, but never seeds administrator credentials or a default public email.
+
+## What the scripts change
+
+- The additive script creates or validates the singleton account table, constraints and indexes. It does not import data.
+- The cutover requires a valid General Settings JSON object. If its top-level `OwnerEmail` field exists (case-insensitive) and no owner exists, the script trims and validates it and creates a **public profile only**. Password hash, salt, TOTP secret and Local initialization remain absent.
+- An existing account or profile always wins. The cutover never replaces its email, stable ID, revision or credentials, including on a rerun after an administrator edits the address.
+- Only the obsolete email member is removed from General JSON. Other members and their values, including unknown or duplicate unrelated members, remain; insignificant JSON whitespace may change. The configuration row's modification timestamp is retained.
+- Only the exact `LocalAccountSettings` configuration row is deleted. Legacy usernames, password hashes, salts and authenticator secrets are **not imported**. Articles, pages, comments, current activity history, installation metadata and unrelated rows remain unchanged.
+
+Malformed/non-object General JSON and duplicate email aliases stop the transaction without cleanup. When no account exists, an invalid email value also stops it. Resolve the reported source data deliberately before retrying. An already configured owner takes precedence over an invalid obsolete email value. A General object with no email field is a valid already-cut-over state, including a fresh OIDC site with no public profile.
+
+## Local authentication
+
+Existing credentials and old Local cookies no longer authenticate. If no initialized independent account exists, `/auth/setup-account` is public and any reachable visitor can claim the first administrator. **Restrict access operationally until you complete setup.** There is no installation token.
+
+Enter an email and new password. A migrated public address can be confirmed or replaced. When `Authentication:Totp:Required=true` (the default), verify a new authenticator code before any credentials are committed. When false, setup and sign-in skip TOTP in every environment. Setup signs in and opens the public homepage. A profile alone does not complete setup.
+
+Later, edit the public email at `/admin/account`, not General Settings. A real Local change requires the current password and invalidates all Local sessions, including intermediate setup/verification tickets. Sign in with the new email and the **existing bound authenticator**. Passwords, stable identity and initialization state are retained.
+
+## OpenID Connect
+
+Keep the configured authority, callback and exact subject allowlist. OIDC bypasses Local setup. Existing public Owner Email is retained by the SQL transfer; identity-provider email claims do not replace it or determine ownership.
+
+Authorized OIDC administrators create or edit the public address at `/admin/account` without a local password or session reset. Before a fresh OIDC site's address is entered, Atom omits author email, FOAF omits its mailbox hash, profile images use the local avatar instead of Gravatar, and owner-directed comment/mention/test notifications are not queued. Commenter-directed replies are unaffected. The test-email API reports a missing owner address rather than claiming delivery.
+
+## Verification and rollback
+
+Check sign-in and account editing for the active provider; confirm the public address in Atom, FOAF, Gravatar and notification recipients. Repeat the scripts with hosts stopped and confirm subsequent email edits and existing credentials remain intact.
+
+For rollback, stop every upgraded host and **restore the complete pre-upgrade backup**, then restore the matching old application and configuration. These scripts intentionally have no reverse operation that reconstructs deleted legacy credentials. An old binary or a partial General JSON restoration is not a rollback.

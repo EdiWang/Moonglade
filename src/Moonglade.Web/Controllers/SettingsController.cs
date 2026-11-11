@@ -17,7 +17,8 @@ public class SettingsController(
         ILogger<SettingsController> logger,
         IEventMediator eventMediator,
         EmailCapabilityStatus emailCapabilityStatus,
-        ICommandMediator commandMediator) : BlogControllerBase(commandMediator, logger)
+        ICommandMediator commandMediator,
+        IOwnerProfileReader ownerProfiles) : BlogControllerBase(commandMediator, logger)
 {
     [HttpPost("general")]
     public async Task<IActionResult> General(GeneralSettings model)
@@ -64,7 +65,11 @@ public class SettingsController(
 
         try
         {
-            await eventMediator.PublishAsync(new TestEmailEvent { Snapshot = settings });
+            var owner = await ownerProfiles.ReadProfileAsync(HttpContext.RequestAborted);
+            if (owner is null)
+                return Problem(statusCode: StatusCodes.Status409Conflict,
+                    title: "Owner email is not configured.", detail: "Set an owner email in Account before sending a test email.");
+            await eventMediator.PublishAsync(new TestEmailEvent { Snapshot = settings, Owner = owner });
             return Ok(true);
         }
         catch (Exception e)
@@ -115,7 +120,7 @@ public class SettingsController(
             "general" => PatchConfigurationCommand.Create<GeneralSettings>(static value => value with { }, fields,
                 nameof(GeneralSettings.LogoText), nameof(GeneralSettings.Copyright),
                 nameof(GeneralSettings.SiteTitle), nameof(GeneralSettings.OwnerName),
-                nameof(GeneralSettings.OwnerEmail), nameof(GeneralSettings.Description),
+                nameof(GeneralSettings.Description),
                 nameof(GeneralSettings.SideBarOption), nameof(GeneralSettings.WidgetsProfile),
                 nameof(GeneralSettings.HotTagAmount), nameof(GeneralSettings.WidgetsCategoryList),
                 nameof(GeneralSettings.WidgetsSubscriptionButtons), nameof(GeneralSettings.UseGravatarAsProfilePicture),

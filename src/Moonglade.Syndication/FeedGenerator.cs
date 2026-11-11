@@ -73,7 +73,7 @@ public class FeedGenerator
 
     public async Task<string> WriteAtomAsync()
     {
-        var feed = GetItemCollection(FeedItemCollection);
+        var feed = GetItemCollection(FeedItemCollection, allowAuthorWithoutEmail: true);
 
         var sw = new StringWriterWithEncoding(Encoding.UTF8);
         await using (var xmlWriter = XmlWriter.Create(sw, new() { Async = true }))
@@ -99,7 +99,8 @@ public class FeedGenerator
         return xml;
     }
 
-    private static List<SyndicationItem> GetItemCollection(IEnumerable<FeedEntry> itemCollection)
+    private static List<SyndicationItem> GetItemCollection(
+        IEnumerable<FeedEntry> itemCollection, bool allowAuthorWithoutEmail = false)
     {
         var synItemCollection = new List<SyndicationItem>();
         if (itemCollection == null) return synItemCollection;
@@ -122,7 +123,8 @@ public class FeedGenerator
             });
 
             // add author
-            if (!string.IsNullOrWhiteSpace(item.Author) && !string.IsNullOrWhiteSpace(item.AuthorEmail))
+            if (!string.IsNullOrWhiteSpace(item.Author)
+                && (allowAuthorWithoutEmail || !string.IsNullOrWhiteSpace(item.AuthorEmail)))
             {
                 sItem.AddContributor(new SyndicationPerson(item.Author, item.AuthorEmail));
             }

@@ -100,12 +100,13 @@ public class ConfigurationCommandRegistrationTests
         var accounts = scope.ServiceProvider.GetRequiredService<OwnerAccountStore>();
         var disabledTotpAccounts = new OwnerAccountStore(store.Db, scope.ServiceProvider.GetRequiredService<ILocalAccountTotpService>(),
             Microsoft.Extensions.Options.Options.Create(new AuthenticationSettings
-            { Totp = new TotpAuthenticationSettings { Required = false } }), TimeProvider.System);
+            { Totp = new TotpAuthenticationSettings { Required = false } }), TimeProvider.System,
+            scope.ServiceProvider.GetRequiredService<LiteBus.Events.Abstractions.IEventMediator>());
         var pending = await disabledTotpAccounts.PrepareLocalSetupAsync("owner@example.test", "Synthetic123!", TestContext.Current.CancellationToken);
         var account = await disabledTotpAccounts.CompleteLocalSetupAsync(pending, null, TestContext.Current.CancellationToken);
         Assert.Equal(account, await accounts.AuthenticateLocalAsync(account.Email, "Synthetic123!", TestContext.Current.CancellationToken));
         Assert.Equal(new OwnerProfile(account.Id, account.Email),
             await scope.ServiceProvider.GetRequiredService<IOwnerProfileReader>().ReadProfileAsync(TestContext.Current.CancellationToken));
-        Assert.Equal(feedKeyBeforeAccountSave, feeds.GetFeedCacheKey("rss"));
+        Assert.NotEqual(feedKeyBeforeAccountSave, feeds.GetFeedCacheKey("rss"));
     }
 }

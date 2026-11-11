@@ -188,7 +188,7 @@ public class OwnerAccountStoreTests
         new(db, new LocalAccountTotpService(), Options.Create(new AuthenticationSettings
         {
             Totp = new TotpAuthenticationSettings { Required = false }
-        }), TimeProvider.System);
+        }), TimeProvider.System, Moq.Mock.Of<LiteBus.Events.Abstractions.IEventMediator>());
 
     private static async Task<OwnerAccountSnapshot> InitializeAsync(
         OwnerAccountStore store, string email, string password, CancellationToken ct)

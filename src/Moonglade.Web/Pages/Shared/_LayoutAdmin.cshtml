@@ -96,14 +96,11 @@
                         <span class="visually-hidden">@SharedLocalizer["Account"]</span>
                     </button>
                     <ul class="dropdown-menu dropdown-menu-end" id="admin-user-menu" aria-labelledby="admin-user-toggle">
-                        @if (AuthOptions.Value.Provider == AuthenticationProvider.Local)
-                        {
-                            <li>
-                                <a class="dropdown-item" asp-page="/Admin/LocalAccount">
-                                    <i class="bi-person-gear me-2" aria-hidden="true"></i>@SharedLocalizer["Account Settings"]
-                                </a>
-                            </li>
-                        }
+                        <li>
+                            <a class="dropdown-item" asp-page="/Admin/LocalAccount">
+                                <i class="bi-person-gear me-2" aria-hidden="true"></i>@SharedLocalizer["Account Settings"]
+                            </a>
+                        </li>
                         <li>
                             <a class="dropdown-item" asp-controller="Auth" asp-action="SignOut">
                                 <i class="bi-box-arrow-right me-2" aria-hidden="true"></i>@SharedLocalizer["Sign Out"]

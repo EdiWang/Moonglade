@@ -482,7 +482,8 @@ public partial class SettingsControllerTests
             logger ?? Mock.Of<ILogger<SettingsController>>(),
             eventMediator ?? Mock.Of<IEventMediator>(),
             emailCapabilityStatus ?? CreateEmailCapabilityStatus(EmailCapabilityState.Available),
-            commandMediator);
+            commandMediator,
+            new TestOwnerProfileReader());
 
         controller.ControllerContext = new ControllerContext
         {

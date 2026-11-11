@@ -134,7 +134,6 @@ public partial class SettingsControllerTests
         var after = config.Capture().GeneralSettings with
         {
             SiteTitle = "Changed title",
-            OwnerEmail = "B3-private@example.invalid",
             Description = "B3-private-description"
         };
 
@@ -183,7 +182,8 @@ public partial class SettingsControllerTests
         var controller = new SettingsController(config, logger.Object,
             scope.ServiceProvider.GetRequiredService<IEventMediator>(),
             scope.ServiceProvider.GetRequiredService<Moonglade.Email.Core.EmailCapabilityStatus>(),
-            scope.ServiceProvider.GetRequiredService<ICommandMediator>())
+            scope.ServiceProvider.GetRequiredService<ICommandMediator>(),
+            scope.ServiceProvider.GetRequiredService<Moonglade.Auth.IOwnerProfileReader>())
         {
             ControllerContext = new ControllerContext
             {
@@ -207,7 +207,6 @@ public partial class SettingsControllerTests
         var after = config.Capture().GeneralSettings with
         {
             SiteTitle = "Saved title",
-            OwnerEmail = "B2-private@example.invalid",
             Description = "B2-private-description"
         };
         var pending = new BlogConfigurationEntity
@@ -398,7 +397,7 @@ public partial class SettingsControllerTests
 
     private static object RestrictedGroup(BlogSettingsSnapshot root, string group) => group switch
     {
-        "general" => root.GeneralSettings with { OwnerEmail = "B3-private@example.invalid" },
+        "general" => root.GeneralSettings with { Description = "B3-private-description" },
         "content" => root.ContentSettings with { PostFooterHtmlPitch = "B3-private-footer" },
         "comment" => root.CommentSettings with { WordFilterKeywords = "B3-private-keywords" },
         "notification" => root.NotificationSettings with { EmailDisplayName = "B3-private-sender" },

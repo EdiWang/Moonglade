@@ -22,7 +22,7 @@ using System.Text.Json;
 
 namespace Moonglade.Web.Tests.Controllers;
 
-public class SettingsValidationHttpTests
+public partial class SettingsValidationHttpTests
 {
     [Theory]
     [InlineData("content", """{"postListPageSize":0}""", "PostListPageSize")]
@@ -245,18 +245,22 @@ public class SettingsValidationHttpTests
         Assert.Single(store.Commands.OfType<Moonglade.ActivityLog.CreateActivityLogCommand>());
     }
 
-    private static async Task<WebApplication> CreateApp(ConfigurationCommandRecorder store, BlogConfig config)
+    private static async Task<WebApplication> CreateApp(ConfigurationCommandRecorder store, BlogConfig config, bool emailAvailable = false)
     {
         store.Initialize(config);
         var builder = WebApplication.CreateBuilder(new WebApplicationOptions { EnvironmentName = "Testing" });
         builder.WebHost.UseTestServer();
         builder.Logging.ClearProviders();
         builder.Services.AddSingleton<IBlogConfig>(config);
+        builder.Services.AddSingleton<IOwnerProfileReader>(store.Accounts);
         builder.Services.AddSingleton<ICommandMediator>(store);
         builder.Services.AddSingleton(Mock.Of<IQueryMediator>());
         builder.Services.AddSingleton(Mock.Of<IEventMediator>());
         builder.Services.AddSingleton(new EmailCapabilityStatusEvaluator(new EmailServiceOptionsValidator(), new EmailOutboxWorkerOptionsValidator())
-            .Evaluate(new EmailServiceOptions(), new EmailOutboxWorkerOptions()));
+            .Evaluate(emailAvailable ? new EmailServiceOptions
+            {
+                SmtpServer = "smtp.example.test", SmtpUserName = "sender@example.test", SmtpPassword = "synthetic-test-value"
+            } : new EmailServiceOptions(), new EmailOutboxWorkerOptions()));
         builder.Services.AddInMemoryCacheAside();
         builder.Services.AddSingleton<PostCacheInvalidator>();
         builder.Services.AddControllers().AddApplicationPart(typeof(SettingsController).Assembly)

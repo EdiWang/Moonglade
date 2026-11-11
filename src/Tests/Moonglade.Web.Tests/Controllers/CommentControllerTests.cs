@@ -208,7 +208,6 @@ public class CommentControllerTests
         var historical = Assert.Single(await store.ReadLogsAsync(ct));
         store.Config.Publish(store.Config.Capture() with
         {
-            GeneralSettings = store.Config.Capture().GeneralSettings with { OwnerEmail = "owner@example.com" },
             CommentSettings = store.Config.Capture().CommentSettings with
             {
                 EnableComments = true,
@@ -223,6 +222,7 @@ public class CommentControllerTests
         using var scope = store.Services.CreateScope();
         var services = scope.ServiceProvider;
         var db = services.GetRequiredService<BlogDbContext>();
+        await services.GetRequiredService<Moonglade.Auth.OwnerAccountStore>().CreateProfileAsync("owner@example.com", ct);
         var postId = Guid.NewGuid();
         var published = new DateTime(2026, 11, 1, 12, 0, 0, DateTimeKind.Utc);
         db.Post.Add(new PostEntity

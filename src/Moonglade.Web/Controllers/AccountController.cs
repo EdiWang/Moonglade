@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Moonglade.ActivityLog;
+using System.ComponentModel.DataAnnotations;
 
 namespace Moonglade.Web.Controllers;
 
@@ -15,6 +16,48 @@ public class AccountController(
     ICommandMediator commandMediator,
     ILogger<AccountController> logger) : BlogControllerBase(commandMediator, logger)
 {
+    [HttpGet("email")]
+    public async Task<IActionResult> GetEmail()
+    {
+        var account = await accounts.ReadAsync(HttpContext.RequestAborted);
+        return Ok(new OwnerEmailResponse(account?.Email, account?.Revision));
+    }
+
+    [HttpPut("email")]
+    public async Task<IActionResult> UpdateEmail(UpdateOwnerEmailRequest request)
+    {
+        var local = options.Value.Provider == AuthenticationProvider.Local;
+        var current = await accounts.ReadAsync(HttpContext.RequestAborted);
+        if (local && !LocalAccountPrincipal.Matches(User, current)) return Unauthorized();
+        if (request.Revision != current?.Revision) return Conflict("The account changed. Reload the account page.");
+        OwnerAccountSnapshot saved;
+        try
+        {
+            saved = local
+                ? await accounts.ChangeLocalEmailAsync(current.Id, current.Revision,
+                    request.CurrentPassword, request.Email, HttpContext.RequestAborted)
+                : await accounts.UpdateProfileEmailAsync(request.Revision, request.Email, HttpContext.RequestAborted);
+        }
+        catch (ValidationException exception)
+        {
+            ModelState.AddModelError(nameof(request.Email), exception.Message);
+            return ValidationProblem(ModelState);
+        }
+        catch (DbUpdateConcurrencyException)
+        {
+            return Conflict("The account changed. Reload the account page.");
+        }
+        if (saved is null) return Conflict("Current password is incorrect.");
+        if (local && saved.Revision != current.Revision)
+        {
+            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+            await HttpContext.SignOutAsync(BlogAuthSchemas.LocalAccountSetup);
+            await HttpContext.SignOutAsync(BlogAuthSchemas.LocalAccountTwoFactor);
+            await HttpContext.SignOutAsync(BlogAuthSchemas.InitialAccountSetup);
+        }
+        return NoContent();
+    }
+
     [HttpGet("password/generate")]
     public IActionResult GeneratePassword([FromServices] IPasswordGenerator passwordGenerator) =>
         options.Value.Provider != AuthenticationProvider.Local
@@ -66,6 +109,8 @@ public class AccountController(
         return NoContent();
     }
 }
+
+file sealed record OwnerEmailResponse(string Email, Guid? Revision);
 
 file sealed class GeneratedPasswordResponse(DateTime serverTimeUtc, string password)
 {

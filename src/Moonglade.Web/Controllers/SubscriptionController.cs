@@ -10,7 +10,8 @@ public class SubscriptionController(
         IBlogConfig blogConfig,
         ICacheAside cache,
         PostCacheInvalidator postCacheInvalidator,
-        IQueryMediator queryMediator) : ControllerBase
+        IQueryMediator queryMediator,
+        IOwnerProfileReader ownerProfiles) : ControllerBase
 {
     [HttpGet("opml")]
     public async Task<IActionResult> Opml()
@@ -43,7 +44,7 @@ public class SubscriptionController(
             slug,
             BlogCachePartition.RssCategory,
             "rss",
-            (s, settings) => new GetRssStringQuery(s, settings));
+            (s, settings, _) => new GetRssStringQuery(s, settings));
     }
 
     [HttpGet("atom/{slug?}")]
@@ -53,26 +54,28 @@ public class SubscriptionController(
             slug,
             BlogCachePartition.AtomCategory,
             "atom",
-            (s, settings) => new GetAtomStringQuery(s, settings));
+            (s, settings, owner) => new GetAtomStringQuery(s, settings, owner));
     }
 
     private async Task<IActionResult> GetFeedAsync<TQuery>(
         string slug,
         BlogCachePartition categoryPartition,
         string defaultCacheKey,
-        Func<string, BlogSettingsSnapshot, TQuery> queryFactory)
+        Func<string, BlogSettingsSnapshot, OwnerProfile, TQuery> queryFactory)
         where TQuery : IQuery<string>
     {
         var settings = blogConfig.Capture();
+        var owner = defaultCacheKey == "atom"
+            ? await ownerProfiles.ReadProfileAsync(HttpContext.RequestAborted) : null;
         bool hasRoute = !string.IsNullOrWhiteSpace(slug);
         var route = hasRoute ? slug.ToLower().Trim() : null;
 
         return await cache.GetOrCreateAsync(
             hasRoute ? categoryPartition.ToString() : BlogCachePartition.General.ToString(),
-            postCacheInvalidator.GetFeedCacheKey(route ?? defaultCacheKey, settings),
+            postCacheInvalidator.GetFeedCacheKey(route ?? defaultCacheKey, settings, owner),
             async () =>
             {
-                var xml = await queryMediator.QueryAsync(queryFactory(slug, settings));
+                var xml = await queryMediator.QueryAsync(queryFactory(slug, settings, owner));
                 if (string.IsNullOrWhiteSpace(xml))
                 {
                     return (IActionResult)NotFound();

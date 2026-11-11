@@ -2110,4 +2110,7 @@
     <value>アカウントを作成</value>
   </data>
   <data name="Update your password for administrator sign-in." xml:space="preserve"><value>管理者ログイン用のパスワードを更新します。</value></data>
+  <data name="Owner email updated." xml:space="preserve"><value>所有者のメールアドレスを更新しました。</value></data>
+  <data name="This public address is used for feeds, Gravatar and blog notifications." xml:space="preserve"><value>この公開アドレスはフィード、Gravatar、ブログ通知に使用されます。</value></data>
+  <data name="Changing this address signs you out. Sign in again with the new email." xml:space="preserve"><value>変更後はサインアウトされます。新しいメールアドレスで再度サインインしてください。</value></data>
 </root>

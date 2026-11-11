@@ -181,7 +181,7 @@ public partial class ActivityLogHttpTests
         client.DefaultRequestHeaders.Add("X-B1-User", "admin");
         await AddPageToken(client, ct);
         using var response = await client.PatchAsJsonAsync("/api/settings/general",
-            new Dictionary<string, string> { ["OwnerEmail"] = "B3-private@example.invalid" }, ct);
+            new Dictionary<string, string> { ["Description"] = "B3-private-description" }, ct);
         Assert.Equal(HttpStatusCode.NoContent, response.StatusCode);
         var row = Assert.Single(await fixture.Store.ReadLogsAsync(ct));
         using var metadata = JsonDocument.Parse(await client.GetStringAsync($"/api/activitylog/{row.Id}/metadata", ct));

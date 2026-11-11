@@ -6,7 +6,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Moonglade.Auth.Tests;
 
-public class OwnerAccountOperationTests
+public partial class OwnerAccountOperationTests
 {
     [Theory]
     [InlineData(false)]

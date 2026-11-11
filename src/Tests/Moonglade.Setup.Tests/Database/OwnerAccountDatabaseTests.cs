@@ -15,7 +15,7 @@ using OtpNet;
 namespace Moonglade.Setup.Tests.Database;
 
 [Collection("Startup site icon cache")]
-public class OwnerAccountDatabaseTests(DisposableCategoryDatabases databases) : IClassFixture<DisposableCategoryDatabases>
+public partial class OwnerAccountDatabaseTests(DisposableCategoryDatabases databases) : IClassFixture<DisposableCategoryDatabases>
 {
     [DisposableDatabaseTheory]
     [InlineData("PostgreSql")]
@@ -275,7 +275,7 @@ public class OwnerAccountDatabaseTests(DisposableCategoryDatabases databases) : 
         new(db, new LocalAccountTotpService(), Options.Create(new AuthenticationSettings
         {
             Totp = new TotpAuthenticationSettings { Required = required }
-        }), TimeProvider.System);
+        }), TimeProvider.System, Moq.Mock.Of<LiteBus.Events.Abstractions.IEventMediator>());
 
     private static string Code(string secret) => new Totp(Base32Encoding.ToBytes(secret)).ComputeTotp();
 

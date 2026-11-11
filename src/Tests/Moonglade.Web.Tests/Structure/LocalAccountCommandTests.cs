@@ -78,7 +78,7 @@ public class LocalAccountCommandTests
         using var cancellation = new CancellationTokenSource();
         await using var db = new BlogDbContext(new DbContextOptionsBuilder<BlogDbContext>()
             .UseSqlite(store.Db.Database.GetDbConnection()).AddInterceptors(new CancelBeforeSave(cancellation)).Options);
-        var accounts = new OwnerAccountStore(db, store.Totp, store.Options, store.Clock);
+        var accounts = new OwnerAccountStore(db, store.Totp, store.Options, store.Clock, Moq.Mock.Of<LiteBus.Events.Abstractions.IEventMediator>());
 
         await Assert.ThrowsAnyAsync<OperationCanceledException>(() => accounts.ChangePasswordAsync(account.Id, account.Revision,
             LocalAccountPageFixture.Password, "Replacement456!", cancellation.Token));
@@ -99,7 +99,7 @@ public class LocalAccountCommandTests
         using var cancellation = new CancellationTokenSource();
         await using var db = new BlogDbContext(new DbContextOptionsBuilder<BlogDbContext>()
             .UseSqlite(store.Db.Database.GetDbConnection()).AddInterceptors(new CancelAfterSave(cancellation)).Options);
-        var accounts = new OwnerAccountStore(db, store.Totp, store.Options, store.Clock);
+        var accounts = new OwnerAccountStore(db, store.Totp, store.Options, store.Clock, Moq.Mock.Of<LiteBus.Events.Abstractions.IEventMediator>());
         var changed = await accounts.ChangePasswordAsync(account.Id, account.Revision,
             LocalAccountPageFixture.Password, "Replacement456!", cancellation.Token);
 
@@ -115,7 +115,7 @@ public class LocalAccountCommandTests
         var account = await store.InitializeAsync();
         await using var secondDb = new BlogDbContext(new DbContextOptionsBuilder<BlogDbContext>()
             .UseSqlite(store.Db.Database.GetDbConnection()).Options);
-        var second = new OwnerAccountStore(secondDb, store.Totp, store.Options, store.Clock);
+        var second = new OwnerAccountStore(secondDb, store.Totp, store.Options, store.Clock, Moq.Mock.Of<LiteBus.Events.Abstractions.IEventMediator>());
         var captured = await second.ReadAsync(ct);
         var first = await store.Accounts.ChangePasswordAsync(account.Id, account.Revision, LocalAccountPageFixture.Password, "Replacement456!", ct);
         await Assert.ThrowsAsync<DbUpdateConcurrencyException>(() =>

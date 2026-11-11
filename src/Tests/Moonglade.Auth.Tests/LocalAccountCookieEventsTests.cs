@@ -106,6 +106,33 @@ public class LocalAccountCookieEventsTests
         new(store.Accounts, Options.Create(new AuthenticationSettings
         { Totp = new TotpAuthenticationSettings { Required = false } }));
 
+    [Theory]
+    [InlineData(CookieAuthenticationDefaults.AuthenticationScheme)]
+    [InlineData(BlogAuthSchemas.LocalAccountSetup)]
+    [InlineData(BlogAuthSchemas.LocalAccountTwoFactor)]
+    public async Task ChangedEmail_RejectsEveryOldLocalCookie_WhileNoOpRetainsIt(string scheme)
+    {
+        var ct = TestContext.Current.CancellationToken;
+        await using var store = new OwnerAccountTestStore();
+        var before = await store.InitializeAsync(ct);
+        var principal = LocalAccountPrincipal.Create(before, scheme);
+        var auth = new Mock<IAuthenticationService>();
+        await store.Accounts.ChangeLocalEmailAsync(before.Id, before.Revision,
+            OwnerAccountTestStore.Password, before.Email, ct);
+        var retained = CreateContext(principal, scheme, auth);
+        await Events(store).ValidatePrincipal(retained);
+        Assert.Same(principal, retained.Principal);
+        Assert.Empty(auth.Invocations);
+
+        await store.Accounts.ChangeLocalEmailAsync(before.Id, before.Revision,
+            OwnerAccountTestStore.Password, "changed@example.test", ct);
+        var stale = CreateContext(principal, scheme, auth);
+        await Events(store).ValidatePrincipal(stale);
+
+        Assert.Null(stale.Principal);
+        auth.Verify(value => value.SignOutAsync(stale.HttpContext, scheme, null), Times.Once);
+    }
+
     private static CookieValidatePrincipalContext CreateContext(ClaimsPrincipal principal, string scheme, Mock<IAuthenticationService> auth)
     {
         var services = new ServiceCollection().AddSingleton(auth.Object).BuildServiceProvider();

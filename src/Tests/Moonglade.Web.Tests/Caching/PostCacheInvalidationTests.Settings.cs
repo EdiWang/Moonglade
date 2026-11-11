@@ -167,8 +167,7 @@ public partial class PostCacheInvalidationTests
         Assert.DoesNotContain("canonical.example.com", sitemapBefore.ResponseContent);
         await SaveSetting(environment, config.Capture().GeneralSettings with
         {
-            SiteTitle = "Updated blog",
-            OwnerEmail = "changed@example.com"
+            SiteTitle = "Updated blog"
         });
         foreach (var atom in new[] { false, true })
         {
@@ -190,7 +189,7 @@ public partial class PostCacheInvalidationTests
                 var feed = await environment.ReadFeedAsync(atom, category);
                 Assert.Contains("Updated blog", feed);
                 Assert.Contains("https://cdn.example.com/photo.png", feed);
-                if (atom) Assert.Contains("changed@example.com", feed);
+                if (atom) Assert.Contains("owner@example.test", feed);
             }
         var sitemapAfter = Assert.IsType<ContentHttpResult>(await SiteMapMapHandler.Handle(context, config, environment.Cache, environment.Invalidator, readDb));
         Assert.DoesNotContain("canonical.example.com", sitemapAfter.ResponseContent);

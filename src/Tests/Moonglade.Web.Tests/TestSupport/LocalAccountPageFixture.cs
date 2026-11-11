@@ -39,7 +39,7 @@ internal sealed class LocalAccountPageFixture : IAsyncDisposable
         {
             Provider = provider, Totp = new TotpAuthenticationSettings { Required = required }
         });
-        Accounts = new OwnerAccountStore(Db, Totp, Options, Clock);
+        Accounts = new OwnerAccountStore(Db, Totp, Options, Clock, Mock.Of<LiteBus.Events.Abstractions.IEventMediator>());
         Authentication.Setup(value => value.AuthenticateAsync(It.IsAny<HttpContext>(), It.IsAny<string>()))
             .Returns((HttpContext _, string scheme) => Task.FromResult(Tickets.TryGetValue(scheme, out var ticket)
                 ? AuthenticateResult.Success(ticket) : AuthenticateResult.NoResult()));
@@ -82,7 +82,7 @@ internal sealed class LocalAccountPageFixture : IAsyncDisposable
             Microsoft.Extensions.Options.Options.Create(new AuthenticationSettings
             {
                 Totp = new TotpAuthenticationSettings { Required = withTotp }
-            }), Clock);
+            }), Clock, Mock.Of<LiteBus.Events.Abstractions.IEventMediator>());
         var pending = await store.PrepareLocalSetupAsync(Email, Password, ct);
         return await store.CompleteLocalSetupAsync(pending, withTotp ? Code(pending.TotpSecret!) : null, ct);
     }

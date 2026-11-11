@@ -221,6 +221,7 @@ public class SearchPageTests
                 manager.FeatureProviders.Add(new AvatarControllerFeatureProvider());
             });
         builder.Services.AddSingleton<IBlogConfig>(config ?? CreateBlogConfig());
+        builder.Services.AddSingleton<IOwnerProfileReader>(new Moonglade.Web.Tests.TestSupport.TestOwnerProfileReader());
         builder.Services.AddInMemoryCacheAside();
         builder.Services.AddSingleton<ThemeCacheInvalidator>();
         builder.Services.AddSingleton(CreateQueryMediator(scenario).Object);
@@ -249,7 +250,6 @@ public class SearchPageTests
             LogoText = "moonglade",
             Description = "Test blog",
             OwnerName = "Admin",
-            OwnerEmail = "admin@example.com",
             Copyright = "[c] 2026",
             DefaultLanguageCode = "en-us",
             SideBarOption = SideBarOption.Disabled,

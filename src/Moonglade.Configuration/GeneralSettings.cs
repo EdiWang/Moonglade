@@ -27,12 +27,6 @@ public sealed record GeneralSettings : IBlogSettings<GeneralSettings>
     public string OwnerName { get; init; }
 
     [Required]
-    [Display(Name = "Owner email")]
-    [DataType(DataType.EmailAddress)]
-    [MaxLength(64)]
-    public string OwnerEmail { get; init; }
-
-    [Required]
     [Display(Name = "Your description")]
     [DataType(DataType.MultilineText)]
     [MaxLength(256)]
@@ -70,7 +64,6 @@ public sealed record GeneralSettings : IBlogSettings<GeneralSettings>
     public static GeneralSettings DefaultValue => new()
     {
         OwnerName = "Admin",
-        OwnerEmail = "admin@edi.wang",
         SiteTitle = "Moonglade",
         Description = "Moonglade Admin",
         LogoText = "moonglade",
