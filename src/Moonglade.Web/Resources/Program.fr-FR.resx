@@ -1782,6 +1782,12 @@
   <data name="Verify" xml:space="preserve">
     <value>Vérifier</value>
   </data>
+  <data name="Remember this device" xml:space="preserve">
+    <value>Se souvenir de cet appareil</value>
+  </data>
+  <data name="Skip authenticator codes for 30 days. Only use this on a device you trust." xml:space="preserve">
+    <value>Ne plus demander de code d'authentification pendant 30 jours. À utiliser uniquement sur un appareil de confiance.</value>
+  </data>
   <data name="Verify Authenticator" xml:space="preserve">
     <value>Vérifier l'application d'authentification</value>
   </data>

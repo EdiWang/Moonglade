@@ -64,6 +64,17 @@ public static class ServiceCollectionExtensions
                 options.SlidingExpiration = false;
                 options.EventsType = typeof(LocalAccountCookieEvents);
             })
+            .AddCookie(BlogAuthSchemas.LocalAccountRememberedDevice, options =>
+            {
+                options.Cookie.Name = "__Host-Moonglade.LocalAccount.RememberedDevice";
+                options.Cookie.Path = "/";
+                options.Cookie.HttpOnly = true;
+                options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+                options.Cookie.SameSite = SameSiteMode.Lax;
+                options.ExpireTimeSpan = TimeSpan.FromDays(30);
+                options.SlidingExpiration = false;
+                options.EventsType = typeof(LocalAccountCookieEvents);
+            })
             .AddCookie(BlogAuthSchemas.InitialAccountSetup, options =>
             {
                 options.Cookie.Name = ".Moonglade.InitialAccount.Setup";

@@ -1887,6 +1887,12 @@
   <data name="Verify" xml:space="preserve">
     <value>検証</value>
   </data>
+  <data name="Remember this device" xml:space="preserve">
+    <value>このデバイスを記憶する</value>
+  </data>
+  <data name="Skip authenticator codes for 30 days. Only use this on a device you trust." xml:space="preserve">
+    <value>30 日間、認証コードの入力を省略します。信頼できるデバイスでのみ使用してください。</value>
+  </data>
   <data name="Verify Authenticator" xml:space="preserve">
     <value>認証アプリを検証</value>
   </data>

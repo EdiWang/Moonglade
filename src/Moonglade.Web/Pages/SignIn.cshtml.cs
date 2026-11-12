@@ -66,6 +66,12 @@ public class SignInModel(
         var scheme = !authSettings.Value.Totp.Required
             ? CookieAuthenticationDefaults.AuthenticationScheme
             : account.IsTotpEnabled ? BlogAuthSchemas.LocalAccountTwoFactor : BlogAuthSchemas.LocalAccountSetup;
+        if (scheme == BlogAuthSchemas.LocalAccountTwoFactor)
+        {
+            var remembered = await HttpContext.AuthenticateAsync(BlogAuthSchemas.LocalAccountRememberedDevice);
+            if (remembered.Succeeded && LocalAccountPrincipal.Matches(remembered.Principal, account))
+                scheme = CookieAuthenticationDefaults.AuthenticationScheme;
+        }
         await HttpContext.SignInAsync(scheme, LocalAccountPrincipal.Create(account, scheme));
         if (scheme == CookieAuthenticationDefaults.AuthenticationScheme)
             return RedirectToPage("/Admin/Dashboard");

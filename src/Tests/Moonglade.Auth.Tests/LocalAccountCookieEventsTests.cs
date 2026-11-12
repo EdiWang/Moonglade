@@ -91,6 +91,40 @@ public class LocalAccountCookieEventsTests
         { Totp = new TotpAuthenticationSettings { Required = false } }), store.Db);
 
     [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public async Task RememberedDeviceCookie_RequiresAnEnrolledAuthenticatorWithoutGrantingAdmin(bool enrolled)
+    {
+        var ct = TestContext.Current.CancellationToken;
+        await using var store = new OwnerAccountTestStore();
+        var account = await store.InitializeAsync(ct);
+        if (enrolled)
+        {
+            var secret = store.Totp.GenerateSecret();
+            var code = new OtpNet.Totp(OtpNet.Base32Encoding.ToBytes(secret)).ComputeTotp();
+            account = (await store.Accounts.EnrollTotpAsync(account.Id, account.Revision, secret, code, ct))!;
+        }
+        var principal = LocalAccountPrincipal.Create(account, BlogAuthSchemas.LocalAccountRememberedDevice);
+        var auth = new Mock<IAuthenticationService>();
+        var context = CreateContext(principal, BlogAuthSchemas.LocalAccountRememberedDevice, auth);
+
+        await Events(store).ValidatePrincipal(context);
+
+        Assert.False(principal.IsInRole("Administrator"));
+        Assert.False(context.ShouldRenew);
+        if (enrolled)
+        {
+            Assert.Same(principal, context.Principal);
+            Assert.Empty(auth.Invocations);
+        }
+        else
+        {
+            Assert.Null(context.Principal);
+            auth.Verify(value => value.SignOutAsync(context.HttpContext, BlogAuthSchemas.LocalAccountRememberedDevice, null), Times.Once);
+        }
+    }
+
+    [Theory]
     [InlineData(CookieAuthenticationDefaults.AuthenticationScheme)]
     [InlineData(BlogAuthSchemas.LocalAccountSetup)]
     [InlineData(BlogAuthSchemas.LocalAccountTwoFactor)]

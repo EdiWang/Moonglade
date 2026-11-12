@@ -37,6 +37,8 @@ internal sealed class LocalAccountHttpFixture : IAsyncDisposable
     public WebApplication App { get; }
     public HttpClient Client { get; private set; } = null!;
     public string PathBase { get; }
+    public IPAddress RemoteIpAddress { get; set; } = IPAddress.Parse("192.0.2.90");
+    public string UserAgent { get; set; } = "B2-test-client";
     public int BusinessExecutions { get; private set; }
 
     private LocalAccountHttpFixture(WebApplication app, ConfigurationCommandRecorder store, string pathBase)
@@ -48,7 +50,8 @@ internal sealed class LocalAccountHttpFixture : IAsyncDisposable
 
     public static async Task<LocalAccountHttpFixture> CreateAsync(
         bool required = false, string pathBase = "", string environment = "Production",
-        int permits = 100, bool legacyOidcConfiguration = false, HttpMessageHandler? oidcBackchannel = null)
+        int permits = 100, bool legacyOidcConfiguration = false, HttpMessageHandler? oidcBackchannel = null,
+        TimeProvider? timeProvider = null)
     {
         var ct = TestContext.Current.CancellationToken;
         var store = new ConfigurationCommandRecorder();
@@ -91,6 +94,9 @@ internal sealed class LocalAccountHttpFixture : IAsyncDisposable
         builder.Services.AddLocalization(options => options.ResourcesPath = "Resources");
         builder.Services.AddDataProtection().UseEphemeralDataProtectionProvider();
         builder.Services.AddBlogAuthentication(builder.Configuration);
+        if (timeProvider is not null)
+            builder.Services.Configure<CookieAuthenticationOptions>(BlogAuthSchemas.LocalAccountRememberedDevice,
+                options => options.TimeProvider = timeProvider);
         if (oidcBackchannel is not null)
             builder.Services.AddHttpClient("OwnerOidc").ConfigurePrimaryHttpMessageHandler(() => oidcBackchannel);
         builder.Services.AddProblemDetails();
@@ -115,7 +121,7 @@ internal sealed class LocalAccountHttpFixture : IAsyncDisposable
         if (pathBase.Length != 0) app.UsePathBase(pathBase);
         app.Use((context, next) =>
         {
-            context.Connection.RemoteIpAddress = IPAddress.Parse("192.0.2.90");
+            context.Connection.RemoteIpAddress = fixture.RemoteIpAddress;
             context.Response.OnStarting(() =>
             {
                 context.Response.Headers.ContentLanguage = CultureInfo.CurrentUICulture.Name;
@@ -160,7 +166,7 @@ internal sealed class LocalAccountHttpFixture : IAsyncDisposable
     {
         using var request = new HttpRequestMessage(method, new Uri($"{(https ? "https" : "http")}://localhost{PathBase}{path}"))
         { Content = content };
-        request.Headers.UserAgent.ParseAdd("B2-test-client");
+        request.Headers.UserAgent.ParseAdd(UserAgent);
         if (_cookies.Count != 0) request.Headers.Add("Cookie", string.Join("; ", _cookies.Select(pair => $"{pair.Key}={pair.Value}")));
         if (antiforgery is not null) request.Headers.Add("XSRF-TOKEN", antiforgery);
         if (language is not null) request.Headers.AcceptLanguage.ParseAdd(language);

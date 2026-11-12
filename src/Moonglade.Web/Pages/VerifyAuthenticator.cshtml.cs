@@ -20,6 +20,10 @@ public class VerifyAuthenticatorModel(
     [Display(Name = "Authenticator code")]
     public string AuthenticatorCode { get; set; }
 
+    [BindProperty]
+    [Display(Name = "Remember this device")]
+    public bool RememberDevice { get; set; }
+
     public async Task<IActionResult> OnGetAsync() =>
         await CurrentAccountAsync() is null ? RedirectToPage("/SignIn") : Page();
 
@@ -50,6 +54,12 @@ public class VerifyAuthenticatorModel(
         await HttpContext.SignOutAsync(BlogAuthSchemas.LocalAccountTwoFactor);
         await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme,
             LocalAccountPrincipal.Create(verified, CookieAuthenticationDefaults.AuthenticationScheme));
+        if (RememberDevice)
+        {
+            await HttpContext.SignInAsync(BlogAuthSchemas.LocalAccountRememberedDevice,
+                LocalAccountPrincipal.Create(verified, BlogAuthSchemas.LocalAccountRememberedDevice),
+                new AuthenticationProperties { IsPersistent = true, AllowRefresh = false });
+        }
         logger.LogInformation("Local account authentication completed");
         return RedirectToPage("/Admin/Dashboard");
     }

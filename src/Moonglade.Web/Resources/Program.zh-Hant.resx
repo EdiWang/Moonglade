@@ -1887,6 +1887,12 @@
   <data name="Verify" xml:space="preserve">
     <value>驗證</value>
   </data>
+  <data name="Remember this device" xml:space="preserve">
+    <value>記住此裝置</value>
+  </data>
+  <data name="Skip authenticator codes for 30 days. Only use this on a device you trust." xml:space="preserve">
+    <value>30 天內無需輸入驗證碼。請只在信任的裝置上使用。</value>
+  </data>
   <data name="Verify Authenticator" xml:space="preserve">
     <value>確認驗證器</value>
   </data>

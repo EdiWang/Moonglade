@@ -15,6 +15,7 @@ public sealed class LocalAccountCookieEvents(OwnerAccountStore accounts, IOption
         var account = await accounts.ReadAsync(context.HttpContext.RequestAborted);
         var applicationCookie = context.Scheme.Name == CookieAuthenticationDefaults.AuthenticationScheme;
         if (LocalAccountPrincipal.Matches(context.Principal, account)
+            && (context.Scheme.Name != BlogAuthSchemas.LocalAccountRememberedDevice || account.IsTotpEnabled)
             && (!applicationCookie || await IsApplicationSessionValidAsync(context, account)))
         {
             if (applicationCookie && context.Principal.Identity is System.Security.Claims.ClaimsIdentity identity &&

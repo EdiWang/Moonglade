@@ -44,6 +44,12 @@
                 <div asp-validation-summary="All" class="text-danger" role="alert"></div>
                 <partial name="_AuthenticatorCode" />
 
+                <div class="form-check mb-4">
+                    <input asp-for="RememberDevice" class="form-check-input" aria-describedby="remember-device-help" />
+                    <label asp-for="RememberDevice" class="form-check-label">@SharedLocalizer["Remember this device"]</label>
+                    <div id="remember-device-help" class="form-text">@SharedLocalizer["Skip authenticator codes for 30 days. Only use this on a device you trust."]</div>
+                </div>
+
                 <input type="submit" value="@SharedLocalizer["Verify"]" class="btn w-100 btn-accent" />
             </form>
             <p class="text-muted mt-4 mb-0 small">

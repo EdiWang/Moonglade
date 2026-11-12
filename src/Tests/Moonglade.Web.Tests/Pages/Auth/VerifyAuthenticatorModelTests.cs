@@ -34,6 +34,7 @@ public class VerifyAuthenticatorModelTests
         fixture.SetTicket(account, BlogAuthSchemas.LocalAccountTwoFactor);
         var model = CreateModel(fixture);
         model.ModelState.AddModelError(nameof(VerifyAuthenticatorModel.AuthenticatorCode), "Required");
+        model.RememberDevice = true;
 
         var result = await model.OnPostAsync();
 
@@ -50,6 +51,7 @@ public class VerifyAuthenticatorModelTests
         fixture.SetTicket(account, BlogAuthSchemas.LocalAccountTwoFactor);
         var model = CreateModel(fixture);
         model.AuthenticatorCode = "invalid-code";
+        model.RememberDevice = true;
 
         var result = await model.OnPostAsync();
 
