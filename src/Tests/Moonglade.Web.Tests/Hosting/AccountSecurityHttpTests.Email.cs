@@ -6,7 +6,6 @@ using Moonglade.Auth;
 using Moonglade.Web.Tests.TestSupport;
 using System.Net;
 using System.Net.Http.Json;
-using System.Security.Claims;
 using System.Text.Json;
 
 namespace Moonglade.Web.Tests.Hosting;

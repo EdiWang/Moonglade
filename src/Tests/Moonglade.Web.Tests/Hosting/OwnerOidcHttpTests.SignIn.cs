@@ -147,7 +147,8 @@ public partial class OwnerOidcHttpTests
         using var changed = await fixture.SendAsync(HttpMethod.Put, "/api/account/password/local",
             JsonContent.Create(new UpdateLocalAccountPasswordRequest
             {
-                OldPassword = LocalAccountPageFixture.Password, NewPassword = newPassword
+                OldPassword = LocalAccountPageFixture.Password,
+                NewPassword = newPassword
             }), token);
         Assert.Equal(HttpStatusCode.NoContent, changed.StatusCode);
         var refreshed = fixture.ReadTicket(BlogAuthSchemas.Local).Principal;

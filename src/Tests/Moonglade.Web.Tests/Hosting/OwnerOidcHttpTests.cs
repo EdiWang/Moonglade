@@ -291,7 +291,8 @@ public partial class OwnerOidcHttpTests
             Assert.False(string.IsNullOrEmpty(_codeChallenge));
             return QueryHelpers.AddQueryString("/signin-oidc", new Dictionary<string, string?>
             {
-                ["code"] = "synthetic-code", ["state"] = query["state"]
+                ["code"] = "synthetic-code",
+                ["state"] = query["state"]
             });
         }
 
@@ -303,8 +304,10 @@ public partial class OwnerOidcHttpTests
                 case "/.well-known/openid-configuration":
                     return Json(new Dictionary<string, string>
                     {
-                        ["issuer"] = Authority, ["authorization_endpoint"] = Authority + "/authorize",
-                        ["token_endpoint"] = Authority + "/token", ["jwks_uri"] = Authority + "/keys"
+                        ["issuer"] = Authority,
+                        ["authorization_endpoint"] = Authority + "/authorize",
+                        ["token_endpoint"] = Authority + "/token",
+                        ["jwks_uri"] = Authority + "/keys"
                     });
                 case "/keys":
                     var key = _key.ExportParameters(false);

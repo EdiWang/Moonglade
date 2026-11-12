@@ -1,6 +1,6 @@
-﻿using Moonglade.Data.Configurations;
-using Moonglade.Data.Entities;
 using Microsoft.AspNetCore.DataProtection.EntityFrameworkCore;
+using Moonglade.Data.Configurations;
+using Moonglade.Data.Entities;
 
 namespace Moonglade.Data;
 
