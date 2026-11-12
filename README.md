@@ -12,8 +12,6 @@ A public blog and authenticated admin portal provide:
 - **Activity history:** localized administrator history with time, actor, a single activity description, event/date filters, and readable details. Each automatically published article has its own System entry with the captured title, stable ID, and actual publication time. Ordinary setting updates show approved before/after values only when effective values change; unchanged saves produce no activity entry, while updates without displayable values retain a localized explanation. **Clear all** is the only deletion action; public comment submissions are excluded. After clearing, the application attempts to record the administrator, time, and deleted count. A failed activity write is logged without undoing the business operation.
 - **Discovery and interoperability:** RSS, Atom, OPML, OpenSearch, FOAF, sitemap, robots.txt, IndexNow, root-level site ownership verification files, reader-friendly markup, and health checks.
 
-The admin portal supports desktop browsers with a viewport at least 1440 CSS pixels wide.
-
 The interface supports English (`en-US`), Simplified Chinese (`zh-Hans`), Traditional Chinese (`zh-Hant`, using Hong Kong terminology), German (`de-DE`), Japanese (`ja-JP`), and French (`fr-FR`, France). Visitors can choose a display language in the footer; the default language setting controls blog and post metadata for SEO.
 
 ## Repository Layout

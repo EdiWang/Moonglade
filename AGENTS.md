@@ -8,6 +8,7 @@ This file contains repository-wide working rules. The [engineering reference](do
 
 - Inspect `git status --short` before editing and before finishing. Preserve user changes.
 - Read the nearby implementation and tests before changing code. Follow local patterns, keep the diff focused, and avoid unrelated refactors or bulk formatting.
+- The admin portal supports desktop browsers only, with a viewport at least 1440 CSS pixels wide. Design and verify admin pages within that range.
 - Identify affected callers, tests, configuration, resources, documentation, and side effects before editing. Use the reference's [change impact checklist](docs/agent-reference.md#change-impact-checklist) for behavior changes.
 - Ask the user before choosing between interpretations that change requirements, business behavior, architecture, module ownership, or public contracts. Explain the alternatives and their effects; do not silently choose a new project policy.
 - Ask before destructive operations, production-data changes, or actions that change external services unless the user has already explicitly authorized that action. A general implementation request does not authorize deployment or production migration.
