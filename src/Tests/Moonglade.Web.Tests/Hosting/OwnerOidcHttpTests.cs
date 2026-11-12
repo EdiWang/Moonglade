@@ -18,6 +18,7 @@ namespace Moonglade.Web.Tests.Hosting;
 public class OwnerOidcHttpTests
 {
     private const string Path = "/admin/account/oidc";
+    private const string VerifyPath = Path + "/verify";
     private const string Secret = "disposable-oidc-secret";
 
     [Fact]
@@ -123,8 +124,10 @@ public class OwnerOidcHttpTests
         Assert.Null(unbound.SessionRevision);
 
         provider.ExpectedClientSecret = "rotated-disposable-secret";
-        using var rotatedChallenge = await PostAsync(fixture, "Bind", unbound.Revision,
-            ("CurrentPassword", LocalAccountPageFixture.Password));
+        using var verify = await PostAsync(fixture, "Bind", unbound.Revision);
+        var verification = verify.Headers.Location!.OriginalString;
+        Assert.StartsWith(VerifyPath + "?", verification);
+        using var rotatedChallenge = await VerifyAsync(fixture, verification, LocalAccountPageFixture.Password);
         using var rotatedCallback = await fixture.SendAsync(HttpMethod.Get, provider.CallbackFor(rotatedChallenge.Headers.Location!));
         using var rebound = await PostAsync(fixture, "Confirm", unbound.Revision);
         Assert.Equal(HttpStatusCode.Redirect, rebound.StatusCode);
@@ -177,6 +180,41 @@ public class OwnerOidcHttpTests
         Assert.Null((await fixture.Store.Db.OwnerOidc.AsNoTracking().SingleAsync(ct)).Subject);
     }
 
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public async Task SetupDraft_RequiresProofAndCannotBeUsedAfterCancellationOrSessionChange(bool changeSession)
+    {
+        var ct = TestContext.Current.CancellationToken;
+        await using var fixture = await LocalAccountHttpFixture.CreateAsync();
+        var owner = await SignInLocalAsync(fixture);
+        using var start = await PostAsync(fixture, "Save", null,
+            ("DisplayName", "Synthetic provider"), ("Authority", SyntheticProvider.Authority), ("ClientId", "site"),
+            ("ClientSecret", Secret));
+        var verification = start.Headers.Location!.OriginalString;
+        Assert.StartsWith(VerifyPath + "?", verification);
+        Assert.False(await fixture.Store.Db.OwnerOidc.AnyAsync(ct));
+
+        using var rejected = await VerifyAsync(fixture, verification, "Incorrect123!");
+        Assert.Equal(HttpStatusCode.OK, rejected.StatusCode);
+        Assert.False(await fixture.Store.Db.OwnerOidc.AnyAsync(ct));
+        var token = await fixture.FormTokenAsync(verification);
+        if (changeSession)
+        {
+            fixture.SetTicket(LocalAccountPrincipal.Create(owner, BlogAuthSchemas.Local), BlogAuthSchemas.Local);
+            token = await fixture.FormTokenAsync(Path);
+        }
+        else
+        {
+            using var cancel = await VerifyAsync(fixture, verification, string.Empty, handler: "Cancel");
+            Assert.Equal(Path, cancel.Headers.Location!.OriginalString);
+        }
+
+        using var stale = await VerifyAsync(fixture, verification, LocalAccountPageFixture.Password, token: token);
+        Assert.StartsWith(Path + "?expired=", stale.Headers.Location!.OriginalString);
+        Assert.False(await fixture.Store.Db.OwnerOidc.AnyAsync(ct));
+    }
+
     private static async Task<OwnerAccountSnapshot> SignInLocalAsync(LocalAccountHttpFixture fixture)
     {
         var ct = TestContext.Current.CancellationToken;
@@ -193,7 +231,29 @@ public class OwnerOidcHttpTests
             ("DisplayName", "Synthetic provider"), ("Authority", SyntheticProvider.Authority), ("ClientId", "site"),
             ("ClientSecret", secret), ("CurrentPassword", LocalAccountPageFixture.Password));
         Assert.Equal(HttpStatusCode.Redirect, response.StatusCode);
+        if (revision is null)
+        {
+            var verification = response.Headers.Location!.OriginalString;
+            Assert.StartsWith(VerifyPath + "?", verification);
+            Assert.False(await fixture.Store.Db.OwnerOidc.AnyAsync(TestContext.Current.CancellationToken));
+            using var verified = await VerifyAsync(fixture, verification, LocalAccountPageFixture.Password);
+            Assert.Equal(Path, verified.Headers.Location!.OriginalString);
+        }
         return (await fixture.Store.Db.OwnerOidc.AsNoTracking().SingleAsync(TestContext.Current.CancellationToken)).Revision;
+    }
+
+    private static async Task<HttpResponseMessage> VerifyAsync(LocalAccountHttpFixture fixture, string verification,
+        string password, string? handler = null, string? token = null)
+    {
+        token ??= await fixture.FormTokenAsync(verification);
+        var query = QueryHelpers.ParseQuery(new Uri("https://localhost" + verification).Query);
+        using var content = new FormUrlEncodedContent(new Dictionary<string, string>
+        {
+            ["Draft"] = query.GetValueOrDefault("draft").ToString(),
+            ["Revision"] = query.GetValueOrDefault("revision").ToString(),
+            ["CurrentPassword"] = password
+        });
+        return await fixture.SendAsync(HttpMethod.Post, VerifyPath + (handler is null ? "" : "?handler=" + handler), content, token);
     }
 
     private static Task<HttpResponseMessage> ManageAsync(

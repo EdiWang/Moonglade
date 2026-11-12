@@ -2143,4 +2143,6 @@
   <data name="Enter a valid name, public HTTPS authority, client ID and client secret." xml:space="preserve"><value>请输入有效的名称、公网 HTTPS Authority、客户端 ID 和客户端密钥。</value></data>
   <data name="The provider returned an invalid external account." xml:space="preserve"><value>提供商返回了无效的外部账号。</value></data>
   <data name="Unbind the external account before changing the authority or client ID." xml:space="preserve"><value>更改 Authority 或客户端 ID 前，请先解绑外部账号。</value></data>
+  <data name="Step {0} of {1}" xml:space="preserve"><value>第 {0} 步，共 {1} 步</value></data>
+  <data name="Verify your identity" xml:space="preserve"><value>验证身份</value></data>
 </root>

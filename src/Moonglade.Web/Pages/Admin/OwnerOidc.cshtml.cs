@@ -3,6 +3,7 @@
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.RateLimiting;
+using Microsoft.AspNetCore.Routing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Options;
@@ -16,7 +17,7 @@ namespace Moonglade.Web.Pages.Admin;
 
 [EnableRateLimiting(LocalAccountRateLimitPolicy.PolicyName)]
 [ResponseCache(Location = ResponseCacheLocation.None, NoStore = true)]
-public sealed class OwnerOidcModel(OwnerOidcStore store, OwnerAccountStore accounts, OidcBindingFlow flow,
+public sealed class OwnerOidcModel(OwnerOidcStore store, OwnerAccountStore accounts, OidcBindingFlow flow, OidcSetupDrafts drafts,
     IOptions<AuthenticationSettings> authentication, IStringLocalizer<Program> localizer, ILogger<OwnerOidcModel> logger) : PageModel
 {
     [BindProperty] public Guid? Revision { get; set; }
@@ -38,15 +39,31 @@ public sealed class OwnerOidcModel(OwnerOidcStore store, OwnerAccountStore accou
     private Guid OwnerId => Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
     private CancellationToken Ct => HttpContext.RequestAborted;
 
-    public async Task OnGetAsync(bool failed = false)
+    public async Task OnGetAsync(bool failed = false, bool expired = false)
     {
         Failed = failed;
+        if (expired) ModelState.AddModelError(string.Empty, localizer["The binding request expired. Try again."]);
         await LoadAsync();
     }
 
     public async Task<IActionResult> OnPostSaveAsync()
     {
         if (!ModelState.IsValid) return await RejectAsync("Enter valid provider settings.");
+        if (Revision is null)
+        {
+            if (await store.ReadAsync(Ct) is not null)
+                return await RejectAsync("The provider settings changed. Reload the page and try again.");
+            try
+            {
+                var input = OidcProviderInput.Validate(DisplayName, Authority, ClientId, ClientSecret, requireSecret: true);
+                var draft = drafts.Save(User, input);
+                return RedirectToPage("/Admin/OwnerOidcVerify", new RouteValueDictionary { ["draft"] = draft });
+            }
+            catch (ValidationException ex)
+            {
+                return await RejectAsync(ex.Message, preserveInput: true);
+            }
+        }
         if (!await VerifyProofAsync()) return await RejectAsync("Verify your local password and applicable authenticator code.");
         try
         {
@@ -79,18 +96,9 @@ public sealed class OwnerOidcModel(OwnerOidcStore store, OwnerAccountStore accou
             return await RejectAsync("The provider settings changed. Reload the page and try again.");
 
         var proof = flow.ReadSavedProof(HttpContext);
-        if (!flow.Matches(User, settings.Revision, proof))
-        {
-            if (!await VerifyProofAsync()) return await RejectAsync("Verify your local password and applicable authenticator code.");
-            proof = flow.CreateProof(User, settings.Revision);
-        }
-
-        if (proof is null) return await RejectAsync("The binding request expired. Try again.");
-        flow.ClearProof(HttpContext);
-        await HttpContext.SignOutAsync(OidcBindingFlow.PendingScheme);
-        var properties = new AuthenticationProperties { RedirectUri = Url.Page("/Admin/OwnerOidc") };
-        properties.Items[OidcBindingFlow.ProofKey] = proof;
-        return Challenge(properties, OidcBindingFlow.BindingScheme);
+        return proof is not null && flow.Matches(User, settings.Revision, proof)
+            ? await flow.StartBindingAsync(HttpContext, proof)
+            : RedirectToPage("/Admin/OwnerOidcVerify", new RouteValueDictionary { ["revision"] = settings.Revision });
     }
 
     public async Task<IActionResult> OnPostConfirmAsync()
@@ -155,12 +163,14 @@ public sealed class OwnerOidcModel(OwnerOidcStore store, OwnerAccountStore accou
 
     private Task<bool> VerifyProofAsync() => accounts.VerifyManagementProofAsync(User, CurrentPassword, AuthenticatorCode, Ct);
 
-    private async Task<IActionResult> RejectAsync(string error)
+    private async Task<IActionResult> RejectAsync(string error, bool preserveInput = false)
     {
+        var input = (DisplayName, Authority, ClientId);
         ModelState.Clear();
         ModelState.AddModelError(string.Empty, localizer[error]);
         ClientSecret = CurrentPassword = AuthenticatorCode = null;
         await LoadAsync();
+        if (preserveInput && Settings is null) (DisplayName, Authority, ClientId) = input;
         return Page();
     }
 

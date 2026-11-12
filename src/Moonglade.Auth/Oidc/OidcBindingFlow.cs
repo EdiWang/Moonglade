@@ -1,5 +1,6 @@
 #nullable enable
 
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Http;
 using System.Security.Claims;
@@ -57,6 +58,15 @@ public sealed class OidcBindingFlow(IDataProtectionProvider protection)
 
     public void ClearProof(HttpContext context) =>
         context.Response.Cookies.Delete(ProofCookie, CookieOptions(context));
+
+    public async Task<ChallengeResult> StartBindingAsync(HttpContext context, string proof)
+    {
+        ClearProof(context);
+        await context.SignOutAsync(PendingScheme);
+        var properties = new AuthenticationProperties();
+        properties.Items[ProofKey] = proof;
+        return new ChallengeResult(BindingScheme, properties);
+    }
 
     private static CookieOptions CookieOptions(HttpContext context) => new()
     {

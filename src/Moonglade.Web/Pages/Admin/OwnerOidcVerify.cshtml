@@ -1,0 +1,39 @@
+@page "/admin/account/oidc/verify"
+@model Moonglade.Web.Pages.Admin.OwnerOidcVerifyModel
+@{
+    ViewBag.Title = SharedLocalizer["Verify your identity"];
+    ViewBag.HideAdminSidebar = true;
+}
+
+<main class="admin-settings-page w-100 mx-auto flex-grow-1 overflow-auto p-3 p-md-4">
+    <section class="admin-panel col-12 col-md-8 col-lg-6 mx-auto p-4" aria-labelledby="oidc-verify-title">
+        @if (Model.Draft is not null)
+        {
+            <p class="small text-body-secondary mb-1">@SharedLocalizer["Step {0} of {1}", 2, 3]</p>
+        }
+        <h1 id="oidc-verify-title" class="h5 mb-3">@SharedLocalizer["Verify your identity"]</h1>
+        <form method="post" asp-page="/Admin/OwnerOidcVerify">
+            <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
+            <input asp-for="Draft" type="hidden" />
+            <input asp-for="Revision" type="hidden" />
+            <div class="mb-3">
+                <label for="CurrentPassword" class="form-label">@SharedLocalizer["Current password"]</label>
+                <input id="CurrentPassword" name="CurrentPassword" type="password" class="form-control"
+                       autocomplete="current-password" required autofocus />
+            </div>
+            @if (Model.RequireTotp)
+            {
+                <div class="mb-3">
+                    <label for="AuthenticatorCode" class="form-label">@SharedLocalizer["Authenticator code"]</label>
+                    <input id="AuthenticatorCode" name="AuthenticatorCode" class="form-control" autocomplete="one-time-code"
+                           inputmode="numeric" pattern="[0-9]{6}" maxlength="6" required />
+                </div>
+            }
+            <div class="d-flex flex-wrap gap-2">
+                <button type="submit" class="btn btn-outline-accent">@SharedLocalizer["Continue"]</button>
+                <button asp-page-handler="Cancel" formnovalidate type="submit"
+                        class="btn btn-outline-secondary">@SharedLocalizer["Cancel"]</button>
+            </div>
+        </form>
+    </section>
+</main>

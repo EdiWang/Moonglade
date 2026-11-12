@@ -3,9 +3,11 @@
 @{
     ViewBag.Title = SharedLocalizer["Third-party sign-in"];
     ViewBag.AdminBackUrl = Url.Page("/Admin/LocalAccount");
+    var inWizard = Model.Settings is null || Model.CanReuseProof || Model.Pending is not null;
+    ViewBag.HideAdminSidebar = inWizard;
 }
 
-<div class="admin-settings-page">
+<div class="admin-settings-page @(inWizard ? "w-100 mx-auto flex-grow-1 overflow-auto p-3 p-md-4" : "")">
     <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
     @if (Model.Failed)
     {
@@ -27,26 +29,37 @@
     }
     else if (Model.CanReuseProof)
     {
+        <form method="post" asp-page-handler="Bind" class="admin-panel p-4">
+            <input asp-for="Revision" type="hidden" id="BindRevision" />
+            <p class="small text-body-secondary mb-1">@SharedLocalizer["Step {0} of {1}", 3, 3]</p>
+            <h1 class="h5 mb-2">@SharedLocalizer["Bind account"]</h1>
+            <p class="text-break">@Model.Settings?.DisplayName</p>
+            <div class="d-flex flex-wrap gap-2">
+                <button type="submit" class="btn btn-outline-accent">@SharedLocalizer["Bind account"]</button>
+                <button asp-page-handler="Cancel" type="submit" class="btn btn-outline-secondary">@SharedLocalizer["Cancel"]</button>
+            </div>
+        </form>
+    }
+    else
+    {
+    @if (Model.Settings is { Enabled: true, AccountLabel: null })
+    {
         <form method="post" asp-page-handler="Bind" class="admin-panel p-4 mb-3">
             <input asp-for="Revision" type="hidden" id="BindRevision" />
+            <p class="text-body-secondary">@SharedLocalizer["Waiting for account binding"]</p>
             <button type="submit" class="btn btn-outline-accent">@SharedLocalizer["Bind account"]</button>
         </form>
     }
-
     <form method="post" asp-page-handler="Save" class="admin-panel p-4">
         <input asp-for="Revision" type="hidden" />
-        @if (Model.Settings is { } settings)
+        @if (Model.Settings is { } settings && (!settings.Enabled || settings.AccountLabel is not null))
         {
             <p class="text-body-secondary">
                 @if (!settings.Enabled)
                 {
                     @SharedLocalizer["Disabled"]
                 }
-                else if (settings.AccountLabel is null)
-                {
-                    @SharedLocalizer["Waiting for account binding"]
-                }
-                else
+                else if (settings.AccountLabel is not null)
                 {
                     @SharedLocalizer["Bound account"]
                 }
@@ -55,6 +68,11 @@
                     <span class="fw-semibold ms-2 text-break">@label</span>
                 }
             </p>
+        }
+        else if (Model.Settings is null)
+        {
+            <p class="small text-body-secondary mb-1">@SharedLocalizer["Step {0} of {1}", 1, 3]</p>
+            <h1 class="h5 mb-3">@SharedLocalizer["Third-party sign-in"]</h1>
         }
         <div class="mb-3">
             <label asp-for="DisplayName" class="form-label">@SharedLocalizer["Provider display name"]</label>
@@ -81,26 +99,29 @@
             <label for="OidcCallbackUrl" class="form-label">@SharedLocalizer["Redirect URI"]</label>
             <input id="OidcCallbackUrl" class="form-control" value="@Model.CallbackUrl" readonly />
         </div>
-        <div class="mb-3">
-            <label for="CurrentPassword" class="form-label">@SharedLocalizer["Current password"]</label>
-            <input id="CurrentPassword" name="CurrentPassword" type="password" class="form-control" autocomplete="current-password" required />
-        </div>
-        @if (Model.RequireTotp)
+        @if (Model.Settings is not null)
         {
             <div class="mb-3">
-                <label for="AuthenticatorCode" class="form-label">@SharedLocalizer["Authenticator code"]</label>
-                <input id="AuthenticatorCode" name="AuthenticatorCode" class="form-control" autocomplete="one-time-code"
-                       inputmode="numeric" pattern="[0-9]{6}" maxlength="6" required />
+                <label for="CurrentPassword" class="form-label">@SharedLocalizer["Current password"]</label>
+                <input id="CurrentPassword" name="CurrentPassword" type="password" class="form-control" autocomplete="current-password" required />
             </div>
+            @if (Model.RequireTotp)
+            {
+                <div class="mb-3">
+                    <label for="AuthenticatorCode" class="form-label">@SharedLocalizer["Authenticator code"]</label>
+                    <input id="AuthenticatorCode" name="AuthenticatorCode" class="form-control" autocomplete="one-time-code"
+                           inputmode="numeric" pattern="[0-9]{6}" maxlength="6" required />
+                </div>
+            }
         }
         <div class="d-flex flex-wrap gap-2">
-            <button type="submit" class="btn btn-outline-accent">@SharedLocalizer["Save"]</button>
+            <button type="submit" class="btn btn-outline-accent">@SharedLocalizer[Model.Settings is null ? "Continue" : "Save"]</button>
+            @if (Model.Settings is null)
+            {
+                <a asp-page="/Admin/LocalAccount" class="btn btn-outline-secondary">@SharedLocalizer["Cancel"]</a>
+            }
             @if (Model.Settings is { } current)
             {
-                @if (current.Enabled && current.AccountLabel is null && !Model.CanReuseProof && Model.Pending is null)
-                {
-                    <button asp-page-handler="Bind" formnovalidate type="submit" class="btn btn-outline-accent">@SharedLocalizer["Bind account"]</button>
-                }
                 @if (current.AccountLabel is not null)
                 {
                     <button asp-page-handler="Manage" formnovalidate type="submit" name="operation" value="unbind"
@@ -123,4 +144,5 @@
             </details>
         }
     </form>
+    }
 </div>

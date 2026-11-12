@@ -2143,4 +2143,6 @@
   <data name="Enter a valid name, public HTTPS authority, client ID and client secret." xml:space="preserve"><value>有効な名前、公開 HTTPS Authority、クライアント ID、クライアント シークレットを入力してください。</value></data>
   <data name="The provider returned an invalid external account." xml:space="preserve"><value>プロバイダーから無効な外部アカウントが返されました。</value></data>
   <data name="Unbind the external account before changing the authority or client ID." xml:space="preserve"><value>Authority またはクライアント ID を変更する前に、外部アカウントの連携を解除してください。</value></data>
+  <data name="Step {0} of {1}" xml:space="preserve"><value>ステップ {0} / {1}</value></data>
+  <data name="Verify your identity" xml:space="preserve"><value>本人確認</value></data>
 </root>

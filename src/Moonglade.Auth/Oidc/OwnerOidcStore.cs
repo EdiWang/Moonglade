@@ -11,6 +11,27 @@ namespace Moonglade.Auth.Oidc;
 public sealed record OwnerOidcSettings(Guid Revision, string DisplayName, string Authority, string ClientId,
     bool Enabled, string? AccountLabel);
 
+public sealed record OidcProviderInput(string DisplayName, string Authority, string ClientId, string? ClientSecret)
+{
+    public static OidcProviderInput Validate(string? displayName, string? authority, string? clientId, string? clientSecret,
+        bool requireSecret)
+    {
+        displayName = displayName?.Trim();
+        authority = authority?.Trim().TrimEnd('/');
+        clientId = clientId?.Trim();
+        if (string.IsNullOrWhiteSpace(displayName) || displayName.Length > 100 ||
+            string.IsNullOrWhiteSpace(clientId) || clientId.Length > 500 ||
+            authority is not { Length: <= 500 } || !OidcPublicBackchannel.IsHttpsUrl(authority) ||
+            clientSecret is { Length: > 4000 })
+            throw new ValidationException("Enter a valid name, public HTTPS authority, client ID and client secret.");
+
+        if (requireSecret && string.IsNullOrWhiteSpace(clientSecret))
+            throw new ValidationException("Enter a client secret for this provider.");
+
+        return new(displayName, authority, clientId, clientSecret);
+    }
+}
+
 internal sealed record OwnerOidcCredentials(Guid OwnerId, Guid Revision, string Authority, string ClientId, string ClientSecret);
 
 public sealed class OwnerOidcStore
@@ -39,25 +60,17 @@ public sealed class OwnerOidcStore
     public async Task<Guid> SaveAsync(Guid ownerId, Guid? expectedRevision, string? displayName,
         string? authority, string? clientId, string? clientSecret, CancellationToken ct)
     {
-        displayName = displayName?.Trim();
-        authority = authority?.Trim().TrimEnd('/');
-        clientId = clientId?.Trim();
-        if (string.IsNullOrWhiteSpace(displayName) || displayName.Length > 100 ||
-            string.IsNullOrWhiteSpace(clientId) || clientId.Length > 500 ||
-            authority is not { Length: <= 500 } || !OidcPublicBackchannel.IsHttpsUrl(authority) ||
-            clientSecret is { Length: > 4000 })
-            throw new ValidationException("Enter a valid name, public HTTPS authority, client ID and client secret.");
-
+        var input = OidcProviderInput.Validate(displayName, authority, clientId, clientSecret, expectedRevision is null);
         var row = await LoadAsync(ownerId, expectedRevision, ct);
-        var providerChanged = row is not null && (row.Authority != authority || row.ClientId != clientId);
+        var providerChanged = row is not null && (row.Authority != input.Authority || row.ClientId != input.ClientId);
         if (providerChanged && row!.Subject is not null)
             throw new ValidationException("Unbind the external account before changing the authority or client ID.");
 
-        if ((row is null || providerChanged) && string.IsNullOrWhiteSpace(clientSecret))
+        if (providerChanged && string.IsNullOrWhiteSpace(input.ClientSecret))
             throw new ValidationException("Enter a client secret for this provider.");
 
-        var protectedSecret = !string.IsNullOrWhiteSpace(clientSecret)
-            ? _secrets.Protector.Protect(clientSecret)
+        var protectedSecret = !string.IsNullOrWhiteSpace(input.ClientSecret)
+            ? _secrets.Protector.Protect(input.ClientSecret)
             : row!.ProtectedSecret;
 
         if (row is null)
@@ -65,9 +78,9 @@ public sealed class OwnerOidcStore
             row = new OwnerOidcEntity
             {
                 OwnerId = ownerId,
-                DisplayName = displayName,
-                Authority = authority,
-                ClientId = clientId,
+                DisplayName = input.DisplayName,
+                Authority = input.Authority,
+                ClientId = input.ClientId,
                 ProtectedSecret = protectedSecret,
                 Enabled = true
             };
@@ -75,9 +88,9 @@ public sealed class OwnerOidcStore
         }
         else
         {
-            row.DisplayName = displayName;
-            row.Authority = authority;
-            row.ClientId = clientId;
+            row.DisplayName = input.DisplayName;
+            row.Authority = input.Authority;
+            row.ClientId = input.ClientId;
             row.ProtectedSecret = protectedSecret;
         }
 

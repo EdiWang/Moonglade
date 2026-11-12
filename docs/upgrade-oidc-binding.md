@@ -10,7 +10,7 @@ OIDC settings and the external account binding belong to the initialized local o
 
 ## Configure and bind
 
-Register a confidential web client with the provider for OpenID Connect authorization code flow with PKCE. In **Account Settings > Third-party sign-in**, copy the displayed redirect URI to the provider's registration. Set the display name, public HTTPS authority, client ID and secret, then save after verifying the local password and applicable authenticator code.
+Register a confidential web client with the provider for OpenID Connect authorization code flow with PKCE. In **Account Settings > Third-party sign-in**, copy the displayed redirect URI to the provider's registration. Enter the display name, public HTTPS authority, client ID and secret, then select **Continue**. The next page verifies the local password and applicable authenticator code before saving. The draft belongs to the current owner session and expires after ten minutes or when the application instance restarts.
 
 Select **Bind account** and authenticate with the provider. Review the returned account before confirming. The binding retains the verified issuer and subject. When saving and binding in one short-lived flow, the original password and authenticator proof carries forward. Disable retains the saved configuration and binding. Delete removes both after confirmation. Leave the client secret blank to keep the saved value when editing a configuration. Unbind before changing the authority or client ID.
 

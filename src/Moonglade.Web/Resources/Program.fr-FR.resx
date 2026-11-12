@@ -2192,4 +2192,6 @@
   <data name="Enter a valid name, public HTTPS authority, client ID and client secret." xml:space="preserve"><value>Saisissez un nom valide, une autorité HTTPS publique, un ID client et un secret client.</value></data>
   <data name="The provider returned an invalid external account." xml:space="preserve"><value>Le fournisseur a renvoyé un compte externe non valide.</value></data>
   <data name="Unbind the external account before changing the authority or client ID." xml:space="preserve"><value>Dissociez le compte externe avant de modifier l’autorité ou l’ID client.</value></data>
+  <data name="Step {0} of {1}" xml:space="preserve"><value>Étape {0} sur {1}</value></data>
+  <data name="Verify your identity" xml:space="preserve"><value>Vérifier votre identité</value></data>
 </root>

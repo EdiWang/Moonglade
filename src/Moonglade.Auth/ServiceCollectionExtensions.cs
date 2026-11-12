@@ -22,6 +22,8 @@ public static class ServiceCollectionExtensions
         services.AddSingleton<ILocalAccountTotpService, LocalAccountTotpService>();
         services.AddSingleton<OidcSecretProtection>();
         services.AddSingleton<OidcBindingFlow>();
+        services.AddMemoryCache();
+        services.AddSingleton<OidcSetupDrafts>();
         services.AddScoped(sp => new OwnerOidcStore(sp.GetRequiredService<BlogDbContext>(),
             sp.GetRequiredService<OidcSecretProtection>()));
         services.AddHttpClient(OwnerOidcBindingHandler.BackchannelClient, client => client.Timeout = TimeSpan.FromSeconds(20))
