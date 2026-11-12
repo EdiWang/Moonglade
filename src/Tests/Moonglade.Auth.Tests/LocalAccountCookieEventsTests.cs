@@ -86,22 +86,6 @@ public class LocalAccountCookieEventsTests
         auth.Verify(value => value.SignOutAsync(context.HttpContext, CookieAuthenticationDefaults.AuthenticationScheme, null), Times.Once);
     }
 
-    [Fact]
-    public async Task OpenIdConnectCookie_DoesNotRequireLocalAccountClaims()
-    {
-        await using var store = new OwnerAccountTestStore();
-        var principal = new ClaimsPrincipal(new ClaimsIdentity([new Claim("sub", "exact-subject")], BlogAuthSchemas.OpenIdConnect));
-        var auth = new Mock<IAuthenticationService>();
-        var context = CreateContext(principal, CookieAuthenticationDefaults.AuthenticationScheme, auth);
-        var events = new LocalAccountCookieEvents(store.Accounts,
-            Options.Create(new AuthenticationSettings { Provider = AuthenticationProvider.OpenIdConnect }));
-
-        await events.ValidatePrincipal(context);
-
-        Assert.Same(principal, context.Principal);
-        Assert.Empty(auth.Invocations);
-    }
-
     private static LocalAccountCookieEvents Events(OwnerAccountTestStore store) =>
         new(store.Accounts, Options.Create(new AuthenticationSettings
         { Totp = new TotpAuthenticationSettings { Required = false } }));

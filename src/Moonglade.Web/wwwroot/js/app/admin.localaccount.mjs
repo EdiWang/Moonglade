@@ -36,7 +36,6 @@ Alpine.data('accountManager', () => ({
     savingEmail: false,
     savingProfile: false,
     savingPassword: false,
-    localAuth: false,
     formData: {
         oldPassword: '',
         newPassword: '',
@@ -47,14 +46,11 @@ Alpine.data('accountManager', () => ({
 
     async init() {
         const settings = document.getElementById('account-settings');
-        this.localAuth = settings.dataset.localAuth === 'true';
         this.emailUrl = settings.dataset.emailUrl;
         this.signInUrl = settings.dataset.signinUrl;
         this.emailModal = new bootstrap.Modal('#ownerEmailModal');
-        if (this.localAuth) {
-            this.resetPasswordModal = new bootstrap.Modal('#resetPasswordModal');
-            this.resetAuthenticatorModal = new bootstrap.Modal('#resetAuthenticatorModal');
-        }
+        this.resetPasswordModal = new bootstrap.Modal('#resetPasswordModal');
+        this.resetAuthenticatorModal = new bootstrap.Modal('#resetAuthenticatorModal');
         await this.loadEmail();
     },
 
@@ -97,11 +93,11 @@ Alpine.data('accountManager', () => ({
             await fetch2(this.emailUrl, 'PUT', {
                 Email: this.formData.email,
                 Revision: this.revision,
-                CurrentPassword: this.localAuth ? this.formData.emailPassword : null
+                CurrentPassword: this.formData.emailPassword
             });
             this.formData.emailPassword = '';
             this.emailModal.hide();
-            if (this.localAuth && changed) {
+            if (changed) {
                 window.location.href = this.signInUrl;
                 return;
             }

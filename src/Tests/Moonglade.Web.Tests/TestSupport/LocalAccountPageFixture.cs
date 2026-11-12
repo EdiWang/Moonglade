@@ -30,14 +30,13 @@ internal sealed class LocalAccountPageFixture : IAsyncDisposable
     public List<AuthenticationTicket> SignIns { get; } = [];
     public TestClock Clock { get; } = new();
 
-    public LocalAccountPageFixture(bool required = true, AuthenticationProvider provider = AuthenticationProvider.Local)
+    public LocalAccountPageFixture(bool required = true)
     {
         _connection.Open();
         Db = new BlogDbContext(new DbContextOptionsBuilder<BlogDbContext>().UseSqlite(_connection).Options);
         Db.Database.EnsureCreated();
         Options = Microsoft.Extensions.Options.Options.Create(new AuthenticationSettings
         {
-            Provider = provider,
             Totp = new TotpAuthenticationSettings { Required = required }
         });
         Accounts = new OwnerAccountStore(Db, Totp, Options, Clock, Mock.Of<LiteBus.Events.Abstractions.IEventMediator>());

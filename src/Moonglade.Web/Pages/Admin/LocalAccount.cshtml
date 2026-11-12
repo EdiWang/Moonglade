@@ -1,14 +1,12 @@
 ﻿@page "/admin/account"
 @inject Moonglade.Auth.IOwnerProfileReader OwnerProfiles
 @inject Moonglade.Auth.OwnerAvatarStore OwnerAvatars
-@inject IOptions<Moonglade.Auth.AuthenticationSettings> AuthOptions
 @{
     var presentation = await OwnerProfiles.ReadPresentationAsync(HttpContext.RequestAborted);
     var useGravatar = await OwnerAvatars.UsesGravatarAsync(HttpContext.RequestAborted);
     var avatarUrl = Url.Action("Avatar", "OwnerAvatar");
     ViewBag.Title = SharedLocalizer["Account"];
     ViewBag.XData = "accountManager";
-    var local = AuthOptions.Value.Provider == Moonglade.Auth.AuthenticationProvider.Local;
 }
 
 @Html.AntiForgeryToken()
@@ -26,7 +24,7 @@
      data-email-updated="@SharedLocalizer["Owner email updated."]">
 </div>
 
-<div id="account-settings" class="admin-settings-page" data-local-auth="@local.ToString().ToLowerInvariant()"
+<div id="account-settings" class="admin-settings-page"
      data-avatar-upload-url="@Url.Content("~/api/account/avatar")"
      data-email-url="@Url.Content("~/api/account/email")" data-signin-url="@Url.Page("/SignIn")">
     <div class="admin-settings-group overflow-hidden">
@@ -83,8 +81,6 @@
                     x-on:click="openEmailModal()">@SharedLocalizer["Change"]</button>
         </div>
     </div>
-    @if (local)
-    {
     <div class="settings-entry row align-items-center">
         <div class="col-auto">
             <i class="bi-key settings-entry-icon" aria-hidden="true"></i>
@@ -115,7 +111,6 @@
                     x-on:click="openResetAuthenticatorModal()">@SharedLocalizer["Reset Authenticator"]</button>
         </div>
     </div>
-    }
 </div>
 
 <div class="modal fade" id="ownerProfileModal" tabindex="-1" aria-labelledby="ownerProfileModalLabel" aria-hidden="true">
@@ -162,15 +157,12 @@
                         <input class="form-control" type="email" id="OwnerEmail" x-model="formData.email"
                                autocomplete="email" maxlength="254" required />
                     </div>
-                    @if (local)
-                    {
-                        <p class="form-text">@SharedLocalizer["Changing this address signs you out. Sign in again with the new email."]</p>
-                        <div class="mb-3">
-                            <label for="OwnerEmailPassword">@SharedLocalizer["Current password"]</label>
-                            <input class="form-control" type="password" id="OwnerEmailPassword"
-                                   x-model="formData.emailPassword" autocomplete="current-password" required />
-                        </div>
-                    }
+                    <p class="form-text">@SharedLocalizer["Changing this address signs you out. Sign in again with the new email."]</p>
+                    <div class="mb-3">
+                        <label for="OwnerEmailPassword">@SharedLocalizer["Current password"]</label>
+                        <input class="form-control" type="password" id="OwnerEmailPassword"
+                               x-model="formData.emailPassword" autocomplete="current-password" required />
+                    </div>
                 </div>
                 <div class="modal-footer">
                     <button type="submit" class="btn btn-outline-accent" x-bind:disabled="savingEmail || !emailLoaded">@SharedLocalizer["Submit"]</button>
@@ -181,8 +173,6 @@
     </div>
 </div>
 
-@if (local)
-{
 <div class="modal fade" id="resetAuthenticatorModal" tabindex="-1" role="dialog" aria-labelledby="resetAuthenticatorModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
@@ -262,4 +252,3 @@
         </div>
     </div>
 </div>
-}

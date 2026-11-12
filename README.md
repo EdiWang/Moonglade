@@ -104,9 +104,9 @@ With PowerShell, use the startup script from the repository root instead:
 
 The script requires the .NET 10 SDK and a configured, running database (see [Database Setup](#database-setup)). It restores dependencies, builds, and runs the web project with the `Moonglade.Web` launch profile in `Development`. It does not start Docker or change local configuration. Stop the application with `Ctrl+C`.
 
-Open `https://localhost:10210`. With Local authentication, an installation without an initialized account redirects to `/auth/setup-account`. Create the owner account using an email and password; there is no shipped administrator or separate username. By default, scan the authenticator QR code and enter its 6-digit TOTP code before credentials are saved. Successful setup signs in and opens the public homepage. For test commands and coverage guidance, see [Tests](src/Tests/README.md).
+Open `https://localhost:10210`. An installation without an initialized account redirects to `/auth/setup-account`. Create the owner account using an email and password; there is no shipped administrator or separate username. By default, scan the authenticator QR code and enter its 6-digit TOTP code before credentials are saved. Successful setup signs in and opens the public homepage. For test commands and coverage guidance, see [Tests](src/Tests/README.md).
 
-Setup is public: any reachable visitor can claim an uninitialized Local installation. Restrict access operationally until the owner completes setup. While setup is pending, browser pages redirect there and business APIs, feeds and protocol endpoints return HTTP 503; setup assets and `/health` and `/health/ready` remain available. OIDC installations bypass this Local setup gate.
+Setup is public: any reachable visitor can claim an uninitialized installation. Restrict access operationally until the owner completes setup. While setup is pending, browser pages redirect there and business APIs, feeds and protocol endpoints return HTTP 503; setup assets and `/health` and `/health/ready` remain available.
 
 Deploy the current application at the URL root. Hosting under a prefix such as `/blog` is not supported by forwarding `X-Forwarded-Prefix` alone; it requires additional host-pipeline and client-URL work.
 
@@ -165,12 +165,12 @@ If initialization fails, Moonglade logs the error and exits with a nonzero proce
 
 ### Authentication
 
-- By default: one Local account signs in by email with TOTP authenticator app verification (manage via `/admin/account`).
+- The local owner signs in by email and password (manage via `/admin/account`).
 - `Authentication:Totp:Required=false` skips TOTP during initial setup and Local sign-in in every environment. The default is `true`.
 - To replace a configured authenticator app, verify the current password at `/admin/account` to reset it; the reset signs out the administrator and starts TOTP setup on the next sign-in when required. It does not reopen initial account setup.
 - Password changes keep the current session signed in with a refreshed revision and retain the authenticator. Pre-upgrade Local cookies and stale account-revision cookies must sign in again.
 - Initial setup submissions and authenticator proof share one client-IP rate-limit quota, independent of posted email or pending setup tickets. The default allows 10 submissions per minute; ordinary sign-in and TOTP keep their account/IP partitions.
-- Owner Email is public and managed only at `/admin/account`, for both authentication providers. It supplies Atom, FOAF, owner Gravatar and owner-directed notifications; The owner name and description are also managed under Account Settings. A real Local email change requires the current password, signs out all Local sessions and keeps the bound authenticator. Authorized OIDC sessions edit the public address without a local password or sign-out; provider email claims never overwrite it. Before an OIDC site's public address is configured, email-derived output and owner notifications are omitted, local avatars remain available, and commenter replies are unaffected.
+- Manage the public Owner Email, name and description at Account Settings (/admin/account). Owner Email supplies Atom, FOAF, owner Gravatar and owner-directed notifications. Changing the email requires the current password, signs out all account sessions, and retains the bound authenticator.
 - TOTP options:
 
 ```json
@@ -189,26 +189,7 @@ If initialization fails, Moonglade logs the error and exits with a nonzero proce
 
 `Authentication:LocalAccountRateLimit` uses a fixed window. `PermitLimit` is the number of attempts allowed for the same partition during each window. Set `Enabled` to `false` only when another authentication-layer throttle is in place.
 
-- A single standards-based **OpenID Connect** provider is supported as an alternative to the local account. Configure a confidential web client with authorization code flow and PKCE:
-
-```json
-"Authentication": {
-  "Provider": "OpenIdConnect",
-  "OpenIdConnect": {
-    "Authority": "https://identity.example.com/",
-    "ClientId": "moonglade",
-    "CallbackPath": "/signin-oidc",
-    "SignedOutCallbackPath": "/signout-callback-oidc",
-    "NameClaimType": "name",
-    "Scopes": [ "openid", "profile", "email" ],
-    "AllowedSubjects": [ "the-administrator-sub-claim" ]
-  }
-}
-```
-
-Supply `Authentication:OpenIdConnect:ClientSecret` from a secure external configuration source, such as the `Authentication__OpenIdConnect__ClientSecret` environment override; never commit the secret. `AllowedSubjects` contains the exact stable OIDC `sub` value for every administrator. An empty list safely denies all admin access while still allowing an authenticated OIDC user to retrieve their own `iss`, `sub`, and display name from `/auth/identity` for initial setup. Do not use email addresses or display names for authorization.
-
-For Microsoft Entra ID, use the tenant-specific authority `https://login.microsoftonline.com/{tenant-id}/v2.0`. Register both callback URLs shown above in the provider. Existing Entra-specific deployments must follow [the generic OIDC migration guide](docs/upgrade-generic-oidc-authentication.md).
+Existing installations that used the standalone OpenID Connect mode must [establish local owner credentials](docs/upgrade-generic-oidc-authentication.md) before reopening access to the site.
 
 ### Comment Markdown Links
 

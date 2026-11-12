@@ -48,7 +48,7 @@ internal sealed class LocalAccountHttpFixture : IAsyncDisposable
 
     public static async Task<LocalAccountHttpFixture> CreateAsync(
         bool required = false, string pathBase = "", string environment = "Production",
-        AuthenticationProvider provider = AuthenticationProvider.Local, int permits = 100)
+        int permits = 100, bool legacyOidcConfiguration = false)
     {
         var ct = TestContext.Current.CancellationToken;
         var store = new ConfigurationCommandRecorder();
@@ -68,13 +68,16 @@ internal sealed class LocalAccountHttpFixture : IAsyncDisposable
         builder.Configuration.Sources.Clear();
         builder.Configuration.AddInMemoryCollection(new Dictionary<string, string?>
         {
-            ["Authentication:Provider"] = provider.ToString(),
-            ["Authentication:Totp:Required"] = required.ToString(),
-            ["Authentication:OpenIdConnect:Authority"] = "https://identity.example.test",
-            ["Authentication:OpenIdConnect:ClientId"] = "synthetic-client",
-            ["Authentication:OpenIdConnect:ClientSecret"] = "synthetic-secret",
-            ["Authentication:OpenIdConnect:AllowedSubjects:0"] = "exact-subject"
+            ["Authentication:Totp:Required"] = required.ToString()
         });
+        if (legacyOidcConfiguration)
+            builder.Configuration.AddInMemoryCollection(new Dictionary<string, string?>
+            {
+                ["Authentication:Provider"] = "OpenIdConnect",
+                ["Authentication:OpenIdConnect:Authority"] = "https://identity.example.test",
+                ["Authentication:OpenIdConnect:ClientId"] = "synthetic-client",
+                ["Authentication:OpenIdConnect:AllowedSubjects:0"] = "exact-subject"
+            });
         builder.Logging.ClearProviders();
         builder.WebHost.UseTestServer();
         builder.Services.AddSingleton(store.Db);

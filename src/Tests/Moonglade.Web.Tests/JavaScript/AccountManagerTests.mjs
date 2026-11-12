@@ -35,7 +35,7 @@ test('accountManager password and email revision coordination', async t => {
     globalThis.document = {
         getElementById: id => id === 'account-gravatar' ? gravatar : ({
             addEventListener: () => {},
-            dataset: { localAuth: 'true', emailUrl: '/api/account/email', signinUrl: '/auth/signin' }
+            dataset: { emailUrl: '/api/account/email', signinUrl: '/auth/signin' }
         })
     };
     globalThis.bootstrap = {

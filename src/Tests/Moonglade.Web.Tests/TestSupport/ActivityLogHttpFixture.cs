@@ -64,8 +64,7 @@ public sealed class ActivityLogHttpFixture(WebApplication app, ActivityLogTestSt
         builder.Services.AddInMemoryCacheAside();
         builder.Services.AddSingleton<ThemeCacheInvalidator>();
         builder.Services.AddDataProtection().UseEphemeralDataProtectionProvider();
-        builder.Services.AddBlogAuthentication(new ConfigurationBuilder().AddInMemoryCollection(
-            new Dictionary<string, string?> { ["Authentication:Provider"] = "Local" }).Build());
+        builder.Services.AddBlogAuthentication(new ConfigurationBuilder().Build());
         builder.Services.AddAntiforgery(options =>
         {
             options.Cookie.Name = "X-CSRF-TOKEN-MOONGLADE";

@@ -135,19 +135,6 @@ public class SetupAccountModelTests
         Assert.Empty(fixture.SignIns);
     }
 
-    [Fact]
-    public async Task OpenIdConnect_SetupHandlersRedirectHomeWithoutCreatingLocalCredentials()
-    {
-        await using var fixture = new LocalAccountPageFixture(provider: AuthenticationProvider.OpenIdConnect);
-        var model = CreateModel(fixture);
-
-        Assert.Equal("/Index", Assert.IsType<RedirectToPageResult>(await model.OnGetAsync()).PageName);
-        Assert.Equal("/Index", Assert.IsType<RedirectToPageResult>(await model.OnPostAsync()).PageName);
-        Assert.Equal("/Index", Assert.IsType<RedirectToPageResult>(await model.OnPostVerifyAsync()).PageName);
-        Assert.Null(await fixture.Accounts.ReadAsync(TestContext.Current.CancellationToken));
-        Assert.Empty(fixture.SignIns);
-    }
-
     private static SetupAccountModel CreateModel(LocalAccountPageFixture fixture)
     {
         var model = fixture.Attach(new SetupAccountModel(fixture.Options, fixture.Accounts, fixture.Totp));

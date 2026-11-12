@@ -2,16 +2,12 @@
     var snapshot = ViewData.CaptureSettings(SettingsReader);
 }
 @using Moonglade.Web.TagHelpers
-@inject IOptions<AuthenticationSettings> AuthOptions
 @inject IConfiguration Configuration
 @inject ICacheAside Cache
 @inject ThemeCacheInvalidator ThemeCache
 
 @{
     var avatarUrl = Url.Action("Avatar", "OwnerAvatar");
-    var userInfoDisplay = AuthOptions.Value.Provider == AuthenticationProvider.Local
-        ? UserInfoDisplay.PreferName
-        : UserInfoDisplay.Both;
 
     bool clientPreferDarkMode = Helper.IsClientPreferDarkMode(Context);
     bool hideAdminSidebar = ViewBag.HideAdminSidebar == true;
@@ -88,12 +84,12 @@
                             id="admin-user-toggle" data-bs-toggle="dropdown" aria-expanded="false" aria-controls="admin-user-menu">
                         <img src="@avatarUrl" alt="" class="rounded-circle admin-nav-head-pic me-1 flex-shrink-0" />
                         <span class="admin-user-name">
-                            <userinfo user="User" user-info-display="@userInfoDisplay"></userinfo>
+                            <userinfo user="User" user-info-display="@UserInfoDisplay.PreferName"></userinfo>
                         </span>
                         <span class="visually-hidden">@SharedLocalizer["Account"]</span>
                     </button>
                     <ul class="dropdown-menu dropdown-menu-end" id="admin-user-menu" aria-labelledby="admin-user-toggle">
-                        <li class="dropdown-header"><userinfo user="User" user-info-display="@userInfoDisplay"></userinfo></li>
+                        <li class="dropdown-header"><userinfo user="User" user-info-display="@UserInfoDisplay.PreferName"></userinfo></li>
                         <li>
                             <a class="dropdown-item" asp-page="/Admin/LocalAccount">
                                 <i class="bi-person-gear me-2" aria-hidden="true"></i>@SharedLocalizer["Account Settings"]

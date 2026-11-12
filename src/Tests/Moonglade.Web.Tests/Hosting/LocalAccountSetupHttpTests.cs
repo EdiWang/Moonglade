@@ -267,44 +267,15 @@ public class LocalAccountSetupHttpTests
     }
 
     [Fact]
-    public async Task OpenIdConnect_EmptyOwnerBypassesGateAndLocalSetup()
-    {
-        await using var fixture = await LocalAccountHttpFixture.CreateAsync(provider: AuthenticationProvider.OpenIdConnect);
-        using var home = await fixture.SendAsync(HttpMethod.Get, "/");
-        Assert.Equal(HttpStatusCode.OK, home.StatusCode);
-        using var business = await fixture.SendAsync(HttpMethod.Get, "/api/probe");
-        Assert.Equal(HttpStatusCode.OK, business.StatusCode);
-        using var setup = await fixture.SendAsync(HttpMethod.Get, "/auth/setup-account");
-        Assert.Equal(HttpStatusCode.Redirect, setup.StatusCode);
-        Assert.Equal("/", setup.Headers.Location!.OriginalString);
-        Assert.Null(await fixture.Store.Accounts.ReadAsync(TestContext.Current.CancellationToken));
-    }
-
-    [Fact]
-    public async Task OpenIdConnect_GateAndCookieValidationDoNotReadUnavailableLocalAccountTable()
-    {
-        await using var fixture = await LocalAccountHttpFixture.CreateAsync(provider: AuthenticationProvider.OpenIdConnect);
-        await fixture.Store.Db.Database.ExecuteSqlRawAsync("DROP TABLE OwnerAccount;", TestContext.Current.CancellationToken);
-        fixture.SetTicket(new ClaimsPrincipal(new ClaimsIdentity(
-            [new Claim("sub", "exact-subject")], BlogAuthSchemas.OpenIdConnect)), CookieAuthenticationDefaults.AuthenticationScheme);
-
-        using var admin = await fixture.SendAsync(HttpMethod.Get, "/admin/probe");
-        using var setup = await fixture.SendAsync(HttpMethod.Get, "/auth/setup-account");
-
-        Assert.Equal(HttpStatusCode.OK, admin.StatusCode);
-        Assert.Equal(HttpStatusCode.Redirect, setup.StatusCode);
-        Assert.Equal("/", setup.Headers.Location!.OriginalString);
-        Assert.Equal(1, fixture.BusinessExecutions);
-    }
-
-    [Fact]
     public async Task ProfileOnlyOwner_RemainsPendingUntilSetupRetainsItsStableIdentity()
     {
         var ct = TestContext.Current.CancellationToken;
-        await using var fixture = await LocalAccountHttpFixture.CreateAsync();
+        await using var fixture = await LocalAccountHttpFixture.CreateAsync(legacyOidcConfiguration: true);
         var profile = await fixture.Store.Accounts.CreateProfileAsync("profile@example.test", ct);
         using var home = await fixture.SendAsync(HttpMethod.Get, "/");
         using var api = await fixture.SendAsync(HttpMethod.Get, "/api/probe");
+        using var retiredIdentity = await fixture.SendAsync(HttpMethod.Get, "/auth/identity");
+        Assert.Equal(HttpStatusCode.NotFound, retiredIdentity.StatusCode);
         Assert.Equal(HttpStatusCode.Redirect, home.StatusCode);
         Assert.Equal("/auth/setup-account", home.Headers.Location!.OriginalString);
         Assert.Equal(HttpStatusCode.ServiceUnavailable, api.StatusCode);

@@ -25,8 +25,6 @@ public class SignInModel(
 
     public async Task<IActionResult> OnGetAsync()
     {
-        if (authSettings.Value.Provider == AuthenticationProvider.OpenIdConnect)
-            return Challenge(new AuthenticationProperties { RedirectUri = Url.Content("~/") }, BlogAuthSchemas.OpenIdConnect);
         await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
         await HttpContext.SignOutAsync(BlogAuthSchemas.LocalAccountSetup);
         await HttpContext.SignOutAsync(BlogAuthSchemas.LocalAccountTwoFactor);
@@ -37,8 +35,6 @@ public class SignInModel(
 
     public async Task<IActionResult> OnPostAsync()
     {
-        if (authSettings.Value.Provider == AuthenticationProvider.OpenIdConnect)
-            return Challenge(new AuthenticationProperties { RedirectUri = Url.Content("~/") }, BlogAuthSchemas.OpenIdConnect);
         if (string.IsNullOrWhiteSpace(Request.Headers.UserAgent)) return Unauthorized();
         if (!ModelState.IsValid)
         {

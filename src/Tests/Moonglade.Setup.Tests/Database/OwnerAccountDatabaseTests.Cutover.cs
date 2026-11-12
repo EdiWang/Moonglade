@@ -1,6 +1,4 @@
-using LiteBus.Events.Abstractions;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
 using Moonglade.Auth;
 using Moonglade.Configuration;
 using Moonglade.Data;
@@ -207,8 +205,9 @@ public partial class OwnerAccountDatabaseTests
         await database.MigrateAsync("owner-account-cutover.sql");
 
         Assert.Equal(original, await store.ReadAsync(ct));
-        var oidc = OidcStore(db);
-        var changed = await oidc.UpdateProfileEmailAsync(original.Revision, "edited@example.test", ct);
+        var changed = initialized
+            ? (await store.ChangeLocalEmailAsync(original.Id, original.Revision, "Synthetic123!", "edited@example.test", ct))!
+            : original;
         for (var run = 0; run < 2; run++)
         {
             await database.MigrateAsync("owner-account.sql");
@@ -224,7 +223,18 @@ public partial class OwnerAccountDatabaseTests
             Assert.Equal(changed, await store.AuthenticateLocalAsync(changed.Email, "Synthetic123!", ct));
             Assert.Equal(changed, await store.VerifyTotpAsync(changed.Id, changed.Revision, Code(credentials.TotpSecret!), ct));
         }
-        else Assert.Null(await store.AuthenticateLocalAsync(changed.Email, "Synthetic123!", ct));
+        else
+        {
+            Assert.Null(await store.AuthenticateLocalAsync(changed.Email, "Synthetic123!", ct));
+            var pending = await store.PrepareLocalSetupAsync(changed.Email, "Synthetic123!", ct);
+            var completed = await store.CompleteLocalSetupAsync(pending, null, ct);
+
+            await using var reopened = database.Context();
+            Assert.Equal(original.Id, completed.Id);
+            Assert.Equal(original.Email, completed.Email);
+            Assert.Equal(completed, await CreateStore(reopened).AuthenticateLocalAsync(completed.Email, "Synthetic123!", ct));
+            Assert.Equal(unrelated, await CutoverUnrelatedRowsAsync(reopened, database));
+        }
     }
 
     [DisposableDatabaseTheory]
@@ -318,22 +328,20 @@ public partial class OwnerAccountDatabaseTests
     }
 
     [DisposableDatabaseTheory]
-    [InlineData("PostgreSql", false)]
-    [InlineData("SqlServer", false)]
-    [InlineData("PostgreSql", true)]
-    [InlineData("SqlServer", true)]
-    public async Task ConcurrentProfileEmailWrites_FromAbsentOrExistingRow_OnlyOneRevisionWins(string provider, bool exists)
+    [InlineData("PostgreSql")]
+    [InlineData("SqlServer")]
+    public async Task ConcurrentLocalEmailChanges_OnlyOneRevisionWins(string provider)
     {
         var ct = TestContext.Current.CancellationToken;
         await using var database = await databases.CreateAsync(provider);
         await using var schema = database.Context();
         await schema.Database.EnsureCreatedAsync(ct);
-        var original = exists ? await OidcStore(schema).UpdateProfileEmailAsync(null, "old@example.test", ct) : null;
+        var original = await InitializeWithTotpAsync(CreateStore(schema, required: true), ct);
         var barrier = new ConcurrentWriteBarrier();
         await using var firstDb = IndependentContext(database, barrier);
         await using var secondDb = IndependentContext(database, barrier);
-        var first = OidcStore(firstDb).UpdateProfileEmailAsync(original?.Revision, "first@example.test", ct);
-        var second = OidcStore(secondDb).UpdateProfileEmailAsync(original?.Revision, "second@example.test", ct);
+        var first = CreateStore(firstDb).ChangeLocalEmailAsync(original.Id, original.Revision, "Synthetic123!", "first@example.test", ct);
+        var second = CreateStore(secondDb).ChangeLocalEmailAsync(original.Id, original.Revision, "Synthetic123!", "second@example.test", ct);
         try
         {
             await await Task.WhenAny(barrier.Ready.Task, first, second).WaitAsync(TimeSpan.FromSeconds(30), ct);
@@ -346,7 +354,7 @@ public partial class OwnerAccountDatabaseTests
         var tasks = new[] { first, second };
         var winner = await Assert.Single(tasks, task => task.IsCompletedSuccessfully);
         Assert.IsType<DbUpdateConcurrencyException>(Assert.Single(tasks, task => task.IsFaulted).Exception!.GetBaseException());
-        Assert.Equal(winner, await OidcStore(schema).ReadAsync(ct));
+        Assert.Equal(winner, await CreateStore(schema).ReadAsync(ct));
         Assert.Single(await schema.OwnerAccount.ToListAsync(ct));
         foreach (var context in new[] { firstDb, secondDb })
         {
@@ -354,13 +362,9 @@ public partial class OwnerAccountDatabaseTests
             context.BlogConfiguration.Add(new BlogConfigurationEntity { CfgKey = Guid.NewGuid().ToString(), CfgValue = "{}" });
             await context.SaveChangesAsync(ct);
         }
-        Assert.Equal(winner, await OidcStore(schema).ReadAsync(ct));
-        if (exists) Assert.Equal(original!.Id, winner.Id);
+        Assert.Equal(winner, await CreateStore(schema).ReadAsync(ct));
+        Assert.Equal(original.Id, winner!.Id);
     }
-
-    private static OwnerAccountStore OidcStore(BlogDbContext db) =>
-        new(db, new LocalAccountTotpService(), Options.Create(new AuthenticationSettings
-        { Provider = AuthenticationProvider.OpenIdConnect }), TimeProvider.System, Mock.Of<IEventMediator>());
 
     private static async Task<OwnerAccountSnapshot> InitializeWithTotpAsync(OwnerAccountStore store, CancellationToken ct)
     {

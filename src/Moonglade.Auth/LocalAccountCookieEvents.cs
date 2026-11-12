@@ -9,7 +9,6 @@ public sealed class LocalAccountCookieEvents(OwnerAccountStore accounts, IOption
 {
     public override async Task ValidatePrincipal(CookieValidatePrincipalContext context)
     {
-        if (options.Value.Provider != AuthenticationProvider.Local) return;
         var account = await accounts.ReadAsync(context.HttpContext.RequestAborted);
         if (LocalAccountPrincipal.Matches(context.Principal, account)
             && (context.Scheme.Name != CookieAuthenticationDefaults.AuthenticationScheme

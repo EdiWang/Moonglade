@@ -78,21 +78,6 @@ public class SignInModelTests
         Assert.Equal(account, await fixture.Accounts.ReadAsync(TestContext.Current.CancellationToken));
     }
 
-    [Fact]
-    public async Task OnPostAsync_WhenProviderIsOpenIdConnect_ChallengesWithoutLocalLogin()
-    {
-        await using var fixture = new LocalAccountPageFixture(provider: AuthenticationProvider.OpenIdConnect);
-        var model = CreateModel(fixture);
-        model.Url = Mock.Of<IUrlHelper>(helper => helper.Content("~/") == "/");
-
-        var result = await model.OnPostAsync();
-
-        var challenge = Assert.IsType<ChallengeResult>(result);
-        Assert.Contains(BlogAuthSchemas.OpenIdConnect, challenge.AuthenticationSchemes);
-        Assert.Empty(fixture.SignIns);
-        Assert.Null(await fixture.Accounts.ReadAsync(TestContext.Current.CancellationToken));
-    }
-
     [Theory]
     [InlineData(false)]
     [InlineData(true)]

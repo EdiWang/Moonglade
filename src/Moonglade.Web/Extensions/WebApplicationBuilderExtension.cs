@@ -43,7 +43,7 @@ public static class WebApplicationBuilderExtension
             { "URLs", configuration["Urls"] ?? "N/A" },
             { "Database", GetConnectionStringProvider(configuration) },
             { "Image storage", "File system" },
-            { "Authentication", configuration["Authentication:Provider"] ?? "N/A" },
+            { "Authentication", "Local" },
             { "Environment", envName }
         };
     }

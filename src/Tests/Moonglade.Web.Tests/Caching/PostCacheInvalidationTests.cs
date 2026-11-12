@@ -316,8 +316,7 @@ public partial class PostCacheInvalidationTests
             services.AddLogging();
             services.AddDbContext<BlogDbContext>(options => options.UseSqlite(connection).AddInterceptors(interceptors));
             services.AddSingleton(TimeProvider.System);
-            services.Configure<Moonglade.Auth.AuthenticationSettings>(options =>
-                options.Provider = Moonglade.Auth.AuthenticationProvider.OpenIdConnect);
+            services.Configure<Moonglade.Auth.AuthenticationSettings>(options => options.Totp.Required = false);
             services.AddSingleton<Moonglade.Auth.ILocalAccountTotpService, Moonglade.Auth.LocalAccountTotpService>();
             services.AddScoped<Moonglade.Auth.OwnerAccountStore>();
             services.AddScoped<Moonglade.Auth.IOwnerProfileReader>(provider => provider.GetRequiredService<Moonglade.Auth.OwnerAccountStore>());

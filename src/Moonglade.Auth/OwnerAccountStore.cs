@@ -61,8 +61,6 @@ public sealed class OwnerAccountStore(
     {
         var address = NormalizeEmail(email);
         ValidatePassword(password);
-        if (options.Value.Provider != AuthenticationProvider.Local)
-            throw new InvalidOperationException("Local account setup is not enabled.");
         var current = await ReadAsync(ct);
         if (current?.IsLocalInitialized == true)
             throw new DbUpdateConcurrencyException("The owner account is already initialized.");
@@ -83,8 +81,7 @@ public sealed class OwnerAccountStore(
         PendingOwnerSetup pending, string? code, CancellationToken ct = default)
     {
         ArgumentNullException.ThrowIfNull(pending);
-        if (options.Value.Provider != AuthenticationProvider.Local
-            || pending.ExpiresUtc.Kind != DateTimeKind.Utc || pending.ExpiresUtc <= timeProvider.GetUtcNow().UtcDateTime
+        if (pending.ExpiresUtc.Kind != DateTimeKind.Utc || pending.ExpiresUtc <= timeProvider.GetUtcNow().UtcDateTime
             || pending.RequiresTotp != options.Value.Totp.Required)
             throw new ValidationException("Account setup has expired. Start again.");
         if (pending.RequiresTotp && !totpService.VerifyCode(pending.TotpSecret, code))
@@ -157,38 +154,11 @@ public sealed class OwnerAccountStore(
     public async Task<OwnerAccountSnapshot?> ChangeLocalEmailAsync(
         Guid id, Guid expectedRevision, string currentPassword, string email, CancellationToken ct = default)
     {
-        if (options.Value.Provider != AuthenticationProvider.Local)
-            throw new InvalidOperationException("Local account updates are not enabled.");
         EnsureOwnCommit();
         var address = NormalizeEmail(email);
         var account = await LoadCurrentAsync(id, expectedRevision, ct);
         if (string.IsNullOrWhiteSpace(currentPassword) || !PasswordMatches(account, currentPassword)) return null;
         return await SaveEmailAsync(account, address, ct);
-    }
-
-    public async Task<OwnerAccountSnapshot> UpdateProfileEmailAsync(
-        Guid? expectedRevision, string email, CancellationToken ct = default)
-    {
-        if (options.Value.Provider != AuthenticationProvider.OpenIdConnect)
-            throw new InvalidOperationException("Public profile updates require OpenID Connect authentication.");
-        EnsureOwnCommit();
-        var address = NormalizeEmail(email);
-        var account = await db.OwnerAccount.AsNoTracking().SingleOrDefaultAsync(ct);
-        if (account?.Revision != expectedRevision)
-            throw new DbUpdateConcurrencyException("The owner profile changed. Reload the account page.");
-        if (account is not null) return await SaveEmailAsync(account, address, ct);
-        try
-        {
-            account = await SaveNewProfileAsync(address, ct);
-        }
-        catch (DbUpdateException)
-        {
-            if (await db.OwnerAccount.AsNoTracking().AnyAsync(CancellationToken.None))
-                throw new DbUpdateConcurrencyException("The owner profile already exists. Reload the account page.");
-            throw;
-        }
-        await events.PublishAsync(new OwnerProfileChangedEvent(), CancellationToken.None);
-        return Snapshot(account);
     }
 
     private async Task<OwnerAccountSnapshot> SaveEmailAsync(

@@ -29,10 +29,9 @@ internal sealed class OwnerAccountTestStore : IAsyncDisposable
         Accounts = CreateAccounts(required);
     }
 
-    public OwnerAccountStore CreateAccounts(bool required, AuthenticationProvider provider = AuthenticationProvider.Local) =>
+    public OwnerAccountStore CreateAccounts(bool required) =>
         new(Db, Totp, Options.Create(new AuthenticationSettings
         {
-            Provider = provider,
             Totp = new TotpAuthenticationSettings { Required = required }
         }), Clock, Events.Object);
 

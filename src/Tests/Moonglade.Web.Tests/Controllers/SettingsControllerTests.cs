@@ -435,7 +435,7 @@ public partial class SettingsControllerTests
         commandMediator.Db.Entry(account).State = EntityState.Detached;
         var services = new ServiceCollection().AddSingleton(authenticationService.Object).BuildServiceProvider();
         var snapshot = new OwnerAccountSnapshot(account.Id, account.Email, account.Revision, true, account.TotpSecret is not null);
-        var controller = new AccountController(commandMediator.Accounts, Options.Create(new AuthenticationSettings()),
+        var controller = new AccountController(commandMediator.Accounts,
             commandMediator, logger ?? Mock.Of<ILogger<AccountController>>())
         {
             ControllerContext = new ControllerContext

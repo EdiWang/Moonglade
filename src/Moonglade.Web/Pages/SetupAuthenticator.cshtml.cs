@@ -79,7 +79,7 @@ public class SetupAuthenticatorModel(
 
     private async Task<OwnerAccountSnapshot> CurrentAccountAsync()
     {
-        if (authSettings.Value.Provider != AuthenticationProvider.Local || !authSettings.Value.Totp.Required) return null;
+        if (!authSettings.Value.Totp.Required) return null;
         var account = await accounts.ReadAsync(HttpContext.RequestAborted);
         return LocalAccountPrincipal.Matches(User, account) && !account.IsTotpEnabled ? account : null;
     }

@@ -313,19 +313,24 @@ public partial class AccountSecurityHttpTests
     }
 
     [Fact]
-    public async Task OpenIdConnectAccountCookie_RemainsValidButLocalCredentialEndpointsAreUnavailable()
+    public async Task LegacyOidcCookie_CannotAccessOwnerEndpointsAfterCutover()
     {
-        await using var fixture = await LocalAccountHttpFixture.CreateAsync(provider: AuthenticationProvider.OpenIdConnect);
+        var ct = TestContext.Current.CancellationToken;
+        await using var fixture = await LocalAccountHttpFixture.CreateAsync(legacyOidcConfiguration: true);
+        var owner = await InitializeAsync(fixture);
         fixture.SetTicket(new ClaimsPrincipal(new ClaimsIdentity(
-            [new Claim("sub", "exact-subject"), new Claim(ClaimTypes.Name, "OIDC owner")], BlogAuthSchemas.OpenIdConnect)),
+            [new Claim("sub", "exact-subject"), new Claim("email", owner.Email)], "OpenIdConnect")),
             CookieAuthenticationDefaults.AuthenticationScheme);
+
         using var admin = await fixture.SendAsync(HttpMethod.Get, "/admin/probe");
-        Assert.Equal(HttpStatusCode.OK, admin.StatusCode);
-        var token = await AdminTokenAsync(fixture);
-        using var reset = await fixture.SendAsync(HttpMethod.Put, "/api/account/totp/local/reset",
-            JsonContent.Create(new ResetLocalAccountTotpRequest { CurrentPassword = LocalAccountPageFixture.Password }), token);
-        Assert.Equal(HttpStatusCode.NotFound, reset.StatusCode);
-        Assert.Null(await fixture.Store.Accounts.ReadAsync(TestContext.Current.CancellationToken));
+        using var ownerEmail = await fixture.SendAsync(HttpMethod.Get, "/api/account/email");
+        using var identity = await fixture.SendAsync(HttpMethod.Get, "/auth/identity");
+
+        Assert.Equal(HttpStatusCode.Redirect, admin.StatusCode);
+        Assert.StartsWith("/auth/signin", admin.Headers.Location!.AbsolutePath);
+        Assert.Equal(HttpStatusCode.Unauthorized, ownerEmail.StatusCode);
+        Assert.Equal(HttpStatusCode.NotFound, identity.StatusCode);
+        Assert.Equal(owner, await fixture.Store.Accounts.ReadAsync(ct));
     }
 
     private static async Task<string> AdminTokenAsync(LocalAccountHttpFixture fixture)

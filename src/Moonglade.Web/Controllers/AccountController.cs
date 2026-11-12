@@ -3,7 +3,6 @@ using LiteBus.Commands.Abstractions;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
 using Moonglade.ActivityLog;
 using System.ComponentModel.DataAnnotations;
 
@@ -12,7 +11,6 @@ namespace Moonglade.Web.Controllers;
 [Route("api/account")]
 public class AccountController(
     OwnerAccountStore accounts,
-    IOptions<AuthenticationSettings> options,
     ICommandMediator commandMediator,
     ILogger<AccountController> logger) : BlogControllerBase(commandMediator, logger)
 {
@@ -39,17 +37,14 @@ public class AccountController(
     [HttpPut("email")]
     public async Task<IActionResult> UpdateEmail(UpdateOwnerEmailRequest request)
     {
-        var local = options.Value.Provider == AuthenticationProvider.Local;
         var current = await accounts.ReadAsync(HttpContext.RequestAborted);
-        if (local && !LocalAccountPrincipal.Matches(User, current)) return Unauthorized();
+        if (!LocalAccountPrincipal.Matches(User, current)) return Unauthorized();
         if (request.Revision != current?.Revision) return Conflict("The account changed. Reload the account page.");
         OwnerAccountSnapshot saved;
         try
         {
-            saved = local
-                ? await accounts.ChangeLocalEmailAsync(current.Id, current.Revision,
-                    request.CurrentPassword, request.Email, HttpContext.RequestAborted)
-                : await accounts.UpdateProfileEmailAsync(request.Revision, request.Email, HttpContext.RequestAborted);
+            saved = await accounts.ChangeLocalEmailAsync(current.Id, current.Revision,
+                request.CurrentPassword, request.Email, HttpContext.RequestAborted);
         }
         catch (ValidationException exception)
         {
@@ -61,7 +56,7 @@ public class AccountController(
             return Conflict("The account changed. Reload the account page.");
         }
         if (saved is null) return Conflict("Current password is incorrect.");
-        if (local && saved.Revision != current.Revision)
+        if (saved.Revision != current.Revision)
         {
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
             await HttpContext.SignOutAsync(BlogAuthSchemas.LocalAccountSetup);
@@ -73,13 +68,11 @@ public class AccountController(
 
     [HttpGet("password/generate")]
     public IActionResult GeneratePassword([FromServices] IPasswordGenerator passwordGenerator) =>
-        options.Value.Provider != AuthenticationProvider.Local
-            ? NotFound() : Ok(new GeneratedPasswordResponse(DateTime.UtcNow, passwordGenerator.GeneratePassword()));
+        Ok(new GeneratedPasswordResponse(DateTime.UtcNow, passwordGenerator.GeneratePassword()));
 
     [HttpPut("password/local")]
     public async Task<IActionResult> UpdateLocalAccountPassword(UpdateLocalAccountPasswordRequest request)
     {
-        if (options.Value.Provider != AuthenticationProvider.Local) return NotFound();
         var current = await accounts.ReadAsync(HttpContext.RequestAborted);
         if (!LocalAccountPrincipal.Matches(User, current)) return Unauthorized();
         OwnerAccountSnapshot saved;
@@ -102,7 +95,6 @@ public class AccountController(
     [HttpPut("totp/local/reset")]
     public async Task<IActionResult> ResetLocalAccountTotp(ResetLocalAccountTotpRequest request)
     {
-        if (options.Value.Provider != AuthenticationProvider.Local) return NotFound();
         var current = await accounts.ReadAsync(HttpContext.RequestAborted);
         if (!LocalAccountPrincipal.Matches(User, current)) return Unauthorized();
         OwnerAccountSnapshot saved;

@@ -159,32 +159,25 @@ public class SearchPageTests
     }
 
     [Theory]
-    [InlineData(AuthenticationProvider.Local, "")]
-    [InlineData(AuthenticationProvider.Local, "/blog")]
-    [InlineData(AuthenticationProvider.OpenIdConnect, "")]
-    [InlineData(AuthenticationProvider.OpenIdConnect, "/blog")]
-    public async Task AdminDisplayClaims_AreHtmlEncoded(AuthenticationProvider provider, string pathBase)
+    [InlineData("")]
+    [InlineData("/blog")]
+    public async Task AdminDisplayClaims_AreHtmlEncoded(string pathBase)
     {
         const string name = "<Admin & Owner>";
         const string email = "owner&portal@example.test";
         var user = new ClaimsPrincipal(new ClaimsIdentity(
             [new Claim("name", name), new Claim("email", email)], "TestAuth"));
-        using var app = await CreateTestApp(new SearchPageScenario(), pathBase: pathBase, provider: provider, user: user);
+        using var app = await CreateTestApp(new SearchPageScenario(), pathBase: pathBase, user: user);
         using var client = app.GetTestClient();
 
         var html = await client.GetStringAsync("/admin/settings/general", TestContext.Current.CancellationToken);
 
         Assert.Contains(WebUtility.HtmlEncode(name), html);
         Assert.DoesNotContain(name, html);
-        if (provider == AuthenticationProvider.OpenIdConnect)
-        {
-            Assert.Contains(WebUtility.HtmlEncode(email), html);
-            Assert.DoesNotContain(email, html);
-        }
     }
 
     private static async Task<WebApplication> CreateTestApp(SearchPageScenario scenario, BlogConfig? config = null, string pathBase = "",
-        AuthenticationProvider provider = AuthenticationProvider.Local, ClaimsPrincipal? user = null)
+        ClaimsPrincipal? user = null)
     {
         var webRoot = FindWebProjectRoot();
         var builder = WebApplication.CreateBuilder(new WebApplicationOptions
@@ -206,7 +199,6 @@ public class SearchPageTests
             .ToList();
 
         builder.Services.AddRouting();
-        builder.Services.Configure<AuthenticationSettings>(options => options.Provider = provider);
         builder.Services.AddLocalization(options => options.ResourcesPath = "Resources");
         builder.Services.Configure<RequestLocalizationOptions>(options =>
         {

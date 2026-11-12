@@ -27,16 +27,18 @@ public partial class PostCacheInvalidationTests
     {
         var ct = TestContext.Current.CancellationToken;
         using var environment = await TestEnvironment.CreateAsync();
+        using var scope = environment.Services.CreateScope();
+        var accounts = scope.ServiceProvider.GetRequiredService<OwnerAccountStore>();
+        const string password = "Synthetic123!";
+        var pending = await accounts.PrepareLocalSetupAsync("owner@example.test", password, ct);
+        var before = await accounts.CompleteLocalSetupAsync(pending, null, ct);
         if (warm) Assert.Contains("owner@example.test", await environment.ReadFeedAsync(true, category));
         var rss = await environment.ReadFeedAsync(false, category);
         var generation = environment.Invalidator.GetFeedCacheKey("atom");
         var article = environment.Invalidator.GetCacheKey("probe");
         var sitemap = environment.Invalidator.SiteMapCacheKey;
-        using var scope = environment.Services.CreateScope();
-        var accounts = scope.ServiceProvider.GetRequiredService<OwnerAccountStore>();
-        var before = await accounts.ReadAsync(ct);
 
-        var changed = await accounts.UpdateProfileEmailAsync(before!.Revision, "changed@example.test", ct);
+        var changed = await accounts.ChangeLocalEmailAsync(before.Id, before.Revision, password, "changed@example.test", ct);
 
         Assert.NotEqual(generation, environment.Invalidator.GetFeedCacheKey("atom"));
         Assert.Equal(article, environment.Invalidator.GetCacheKey("probe"));
@@ -45,10 +47,10 @@ public partial class PostCacheInvalidationTests
         var document = XDocument.Parse(await environment.ReadFeedAsync(true, category));
         var entry = Assert.Single(document.Descendants(atom + "entry"));
         Assert.Equal("Old title", entry.Element(atom + "title")?.Value);
-        Assert.Equal(changed.Email, entry.Element(atom + "author")?.Element(atom + "email")?.Value);
+        Assert.Equal(changed!.Email, entry.Element(atom + "author")?.Element(atom + "email")?.Value);
         Assert.Equal(RssContract(rss), RssContract(await environment.ReadFeedAsync(false, category)));
         var next = environment.Invalidator.GetFeedCacheKey("atom");
-        Assert.Equal(changed, await accounts.UpdateProfileEmailAsync(changed.Revision, $" {changed.Email} ", ct));
+        Assert.Equal(changed, await accounts.ChangeLocalEmailAsync(changed.Id, changed.Revision, password, $" {changed.Email} ", ct));
         Assert.Equal(next, environment.Invalidator.GetFeedCacheKey("atom"));
     }
 

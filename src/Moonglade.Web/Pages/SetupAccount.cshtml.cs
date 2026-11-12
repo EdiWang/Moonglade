@@ -39,8 +39,7 @@ public class SetupAccountModel(
 
     public async Task<IActionResult> OnGetAsync()
     {
-        if (authSettings.Value.Provider != AuthenticationProvider.Local
-            || (await accounts.ReadAsync(HttpContext.RequestAborted))?.IsLocalInitialized == true)
+        if ((await accounts.ReadAsync(HttpContext.RequestAborted))?.IsLocalInitialized == true)
             return RedirectToPage("/Index");
         var pending = await ReadPendingAsync();
         if (pending is not null) Display(pending);
@@ -50,7 +49,6 @@ public class SetupAccountModel(
 
     public async Task<IActionResult> OnPostAsync()
     {
-        if (authSettings.Value.Provider != AuthenticationProvider.Local) return RedirectToPage("/Index");
         if (!ModelState.IsValid)
         {
             Response.StatusCode = StatusCodes.Status400BadRequest;
@@ -86,7 +84,6 @@ public class SetupAccountModel(
 
     public async Task<IActionResult> OnPostVerifyAsync()
     {
-        if (authSettings.Value.Provider != AuthenticationProvider.Local) return RedirectToPage("/Index");
         ModelState.Remove(nameof(Email));
         ModelState.Remove(nameof(Password));
         var pending = await ReadPendingAsync();
