@@ -81,7 +81,11 @@ The owner signs in by email and password. TOTP is required by default. Set `Auth
 
 Manage the public email, name, description, avatar, and Gravatar preference at **Account Settings**. Changing the email requires the current local password and signs out account sessions while retaining TOTP. Changing the password refreshes the current session. Resetting the authenticator requires the current password and signs out the owner so the next local sign-in can enroll an authenticator when required.
 
-To enable third-party sign-in, configure one public HTTPS OpenID Connect provider under **Account Settings > Third-party sign-in**, register the site's `/signin-oidc` callback URL, and confirm the external account binding. The enabled, bound identity signs in as the owner using the provider's authentication. Disabling the provider, unbinding it, or deleting it revokes its Moonglade sessions. Database backups contain both the encrypted client secret and its dedicated Data Protection keys.
+Application Data Protection keys are stored in the database with the fixed application name `Moonglade`. This preserves authentication cookies, antiforgery tokens, and temporary authentication proofs across container replacements and lets replicas using the same database read them. Existing expiry and account-revocation checks still apply. The first upgrade from container-local keys requires signing in again; old file-based keys are not imported.
+
+To enable third-party sign-in, configure one public HTTPS OpenID Connect provider under **Account Settings > Third-party sign-in**, register the site's `/signin-oidc` callback URL, and confirm the external account binding. The enabled, bound identity signs in as the owner using the provider's authentication. Disabling the provider, unbinding it, or deleting it revokes its Moonglade sessions. Database backups contain both the encrypted client secret and the Data Protection keys required to decrypt it.
+
+Application and OIDC credential protection share the existing `DataProtectionKeys` table (`data_protection_keys` on PostgreSQL), while OIDC retains its separate `Moonglade.OidcCredentials` application name and protection purpose. Preserve and restore the keys together with the encrypted client secret. Do not clear the key table: a running process may continue using a cached key that becomes unavailable after restart. If the required OIDC key is lost, save the client secret again through the authenticated management page to encrypt it with a persisted key. Database persistence does not itself encrypt the stored keys; restrict database and backup access and provide deployment-appropriate encryption at rest.
 
 ### Comments
 
@@ -110,6 +114,8 @@ When CDN delivery is enabled in the image settings, posts and feeds use CDN URLs
 ### Security HTTP Headers
 
 Moonglade emits `X-Content-Type-Options: nosniff`. Set `EnableCSP` to `true` and supply `CSPValue` to add a Content Security Policy.
+
+When using OIDC with a CSP `form-action` directive, allow the provider's authorization endpoint origin alongside `'self'`. Browsers can apply this restriction to the external redirect after the account-binding form is submitted; `form-action 'self'` alone can block binding. Keep the allowlist limited to the required provider origins rather than disabling CSP.
 
 ### Email Notifications
 

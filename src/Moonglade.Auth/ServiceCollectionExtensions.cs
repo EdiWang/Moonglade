@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -13,6 +14,10 @@ public static class ServiceCollectionExtensions
 {
     public static IServiceCollection AddBlogAuthentication(this IServiceCollection services, IConfiguration configuration)
     {
+        services.AddDataProtection()
+            .SetApplicationName("Moonglade")
+            .PersistKeysToDbContext<BlogDbContext>();
+
         services.AddScoped<OwnerAccountStore>();
         services.AddScoped<OwnerAvatarStore>();
         services.AddScoped<LocalAccountCookieEvents>();
