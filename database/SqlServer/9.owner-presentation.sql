@@ -1,9 +1,9 @@
--- Run after owner-avatar.sql with all application hosts stopped and a verified backup.
+-- Run after 8.owner-avatar.sql with all application hosts stopped and a verified backup.
 SET XACT_ABORT ON;
 BEGIN TRANSACTION;
 
 IF OBJECT_ID(N'dbo.OwnerAvatar', N'U') IS NULL
-    THROW 50000, 'Run owner-avatar.sql before the owner profile cutover.', 1;
+    THROW 50000, 'Run 8.owner-avatar.sql before the owner profile cutover.', 1;
 
 IF COL_LENGTH(N'dbo.OwnerAvatar', N'Name') IS NULL OR COL_LENGTH(N'dbo.OwnerAvatar', N'Description') IS NULL
 BEGIN

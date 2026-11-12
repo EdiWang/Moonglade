@@ -49,7 +49,7 @@ Use the repository's Microsoft.Testing.Platform runner. Batch descriptions refer
 | Activity Log browser-module tests | `node --test src/Tests/Moonglade.Web.Tests/JavaScript/ActivityLogTests.mjs` |
 | Solution suite | `dotnet test --solution src/Moonglade.slnx` |
 
-The solution run may skip the relational provider fixtures. Follow the [provider opt-in instructions](../src/Tests/README.md#run-tests) for an isolated Docker-backed PostgreSQL and SQL Server run. Report provider evidence only when those tests actually execute. Browser acceptance is separate from Node and HTTP fixture coverage.
+Use the [migration verification guide](../database/README.md#verification-and-execution) for temporary PostgreSQL and SQL Server checks. Record provider results separately from the solution suite. Browser acceptance is separate from Node and HTTP fixture coverage.
 
 ## B0. Confirm the baseline
 
@@ -214,11 +214,11 @@ dotnet test --project src\Tests\Moonglade.Web.Tests\Moonglade.Web.Tests.csproj -
 ### B5 combined verification evidence (2026-11-08)
 
 - Authorization and checkout: the user accepted B4 and requested B5. Starting and final verified production HEAD is `3a1cae66a0ead73f2c301db943df7dcee65df4c5` on `master`, ahead of `origin/master` by four user-created commits. The starting checkout was clean. B5 changes only this retained record; no application/test/dependency/schema edit, new commit, push or deployment was needed.
-- Runtime and isolation: the existing native Microsoft.Testing.Platform runner executed all 15 test projects. Docker client/server `29.9.2` with a Linux engine was available. Enabled `MOONGLADE_TEST_CATEGORY_DATABASES=1` only in the test shell. The existing fixture created uniquely named, loopback-bound PostgreSQL (`postgres:18-alpine`) and SQL Server (`2022-latest`) containers and disposable databases; its normal disposal removed all its containers. A label-filtered post-run check found no residual fixture containers. No developer or production blog database was opened.
+- Runtime and isolation: the existing native Microsoft.Testing.Platform runner executed all 15 test projects. Docker client/server `29.9.2` with a Linux engine was available. Enabled the former provider suite for that run. The existing fixture created uniquely named, loopback-bound PostgreSQL (`postgres:18-alpine`) and SQL Server (`2022-latest`) containers and disposable databases; its normal disposal removed all its containers. A label-filtered post-run check found no residual fixture containers. No developer or production blog database was opened.
 
 | Executed command (repository root) | Result | Exit code |
 | --- | --- | --- |
-| `$env:MOONGLADE_TEST_CATEGORY_DATABASES = '1'; dotnet test --solution src\Moonglade.slnx` | Passed: 1951, Failed: 0, Skipped: 0; all 15 projects, including both provider groups | 0 |
+| `dotnet test --solution src\Moonglade.slnx` with the former provider suite enabled | Passed: 1951, Failed: 0, Skipped: 0; all 15 projects, including both provider groups | 0 |
 | `dotnet build src\Moonglade.Web\Moonglade.Web.csproj` | Build succeeded; 0 warnings, 0 errors | 0 |
 | `node --test src\Tests\Moonglade.Web.Tests\JavaScript\ActivityLogTests.mjs` | Passed: 14, Failed: 0, Skipped: 0 | 0 |
 

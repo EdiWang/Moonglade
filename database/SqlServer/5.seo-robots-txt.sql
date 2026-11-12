@@ -1,11 +1,11 @@
--- Run after seo-settings.sql with all Moonglade hosts stopped.
+-- Run after 4.seo-settings.sql with all Moonglade hosts stopped.
 SET XACT_ABORT ON;
 BEGIN TRANSACTION;
 
 DECLARE @seo nvarchar(max) = (SELECT CfgValue FROM dbo.BlogConfiguration WITH (UPDLOCK, HOLDLOCK) WHERE CfgKey = N'SEOSettings');
 
 IF ISNULL(ISJSON(@seo, OBJECT), 0) = 0
-    THROW 50000, 'A valid SEOSettings row is required. Run seo-settings.sql first if the row is missing.', 1;
+    THROW 50000, 'A valid SEOSettings row is required. Run 4.seo-settings.sql first if the row is missing.', 1;
 
 IF NOT EXISTS (
     SELECT 1 FROM OPENJSON(@seo)

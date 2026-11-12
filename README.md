@@ -48,8 +48,8 @@ Apply upgrades in order when required:
 2. [PostgreSQL snake_case names](docs/upgrade-postgresql-snake-case.md): requires integer category IDs first. SQL Server retains PascalCase names.
 3. [Canonical activity events](docs/upgrade-activity-log-events.md): replaces legacy activity wording with stable event keys on both providers. Stop the old host first; this one-time upgrade discards only legacy activity history. Reruns preserve new history.
 4. [SEO settings](docs/upgrade-seo-settings.md) copies existing SEO values from General and Advanced into a dedicated configuration row before startup. A follow-up moves robots.txt into that row.
-5. [Independent owner accounts](docs/upgrade-owner-account.md): run the additive `owner-account.sql` and then `owner-account-cutover.sql` for your provider. This preserves the public address, removes only obsolete General email and legacy credentials, and leaves Local installations awaiting new credentials unless already initialized. Restrict access until public setup is complete. End-to-end release acceptance is still pending; do not deploy this development build as a completed release.
-6. [Owner profile settings](docs/upgrade-owner-avatar.md): run `owner-avatar.sql` and then `owner-presentation.sql` for your provider to move the uploaded avatar, Gravatar preference, name and description to account storage.
+5. [Independent owner accounts](docs/upgrade-owner-account.md): run the additive `6.owner-account.sql` and then `7.owner-account-cutover.sql` for your provider. This preserves the public address, removes only obsolete General email and legacy credentials, and leaves Local installations awaiting new credentials unless already initialized. Restrict access until public setup is complete. End-to-end release acceptance is still pending; do not deploy this development build as a completed release.
+6. [Owner profile settings](docs/upgrade-owner-avatar.md): run `8.owner-avatar.sql` and then `9.owner-presentation.sql` for your provider to move the uploaded avatar, Gravatar preference, name and description to account storage.
 
 ### Quick Local Deployment (Docker)
 

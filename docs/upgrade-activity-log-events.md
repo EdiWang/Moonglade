@@ -30,8 +30,8 @@ posts, categories, settings, comments, and all other application data.
 
 | Provider | Script | Required table |
 | --- | --- | --- |
-| PostgreSQL | [`database/PostgreSql/activity-log-events.sql`](../database/PostgreSql/activity-log-events.sql) | `public.activity_log` after the naming upgrade |
-| SQL Server | [`database/SqlServer/activity-log-events.sql`](../database/SqlServer/activity-log-events.sql) | `dbo.ActivityLog` |
+| PostgreSQL | [`database/PostgreSql/3.activity-log-events.sql`](../database/PostgreSql/3.activity-log-events.sql) | `public.activity_log` after the naming upgrade |
+| SQL Server | [`database/SqlServer/3.activity-log-events.sql`](../database/SqlServer/3.activity-log-events.sql) | `dbo.ActivityLog` |
 
 Use a PostgreSQL table-owner maintenance connection (or a superuser), with
 visibility into the table and its owned sequence. SQL Server maintenance requires
@@ -51,7 +51,7 @@ PostgreSQL uses the libpq `PGHOST`, `PGPORT`, `PGDATABASE`, and `PGUSER` setting
 and a secure password file or the client's password prompt:
 
 ```powershell
-psql --set=ON_ERROR_STOP=1 --file=database\PostgreSql\activity-log-events.sql
+psql --set=ON_ERROR_STOP=1 --file=database\PostgreSql\3.activity-log-events.sql
 ```
 
 Do not add `--single-transaction`; the script owns its transaction. On an error,
@@ -61,7 +61,7 @@ SQL Server with an administrator-approved Windows integrated-authentication
 connection:
 
 ```powershell
-sqlcmd -S "<maintenance-server>" -d "<maintenance-database>" -E -b -i database\SqlServer\activity-log-events.sql
+sqlcmd -S "<maintenance-server>" -d "<maintenance-database>" -E -b -i database\SqlServer\3.activity-log-events.sql
 ```
 
 Keep encrypted connections and certificate validation enabled according to your
@@ -172,9 +172,9 @@ require a DBA-reviewed adaptation instead of silent schema loss. Catalog checks
 cannot discover every dynamic-SQL, cross-database, or external consumer; audit
 custom reporting and integrations before upgrading.
 
-## Verification Before Reopening
+## Migration Verification
 
-On each provider's disposable restored copy:
+When changing the migration, AI agents verify the following on a disposable restored copy for each provider.
 
 1. Seed representative legacy activity, including nullable legacy timestamps,
    and unrelated posts, settings, categories, and comments. Record unrelated
@@ -193,24 +193,11 @@ On each provider's disposable restored copy:
    and Clear all using the matching application. Fresh installations use normal
    `EnsureCreated` and seeding; **no manual activity upgrade script is required**.
 
-Run the owning Setup tests and Web build from the repository root:
-
-```powershell
-dotnet test --project src\Tests\Moonglade.Setup.Tests\Moonglade.Setup.Tests.csproj
-dotnet build src\Moonglade.Web\Moonglade.Web.csproj
-```
-
-Provider verification requires the activity-specific disposable PostgreSQL and
-SQL Server fixtures, with a working Docker Linux engine. Ordinary tests, generated
-DDL checks, or the category-only fixture do not prove this activity upgrade's
-relational correctness or idempotency. Record the activity fixture's actual
-opt-in command and results with the release verification evidence. If the engine
-or target provider is unavailable, explicitly report provider execution and
-rerun verification as blocked; do not use an existing database as an alternative.
+Remove the temporary verification artifacts when finished. Record provider execution and rerun results with the release evidence. Report any provider that could not be verified.
 
 The application neither bootstraps these scripts automatically nor checks schema
 compatibility at startup. Only reopen the installation after the required scripts
-and verification have completed and the matching application is deployed by an
+have completed and the matching application is deployed by an
 authorized administrator.
 
 ## Rollback and Remaining Risks

@@ -1,5 +1,5 @@
 -- Account/email cutover for the release introducing first-run owner setup.
--- Run owner-account.sql first, after category and snake_case prerequisites.
+-- Run 6.owner-account.sql first, after category and snake_case prerequisites.
 -- Stop every host and back up first. No legacy credentials are imported.
 BEGIN;
 LOCK TABLE public.blog_configuration, public.owner_account IN SHARE ROW EXCLUSIVE MODE;

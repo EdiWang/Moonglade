@@ -1,6 +1,6 @@
 -- PostgreSQL: upgrade the standard public schema to snake_case table and column names.
 -- Target: the release introducing PostgreSQL snake_case mappings.
--- Prerequisite: apply category-int-identity.sql first if category IDs are still UUIDs.
+-- Prerequisite: apply 1.category-int-identity.sql first if category IDs are still UUIDs.
 -- Stop the application and back up the database before running this script.
 -- Names of constraints, indexes, and sequences are retained; their dependencies follow renames.
 BEGIN;
@@ -23,7 +23,7 @@ BEGIN
         WHERE attrelid = table_id AND attname IN ('Id', 'id')
             AND atttypid = 'integer'::regtype AND NOT attisdropped
     ) THEN
-        RAISE EXCEPTION 'This upgrade requires integer category IDs; apply category-int-identity.sql first.';
+        RAISE EXCEPTION 'This upgrade requires integer category IDs; apply 1.category-int-identity.sql first.';
     END IF;
 
     FOR names IN SELECT * FROM (VALUES

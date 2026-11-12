@@ -88,7 +88,7 @@ Run from the repository root. Record actual totals, skips, warnings and exit cod
 | Solution | `dotnet test --solution src/Moonglade.slnx` |
 | Existing frontend behavior | `node --test src/Tests/Moonglade.Web.Tests/JavaScript/*.mjs` |
 
-For provider runs, start Docker and set `$env:MOONGLADE_TEST_CATEGORY_DATABASES = '1'` before the Setup or solution command. See the [test guide](../src/Tests/README.md#run-tests). Record each provider independently. The ordinary suite and TestHost results are separate from real database and browser acceptance.
+For temporary migration verification, use disposable databases and follow the [migration guide](../database/README.md#verification-and-execution). Record each provider independently. The ordinary suite and TestHost results are separate from real database and browser acceptance.
 
 ## Resume and update this record
 
@@ -112,14 +112,14 @@ For provider runs, start Docker and set `$env:MOONGLADE_TEST_CATEGORY_DATABASES 
 | `dotnet test --project src/Tests/Moonglade.Auth.Tests/Moonglade.Auth.Tests.csproj` | 63 | 0 | 0 | 0 |
 | `dotnet test --project src/Tests/Moonglade.Setup.Tests/Moonglade.Setup.Tests.csproj` | 78 | 0 | 23 | 0 |
 | `dotnet test --project src/Tests/Moonglade.Web.Tests/Moonglade.Web.Tests.csproj` | 668 | 0 | 0 | 0 |
-| `dotnet test --project src/Tests/Moonglade.Setup.Tests/Moonglade.Setup.Tests.csproj --no-build` with `MOONGLADE_TEST_CATEGORY_DATABASES=1` | 167 | 2 | 0 | 2 |
+| `dotnet test --project src/Tests/Moonglade.Setup.Tests/Moonglade.Setup.Tests.csproj --no-build` with the former provider suite enabled | 167 | 2 | 0 | 2 |
 
-The default Setup run skipped the opt-in relational theories. The opt-in run exercised both providers and expanded the theory rows. Both failures were in [ExistingContent_WithMissingSettingsOrAccount_IsNotModified](../src/Tests/Moonglade.Setup.Tests/Database/StartupInstallationDatabaseTests.cs#L133), with `accountOnly: true` on PostgreSQL and SQL Server. The preceding assertion on the legacy startup failure passed. The settings-count assertion expected 10 and saw 11. The dedicated SEO settings commit `5a0bff243` added another seeded ordinary group and left this expectation unchanged. The failure prevented the later post and comment assertions in those two cases from running.
+The default Setup run skipped the opt-in relational theories. The opt-in run exercised both providers and expanded the theory rows. Both failures were in `ExistingContent_WithMissingSettingsOrAccount_IsNotModified`, with `accountOnly: true` on PostgreSQL and SQL Server. The preceding assertion on the legacy startup failure passed. The settings-count assertion expected 10 and saw 11. The dedicated SEO settings commit `5a0bff243` added another seeded ordinary group and left this expectation unchanged. The failure prevented the later post and comment assertions in those two cases from running.
 
 ### B0 follow-up (2026-11-11)
 
 - The user approved correcting the existing test before B1. The test now compares the configuration keys, JSON and modification timestamps before and after startup fails. The existing assertions for startup, the saved post and the saved comment still run for both providers with either all settings removed or only the local account row removed.
-- Reran `dotnet test --project src/Tests/Moonglade.Setup.Tests/Moonglade.Setup.Tests.csproj` with `MOONGLADE_TEST_CATEGORY_DATABASES=1`. The build-enabled run passed 169 cases with zero failures or skips and exit code 0. This rerun supersedes the two opt-in Setup failures above.
+- Reran `dotnet test --project src/Tests/Moonglade.Setup.Tests/Moonglade.Setup.Tests.csproj` with the former provider suite enabled. The build-enabled run passed 169 cases with zero failures or skips and exit code 0. This rerun supersedes the two opt-in Setup failures above.
 - The verified checkout is `6c0b9fcbeea7dbaa37da9201095c12d6feffbde2` plus the single test correction in the working tree. The correction and this record are uncommitted. B0 verification is complete and awaits acceptance. No B1 work has started.
 
 ### B1 independent account storage (2026-11-11)
@@ -128,7 +128,7 @@ The default Setup run skipped the opt-in relational theories. The opt-in run exe
 - Added the typed singleton `OwnerAccount` table with a stable GUID ID, trimmed/public email, invariant-uppercase normalized email, revision concurrency token, optional local credentials and optional bound TOTP secret. Database checks and unique indexes enforce one owner and complete-or-absent local credentials. `LocalInitializedUtc` distinguishes initialized accounts from profiles even after the authenticator is cleared.
 - Auth owns the scoped `OwnerAccountStore` and the credential-free `IOwnerProfileReader`. Storage supports creating a public profile, initializing once from an absent/profile-only account, and validating local passwords against the independent row. Initialization retains a profile's stable ID, checks its expected revision, hashes with a fresh salt and commits once. Store writes reject enclosing explicit or ambient transactions, and detach attempted writes on success/failure so a failed credential save cannot reappear in an unrelated save.
 - Kept the legacy `LocalAccountSettings`, default administrator, runtime login/TOTP flow, settings writes, and General Owner Email consumers unchanged. No pending setup data, HTTP setup route/gate, cookie cutover, credential migration, or Owner Email transfer was added. Those remain B2/B3 work.
-- Added additive, idempotent `owner-account.sql` scripts for PostgreSQL and SQL Server. Fresh creation and manual addition have matching logical columns, keys and indexes. Reruns preserve both profile-only and initialized rows. Guarded unsupported shapes fail without changing account or unrelated data. Startup checks the new table before deciding whether to seed; a missing table fails initialization rather than starting the host. Full-database clearing includes the table.
+- Added additive, idempotent `6.owner-account.sql` scripts for PostgreSQL and SQL Server. Fresh creation and manual addition have matching logical columns, keys and indexes. Reruns preserve both profile-only and initialized rows. Guarded unsupported shapes fail without changing account or unrelated data. Startup checks the new table before deciding whether to seed; a missing table fails initialization rather than starting the host. Full-database clearing includes the table.
 - Added SQLite Auth coverage for absent/profile-only rejection, normalization and stable identity, initialization, wrong passwords, repeated/stale completion, authenticator reset state, failed/cancelled save cleanup and enclosing-transaction rejection. Added 13 account relational cases per provider (26 total), including deterministic simultaneous writes over separate connections and subsequent unrelated saves. Upgrade snapshots compare every unrelated mapped table, including articles, comments, all settings/timestamps, legacy account JSON and manifest history.
 - Adjusted the historical PostgreSQL naming fixture to exclude the new table: it represents the earlier 19-table schema, not the current 20-table model. Updated the README, database script index, engineering reference and test guide for the preparatory boundary.
 
@@ -138,7 +138,7 @@ The default Setup run skipped the opt-in relational theories. The opt-in run exe
 | `dotnet test --project src\Tests\Moonglade.Setup.Tests\Moonglade.Setup.Tests.csproj` (ordinary) | 79 | 0 | 28 | 0 |
 | `dotnet test --project src\Tests\Moonglade.Setup.Tests\Moonglade.Setup.Tests.csproj --no-build --filter-class '*OwnerAccountDatabaseTests'` with opt-in (initial) | 16 | 4 | 0 | 2 |
 | `dotnet test --project src\Tests\Moonglade.Setup.Tests\Moonglade.Setup.Tests.csproj --filter-class '*OwnerAccountDatabaseTests'` with opt-in (corrected fixture, before six schema-rejection cases were added) | 20 | 0 | 0 | 0 |
-| `dotnet test --project src\Tests\Moonglade.Setup.Tests\Moonglade.Setup.Tests.csproj` with `MOONGLADE_TEST_CATEGORY_DATABASES=1` (final) | 196 | 0 | 0 | 0 |
+| `dotnet test --project src\Tests\Moonglade.Setup.Tests\Moonglade.Setup.Tests.csproj` with the former provider suite enabled (final) | 196 | 0 | 0 | 0 |
 | `dotnet build src\Moonglade.Web\Moonglade.Web.csproj --no-restore --verbosity quiet` | N/A | 0 | N/A | 0 |
 
 - The first Auth build found a misplaced helper inside a `try`/`finally`; it was corrected before the passing runs. The first targeted provider run had four concurrency-test timeouts because reconstructing connections from an already-open connection string omitted its password. The fixture now clones each connection, preserving its synthetic authentication while using independent owned connections, and surfaces pre-barrier task failures. All four concurrency scenarios passed in the corrected targeted run and again in the final full Setup run.
@@ -149,7 +149,7 @@ The default Setup run skipped the opt-in relational theories. The opt-in run exe
 
 - The user accepted B1, committed it as `9a36a68d2`, and requested the local development database migration followed by B2. The checkout was clean at that commit before B2 edits. No agent-created commit, push or deployment was authorized or performed.
 - The configured development PostgreSQL endpoint was not loopback, so the exact target was confirmed with the user before writing. There were no other database connections. A private full custom-format `pg_dump` backup, `development-before-owner-account-20261111-085637.dump`, was retained outside the repository. It contains real development data and must not be published or committed.
-- Applied the PostgreSQL additive `owner-account.sql` twice using an ephemeral PostgreSQL 18 client. Both runs succeeded; row counts and server-side content digests of all 19 unrelated tables were unchanged after each run. The independent account table was empty afterward. The application was not launched against this database during migration or subsequent browser acceptance.
+- Applied the PostgreSQL additive `6.owner-account.sql` twice using an ephemeral PostgreSQL 18 client. Both runs succeeded; row counts and server-side content digests of all 19 unrelated tables were unchanged after each run. The independent account table was empty afterward. The application was not launched against this database during migration or subsequent browser acceptance.
 
 ### B2 runtime cutover (2026-11-11)
 
@@ -166,7 +166,7 @@ The default Setup run skipped the opt-in relational theories. The opt-in run exe
 | --- | ---: | ---: | ---: | ---: |
 | `dotnet test --project src\Tests\Moonglade.Auth.Tests\Moonglade.Auth.Tests.csproj` | 108 | 0 | 0 | 0 |
 | `dotnet test --project src\Tests\Moonglade.Web.Tests\Moonglade.Web.Tests.csproj` (final) | 733 | 0 | 0 | 0 |
-| `dotnet test --project src\Tests\Moonglade.Setup.Tests\Moonglade.Setup.Tests.csproj` with `MOONGLADE_TEST_CATEGORY_DATABASES=1` (final) | 193 | 0 | 0 | 0 |
+| `dotnet test --project src\Tests\Moonglade.Setup.Tests\Moonglade.Setup.Tests.csproj` with the former provider suite enabled (final) | 193 | 0 | 0 | 0 |
 | `node --test --test-reporter=spec 'src\Tests\Moonglade.Web.Tests\JavaScript\*.mjs'` | 42 | 0 | 0 | 0 |
 | `dotnet build src\Moonglade.Web\Moonglade.Web.csproj --no-restore --verbosity quiet` (final) | N/A | 0 | N/A | 0 |
 
@@ -206,7 +206,7 @@ The default Setup run skipped the opt-in relational theories. The opt-in run exe
 | `dotnet test --project src\Tests\Moonglade.Web.Tests\Moonglade.Web.Tests.csproj` (final Atom fix) | 750 | 0 | 0 | 0 |
 | `dotnet test --project src\Tests\Moonglade.Email.Tests\Moonglade.Email.Tests.csproj` | 113 | 0 | 0 | 0 |
 | `dotnet test --project src\Tests\Moonglade.Syndication.Tests\Moonglade.Syndication.Tests.csproj` (final Atom fix and RSS assertions) | 18 | 0 | 0 | 0 |
-| `dotnet test --project src\Tests\Moonglade.Setup.Tests\Moonglade.Setup.Tests.csproj` with `MOONGLADE_TEST_CATEGORY_DATABASES=1` | 231 | 0 | 0 | 0 |
+| `dotnet test --project src\Tests\Moonglade.Setup.Tests\Moonglade.Setup.Tests.csproj` with the former provider suite enabled | 231 | 0 | 0 | 0 |
 | `node --test --test-reporter=spec 'src\Tests\Moonglade.Web.Tests\JavaScript\*.mjs'` | 42 | 0 | 0 | 0 |
 | `dotnet build src\Moonglade.Web\Moonglade.Web.csproj --no-incremental` | N/A | 0 | N/A | 0 |
 
@@ -237,7 +237,7 @@ The default Setup run skipped the opt-in relational theories. The opt-in run exe
 - The user accepted B3 at the user-created `48de287c4`, explicitly requested development database migration, and instructed that B4 must not start. No application or browser acceptance work was started for B4.
 - Verified the configured PostgreSQL development target without exposing its connection string, credentials or email. No local Moonglade host was running, and database checks rejected any other connected client before backup/migration. The source had 20 application tables and an already initialized independent owner account.
 - Saved a new full custom-format backup, `development-before-owner-email-cutover-20261111-110005.dump` (1,139,280 bytes), in private session storage outside the repository. Verified its archive catalog and restored it into an isolated PostgreSQL container. Collation-independent, ordered full-row fingerprints matched every restored table to the source before applying any live changes.
-- On the restored copy, ran the accepted `owner-account.sql` and `owner-account-cutover.sql` in order, then repeated both scripts. Verified the retained General JSON members and timestamp, every unrelated setting row and timestamp, unchanged schema, all 18 unrelated tables, and the complete existing owner row. Reruns produced identical data and schema. The rehearsal container and its temporary database volume were removed.
+- On the restored copy, ran the accepted `6.owner-account.sql` and `7.owner-account-cutover.sql` in order, then repeated both scripts. Verified the retained General JSON members and timestamp, every unrelated setting row and timestamp, unchanged schema, all 18 unrelated tables, and the complete existing owner row. Reruns produced identical data and schema. The rehearsal container and its temporary database volume were removed.
 - Rechecked the accepted checkout, backup SHA-256, target identity and full development database fingerprints immediately before applying the same scripts to the development database. Both first execution and repeat passed. Configuration rows changed from 13 to 12 solely by removing the one obsolete `LocalAccountSettings` row; only the legacy General email member was removed from its retained row. All 18 unrelated tables were unchanged.
 - The existing independent account's ID, email, revision, initialization time, password hash/salt and bound authenticator were preserved exactly. No legacy credentials were imported, no account was reset, and initial Local setup was not reopened.
 - Private backups and verification metadata remain outside the repository. Temporary migration helpers were removed. No application startup, production migration, code commit, push or deployment was performed. B4 remains explicitly paused.
@@ -258,7 +258,7 @@ The default Setup run skipped the opt-in relational theories. The opt-in run exe
 
 | Executed command (repository root) | Passed | Failed | Skipped | Exit code |
 | --- | ---: | ---: | ---: | ---: |
-| `dotnet test --solution src\Moonglade.slnx --verbosity minimal`, with `MOONGLADE_TEST_CATEGORY_DATABASES=1` | 2,211 | 0 | 0 | 0 |
+| `dotnet test --solution src\Moonglade.slnx --verbosity minimal`, with the former provider suite enabled | 2,211 | 0 | 0 | 0 |
 | `node --test src\Tests\Moonglade.Web.Tests\JavaScript\*.mjs` | 47 | 0 | 0 | 0 |
 | `dotnet test --project src\Tests\Moonglade.Auth.Tests\Moonglade.Auth.Tests.csproj --verbosity minimal`, after the diagnostic correction | 133 | 0 | 0 | 0 |
 | `dotnet test --project src\Tests\Moonglade.Web.Tests\Moonglade.Web.Tests.csproj --filter-class '*LocalAccountSetupHttpTests' --filter-class '*AccountSecurityHttpTests' --filter-class '*LocalAccountRateLimitPolicyTests' --verbosity minimal`, after the correction | 71 | 0 | 0 | 0 |

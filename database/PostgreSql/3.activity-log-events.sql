@@ -1,6 +1,6 @@
 -- PostgreSQL: replace legacy activity history with stable activity event keys.
 -- Target: the release introducing stable activity event keys.
--- Prerequisites: category integer IDs, then snake-case-names.sql if needed;
+-- Prerequisites: category integer IDs, then 2.snake-case-names.sql if needed;
 -- public.activity_log must have the complete standard legacy or new shape.
 -- Stop all application instances/background workers, back up, and rehearse on
 -- a restored copy. Run this complete script standalone as the table owner.

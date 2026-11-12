@@ -103,7 +103,8 @@ See [Build & Run](README.md#build--run) for restore/build/run commands and [Run 
 - When following the existing async test style, use `TestContext.Current.CancellationToken`.
 - Prefer focused unit tests for command/query handlers, services, middleware, validators, and protocol generators. Use integration tests when behavior depends on EF/database setup or host-level wiring.
 - Prefer running the affected test project. For cross-module changes or startup registration changes, at least run the Web project build.
-- Account release acceptance also requires opt-in tests on both database providers and isolated fresh/upgrade runtime and browser checks; see the [release checklist](src/Tests/README.md#owner-account-release-acceptance).
+- Account release acceptance requires isolated fresh-install, upgrade, and browser checks on both supported database providers. See the [release checklist](src/Tests/README.md#owner-account-release-acceptance).
+- Keep database migration tests out of the repository. When working on a migration, AI agents may verify the SQL in disposable databases using temporary scripts or fixtures. Remove temporary verification artifacts when finished.
 
 ## Planning And Documentation
 

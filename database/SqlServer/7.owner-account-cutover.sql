@@ -1,11 +1,11 @@
 -- Account/email cutover for the release introducing first-run owner setup.
--- Run owner-account.sql first, after the category identity prerequisite.
+-- Run 6.owner-account.sql first, after the category identity prerequisite.
 -- Stop every host and back up first. No legacy credentials are imported.
 SET XACT_ABORT ON;
 BEGIN TRANSACTION;
 
 IF OBJECT_ID(N'dbo.OwnerAccount', N'U') IS NULL OR OBJECT_ID(N'dbo.BlogConfiguration', N'U') IS NULL
-    THROW 50000, 'Run owner-account.sql against the standard Moonglade schema before the account cutover.', 1;
+    THROW 50000, 'Run 6.owner-account.sql against the standard Moonglade schema before the account cutover.', 1;
 
 DECLARE @hasOwner bit = CASE WHEN EXISTS (
     SELECT 1 FROM dbo.OwnerAccount WITH (UPDLOCK, HOLDLOCK)) THEN 1 ELSE 0 END;

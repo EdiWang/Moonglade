@@ -1,4 +1,4 @@
--- Run after owner-avatar.sql with all application hosts stopped and a verified backup.
+-- Run after 8.owner-avatar.sql with all application hosts stopped and a verified backup.
 BEGIN;
 LOCK TABLE public.blog_configuration, public.owner_avatar IN SHARE ROW EXCLUSIVE MODE;
 

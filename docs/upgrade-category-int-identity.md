@@ -13,8 +13,8 @@ Use the script matching your database provider:
 
 | Provider | Script | Source schema |
 | --- | --- | --- |
-| PostgreSQL | [`database/PostgreSql/category-int-identity.sql`](../database/PostgreSql/category-int-identity.sql) | `public."Category"."Id"` and `public."PostCategory"."CategoryId"` are `uuid`. |
-| SQL Server | [`database/SqlServer/category-int-identity.sql`](../database/SqlServer/category-int-identity.sql) | `dbo.Category.Id` and `dbo.PostCategory.CategoryId` are `uniqueidentifier`. |
+| PostgreSQL | [`database/PostgreSql/1.category-int-identity.sql`](../database/PostgreSql/1.category-int-identity.sql) | `public."Category"."Id"` and `public."PostCategory"."CategoryId"` are `uuid`. |
+| SQL Server | [`database/SqlServer/1.category-int-identity.sql`](../database/SqlServer/1.category-int-identity.sql) | `dbo.Category.Id` and `dbo.PostCategory.CategoryId` are `uniqueidentifier`. |
 
 The scripts require the standard category primary key, the
 `(PostId, CategoryId)` association primary key, one foreign key from the
@@ -73,23 +73,6 @@ activity-log GUIDs are retained as historical metadata, not live foreign keys.
 Identity values may have gaps after deletes or failed writes. Do not reseed to
 reuse deleted IDs, infer category counts from the ID, or use IDs for sorting.
 
-## Automated Verification
+## Migration Verification
 
-The migration tests were verified against PostgreSQL 18 and SQL Server 2022.
-They exercise fresh database creation and seeding, populated and empty legacy
-schemas, mapping preservation, keys/indexes/cascade behavior, repeated execution
-after edits and deletions, and rollback on invalid prerequisites.
-
-To run these checks from the repository root with Docker running:
-
-```powershell
-$env:MOONGLADE_TEST_CATEGORY_DATABASES = '1'
-dotnet test --project src\Tests\Moonglade.Setup.Tests\Moonglade.Setup.Tests.csproj
-Remove-Item Env:\MOONGLADE_TEST_CATEGORY_DATABASES
-```
-
-The tests launch uniquely named, disposable PostgreSQL and SQL Server containers
-on dynamically allocated loopback ports, downloading the images if needed, and
-remove their containers afterward. They do not connect to application-configured
-databases. Without the opt-in variable, the relational test groups are explicitly
-skipped; ordinary Setup tests and provider-model checks still run.
+The migration was verified against PostgreSQL 18 and SQL Server 2022. Verification covered populated and empty legacy schemas, mapping and key preservation, generated IDs, repeat execution, and rollback on invalid prerequisites. See the [migration verification guide](../database/README.md#verification-and-execution) when changing the scripts.

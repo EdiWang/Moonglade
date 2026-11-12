@@ -1,4 +1,4 @@
--- Run after seo-settings.sql with all Moonglade hosts stopped.
+-- Run after 4.seo-settings.sql with all Moonglade hosts stopped.
 BEGIN;
 LOCK TABLE public.blog_configuration IN SHARE ROW EXCLUSIVE MODE;
 
@@ -16,7 +16,7 @@ BEGIN
     END;
 
     IF seo IS NULL OR json_typeof(seo) <> 'object' THEN
-        RAISE EXCEPTION 'A valid SEOSettings row is required. Run seo-settings.sql first if the row is missing.';
+        RAISE EXCEPTION 'A valid SEOSettings row is required. Run 4.seo-settings.sql first if the row is missing.';
     END IF;
 
     IF EXISTS (SELECT 1 FROM json_each(seo) WHERE lower(key COLLATE "C") = 'robotstxtcontent') THEN

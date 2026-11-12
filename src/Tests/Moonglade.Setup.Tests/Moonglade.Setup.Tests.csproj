@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
 		<TargetFramework>net10.0</TargetFramework>
@@ -24,7 +24,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\..\Moonglade.ActivityLog\Moonglade.ActivityLog.csproj" />
 		<ProjectReference Include="..\..\Moonglade.Setup\Moonglade.Setup.csproj" />
 		<ProjectReference Include="..\..\Moonglade.Data.PostgreSql\Moonglade.Data.PostgreSql.csproj" />
 		<ProjectReference Include="..\..\Moonglade.Data.SqlServer\Moonglade.Data.SqlServer.csproj" />

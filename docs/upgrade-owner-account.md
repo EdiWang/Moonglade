@@ -10,8 +10,8 @@ This upgrade replaces legacy local credentials and moves the public Owner Email 
 
 | Provider | First: schema and validation | Second: public-email and credential cutover |
 | --- | --- | --- |
-| PostgreSQL | [`owner-account.sql`](../database/PostgreSql/owner-account.sql) | [`owner-account-cutover.sql`](../database/PostgreSql/owner-account-cutover.sql) |
-| SQL Server | [`owner-account.sql`](../database/SqlServer/owner-account.sql) | [`owner-account-cutover.sql`](../database/SqlServer/owner-account-cutover.sql) |
+| PostgreSQL | [`6.owner-account.sql`](../database/PostgreSql/6.owner-account.sql) | [`7.owner-account-cutover.sql`](../database/PostgreSql/7.owner-account-cutover.sql) |
+| SQL Server | [`6.owner-account.sql`](../database/SqlServer/6.owner-account.sql) | [`7.owner-account-cutover.sql`](../database/SqlServer/7.owner-account-cutover.sql) |
 
 4. Verify the resulting account/profile, remaining General Settings, and preserved content before starting the upgraded application. Both scripts are transactional and safe to rerun with hosts stopped. Run SQL tools with stop-on-error behavior; disconnect or roll back an open transaction after a reported error before retrying.
 5. Start the new application and complete the local account setup below. Do not run old binaries against the upgraded database.

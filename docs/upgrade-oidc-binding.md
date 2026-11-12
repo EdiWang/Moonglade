@@ -5,7 +5,7 @@ OIDC settings and the external account binding belong to the initialized local o
 ## Database upgrade
 
 1. Stop all application hosts and back up the database. Complete any required owner account, avatar and presentation upgrades.
-2. Run [PostgreSQL owner-oidc.sql](../database/PostgreSql/owner-oidc.sql) or [SQL Server owner-oidc.sql](../database/SqlServer/owner-oidc.sql) before starting the application. The scripts add the singleton configuration and dedicated Data Protection key tables. Repeating the scripts preserves configuration, bindings, keys and existing owner data.
+2. Run [PostgreSQL 10.owner-oidc.sql](../database/PostgreSql/10.owner-oidc.sql) or [SQL Server 10.owner-oidc.sql](../database/SqlServer/10.owner-oidc.sql) before starting the application. The scripts add the singleton configuration and dedicated Data Protection key tables. Repeating the scripts preserves configuration, bindings, keys and existing owner data.
 3. Start the application and sign in with the local owner account. Fresh installations create the required tables during setup.
 
 ## Configure and bind
