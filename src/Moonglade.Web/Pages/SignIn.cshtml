@@ -4,12 +4,14 @@
 }
 @inject ICacheAside Cache
 @inject ThemeCacheInvalidator ThemeCache
+@inject Moonglade.Auth.Oidc.OwnerOidcStore OwnerOidc
 @model Moonglade.Web.Pages.SignInModel
 @using Edi.AspNetCore.Utils
 @using Moonglade.Utils
 
 @{
     Layout = null;
+    var oidc = await OwnerOidc.ReadSignInOptionAsync(HttpContext.RequestAborted);
 
     var themeCss = await Cache.GetOrCreateAsync(BlogCachePartition.General.ToString(), ThemeCache.GetCacheKey(snapshot.AppearanceSettings.ThemeId), async () =>
     {
@@ -40,6 +42,10 @@
         <div class="signin-content">
             <h1 class="h4 mb-4">@SharedLocalizer["Sign In"]</h1>
 
+            @if (Model.OidcFailed)
+            {
+                <div class="alert alert-warning" role="alert">@SharedLocalizer["Third-party sign-in failed. Try again or sign in with your local account."]</div>
+            }
             <form method="post">
                 <div asp-validation-summary="All" class="text-danger" role="alert"></div>
                 <div class="mb-3">
@@ -53,6 +59,12 @@
 
                 <input type="submit" value="@SharedLocalizer["Sign In"]" class="btn w-100 btn-accent" />
             </form>
+            @if (oidc is not null)
+            {
+                <form method="post" asp-page-handler="Oidc" class="mt-3">
+                    <button type="submit" class="btn btn-outline-accent w-100 text-break">@SharedLocalizer["Sign in with {0}", oidc.DisplayName]</button>
+                </form>
+            }
             <p class="text-muted mt-4 mb-0 small">
                 Moonglade @VersionHelper.AppVersion
             </p>

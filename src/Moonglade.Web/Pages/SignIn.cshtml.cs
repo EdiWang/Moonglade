@@ -2,7 +2,9 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.RateLimiting;
+using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Options;
+using Moonglade.Auth.Oidc;
 using Moonglade.Web.Services;
 using System.ComponentModel.DataAnnotations;
 using System.Security.Claims;
@@ -23,14 +25,25 @@ public class SignInModel(
     [Display(Name = "Password")]
     public string Password { get; set; }
 
-    public async Task<IActionResult> OnGetAsync()
+    public bool OidcFailed { get; private set; }
+
+    public async Task<IActionResult> OnGetAsync(bool failed = false)
     {
+        OidcFailed = failed;
         await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
         await HttpContext.SignOutAsync(BlogAuthSchemas.LocalAccountSetup);
         await HttpContext.SignOutAsync(BlogAuthSchemas.LocalAccountTwoFactor);
         await HttpContext.SignOutAsync(BlogAuthSchemas.InitialAccountSetup);
         HttpContext.User = new ClaimsPrincipal(new ClaimsIdentity());
         return Page();
+    }
+
+    public async Task<IActionResult> OnPostOidcAsync([FromServices] OwnerOidcStore oidc, [FromServices] OidcBindingFlow flow)
+    {
+        var option = await oidc.ReadSignInOptionAsync(HttpContext.RequestAborted);
+        return option is null
+            ? RedirectToPage(new RouteValueDictionary { ["failed"] = true })
+            : flow.StartSignIn(option.Revision, Url.Page("/Admin/Dashboard"));
     }
 
     public async Task<IActionResult> OnPostAsync()

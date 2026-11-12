@@ -189,7 +189,7 @@ If initialization fails, Moonglade logs the error and exits with a nonzero proce
 
 Existing installations that used the standalone OpenID Connect mode must [establish local owner credentials](docs/upgrade-generic-oidc-authentication.md) before reopening access to the site.
 
-The local owner can configure a public HTTPS OpenID Connect provider and bind an external account under **Account Settings > Third-party sign-in**. Existing databases need the [OIDC binding schema upgrade](docs/upgrade-oidc-binding.md).
+The local owner can configure a public HTTPS OpenID Connect provider and bind an external account under **Account Settings > Third-party sign-in**. When enabled and bound, the provider appears below the local sign-in form under its configured display name. The linked identity signs in as the local owner without Moonglade TOTP. Disabling, unbinding, or deleting the provider revokes its Moonglade sessions. Existing databases need the [OIDC binding schema upgrade](docs/upgrade-oidc-binding.md).
 
 ### Comment Markdown Links
 

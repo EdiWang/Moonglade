@@ -15,7 +15,7 @@ using System.Text;
 
 namespace Moonglade.Web.Tests.Hosting;
 
-public class OwnerOidcHttpTests
+public partial class OwnerOidcHttpTests
 {
     private const string Path = "/admin/account/oidc";
     private const string VerifyPath = Path + "/verify";
@@ -279,6 +279,7 @@ public class OwnerOidcHttpTests
         private string? _codeChallenge;
         public int Exchanges { get; private set; }
         public string ExpectedClientSecret { get; set; } = Secret;
+        public string Subject { get; set; } = "external-subject";
 
         public string CallbackFor(Uri redirect, bool wrongNonce = false)
         {
@@ -327,7 +328,7 @@ public class OwnerOidcHttpTests
                     Assert.Equal(_codeChallenge, Base64UrlEncoder.Encode(SHA256.HashData(Encoding.ASCII.GetBytes(form["code_verifier"].ToString()))));
                     var now = DateTime.UtcNow;
                     var token = new JwtSecurityToken(Authority, "site",
-                        [new Claim("sub", "external-subject"), new Claim("name", "External account"), new Claim("nonce", _nonce!),
+                        [new Claim("sub", Subject), new Claim("name", "External account"), new Claim("nonce", _nonce!),
                             new Claim("iat", EpochTime.GetIntDate(now).ToString(), ClaimValueTypes.Integer64)],
                         now.AddSeconds(-5), now.AddMinutes(5),
                         new SigningCredentials(new RsaSecurityKey(_key) { KeyId = "test-key" }, SecurityAlgorithms.RsaSha256));

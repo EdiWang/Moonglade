@@ -9,13 +9,14 @@ using System.Text.Json;
 
 namespace Moonglade.Auth.Oidc;
 
-public sealed class OidcBindingFlow(IDataProtectionProvider protection)
+public sealed class OidcBindingFlow(IDataProtectionProvider protection, TimeProvider clock)
 {
     public const string PendingScheme = "MoongladeOidcPendingBinding";
-    public const string BindingScheme = "MoongladeOidcBinding";
+    public const string Scheme = "MoongladeOidcBinding";
     public const string CallbackPath = "/signin-oidc";
     public const string ManagementPath = "/admin/account/oidc";
     public const string ProofKey = "moonglade:oidc-binding-proof";
+    internal const string SignInRevisionKey = "moonglade:oidc-sign-in-revision";
     public const string IssuerKey = "moonglade:oidc-issuer";
     public const string SubjectKey = "moonglade:oidc-subject";
     public const string LabelKey = "moonglade:oidc-label";
@@ -65,7 +66,14 @@ public sealed class OidcBindingFlow(IDataProtectionProvider protection)
         await context.SignOutAsync(PendingScheme);
         var properties = new AuthenticationProperties();
         properties.Items[ProofKey] = proof;
-        return new ChallengeResult(BindingScheme, properties);
+        return new ChallengeResult(Scheme, properties);
+    }
+
+    public ChallengeResult StartSignIn(Guid revision, string? redirectUri)
+    {
+        var properties = new AuthenticationProperties { RedirectUri = redirectUri, ExpiresUtc = clock.GetUtcNow().Add(Lifetime) };
+        properties.Items[SignInRevisionKey] = revision.ToString();
+        return new ChallengeResult(Scheme, properties);
     }
 
     private static CookieOptions CookieOptions(HttpContext context) => new()

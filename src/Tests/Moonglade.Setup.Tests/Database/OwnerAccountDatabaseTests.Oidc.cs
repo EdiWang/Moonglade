@@ -33,7 +33,7 @@ public partial class OwnerAccountDatabaseTests
             await using var scope = services.CreateAsyncScope();
             var store = scope.ServiceProvider.GetRequiredService<OwnerOidcStore>();
             await store.SaveAsync(owner.Id, null, "Test provider", authority, "test-client", syntheticSecret, ct);
-            Assert.Equal(syntheticSecret, (await store.ReadBindingCredentialsAsync(ct))!.ClientSecret);
+            Assert.Equal(syntheticSecret, (await store.ReadCredentialsAsync(ct))!.ClientSecret);
         }
 
         var row = await db.OwnerOidc.AsNoTracking().SingleAsync(ct);
@@ -55,7 +55,7 @@ public partial class OwnerAccountDatabaseTests
         await using var replacementServices = CreateOidcServices(replacement);
         await using var replacementScope = replacementServices.CreateAsyncScope();
         var replacementStore = replacementScope.ServiceProvider.GetRequiredService<OwnerOidcStore>();
-        Assert.Equal(syntheticSecret, (await replacementStore.ReadBindingCredentialsAsync(ct))!.ClientSecret);
+        Assert.Equal(syntheticSecret, (await replacementStore.ReadCredentialsAsync(ct))!.ClientSecret);
         await replacementStore.BindAsync(owner.Id, row.Revision, authority, "test-subject", "External account", ct);
         await replacement.MigrateAsync("owner-oidc.sql");
         Assert.Equal("test-subject", (await copied.OwnerOidc.AsNoTracking().SingleAsync(ct)).Subject);

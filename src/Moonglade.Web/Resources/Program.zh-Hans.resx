@@ -2145,4 +2145,6 @@
   <data name="Unbind the external account before changing the authority or client ID." xml:space="preserve"><value>更改 Authority 或客户端 ID 前，请先解绑外部账号。</value></data>
   <data name="Step {0} of {1}" xml:space="preserve"><value>第 {0} 步，共 {1} 步</value></data>
   <data name="Verify your identity" xml:space="preserve"><value>验证身份</value></data>
+  <data name="Sign in with {0}" xml:space="preserve"><value>使用 {0} 登录</value></data>
+  <data name="Third-party sign-in failed. Try again or sign in with your local account." xml:space="preserve"><value>第三方登录失败。请重试，或使用本地账号登录。</value></data>
 </root>

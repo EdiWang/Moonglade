@@ -11,6 +11,8 @@ namespace Moonglade.Auth.Oidc;
 public sealed record OwnerOidcSettings(Guid Revision, string DisplayName, string Authority, string ClientId,
     bool Enabled, string? AccountLabel);
 
+public sealed record OwnerOidcSignInOption(Guid Revision, string DisplayName);
+
 public sealed record OidcProviderInput(string DisplayName, string Authority, string ClientId, string? ClientSecret)
 {
     public static OidcProviderInput Validate(string? displayName, string? authority, string? clientId, string? clientSecret,
@@ -32,7 +34,8 @@ public sealed record OidcProviderInput(string DisplayName, string Authority, str
     }
 }
 
-internal sealed record OwnerOidcCredentials(Guid OwnerId, Guid Revision, string Authority, string ClientId, string ClientSecret);
+internal sealed record OwnerOidcCredentials(Guid OwnerId, Guid Revision, string Authority, string ClientId, string ClientSecret,
+    Guid? SessionRevision);
 
 public sealed class OwnerOidcStore
 {
@@ -49,12 +52,26 @@ public sealed class OwnerOidcStore
         _db.OwnerOidc.AsNoTracking().Select(row => new OwnerOidcSettings(
             row.Revision, row.DisplayName, row.Authority, row.ClientId, row.Enabled, row.AccountLabel)).SingleOrDefaultAsync(ct);
 
-    internal async Task<OwnerOidcCredentials?> ReadBindingCredentialsAsync(CancellationToken ct)
+    public Task<OwnerOidcSignInOption?> ReadSignInOptionAsync(CancellationToken ct) =>
+        _db.OwnerOidc.AsNoTracking()
+            .Where(row => row.Enabled && row.Issuer != null && row.Subject != null && row.SessionRevision != null)
+            .Select(row => new OwnerOidcSignInOption(row.Revision, row.DisplayName)).SingleOrDefaultAsync(ct);
+
+    internal async Task<OwnerOidcCredentials?> ReadCredentialsAsync(CancellationToken ct)
     {
         var row = await _db.OwnerOidc.AsNoTracking().SingleOrDefaultAsync(ct);
-        return row is { Enabled: true, Subject: null }
-            ? new(row.OwnerId, row.Revision, row.Authority, row.ClientId, _secrets.Protector.Unprotect(row.ProtectedSecret))
+        return row is { Enabled: true }
+            ? new(row.OwnerId, row.Revision, row.Authority, row.ClientId, _secrets.Protector.Unprotect(row.ProtectedSecret),
+                row.Issuer is not null && row.Subject is not null ? row.SessionRevision : null)
             : null;
+    }
+
+    internal async Task<Guid?> MatchSignInAsync(OwnerOidcCredentials current, string? issuer, string? subject, CancellationToken ct)
+    {
+        if (issuer is null || subject is null) return null;
+        var row = await _db.OwnerOidc.AsNoTracking().SingleOrDefaultAsync(value =>
+            value.OwnerId == current.OwnerId && value.Revision == current.Revision && value.Enabled, ct);
+        return row is not null && row.Issuer == issuer && row.Subject == subject ? row.SessionRevision : null;
     }
 
     public async Task<Guid> SaveAsync(Guid ownerId, Guid? expectedRevision, string? displayName,

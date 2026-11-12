@@ -16,6 +16,10 @@ Select **Bind account** and authenticate with the provider. Review the returned 
 
 Provider discovery, authorization and backchannel endpoints must use public HTTPS. The server does not follow backchannel redirects.
 
+## Sign in and revoke access
+
+An enabled, bound provider appears on the sign-in page using its configured display name. OIDC sign-in matches the verified issuer and subject to the binding and opens the admin dashboard as the local owner. Moonglade TOTP still applies to local password sign-in when required. Sign-out ends the Moonglade session only. Disabling, unbinding, and deleting revoke sessions from the binding and preserve local sessions. Re-enabling permits a new OIDC sign-in.
+
 ## Restore and rollback
 
 Restore the database on the replacement host. The database includes the encrypted client secret and the keys required to decrypt it. Treat database backups as credentials. A separate key volume or master secret is unnecessary for the saved configuration and binding.

@@ -87,7 +87,7 @@ public class AccountController(
         }
         if (saved is null) return Conflict("Old password is incorrect.");
         await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme,
-            LocalAccountPrincipal.Create(saved, CookieAuthenticationDefaults.AuthenticationScheme));
+            LocalAccountPrincipal.Refresh(saved, User));
         await LogActivityAsync(ActivityEvents.SettingsPasswordUpdated, saved.Email);
         return NoContent();
     }

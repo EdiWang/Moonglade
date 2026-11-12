@@ -220,7 +220,8 @@ internal sealed class LocalAccountHttpFixture : IAsyncDisposable
     {
         public void PopulateFeature(IEnumerable<ApplicationPart> parts, ControllerFeature feature)
         {
-            foreach (var controller in feature.Controllers.Where(type => type.AsType() != typeof(AccountController) && type.AsType() != typeof(OwnerAvatarController)).ToArray())
+            foreach (var controller in feature.Controllers.Where(type => type.AsType() != typeof(AccountController) &&
+                type.AsType() != typeof(OwnerAvatarController) && type.AsType() != typeof(AuthController)).ToArray())
                 feature.Controllers.Remove(controller);
         }
     }

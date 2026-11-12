@@ -26,7 +26,7 @@ public static class ServiceCollectionExtensions
         services.AddSingleton<OidcSetupDrafts>();
         services.AddScoped(sp => new OwnerOidcStore(sp.GetRequiredService<BlogDbContext>(),
             sp.GetRequiredService<OidcSecretProtection>()));
-        services.AddHttpClient(OwnerOidcBindingHandler.BackchannelClient, client => client.Timeout = TimeSpan.FromSeconds(20))
+        services.AddHttpClient(OwnerOidcHandler.BackchannelClient, client => client.Timeout = TimeSpan.FromSeconds(20))
             .ConfigurePrimaryHttpMessageHandler(() => new OidcPublicBackchannel())
             .RemoveAllLoggers();
 
@@ -75,7 +75,7 @@ public static class ServiceCollectionExtensions
                 options.ExpireTimeSpan = OidcBindingFlow.Lifetime;
                 options.SlidingExpiration = false;
             })
-            .AddScheme<AuthenticationSchemeOptions, OwnerOidcBindingHandler>(OidcBindingFlow.BindingScheme, null);
+            .AddScheme<AuthenticationSchemeOptions, OwnerOidcHandler>(OidcBindingFlow.Scheme, null);
 
         return services;
     }
