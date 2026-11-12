@@ -108,22 +108,6 @@ See [Build & Run](README.md#build--run) for restore/build/run commands and [Run 
 
 ## Planning And Documentation
 
-### Task Records
-
-For complex work, split the request into independently verifiable and reversible steps with explicit dependencies.
-
-Task records are temporary recovery aids for complex, cross-module, multi-session, or high-risk work, or when explicitly requested. Keep enough context to resume or investigate mistakes: goal, scope, dependencies, progress, verification results, and unresolved issues.
-
-Delete task records after the required tests and checks pass unless the user explicitly requests retention. Permanent documentation must not link to temporary records. Put confirmed, durable project knowledge in the appropriate long-lived documentation instead.
-
 ### Documentation Sync Rules
 
 After changes, update the appropriate long-lived docs (`README.md`, `AGENTS.md`, or `docs/`) when workflows, build/test/deployment steps, stack/dependencies, architecture, configuration, development conventions, or reusable troubleshooting knowledge are affected. Otherwise, state in the final response that no documentation update was needed.
-
-### Troubleshooting / Lessons Learned
-
-Only add troubleshooting notes after the issue has been fixed and the user has confirmed the outcome, unless the user explicitly asks for a note earlier. Add the note when future developers or agents are likely to hit the same issue, the root cause is project-specific, the fix is non-obvious, or the user asks to preserve it.
-
-Short notes may live here. Longer or multi-issue notes should go in `docs/troubleshooting.md`, with a short summary and link from this file.
-
-Use the [troubleshooting note format](docs/agent-reference.md#troubleshooting-note-format). Link a longer note from this file only after that document exists.
