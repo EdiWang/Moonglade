@@ -191,6 +191,8 @@ If initialization fails, Moonglade logs the error and exits with a nonzero proce
 
 Existing installations that used the standalone OpenID Connect mode must [establish local owner credentials](docs/upgrade-generic-oidc-authentication.md) before reopening access to the site.
 
+The local owner can configure a public HTTPS OpenID Connect provider and bind an external account under **Account Settings > Third-party sign-in**. Existing databases need the [OIDC binding schema upgrade](docs/upgrade-oidc-binding.md).
+
 ### Comment Markdown Links
 
 Comment Markdown links are disabled by default. Enable **Settings > Comments > Enable Markdown links in comments and replies** (`/admin/settings/comment`) to allow hyperlinks. The setting is stored in the database and takes effect without a restart. The former `CommentMarkdown:EnableLinks` application configuration key is no longer used or imported. When disabled, links retain their original Markdown syntax and URL as plain text; other Markdown formatting still renders. This setting applies to comments and replies in public pages, the admin portal, and newly generated email notifications; emails already queued retain their generated content. Stored comments and post Markdown are unchanged. Enabled links retain protocol validation and `rel="nofollow ugc noopener noreferrer"`.

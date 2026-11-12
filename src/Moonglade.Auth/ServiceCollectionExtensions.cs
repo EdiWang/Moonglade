@@ -1,7 +1,11 @@
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using Moonglade.Auth.Oidc;
+using Moonglade.Data;
 
 namespace Moonglade.Auth;
 
@@ -16,6 +20,13 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IOwnerProfileReader>(sp => sp.GetRequiredService<OwnerAccountStore>());
         services.Configure<AuthenticationSettings>(configuration.GetSection("Authentication"));
         services.AddSingleton<ILocalAccountTotpService, LocalAccountTotpService>();
+        services.AddSingleton<OidcSecretProtection>();
+        services.AddSingleton<OidcBindingFlow>();
+        services.AddScoped(sp => new OwnerOidcStore(sp.GetRequiredService<BlogDbContext>(),
+            sp.GetRequiredService<OidcSecretProtection>()));
+        services.AddHttpClient(OwnerOidcBindingHandler.BackchannelClient, client => client.Timeout = TimeSpan.FromSeconds(20))
+            .ConfigurePrimaryHttpMessageHandler(() => new OidcPublicBackchannel())
+            .RemoveAllLoggers();
 
         services.AddAuthorizationBuilder()
             .AddPolicy(BlogAuthSchemas.AdministratorPolicy, policy => policy
@@ -52,7 +63,17 @@ public static class ServiceCollectionExtensions
                 options.LoginPath = "/auth/setup-account";
                 options.ExpireTimeSpan = TimeSpan.FromMinutes(10);
                 options.SlidingExpiration = false;
-            });
+            })
+            .AddCookie(OidcBindingFlow.PendingScheme, options =>
+            {
+                options.Cookie.Name = ".Moonglade.OidcPendingBinding";
+                options.Cookie.HttpOnly = true;
+                options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+                options.Cookie.SameSite = SameSiteMode.Lax;
+                options.ExpireTimeSpan = OidcBindingFlow.Lifetime;
+                options.SlidingExpiration = false;
+            })
+            .AddScheme<AuthenticationSchemeOptions, OwnerOidcBindingHandler>(OidcBindingFlow.BindingScheme, null);
 
         return services;
     }

@@ -42,25 +42,27 @@ public partial class OwnerAccountDatabaseTests(DisposableCategoryDatabases datab
         }
         db.ChangeTracker.Clear();
         var freshSchema = await SchemaAsync(database);
-        var before = await UnrelatedRowsAsync(db, database);
+        var before = await UnrelatedRowsAsync(db, database, includeOidc: false);
         await database.MigrateAsync("owner-account.sql");
         Assert.Equal(freshSchema, await SchemaAsync(database));
 
+        await DropOidcSchemaAsync(database);
         await database.ExecuteAsync(provider == "PostgreSql"
             ? "DROP TABLE public.owner_account;" : "DROP TABLE dbo.OwnerAccount;");
         using (var missingSchema = new StartupTestHarness(db))
             Assert.Equal(InitStartUpResult.UnexpectedError, await missingSchema.Initializer.InitStartUpAsync(ct));
-        Assert.Equal(before, await UnrelatedRowsAsync(db, database));
+        Assert.Equal(before, await UnrelatedRowsAsync(db, database, includeOidc: false));
 
         for (var run = 0; run < 2; run++)
         {
             await database.MigrateAsync("owner-account.sql");
+            await database.MigrateAsync("owner-oidc.sql");
             Assert.Equal(freshSchema, await SchemaAsync(database));
-            Assert.Equal(before, await UnrelatedRowsAsync(db, database));
+            Assert.Equal(before, await UnrelatedRowsAsync(db, database, includeOidc: false));
             using var upgraded = new StartupTestHarness(db);
             Assert.Equal(InitStartUpResult.Success, await upgraded.Initializer.InitStartUpAsync(ct));
             Assert.False(await db.OwnerAccount.AnyAsync(ct));
-            Assert.Equal(before, await UnrelatedRowsAsync(db, database));
+            Assert.Equal(before, await UnrelatedRowsAsync(db, database, includeOidc: false));
         }
 
         var store = CreateStore(db);
@@ -80,7 +82,7 @@ public partial class OwnerAccountDatabaseTests(DisposableCategoryDatabases datab
                 retained.LocalInitializedUtc, retained.PasswordHash, retained.PasswordSalt, retained.TotpSecret));
         Assert.Equal(DateTimeKind.Utc, retained.LocalInitializedUtc!.Value.Kind);
         Assert.Equal(initialized, await store.AuthenticateLocalAsync("OWNER@example.TEST", "Synthetic123!", ct));
-        Assert.Equal(before, await UnrelatedRowsAsync(db, database));
+        Assert.Equal(before, await UnrelatedRowsAsync(db, database, includeOidc: false));
     }
 
     [DisposableDatabaseTheory]
@@ -278,12 +280,14 @@ public partial class OwnerAccountDatabaseTests(DisposableCategoryDatabases datab
 
     private static string Code(string secret) => new Totp(Base32Encoding.ToBytes(secret)).ComputeTotp();
 
-    private static async Task<string[]> UnrelatedRowsAsync(BlogDbContext db, CategoryTestDatabase database)
+    private static async Task<string[]> UnrelatedRowsAsync(BlogDbContext db, CategoryTestDatabase database, bool includeOidc = true)
     {
         var snapshots = new List<string>();
         foreach (var entity in db.Model.GetEntityTypes().Where(entity => entity.ClrType != typeof(OwnerAccountEntity))
                      .OrderBy(entity => entity.GetTableName(), StringComparer.Ordinal))
         {
+            if (!includeOidc && (entity.ClrType == typeof(OwnerOidcEntity) ||
+                entity.ClrType == typeof(Microsoft.AspNetCore.DataProtection.EntityFrameworkCore.DataProtectionKey))) continue;
             var table = entity.GetTableName();
             var columns = string.Join(", ", entity.GetProperties().OrderBy(property => property.Name, StringComparer.Ordinal)
                 .Select(property => $"\"{property.GetColumnName()}\""));

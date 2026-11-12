@@ -152,6 +152,8 @@ public class SnakeCaseDatabaseTests(DisposableCategoryDatabases databases) : ICl
             base.OnModelCreating(modelBuilder);
             modelBuilder.Ignore<OwnerAccountEntity>();
             modelBuilder.Ignore<OwnerAvatarEntity>();
+            modelBuilder.Ignore<OwnerOidcEntity>();
+            modelBuilder.Ignore<Microsoft.AspNetCore.DataProtection.EntityFrameworkCore.DataProtectionKey>();
             foreach (var set in typeof(BlogDbContext).GetProperties()
                          .Where(p => p.PropertyType.IsGenericType && p.PropertyType.GetGenericTypeDefinition() == typeof(DbSet<>)))
             {

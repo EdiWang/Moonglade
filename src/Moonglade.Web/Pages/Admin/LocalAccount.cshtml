@@ -111,6 +111,19 @@
                     x-on:click="openResetAuthenticatorModal()">@SharedLocalizer["Reset Authenticator"]</button>
         </div>
     </div>
+    <div class="settings-entry row align-items-center">
+        <div class="col-auto">
+            <i class="bi-box-arrow-in-right settings-entry-icon" aria-hidden="true"></i>
+        </div>
+        <div class="col">
+            <div id="account-oidc-title">@SharedLocalizer["Third-party sign-in"]</div>
+            <div class="form-text">@SharedLocalizer["Configure an OpenID Connect provider and link an external account."]</div>
+        </div>
+        <div class="col-5 text-end">
+            <a asp-page="/Admin/OwnerOidc" class="btn btn-sm btn-outline-accent"
+               aria-describedby="account-oidc-title">@SharedLocalizer["Manage"]</a>
+        </div>
+    </div>
 </div>
 
 <div class="modal fade" id="ownerProfileModal" tabindex="-1" aria-labelledby="ownerProfileModalLabel" aria-hidden="true">

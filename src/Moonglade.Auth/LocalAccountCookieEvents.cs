@@ -10,9 +10,18 @@ public sealed class LocalAccountCookieEvents(OwnerAccountStore accounts, IOption
     public override async Task ValidatePrincipal(CookieValidatePrincipalContext context)
     {
         var account = await accounts.ReadAsync(context.HttpContext.RequestAborted);
+        var applicationCookie = context.Scheme.Name == CookieAuthenticationDefaults.AuthenticationScheme;
         if (LocalAccountPrincipal.Matches(context.Principal, account)
-            && (context.Scheme.Name != CookieAuthenticationDefaults.AuthenticationScheme
-                || !options.Value.Totp.Required || account.IsTotpEnabled)) return;
+            && (!applicationCookie || !options.Value.Totp.Required || account.IsTotpEnabled))
+        {
+            if (applicationCookie && context.Principal.Identity is System.Security.Claims.ClaimsIdentity identity &&
+                !identity.HasClaim(claim => claim.Type == LocalAccountPrincipal.SessionClaim))
+            {
+                identity.AddClaim(new(LocalAccountPrincipal.SessionClaim, Guid.NewGuid().ToString("N")));
+                context.ShouldRenew = true;
+            }
+            return;
+        }
         context.RejectPrincipal();
         await context.HttpContext.SignOutAsync(context.Scheme.Name);
     }

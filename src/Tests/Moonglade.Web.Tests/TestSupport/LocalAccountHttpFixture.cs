@@ -48,7 +48,7 @@ internal sealed class LocalAccountHttpFixture : IAsyncDisposable
 
     public static async Task<LocalAccountHttpFixture> CreateAsync(
         bool required = false, string pathBase = "", string environment = "Production",
-        int permits = 100, bool legacyOidcConfiguration = false)
+        int permits = 100, bool legacyOidcConfiguration = false, HttpMessageHandler? oidcBackchannel = null)
     {
         var ct = TestContext.Current.CancellationToken;
         var store = new ConfigurationCommandRecorder();
@@ -91,6 +91,8 @@ internal sealed class LocalAccountHttpFixture : IAsyncDisposable
         builder.Services.AddLocalization(options => options.ResourcesPath = "Resources");
         builder.Services.AddDataProtection().UseEphemeralDataProtectionProvider();
         builder.Services.AddBlogAuthentication(builder.Configuration);
+        if (oidcBackchannel is not null)
+            builder.Services.AddHttpClient("OwnerOidc").ConfigurePrimaryHttpMessageHandler(() => oidcBackchannel);
         builder.Services.AddProblemDetails();
         builder.Services.AddResponseCompression();
         builder.Services.AddHttpsRedirection(options => options.HttpsPort = 443);

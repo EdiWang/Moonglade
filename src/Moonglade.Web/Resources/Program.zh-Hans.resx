@@ -2116,4 +2116,31 @@
   <data name="Owner email updated." xml:space="preserve"><value>所有者邮箱已更新。</value></data>
   <data name="This public address is used for feeds, Gravatar and blog notifications." xml:space="preserve"><value>此公开地址用于订阅源、Gravatar 和博客通知。</value></data>
   <data name="Changing this address signs you out. Sign in again with the new email." xml:space="preserve"><value>更改此地址后将退出登录，请使用新邮箱重新登录。</value></data>
+  <data name="Third-party sign-in" xml:space="preserve"><value>第三方登录</value></data>
+  <data name="Configure an OpenID Connect provider and link an external account." xml:space="preserve"><value>配置 OpenID Connect 提供商并绑定外部账号。</value></data>
+  <data name="Manage" xml:space="preserve"><value>管理</value></data>
+  <data name="External sign-in could not be completed. Check the provider settings and try again." xml:space="preserve"><value>无法完成外部登录。请检查提供商设置后重试。</value></data>
+  <data name="Confirm the external account" xml:space="preserve"><value>确认外部账号</value></data>
+  <data name="Bind account" xml:space="preserve"><value>绑定账号</value></data>
+  <data name="Unbind account" xml:space="preserve"><value>解绑账号</value></data>
+  <data name="Bound account" xml:space="preserve"><value>已绑定账号</value></data>
+  <data name="Waiting for account binding" xml:space="preserve"><value>等待绑定账号</value></data>
+  <data name="Provider display name" xml:space="preserve"><value>提供商显示名称</value></data>
+  <data name="Public HTTPS authority" xml:space="preserve"><value>公网 HTTPS Authority</value></data>
+  <data name="Client ID" xml:space="preserve"><value>客户端 ID</value></data>
+  <data name="Client secret" xml:space="preserve"><value>客户端密钥</value></data>
+  <data name="Leave blank to keep the saved secret." xml:space="preserve"><value>留空可保留已保存的密钥。</value></data>
+  <data name="Redirect URI" xml:space="preserve"><value>重定向 URI</value></data>
+  <data name="Delete provider" xml:space="preserve"><value>删除提供商</value></data>
+  <data name="Delete the provider configuration and its account binding." xml:space="preserve"><value>删除提供商配置及其账号绑定。</value></data>
+  <data name="Confirm deletion before deleting the provider." xml:space="preserve"><value>请确认删除提供商。</value></data>
+  <data name="Enter valid provider settings." xml:space="preserve"><value>请输入有效的提供商设置。</value></data>
+  <data name="The binding request expired. Try again." xml:space="preserve"><value>绑定请求已过期，请重试。</value></data>
+  <data name="The provider settings changed. Reload the page and try again." xml:space="preserve"><value>提供商设置已更改。请重新加载页面后重试。</value></data>
+  <data name="The provider settings could not be saved. Reload the page and try again." xml:space="preserve"><value>无法保存提供商设置。请重新加载页面后重试。</value></data>
+  <data name="Verify your local password and applicable authenticator code." xml:space="preserve"><value>请验证本地密码以及所需的验证码。</value></data>
+  <data name="Enter a client secret for this provider." xml:space="preserve"><value>请输入此提供商的客户端密钥。</value></data>
+  <data name="Enter a valid name, public HTTPS authority, client ID and client secret." xml:space="preserve"><value>请输入有效的名称、公网 HTTPS Authority、客户端 ID 和客户端密钥。</value></data>
+  <data name="The provider returned an invalid external account." xml:space="preserve"><value>提供商返回了无效的外部账号。</value></data>
+  <data name="Unbind the external account before changing the authority or client ID." xml:space="preserve"><value>更改 Authority 或客户端 ID 前，请先解绑外部账号。</value></data>
 </root>

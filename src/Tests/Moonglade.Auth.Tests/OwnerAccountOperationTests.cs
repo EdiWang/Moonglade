@@ -8,6 +8,26 @@ namespace Moonglade.Auth.Tests;
 
 public partial class OwnerAccountOperationTests
 {
+    [Fact]
+    public async Task ManagementProof_RequiresEnrolledAuthenticatorEvenWhenLocalSignInTotpIsOptional()
+    {
+        var ct = TestContext.Current.CancellationToken;
+        await using var store = new OwnerAccountTestStore();
+        var account = await store.InitializeAsync(ct);
+        var secret = store.Totp.GenerateSecret();
+        var code = Code(secret);
+        var enrolled = await store.Accounts.EnrollTotpAsync(account.Id, account.Revision, secret, code, ct);
+        var principal = LocalAccountPrincipal.Create(enrolled!, BlogAuthSchemas.Local);
+
+        Assert.False(await store.Accounts.VerifyManagementProofAsync(principal, OwnerAccountTestStore.Password, null, ct));
+        Assert.True(await store.Accounts.VerifyManagementProofAsync(principal, OwnerAccountTestStore.Password, code, ct));
+
+        var reset = await store.Accounts.ResetTotpAsync(account.Id, enrolled!.Revision, OwnerAccountTestStore.Password, ct);
+        var afterReset = LocalAccountPrincipal.Create(reset!, BlogAuthSchemas.Local);
+        Assert.False(await store.CreateAccounts(true).VerifyManagementProofAsync(afterReset, OwnerAccountTestStore.Password, null, ct));
+        Assert.True(await store.Accounts.VerifyManagementProofAsync(afterReset, OwnerAccountTestStore.Password, null, ct));
+    }
+
     [Theory]
     [InlineData(false)]
     [InlineData(true)]

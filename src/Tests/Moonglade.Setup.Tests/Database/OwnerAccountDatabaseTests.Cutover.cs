@@ -146,8 +146,12 @@ public partial class OwnerAccountDatabaseTests
         var before = await CutoverUnrelatedRowsAsync(db, database);
         var general = await db.BlogConfiguration.AsNoTracking().SingleAsync(row => row.CfgKey == nameof(GeneralSettings), ct);
         if (legacySchema)
+        {
+            await DropOidcSchemaAsync(database);
             await database.ExecuteAsync(provider == "PostgreSql" ? "DROP TABLE public.owner_account;" : "DROP TABLE dbo.OwnerAccount;");
+        }
         await database.MigrateAsync("owner-account.sql");
+        await database.MigrateAsync("owner-oidc.sql");
 
         await database.MigrateAsync("owner-account-cutover.sql");
 

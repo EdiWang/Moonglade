@@ -1,9 +1,10 @@
 ﻿using Moonglade.Data.Configurations;
 using Moonglade.Data.Entities;
+using Microsoft.AspNetCore.DataProtection.EntityFrameworkCore;
 
 namespace Moonglade.Data;
 
-public class BlogDbContext : DbContext
+public class BlogDbContext : DbContext, IDataProtectionKeyContext
 {
     public BlogDbContext()
     {
@@ -35,6 +36,8 @@ public class BlogDbContext : DbContext
     public virtual DbSet<SiteVerificationFileEntity> SiteVerificationFile { get; set; }
     public DbSet<OwnerAvatarEntity> OwnerAvatar { get; set; }
     public virtual DbSet<OwnerAccountEntity> OwnerAccount { get; set; }
+    public DbSet<OwnerOidcEntity> OwnerOidc { get; set; }
+    public DbSet<DataProtectionKey> DataProtectionKeys { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -59,6 +62,17 @@ public class BlogDbContext : DbContext
         OwnerAccountConfiguration.ConfigureConstraints(modelBuilder);
         modelBuilder.Entity<OwnerAvatarEntity>().Property(avatar => avatar.Id).ValueGeneratedNever();
         ConfigureOwnerAvatarConstraint(modelBuilder);
+        var oidc = modelBuilder.Entity<OwnerOidcEntity>();
+        oidc.Property(value => value.Id).ValueGeneratedNever();
+        oidc.Property(value => value.Revision).IsConcurrencyToken();
+        oidc.Property(value => value.DisplayName).HasMaxLength(100);
+        oidc.Property(value => value.Authority).HasMaxLength(500);
+        oidc.Property(value => value.ClientId).HasMaxLength(500);
+        oidc.Property(value => value.Issuer).HasMaxLength(500);
+        oidc.Property(value => value.Subject).HasMaxLength(255);
+        oidc.Property(value => value.AccountLabel).HasMaxLength(255);
+        oidc.HasOne<OwnerAccountEntity>().WithOne().HasForeignKey<OwnerOidcEntity>(value => value.OwnerId);
+        ConfigureOwnerOidcConstraint(modelBuilder);
         modelBuilder
             .Entity<PostEntity>()
             .HasMany(p => p.Tags)
@@ -81,6 +95,13 @@ public class BlogDbContext : DbContext
         var avatar = modelBuilder.Entity<OwnerAvatarEntity>();
         var id = avatar.Property(value => value.Id).Metadata.GetColumnName();
         avatar.ToTable(table => table.HasCheckConstraint("CK_OwnerAvatar_Slot", $"{id} = {OwnerAvatarEntity.OwnerSlot}"));
+    }
+
+    protected static void ConfigureOwnerOidcConstraint(ModelBuilder modelBuilder)
+    {
+        var oidc = modelBuilder.Entity<OwnerOidcEntity>();
+        var id = oidc.Property(value => value.Id).Metadata.GetColumnName();
+        oidc.ToTable(table => table.HasCheckConstraint("CK_OwnerOidc_Slot", $"{id} = {OwnerOidcEntity.Slot}"));
     }
 
     public override int SaveChanges(bool acceptAllChangesOnSuccess)
@@ -144,6 +165,8 @@ public static class BlogDbContextExtension
             await context.EmailOutboxMessage.ExecuteDeleteAsync();
             await context.SiteVerificationFile.ExecuteDeleteAsync();
             await context.OwnerAvatar.ExecuteDeleteAsync();
+            await context.OwnerOidc.ExecuteDeleteAsync();
+            await context.DataProtectionKeys.ExecuteDeleteAsync();
             await context.OwnerAccount.ExecuteDeleteAsync();
 
             await transaction.CommitAsync();

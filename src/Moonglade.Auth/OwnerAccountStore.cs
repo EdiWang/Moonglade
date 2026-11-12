@@ -161,6 +161,18 @@ public sealed class OwnerAccountStore(
         return await SaveEmailAsync(account, address, ct);
     }
 
+    public async Task<bool> VerifyManagementProofAsync(
+        System.Security.Claims.ClaimsPrincipal principal, string? password, string? code, CancellationToken ct)
+    {
+        if (string.IsNullOrWhiteSpace(password)) return false;
+        var account = await db.OwnerAccount.AsNoTracking().SingleOrDefaultAsync(ct);
+        return account is not null && LocalAccountPrincipal.Matches(principal, Snapshot(account))
+            && PasswordMatches(account, password)
+            && (account.TotpSecret is not null
+                ? totpService.VerifyCode(account.TotpSecret, code)
+                : !options.Value.Totp.Required);
+    }
+
     private async Task<OwnerAccountSnapshot> SaveEmailAsync(
         OwnerAccountEntity account, (string Email, string NormalizedEmail) address, CancellationToken ct)
     {

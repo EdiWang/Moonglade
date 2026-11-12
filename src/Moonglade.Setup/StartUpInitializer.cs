@@ -73,6 +73,8 @@ public class StartUpInitializer(
     {
         return !await context.OwnerAvatar.AnyAsync(ct)
             && !await context.OwnerAccount.AnyAsync(ct)
+            && !await context.OwnerOidc.AnyAsync(ct)
+            && !await context.DataProtectionKeys.AnyAsync(ct)
             && !await context.BlogConfiguration.AnyAsync(ct)
             && !await context.Post.AnyAsync(ct)
             && !await context.Category.AnyAsync(ct)

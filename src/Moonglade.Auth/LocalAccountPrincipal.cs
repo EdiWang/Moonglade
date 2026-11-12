@@ -6,6 +6,7 @@ namespace Moonglade.Auth;
 public static class LocalAccountPrincipal
 {
     public const string RevisionClaim = "moonglade:account-revision";
+    internal const string SessionClaim = "moonglade:local-session";
 
     public static ClaimsPrincipal Create(OwnerAccountSnapshot account, string scheme)
     {
@@ -14,7 +15,10 @@ public static class LocalAccountPrincipal
         identity.AddClaim(new Claim(ClaimTypes.Name, account.Email));
         identity.AddClaim(new Claim(RevisionClaim, account.Revision.ToString()));
         if (scheme == CookieAuthenticationDefaults.AuthenticationScheme)
+        {
             identity.AddClaim(new Claim(ClaimTypes.Role, "Administrator"));
+            identity.AddClaim(new Claim(SessionClaim, Guid.NewGuid().ToString("N")));
+        }
         return new ClaimsPrincipal(identity);
     }
 
