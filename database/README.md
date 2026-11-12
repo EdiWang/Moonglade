@@ -19,5 +19,4 @@ Administrators apply the required SQL scripts directly. AI agents verify migrati
 
 1. Back up the database. When verifying a migration change, use a representative restored pre-upgrade database for each target provider.
 2. During migration verification, check the intended schema and data changes, then run the same script again. Both runs must succeed. The second run must preserve the resulting schema and data.
-3. Record the provider, prerequisites, and verification result with the change. If a target database is unavailable, explicitly report that the script and its idempotency were not verified against that database.
-4. Have an administrator apply the required scripts before starting the upgraded application. Use backup restoration if rollback is needed.
+3. Have an administrator apply the required scripts before starting the upgraded application. Use backup restoration if rollback is needed.
