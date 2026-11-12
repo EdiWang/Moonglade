@@ -2,15 +2,15 @@
 
 ## Status and handoff
 
-B1 and B2 are accepted. B3 is implemented and isolated verification is complete. The owner will perform the live Entra acceptance on the development site.
+B1, B2, and B3 are complete and accepted. The owner confirmed B3 acceptance on 2026-11-12.
 
 | Batch | Dependency | Status | Verification evidence | Implementation commit | User acceptance |
 | --- | --- | --- | --- | --- | --- |
 | B1. Make the local account the sole owner | Authorized | Complete | Auth 107, Web 741, Setup 234, frontend 48 passed. Web build and Docker browser checks passed. | `5302e122c` | Accepted |
 | B2. Configure and bind one OIDC identity | B1 accepted | Complete | Browser binding and database-only restore passed on both providers. Wizard follow-up verification is recorded below. | `039ea580f`, `8e1af5be1`, `79e1488a1` | Accepted |
-| B3. Enable OIDC sign-in and verify release | B2 accepted | Implemented and verified in isolation | Solution, frontend, Web build, and six browser scenarios passed | `1c71e7cbc` | Live Entra acceptance pending |
+| B3. Enable OIDC sign-in and verify release | B2 accepted | Complete | Solution, frontend, Web build, and six browser scenarios passed. The owner confirmed live acceptance. | `1c71e7cbc` | Accepted on 2026-11-12 |
 
-Intermediate commits are for development and review. The full feature is ready for release review after B3 acceptance. Production rollout, external service changes, and applying SQL to a real database require separate authorization. Verify against disposable installations during batch work.
+The full feature is ready for release review. Production rollout, external service changes, and applying SQL to a real database require separate authorization. Verify against disposable installations during batch work.
 
 ## Confirmed requirements
 
@@ -92,8 +92,7 @@ Use the focused projects in B1 and B2. Use the full solution and frontend suite 
 - **Implementation.** Commit `1c71e7cbc` adds sign-in with the active bound identity, configuration-revision checks for in-flight callbacks, and binding-revision checks on application cookies. It includes the localized sign-in button and failure message. B3 adds no schema changes.
 - **Automated verification.** `dotnet test --solution src/Moonglade.slnx -c Release` with `MOONGLADE_TEST_CATEGORY_DATABASES=1` passed all 2,197 tests with zero failures or skips, including Auth 108, Web 766, and Setup 238. The 25 focused OIDC HTTP tests passed. They cover exact issuer and subject matching, configuration changes while a callback is pending, local-only sign-out, revocation after unbind, disable and delete, fresh sign-in after re-enable, and preserving the OIDC session origin on a password change or client secret rotation. The frontend command passed all 48 tests. The Release Web build had zero warnings or errors.
 - **Published runtime verification.** Playwright drove Edge against six isolated Production Docker hosts. On both PostgreSQL and SQL Server, the fresh installation completed setup and binding, then exchanged a code with a synthetic HTTPS issuer and opened the dashboard as the local owner. The browser checked the configured button label below the local form, Simplified Chinese localization, local-only logout, and revocation after disable and unbind. PostgreSQL required TOTP for password sign-in. SQL Server ran with local TOTP disabled. On both database providers, the initialized-local and legacy OIDC-only upgrade scenarios passed. The B2 scripts ran twice per upgrade, preserving the existing owner and post data. The upgraded local credentials still worked, and legacy OIDC-only sites retained their profile email and completed local setup. The retired identity endpoint returned 404.
-- **Live acceptance pending.** The owner will verify the existing bound Entra account on the development site. Run B3, sign out of Moonglade, and open `/auth/signin`. Choose the configured provider and confirm that the bound Entra account opens the same owner dashboard without a Moonglade authenticator prompt. Sign out and confirm that opening `/admin` requires signing in again while the Entra session remains active. Record the user's acceptance in this file before closing the batch.
-
+- **Live acceptance.** The owner confirmed B3 acceptance on 2026-11-12.
 
 ## Resume and update this record
 
