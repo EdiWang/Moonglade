@@ -3,11 +3,9 @@
 @{
     ViewBag.Title = SharedLocalizer["Third-party sign-in"];
     ViewBag.AdminBackUrl = Url.Page("/Admin/LocalAccount");
-    var inWizard = Model.Settings is null || Model.CanReuseProof || Model.Pending is not null;
-    ViewBag.HideAdminSidebar = inWizard;
 }
 
-<div class="admin-settings-page @(inWizard ? "w-100 mx-auto flex-grow-1 overflow-auto p-3 p-md-4" : "")">
+<div class="admin-settings-page">
     <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
     @if (Model.Failed)
     {
@@ -50,7 +48,7 @@
             <button type="submit" class="btn btn-outline-accent">@SharedLocalizer["Bind account"]</button>
         </form>
     }
-    <form method="post" asp-page-handler="Save" class="admin-panel p-4">
+    <form id="oidc-settings-form" method="post" asp-page-handler="Save" class="admin-panel p-4">
         <input asp-for="Revision" type="hidden" />
         @if (Model.Settings is { } settings && (!settings.Enabled || settings.AccountLabel is not null))
         {
@@ -133,16 +131,31 @@
         </div>
         @if (Model.Settings is not null)
         {
-            <details class="mt-3">
-                <summary class="text-danger">@SharedLocalizer["Delete provider"]</summary>
-                <div class="form-check my-2">
-                    <input asp-for="ConfirmDelete" class="form-check-input" />
-                    <label asp-for="ConfirmDelete" class="form-check-label">@SharedLocalizer["Delete the provider configuration and its account binding."]</label>
-                </div>
-                <button asp-page-handler="Manage" formnovalidate type="submit" name="operation" value="delete"
-                        class="btn btn-outline-danger">@SharedLocalizer["Delete provider"]</button>
-            </details>
+            <button type="button" class="btn btn-outline-danger mt-3" aria-haspopup="dialog"
+                    data-bs-toggle="modal" data-bs-target="#deleteOidcProviderModal">@SharedLocalizer["Delete provider"]</button>
         }
     </form>
+    @if (Model.Settings is not null)
+    {
+        <div class="modal fade" id="deleteOidcProviderModal" tabindex="-1" aria-labelledby="deleteOidcProviderTitle"
+             aria-describedby="deleteOidcProviderDescription" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="deleteOidcProviderTitle">@SharedLocalizer["Delete provider"]</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="@SharedLocalizer["Close"]"></button>
+                    </div>
+                    <div class="modal-body" id="deleteOidcProviderDescription">
+                        @SharedLocalizer["Delete the provider configuration and its account binding."]
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">@SharedLocalizer["Cancel"]</button>
+                        <button asp-page-handler="Manage" asp-route-operation="delete" form="oidc-settings-form" formnovalidate
+                                type="submit" name="ConfirmDelete" value="true" class="btn btn-outline-danger">@SharedLocalizer["Delete provider"]</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
     }
 </div>

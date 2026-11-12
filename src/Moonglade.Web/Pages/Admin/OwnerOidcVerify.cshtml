@@ -2,11 +2,10 @@
 @model Moonglade.Web.Pages.Admin.OwnerOidcVerifyModel
 @{
     ViewBag.Title = SharedLocalizer["Verify your identity"];
-    ViewBag.HideAdminSidebar = true;
 }
 
-<main class="admin-settings-page w-100 mx-auto flex-grow-1 overflow-auto p-3 p-md-4">
-    <section class="admin-panel col-12 col-md-8 col-lg-6 mx-auto p-4" aria-labelledby="oidc-verify-title">
+<div class="admin-settings-page">
+    <section class="admin-panel col-6 p-4" aria-labelledby="oidc-verify-title">
         @if (Model.Draft is not null)
         {
             <p class="small text-body-secondary mb-1">@SharedLocalizer["Step {0} of {1}", 2, 3]</p>
@@ -36,4 +35,4 @@
             </div>
         </form>
     </section>
-</main>
+</div>
