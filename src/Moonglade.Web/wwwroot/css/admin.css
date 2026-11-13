@@ -485,7 +485,8 @@
 }
 
 /* Keep setting controls above the full-row disclosure button. */
-.admin-settings-expander-header > .col-5 :is(a, button, input, label, select, textarea) {
+.admin-settings-expander-header > .col-5 :is(a, button, input, label, select, textarea),
+.admin-settings-expander-header > .col > label.form-check-label {
     position: relative;
     z-index: 2;
 }

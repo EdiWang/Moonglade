@@ -35,7 +35,7 @@
                         <div class="col-4 text-end">
                             <div class="form-check form-switch form-control-lg">
                                 <input type="hidden" name="EnableWebmention" value="false">
-                                <input type="checkbox" name="EnableWebmention" value="true" class="form-check-input" @(settings.EnableWebmention ? "checked" : null)>
+                                <input type="checkbox" id="@Html.IdFor(m => settings.EnableWebmention)" name="EnableWebmention" value="true" class="form-check-input" @(settings.EnableWebmention ? "checked" : null)>
                             </div>
                         </div>
                     </div>
@@ -50,7 +50,7 @@
                         <div class="col-4 text-end">
                             <div class="form-check form-switch form-control-lg">
                                 <input type="hidden" name="EnableOpenSearch" value="false">
-                                <input type="checkbox" name="EnableOpenSearch" value="true" class="form-check-input" @(settings.EnableOpenSearch ? "checked" : null)>
+                                <input type="checkbox" id="@Html.IdFor(m => settings.EnableOpenSearch)" name="EnableOpenSearch" value="true" class="form-check-input" @(settings.EnableOpenSearch ? "checked" : null)>
                             </div>
                         </div>
                     </div>
@@ -65,7 +65,7 @@
                         <div class="col-4 text-end">
                             <div class="form-check form-switch form-control-lg">
                                 <input type="hidden" name="EnableFoaf" value="false">
-                                <input type="checkbox" name="EnableFoaf" value="true" class="form-check-input" @(settings.EnableFoaf ? "checked" : null)>
+                                <input type="checkbox" id="@Html.IdFor(m => settings.EnableFoaf)" name="EnableFoaf" value="true" class="form-check-input" @(settings.EnableFoaf ? "checked" : null)>
                             </div>
                         </div>
                     </div>
@@ -80,7 +80,7 @@
                         <div class="col-4 text-end">
                             <div class="form-check form-switch form-control-lg">
                                 <input type="hidden" name="EnableOpml" value="false">
-                                <input type="checkbox" name="EnableOpml" value="true" class="form-check-input" @(settings.EnableOpml ? "checked" : null)>
+                                <input type="checkbox" id="@Html.IdFor(m => settings.EnableOpml)" name="EnableOpml" value="true" class="form-check-input" @(settings.EnableOpml ? "checked" : null)>
                             </div>
                         </div>
                     </div>
@@ -96,7 +96,7 @@
                         <div class="col-4 text-end">
                             <div class="form-check form-switch form-control-lg">
                                 <input type="hidden" name="EnablePostScheduler" value="false">
-                                <input type="checkbox" name="EnablePostScheduler" value="true" class="form-check-input" @(settings.EnablePostScheduler ? "checked" : null)>
+                                <input type="checkbox" id="@Html.IdFor(m => settings.EnablePostScheduler)" name="EnablePostScheduler" value="true" class="form-check-input" @(settings.EnablePostScheduler ? "checked" : null)>
                             </div>
                         </div>
                     </div>
@@ -111,7 +111,7 @@
                         <div class="col-4 text-end">
                             <div class="form-check form-switch form-control-lg">
                                 <input type="hidden" name="WarnPostExternalLink" value="false">
-                                <input type="checkbox" name="WarnPostExternalLink" value="true" class="form-check-input" @(settings.WarnPostExternalLink ? "checked" : null)>
+                                <input type="checkbox" id="@Html.IdFor(m => settings.WarnPostExternalLink)" name="WarnPostExternalLink" value="true" class="form-check-input" @(settings.WarnPostExternalLink ? "checked" : null)>
                             </div>
                         </div>
                     </div>
@@ -126,7 +126,7 @@
                         <div class="col-4 text-end">
                             <div class="form-check form-switch form-control-lg">
                                 <input type="hidden" name="WarnCommentExternalLink" value="false">
-                                <input type="checkbox" name="WarnCommentExternalLink" value="true" class="form-check-input" @(settings.WarnCommentExternalLink ? "checked" : null)>
+                                <input type="checkbox" id="@Html.IdFor(m => settings.WarnCommentExternalLink)" name="WarnCommentExternalLink" value="true" class="form-check-input" @(settings.WarnCommentExternalLink ? "checked" : null)>
                             </div>
                         </div>
                     </div>

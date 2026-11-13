@@ -117,7 +117,7 @@
                     <div class="col-5 text-end">
                         <div class="form-check form-switch form-control-lg">
                             <input type="hidden" name="DocumentOutline" value="false">
-                            <input type="checkbox" name="DocumentOutline" value="true" class="form-check-input" @(settings.DocumentOutline ? "checked" : null)>
+                            <input type="checkbox" id="@Html.IdFor(m => settings.DocumentOutline)" name="DocumentOutline" value="true" class="form-check-input" @(settings.DocumentOutline ? "checked" : null)>
                         </div>
                     </div>
                 </div>
@@ -132,7 +132,7 @@
                     <div class="col-5 text-end">
                         <div class="form-check form-switch form-control-lg">
                             <input type="hidden" name="EnableViewCount" value="false">
-                            <input type="checkbox" name="EnableViewCount" value="true" class="form-check-input" @(settings.EnableViewCount ? "checked" : null)>
+                            <input type="checkbox" id="@Html.IdFor(m => settings.EnableViewCount)" name="EnableViewCount" value="true" class="form-check-input" @(settings.EnableViewCount ? "checked" : null)>
                         </div>
                     </div>
                 </div>
@@ -149,7 +149,7 @@
                         <div class="col-5 text-end">
                             <div class="form-check form-switch form-control-lg">
                                 <input type="hidden" name="ShowPostFooter" value="false">
-                                <input type="checkbox" name="ShowPostFooter" value="true" class="form-check-input" @(settings.ShowPostFooter ? "checked" : null)>
+                                <input type="checkbox" id="@Html.IdFor(m => settings.ShowPostFooter)" name="ShowPostFooter" value="true" class="form-check-input" @(settings.ShowPostFooter ? "checked" : null)>
                             </div>
                         </div>
                         <button type="button" class="admin-settings-expander-toggle" data-bs-toggle="collapse" data-bs-target="#settings-post-footer" aria-controls="settings-post-footer" aria-expanded="@(settings.ShowPostFooter ? "true" : "false")" aria-label="@Html.DisplayNameFor(m => settings.ShowPostFooter)">
@@ -186,7 +186,7 @@
                         <div class="col-5 text-end">
                             <div class="form-check form-switch form-control-lg">
                                 <input type="hidden" name="ShowCalloutSection" value="false">
-                                <input type="checkbox" name="ShowCalloutSection" value="true" class="form-check-input" @(settings.ShowCalloutSection ? "checked" : null)>
+                                <input type="checkbox" id="@Html.IdFor(m => settings.ShowCalloutSection)" name="ShowCalloutSection" value="true" class="form-check-input" @(settings.ShowCalloutSection ? "checked" : null)>
                             </div>
                         </div>
                         <button type="button" class="admin-settings-expander-toggle" data-bs-toggle="collapse" data-bs-target="#settings-callout" aria-controls="settings-callout" aria-expanded="@(settings.ShowCalloutSection ? "true" : "false")" aria-label="@SharedLocalizer["Call-out"]">

@@ -37,7 +37,7 @@
                         <div class="col-5 text-end">
                             <div class="form-check form-switch form-control-lg">
                                 <input type="hidden" name="EnableCDNRedirect" value="false">
-                                <input type="checkbox" name="EnableCDNRedirect" value="true" data-setting-requires="CDNEndpoint" class="form-check-input" @(settings.EnableCDNRedirect ? "checked" : null)>
+                                <input type="checkbox" id="@Html.IdFor(m => settings.EnableCDNRedirect)" name="EnableCDNRedirect" value="true" data-setting-requires="CDNEndpoint" class="form-check-input" @(settings.EnableCDNRedirect ? "checked" : null)>
                             </div>
                         </div>
                         <button type="button" class="admin-settings-expander-toggle" data-bs-toggle="collapse" data-bs-target="#settings-cdn" aria-controls="settings-cdn" aria-expanded="@(settings.EnableCDNRedirect ? "true" : "false")" aria-label="CDN">
@@ -82,7 +82,7 @@
                         <div class="col-5 text-end">
                             <div class="form-check form-switch form-control-lg">
                                 <input type="hidden" name="IsWatermarkEnabled" value="false">
-                                <input type="checkbox" name="IsWatermarkEnabled" value="true" class="form-check-input" @(settings.IsWatermarkEnabled ? "checked" : null)>
+                                <input type="checkbox" id="@Html.IdFor(m => settings.IsWatermarkEnabled)" name="IsWatermarkEnabled" value="true" class="form-check-input" @(settings.IsWatermarkEnabled ? "checked" : null)>
                             </div>
                         </div>
                         <button type="button" class="admin-settings-expander-toggle" data-bs-toggle="collapse" data-bs-target="#settings-watermark" aria-controls="settings-watermark" aria-expanded="@(settings.IsWatermarkEnabled ? "true" : "false")" aria-label="@SharedLocalizer["Watermark"]">
@@ -107,7 +107,7 @@
                                 <div class="col-3 text-end">
                                     <div class="form-check form-switch form-control-lg">
                                         <input type="hidden" name="KeepOriginImage" value="false">
-                                        <input type="checkbox" name="KeepOriginImage" value="true" class="form-check-input" @(settings.KeepOriginImage ? "checked" : null)>
+                                        <input type="checkbox" id="@Html.IdFor(m => settings.KeepOriginImage)" name="KeepOriginImage" value="true" class="form-check-input" @(settings.KeepOriginImage ? "checked" : null)>
                                     </div>
                                 </div>
                             </div>

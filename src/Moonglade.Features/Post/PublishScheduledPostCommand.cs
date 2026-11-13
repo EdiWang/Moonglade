@@ -16,26 +16,40 @@ public class PublishScheduledPostCommandHandler(
     public async Task<int> HandleAsync(PublishScheduledPostCommand request, CancellationToken ct)
     {
         var dueCutoffUtc = timeProvider.GetUtcNow().UtcDateTime;
-        var scheduledPosts = await db.Post
-            .Where(p => p.PostStatus == PostStatus.Scheduled && !p.IsDeleted && p.ScheduledPublishTimeUtc <= dueCutoffUtc)
-            .ToListAsync(ct);
-
-        if (scheduledPosts.Count == 0)
+        DateTime? publicationTime = null;
+        List<PostEntity> scheduledPosts;
+        int rows;
+        while (true)
         {
-            return 0;
+            scheduledPosts = await db.Post
+                .Where(p => p.PostStatus == PostStatus.Scheduled && !p.IsDeleted && p.ScheduledPublishTimeUtc <= dueCutoffUtc)
+                .ToListAsync(ct);
+
+            if (scheduledPosts.Count == 0) return 0;
+
+            publicationTime ??= timeProvider.GetUtcNow().UtcDateTime;
+            foreach (var post in scheduledPosts)
+            {
+                PostEntityHelper.SetStatus(post, PostStatus.Published, publicationTime);
+            }
+
+            try
+            {
+                rows = await db.SaveChangesAsync(ct);
+                break;
+            }
+            catch (DbUpdateConcurrencyException ex) when (ex.Entries.Count > 0 && ex.Entries.All(entry =>
+                entry.Entity is PostEntity post && scheduledPosts.Contains(post)))
+            {
+                // The batch was rolled back. Recheck eligibility using fresh rows.
+                foreach (var post in scheduledPosts) db.Entry(post).State = EntityState.Detached;
+            }
         }
 
-        var publishedTimeUtc = timeProvider.GetUtcNow().UtcDateTime;
-        foreach (var post in scheduledPosts)
-        {
-            PostEntityHelper.SetStatus(post, PostStatus.Published, publishedTimeUtc);
-        }
-
-        var rows = await db.SaveChangesAsync(ct);
         if (rows > 0)
         {
             var publications = Array.AsReadOnly(scheduledPosts
-                .Select(post => new ScheduledPostPublication(post.Id, post.Title, publishedTimeUtc))
+                .Select(post => new ScheduledPostPublication(post.Id, post.Title, publicationTime.Value))
                 .ToArray());
             try
             {

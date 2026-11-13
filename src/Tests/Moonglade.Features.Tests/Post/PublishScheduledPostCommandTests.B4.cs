@@ -1,4 +1,5 @@
 using LiteBus.Events.Abstractions;
+using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
@@ -11,6 +12,60 @@ namespace Moonglade.Features.Tests.Post;
 
 public partial class PublishScheduledPostCommandTests
 {
+    [Fact]
+    public async Task HandleAsync_OverlappingWorkers_PublishesAndNotifiesOnce()
+    {
+        var ct = TestContext.Current.CancellationToken;
+        await using var connection = new SqliteConnection("Data Source=:memory:");
+        await connection.OpenAsync(ct);
+        var options = new DbContextOptionsBuilder<BlogDbContext>().UseSqlite(connection).Options;
+        await using var winnerDb = new BlogDbContext(options);
+        await winnerDb.Database.EnsureCreatedAsync(ct);
+        var cutoff = new DateTimeOffset(2026, 12, 31, 23, 59, 59, TimeSpan.Zero);
+        var post = CreatePostEntity(Guid.NewGuid(), PostStatus.Scheduled, "overlap", cutoff.UtcDateTime);
+        winnerDb.Post.Add(post);
+        await winnerDb.SaveChangesAsync(ct);
+
+        var pause = new ScheduledSaveProbe();
+        await using var staleDb = new BlogDbContext(new DbContextOptionsBuilder<BlogDbContext>(options)
+            .AddInterceptors(pause).Options);
+        var staleSaving = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+        var resumeStale = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+        pause.BeforeSave = async token =>
+        {
+            staleSaving.SetResult();
+            await resumeStale.Task.WaitAsync(token);
+        };
+        var winnerEvents = new List<IEvent>();
+        var staleEvents = new List<IEvent>();
+        var winner = new PublishScheduledPostCommandHandler(winnerDb,
+            new SequenceTimeProvider(cutoff, cutoff), RecordingEvents(winnerEvents).Object,
+            NullLogger<PublishScheduledPostCommandHandler>.Instance);
+        var stale = new PublishScheduledPostCommandHandler(staleDb,
+            new SequenceTimeProvider(cutoff, cutoff.AddSeconds(2)), RecordingEvents(staleEvents).Object,
+            NullLogger<PublishScheduledPostCommandHandler>.Instance);
+
+        var staleResult = stale.HandleAsync(new(), ct);
+        try
+        {
+            await staleSaving.Task.WaitAsync(TimeSpan.FromSeconds(5), ct);
+            Assert.Equal(1, await winner.HandleAsync(new(), ct));
+        }
+        finally
+        {
+            resumeStale.TrySetResult();
+        }
+
+        Assert.Equal(0, await staleResult);
+        Assert.Empty(staleEvents);
+        var publication = Assert.Single(Assert.Single(winnerEvents.OfType<ScheduledPostsPublishedEvent>()).Posts);
+        Assert.Equal(post.Id, publication.PostId);
+        Assert.Equal(cutoff.UtcDateTime, publication.PublishedTimeUtc);
+        var saved = await winnerDb.Post.AsNoTracking().SingleAsync(ct);
+        Assert.Equal("2026/12/31/overlap", saved.RouteLink);
+        Assert.Equal(cutoff.UtcDateTime, saved.PubDateUtc);
+    }
+
     [Fact]
     public async Task HandleAsync_MixedEligibility_UsesCutoffAndExecutionTimeAndDoesNotRepeat()
     {
@@ -271,14 +326,16 @@ public partial class PublishScheduledPostCommandTests
         public int Saves { get; private set; }
         public Exception? Failure { get; set; }
         public bool SuppressSave { get; set; }
+        public Func<CancellationToken, Task>? BeforeSave { get; set; }
         public Action? AfterSave { get; set; }
 
-        public override ValueTask<InterceptionResult<int>> SavingChangesAsync(DbContextEventData eventData,
+        public override async ValueTask<InterceptionResult<int>> SavingChangesAsync(DbContextEventData eventData,
             InterceptionResult<int> result, CancellationToken cancellationToken = default)
         {
             Saves++;
             if (Failure is not null) throw Failure;
-            return ValueTask.FromResult(SuppressSave ? InterceptionResult<int>.SuppressWithResult(0) : result);
+            if (BeforeSave is not null) await BeforeSave(cancellationToken);
+            return SuppressSave ? InterceptionResult<int>.SuppressWithResult(0) : result;
         }
 
         public override ValueTask<int> SavedChangesAsync(SaveChangesCompletedEventData eventData, int result,

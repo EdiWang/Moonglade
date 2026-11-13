@@ -16,7 +16,20 @@ Deploy a published [release](https://github.com/EdiWang/Moonglade/releases) at t
 
 Fresh installations create the schema and seed initial data automatically. Existing installations require manual upgrades before the new application starts.
 
-Stop all Moonglade hosts, back up the database, and test the required SQL scripts against a restored copy. Apply the applicable scripts in numerical order from [PostgreSQL](database/PostgreSql) or [SQL Server](database/SqlServer), following each script's prerequisites and the [database execution guide](database/README.md#verification-and-execution). The activity event-key script discards legacy activity history when converting the schema. If the upgraded database lacks initialized local credentials, complete [owner setup](#first-run) before reopening access.
+Stop all Moonglade hosts, back up the database, and test the required SQL scripts against a restored copy. Follow the [database execution guide](database/README.md#verification-and-execution).
+
+To upgrade a database already at 16.9.0 to 16.10.0, run these scripts in order from the [PostgreSQL](database/PostgreSql) or [SQL Server](database/SqlServer) directory for your provider:
+
+1. `3.activity-log-events.sql` replaces legacy activity history and discards its existing entries.
+2. `4.seo-settings.sql` copies legacy SEO settings.
+3. `5.seo-robots-txt.sql` copies the existing robots.txt content.
+4. `6.owner-account.sql` creates owner account storage.
+5. `7.owner-account-cutover.sql` transfers the public owner email and removes legacy local credentials.
+6. `8.owner-avatar.sql` transfers the owner avatar and Gravatar preference.
+7. `9.owner-presentation.sql` transfers the owner name and description.
+8. `10.owner-oidc.sql` creates OIDC storage and the Data Protection key table required for local sign-in and antiforgery tokens. Run it even if you use only local sign-in.
+
+For databases older than 16.9.0, complete the applicable category ID and PostgreSQL naming upgrades (`1` and `2`) first. Keep access restricted when starting the upgraded app. Complete [owner setup](#first-run) if local credentials are uninitialized, then reopen access.
 
 ### Quick Local Deployment (Docker)
 

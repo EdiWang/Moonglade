@@ -159,7 +159,7 @@
                         <div class="col-5 text-end">
                             <div class="form-check form-switch form-control-lg">
                                 <input type="hidden" name="WidgetsProfile" value="false">
-                                <input type="checkbox" name="WidgetsProfile" value="true" class="form-check-input" @(ViewModel.WidgetsProfile ? "checked" : null)>
+                                <input type="checkbox" id="@Html.IdFor(m => ViewModel.WidgetsProfile)" name="WidgetsProfile" value="true" class="form-check-input" @(ViewModel.WidgetsProfile ? "checked" : null)>
                             </div>
                         </div>
                     </div>
@@ -197,7 +197,7 @@
                         <div class="col-5 text-end">
                             <div class="form-check form-switch form-control-lg">
                                 <input type="hidden" name="WidgetsCategoryList" value="false">
-                                <input type="checkbox" name="WidgetsCategoryList" value="true" class="form-check-input" @(ViewModel.WidgetsCategoryList ? "checked" : null)>
+                                <input type="checkbox" id="@Html.IdFor(m => ViewModel.WidgetsCategoryList)" name="WidgetsCategoryList" value="true" class="form-check-input" @(ViewModel.WidgetsCategoryList ? "checked" : null)>
                             </div>
                         </div>
                     </div>
@@ -212,7 +212,7 @@
                         <div class="col-5 text-end">
                             <div class="form-check form-switch form-control-lg">
                                 <input type="hidden" name="WidgetsSubscriptionButtons" value="false">
-                                <input type="checkbox" name="WidgetsSubscriptionButtons" value="true" class="form-check-input" @(ViewModel.WidgetsSubscriptionButtons ? "checked" : null)>
+                                <input type="checkbox" id="@Html.IdFor(m => ViewModel.WidgetsSubscriptionButtons)" name="WidgetsSubscriptionButtons" value="true" class="form-check-input" @(ViewModel.WidgetsSubscriptionButtons ? "checked" : null)>
                             </div>
                         </div>
                     </div>

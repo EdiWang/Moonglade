@@ -155,7 +155,7 @@
                         <div class="col-5 text-end">
                             <div class="form-check form-switch form-control-lg">
                                 <input type="hidden" name="EnableCustomCss" value="false">
-                                <input type="checkbox" name="EnableCustomCss" value="true" data-setting-requires="CssCode" class="form-check-input" @(@ViewModel.EnableCustomCss ? "checked" : null) />
+                                <input type="checkbox" id="@Html.IdFor(m => ViewModel.EnableCustomCss)" name="EnableCustomCss" value="true" data-setting-requires="CssCode" class="form-check-input" @(@ViewModel.EnableCustomCss ? "checked" : null) />
                             </div>
                         </div>
                         <button type="button" class="admin-settings-expander-toggle" data-bs-toggle="collapse" data-bs-target="#settings-custom-css" aria-controls="settings-custom-css" aria-expanded="@(ViewModel.EnableCustomCss ? "true" : "false")" aria-label="@SharedLocalizer["Custom CSS"]">

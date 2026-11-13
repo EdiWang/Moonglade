@@ -34,7 +34,7 @@
                     <div class="col-5 text-end">
                         <div class="form-check form-switch form-control-lg">
                             <input type="hidden" name="EnableComments" value="false">
-                            <input type="checkbox" name="EnableComments" value="true" class="form-check-input" @(settings.EnableComments ? "checked" : null)>
+                            <input type="checkbox" id="@Html.IdFor(m => settings.EnableComments)" name="EnableComments" value="true" class="form-check-input" @(settings.EnableComments ? "checked" : null)>
                         </div>
                     </div>
                 </div>
@@ -118,7 +118,7 @@
                                     <div class="col-5 text-end">
                                         <div class="form-check form-switch form-control-lg">
                                             <input type="hidden" name="EnableGravatar" value="false">
-                                            <input type="checkbox" name="EnableGravatar" value="true" class="form-check-input" @(settings.EnableGravatar ? "checked" : null)>
+                                            <input type="checkbox" id="@Html.IdFor(m => settings.EnableGravatar)" name="EnableGravatar" value="true" class="form-check-input" @(settings.EnableGravatar ? "checked" : null)>
                                         </div>
                                     </div>
                                 </div>
@@ -162,7 +162,7 @@
                     <div class="col-5 text-end">
                         <div class="form-check form-switch form-control-lg">
                             <input type="hidden" name="EnableCommentSectionOnMobile" value="false">
-                            <input type="checkbox" name="EnableCommentSectionOnMobile" value="true" class="form-check-input" @(settings.EnableCommentSectionOnMobile ? "checked" : null)>
+                            <input type="checkbox" id="@Html.IdFor(m => settings.EnableCommentSectionOnMobile)" name="EnableCommentSectionOnMobile" value="true" class="form-check-input" @(settings.EnableCommentSectionOnMobile ? "checked" : null)>
                         </div>
                     </div>
                 </div>
@@ -180,7 +180,7 @@
                     <div class="col-5 text-end">
                         <div class="form-check form-switch form-control-lg">
                             <input type="hidden" name="RequireCommentReview" value="false">
-                            <input type="checkbox" name="RequireCommentReview" value="true" class="form-check-input" @(settings.RequireCommentReview ? "checked" : null)>
+                            <input type="checkbox" id="@Html.IdFor(m => settings.RequireCommentReview)" name="RequireCommentReview" value="true" class="form-check-input" @(settings.RequireCommentReview ? "checked" : null)>
                         </div>
                     </div>
                 </div>
@@ -200,7 +200,7 @@
                         <div class="col-5 text-end">
                             <div class="form-check form-switch form-control-lg">
                                 <input type="hidden" name="EnableWordFilter" value="false">
-                                <input type="checkbox" name="EnableWordFilter" value="true" class="form-check-input" @(settings.EnableWordFilter ? "checked" : null)>
+                                <input type="checkbox" id="@Html.IdFor(m => settings.EnableWordFilter)" name="EnableWordFilter" value="true" class="form-check-input" @(settings.EnableWordFilter ? "checked" : null)>
                             </div>
                         </div>
                         <button type="button" class="admin-settings-expander-toggle" data-bs-toggle="collapse" data-bs-target="#settings-word-filter" aria-controls="settings-word-filter" aria-expanded="@(settings.EnableWordFilter ? "true" : "false")" aria-label="@Html.DisplayNameFor(m => settings.EnableWordFilter)">

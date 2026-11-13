@@ -45,7 +45,7 @@
                     <div class="col-5 text-end">
                         <div class="form-check form-switch form-control-lg">
                             <input type="hidden" name="UseFullContent" value="false">
-                            <input type="checkbox" name="UseFullContent" value="true" class="form-check-input" @(@settings.UseFullContent ? "checked" : null) />
+                            <input type="checkbox" id="@Html.IdFor(m => settings.UseFullContent)" name="UseFullContent" value="true" class="form-check-input" @(@settings.UseFullContent ? "checked" : null) />
                         </div>
                     </div>
                 </div>
