@@ -2156,8 +2156,8 @@
   <data name="Choose a valid PNG or JPEG image." xml:space="preserve">
     <value>Wählen Sie ein gültiges PNG- oder JPEG-Bild aus.</value>
   </data>
-  <data name="Drag or use the arrow keys to position the image." xml:space="preserve">
-    <value>Ziehen Sie das Bild oder positionieren Sie es mit den Pfeiltasten.</value>
+  <data name="Drag or use the arrow keys to position the image. Scroll to zoom." xml:space="preserve">
+    <value>Ziehen Sie das Bild oder positionieren Sie es mit den Pfeiltasten. Scrollen Sie zum Zoomen.</value>
   </data>
   <data name="Zoom" xml:space="preserve">
     <value>Zoom</value>

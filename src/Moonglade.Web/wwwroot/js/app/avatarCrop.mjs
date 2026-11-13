@@ -84,6 +84,13 @@ export function bindAvatarCrop(uploadUrl) {
     });
 
     zoom.addEventListener('input', render);
+    preview.addEventListener('wheel', event => {
+        if (!image || saving || event.ctrlKey || !event.deltaY) return;
+        event.preventDefault();
+        if (event.deltaY < 0) zoom.stepUp(10);
+        else zoom.stepDown(10);
+        render();
+    }, { passive: false });
     preview.addEventListener('pointerdown', event => {
         if (!image || saving || drag || event.button !== 0) return;
         preview.setPointerCapture(event.pointerId);

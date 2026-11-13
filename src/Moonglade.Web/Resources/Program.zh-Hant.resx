@@ -2156,8 +2156,8 @@
   <data name="Choose a valid PNG or JPEG image." xml:space="preserve">
     <value>請選擇有效的 PNG 或 JPEG 圖片。</value>
   </data>
-  <data name="Drag or use the arrow keys to position the image." xml:space="preserve">
-    <value>拖曳圖片或使用方向鍵調整位置。</value>
+  <data name="Drag or use the arrow keys to position the image. Scroll to zoom." xml:space="preserve">
+    <value>拖曳圖片或使用方向鍵調整位置。使用滑鼠滾輪縮放。</value>
   </data>
   <data name="Zoom" xml:space="preserve">
     <value>縮放</value>

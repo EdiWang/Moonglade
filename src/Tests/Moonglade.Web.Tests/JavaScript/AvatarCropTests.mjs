@@ -40,6 +40,8 @@ test('avatar crop centers a wide image and submits the adjusted square', async (
     };
     const zoom = node('avatarCropZoom');
     Object.defineProperty(zoom, 'valueAsNumber', { get: () => Number(zoom.value) });
+    zoom.stepUp = steps => { zoom.value = (zoom.valueAsNumber + steps * 0.01).toFixed(2); };
+    zoom.stepDown = steps => { zoom.value = (zoom.valueAsNumber - steps * 0.01).toFixed(2); };
     const { bindAvatarCrop } = await import('../../../Moonglade.Web/wwwroot/js/app/avatarCrop.mjs');
     bindAvatarCrop('/api/account/avatar');
     const input = node('avatarImageFile');
@@ -48,6 +50,17 @@ test('avatar crop centers a wide image and submits the adjusted square', async (
     assert.deepEqual(crop, [200, 0, 400, 400, 0, 0, 300, 300]);
     zoom.value = '2';
     zoom.input();
+    let prevented = 0;
+    const wheel = deltaY => ({ deltaY, preventDefault() { ++prevented; } });
+    preview.wheel(wheel(-100));
+    assert.equal(zoom.valueAsNumber, 2.1);
+    assert.equal(crop[2], 400 / 2.1);
+    preview.wheel(wheel(100));
+    assert.equal(zoom.valueAsNumber, 2);
+    assert.equal(crop[2], 200);
+    preview.wheel({ ...wheel(-100), ctrlKey: true });
+    assert.equal(zoom.valueAsNumber, 2);
+    assert.equal(prevented, 2);
     preview.keydown({ key: 'ArrowLeft', preventDefault() {} });
 
     const requests = [];

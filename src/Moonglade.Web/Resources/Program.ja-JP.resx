@@ -2156,8 +2156,8 @@
   <data name="Choose a valid PNG or JPEG image." xml:space="preserve">
     <value>有効な PNG または JPEG 画像を選択してください。</value>
   </data>
-  <data name="Drag or use the arrow keys to position the image." xml:space="preserve">
-    <value>ドラッグまたは矢印キーで画像の位置を調整します。</value>
+  <data name="Drag or use the arrow keys to position the image. Scroll to zoom." xml:space="preserve">
+    <value>ドラッグまたは矢印キーで画像の位置を調整します。マウスホイールで拡大・縮小できます。</value>
   </data>
   <data name="Zoom" xml:space="preserve">
     <value>ズーム</value>
