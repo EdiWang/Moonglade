@@ -2153,4 +2153,13 @@
   <data name="Verify your identity" xml:space="preserve"><value>Identität bestätigen</value></data>
   <data name="Sign in with {0}" xml:space="preserve"><value>Mit {0} anmelden</value></data>
   <data name="Third-party sign-in failed. Try again or sign in with your local account." xml:space="preserve"><value>Die Anmeldung über den Drittanbieter ist fehlgeschlagen. Versuchen Sie es erneut oder melden Sie sich mit Ihrem lokalen Konto an.</value></data>
+  <data name="Choose a valid PNG or JPEG image." xml:space="preserve">
+    <value>Wählen Sie ein gültiges PNG- oder JPEG-Bild aus.</value>
+  </data>
+  <data name="Drag or use the arrow keys to position the image." xml:space="preserve">
+    <value>Ziehen Sie das Bild oder positionieren Sie es mit den Pfeiltasten.</value>
+  </data>
+  <data name="Zoom" xml:space="preserve">
+    <value>Zoom</value>
+  </data>
 </root>

@@ -14,7 +14,7 @@ const stubs = new Map([
     };`],
     ['./toastService.mjs', `export const success = message => globalThis.accountRegression.events.push(['success', message]);
         export const error = failure => globalThis.accountRegression.events.push(['error', failure]);`],
-    ['./imageuploader.mjs', 'export class ImageUploader { bindEvents() {} }'],
+    ['./avatarCrop.mjs', 'export function bindAvatarCrop() {}'],
     ['./utils.module.mjs', `export const getLocalizedString = key => key;`]
 ]);
 const originalRevision = '11111111-1111-1111-1111-111111111111';

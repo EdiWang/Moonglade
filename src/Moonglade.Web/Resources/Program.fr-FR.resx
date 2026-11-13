@@ -2202,4 +2202,13 @@
   <data name="Verify your identity" xml:space="preserve"><value>Vérifier votre identité</value></data>
   <data name="Sign in with {0}" xml:space="preserve"><value>Se connecter avec {0}</value></data>
   <data name="Third-party sign-in failed. Try again or sign in with your local account." xml:space="preserve"><value>La connexion via le fournisseur tiers a échoué. Réessayez ou connectez-vous avec votre compte local.</value></data>
+  <data name="Choose a valid PNG or JPEG image." xml:space="preserve">
+    <value>Sélectionnez une image PNG ou JPEG valide.</value>
+  </data>
+  <data name="Drag or use the arrow keys to position the image." xml:space="preserve">
+    <value>Faites glisser l’image ou utilisez les touches fléchées pour la positionner.</value>
+  </data>
+  <data name="Zoom" xml:space="preserve">
+    <value>Zoom</value>
+  </data>
 </root>

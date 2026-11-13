@@ -2153,4 +2153,13 @@
   <data name="Verify your identity" xml:space="preserve"><value>驗證身分</value></data>
   <data name="Sign in with {0}" xml:space="preserve"><value>使用 {0} 登入</value></data>
   <data name="Third-party sign-in failed. Try again or sign in with your local account." xml:space="preserve"><value>第三方登入失敗。請再試一次，或使用本機帳戶登入。</value></data>
+  <data name="Choose a valid PNG or JPEG image." xml:space="preserve">
+    <value>請選擇有效的 PNG 或 JPEG 圖片。</value>
+  </data>
+  <data name="Drag or use the arrow keys to position the image." xml:space="preserve">
+    <value>拖曳圖片或使用方向鍵調整位置。</value>
+  </data>
+  <data name="Zoom" xml:space="preserve">
+    <value>縮放</value>
+  </data>
 </root>

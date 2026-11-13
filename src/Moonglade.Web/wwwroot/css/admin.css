@@ -926,6 +926,42 @@
     align-items: center;
 }
 
+#avatarDropPrompt[hidden] {
+    display: none;
+}
+
+.avatar-crop-frame {
+    position: relative;
+    width: min(100%, 300px);
+    overflow: hidden;
+    border-radius: var(--bs-border-radius);
+}
+
+.avatar-crop-frame::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border: 1px solid rgba(255, 255, 255, .8);
+    border-radius: 50%;
+    box-shadow: 0 0 0 100vw rgba(0, 0, 0, .6);
+    pointer-events: none;
+}
+
+.avatar-crop-preview {
+    height: auto;
+    cursor: grab;
+    touch-action: none;
+}
+
+.avatar-crop-preview:active {
+    cursor: grabbing;
+}
+
+.avatar-crop-frame:focus-within {
+    outline: 2px solid var(--bs-body-color);
+    outline-offset: 2px;
+}
+
 .admin-side-options-container,
 .admin-taginput-container {
     background-color: var(--bs-white);

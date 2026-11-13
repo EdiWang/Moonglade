@@ -4,6 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Moonglade.Auth;
 using Moonglade.Web.Tests.TestSupport;
+using SkiaSharp;
 using System.Net;
 using System.Net.Http.Json;
 using System.Text.Json;
@@ -12,6 +13,47 @@ namespace Moonglade.Web.Tests.Hosting;
 
 public partial class AccountSecurityHttpTests
 {
+    [Fact]
+    public async Task Avatar_Get_RevalidatesTheSameUrlAfterUpload()
+    {
+        var ct = TestContext.Current.CancellationToken;
+        await using var fixture = await LocalAccountHttpFixture.CreateAsync();
+        var account = await InitializeAsync(fixture);
+        fixture.SetTicket(LocalAccountPrincipal.Create(account, CookieAuthenticationDefaults.AuthenticationScheme),
+            CookieAuthenticationDefaults.AuthenticationScheme);
+        var token = await AdminTokenAsync(fixture);
+
+        using var bitmap = new SKBitmap(300, 300);
+        bitmap.Erase(SKColors.Blue);
+        using var firstImage = bitmap.Encode(SKEncodedImageFormat.Png, 100);
+        using var seeded = await fixture.SendAsync(HttpMethod.Post, "/api/account/avatar",
+            JsonContent.Create(Convert.ToBase64String(firstImage.ToArray())), token);
+        Assert.Equal(HttpStatusCode.OK, seeded.StatusCode);
+
+        using var first = await fixture.Client.GetAsync("/avatar", ct);
+        Assert.Equal(HttpStatusCode.OK, first.StatusCode);
+        Assert.True(first.Headers.CacheControl?.NoCache);
+        var tag = Assert.IsType<System.Net.Http.Headers.EntityTagHeaderValue>(first.Headers.ETag);
+        using var unchangedRequest = new HttpRequestMessage(HttpMethod.Get, "/avatar");
+        unchangedRequest.Headers.IfNoneMatch.Add(tag);
+        using var unchanged = await fixture.Client.SendAsync(unchangedRequest, ct);
+        Assert.Equal(HttpStatusCode.NotModified, unchanged.StatusCode);
+
+        bitmap.Erase(SKColors.Red);
+        using var secondImage = bitmap.Encode(SKEncodedImageFormat.Png, 100);
+        var updatedBytes = secondImage.ToArray();
+        using var upload = await fixture.SendAsync(HttpMethod.Post, "/api/account/avatar",
+            JsonContent.Create(Convert.ToBase64String(updatedBytes)), token);
+        Assert.Equal(HttpStatusCode.OK, upload.StatusCode);
+
+        using var refresh = new HttpRequestMessage(HttpMethod.Get, "/avatar");
+        refresh.Headers.IfNoneMatch.Add(tag);
+        using var updated = await fixture.Client.SendAsync(refresh, ct);
+        Assert.Equal(HttpStatusCode.OK, updated.StatusCode);
+        Assert.NotEqual(tag, updated.Headers.ETag);
+        Assert.Equal(updatedBytes, await updated.Content.ReadAsByteArrayAsync(ct));
+    }
+
     [Fact]
     public async Task AvatarPreference_RequiresAdminAndAntiforgery_AndPreservesAccountAndOrdinarySettings()
     {

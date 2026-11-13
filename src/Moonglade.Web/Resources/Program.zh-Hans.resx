@@ -2153,4 +2153,13 @@
   <data name="Verify your identity" xml:space="preserve"><value>验证身份</value></data>
   <data name="Sign in with {0}" xml:space="preserve"><value>使用 {0} 登录</value></data>
   <data name="Third-party sign-in failed. Try again or sign in with your local account." xml:space="preserve"><value>第三方登录失败。请重试，或使用本地账号登录。</value></data>
+  <data name="Choose a valid PNG or JPEG image." xml:space="preserve">
+    <value>请选择有效的 PNG 或 JPEG 图片。</value>
+  </data>
+  <data name="Drag or use the arrow keys to position the image." xml:space="preserve">
+    <value>拖动图片或使用方向键调整位置。</value>
+  </data>
+  <data name="Zoom" xml:space="preserve">
+    <value>缩放</value>
+  </data>
 </root>

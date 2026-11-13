@@ -1,30 +1,36 @@
 ﻿<div class="modal fade" id="avatarmodal" tabindex="-1" role="dialog" aria-labelledby="avatarmodalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-sm" role="document">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="avatarmodalLabel">@SharedLocalizer["Change Avatar"]</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
-                </button>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="@SharedLocalizer["Close"]"></button>
             </div>
             <div class="modal-body">
 
-                <div class="mb-2">
-                    <div id="avatarDropTarget" style="width: 256px; height: 256px;" class="img-thumbnail image-drop-target text-center">
+                <div id="avatarDropTarget">
+                    <div id="avatarDropPrompt" class="image-drop-target p-4 text-center">
                         @SharedLocalizer["Drag and drop image file here"]
                     </div>
-
-                    <div class="input-group mt-2">
-                        <div>
-                            <label class="form-label" for="avatarImageFile" aria-describedby="avatarImageFileAddon">@SharedLocalizer[".png or .jpg file"]</label>
-                            <input type="file" accept="image/png, image/jpeg" id="avatarImageFile" class="form-control" name="avatarImageFile">
+                    <div id="avatarCropEditor" hidden>
+                        <div class="avatar-crop-frame mx-auto">
+                            <canvas id="avatarCropPreview" class="avatar-crop-preview d-block w-100" width="300" height="300"
+                                    tabindex="0" aria-label="@SharedLocalizer["Preview"]" aria-describedby="avatarCropHelp"></canvas>
                         </div>
+                        <p id="avatarCropHelp" class="form-text text-center mt-2">
+                            @SharedLocalizer["Drag or use the arrow keys to position the image."]
+                        </p>
+                        <label for="avatarCropZoom" class="form-label">@SharedLocalizer["Zoom"]</label>
+                        <input type="range" class="form-range" id="avatarCropZoom" min="1" max="3" step="0.01" value="1" />
                     </div>
-
-                    <p class="small text-muted text-center mt-2">@SharedLocalizer["* Image width and height must be equal"]</p>
+                    <label class="form-label mt-2" for="avatarImageFile">@SharedLocalizer[".png or .jpg file"]</label>
+                    <input type="file" accept="image/png,image/jpeg" id="avatarImageFile" class="form-control" />
                 </div>
+                <p id="avatarCropError" class="small text-danger mt-2 mb-0" role="alert"></p>
             </div>
             <div class="modal-footer">
-                <button class="btn btn-accent disabled" id="btn-upload-avatar" disabled="disabled">@SharedLocalizer["Upload"]</button>
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">@SharedLocalizer["Cancel"]</button>
+                <button type="button" class="btn btn-accent" id="btn-upload-avatar" disabled
+                        data-saving-label="@SharedLocalizer["Saving..."]">@SharedLocalizer["Save"]</button>
             </div>
         </div>
     </div>

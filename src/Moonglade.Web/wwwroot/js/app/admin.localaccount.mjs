@@ -2,14 +2,9 @@ import { Alpine } from './alpine-init.mjs';
 import { fetch2 } from './httpService.mjs?v=1500';
 import { success, error } from './toastService.mjs';
 import { getLocalizedString } from './utils.module.mjs';
-import { ImageUploader } from './imageuploader.mjs';
+import { bindAvatarCrop } from './avatarCrop.mjs';
 
-const avatarUploader = new ImageUploader('avatar', 300, 'image/jpeg');
-avatarUploader.bindEvents();
-document.getElementById('btn-upload-avatar').addEventListener('click', async () => {
-    const settings = document.getElementById('account-settings');
-    await avatarUploader.uploadImage(settings.dataset.avatarUploadUrl);
-});
+bindAvatarCrop(document.getElementById('account-settings').dataset.avatarUploadUrl);
 
 const gravatar = document.getElementById('account-gravatar');
 gravatar.addEventListener('change', async () => {

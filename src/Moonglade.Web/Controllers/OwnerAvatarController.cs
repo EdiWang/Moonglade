@@ -1,6 +1,8 @@
 using LiteBus.Commands.Abstractions;
+using Microsoft.Net.Http.Headers;
 using Moonglade.ActivityLog;
 using System.ComponentModel.DataAnnotations;
+using System.Security.Cryptography;
 
 namespace Moonglade.Web.Controllers;
 
@@ -15,7 +17,7 @@ public class OwnerAvatarController(
 
     [AllowAnonymous]
     [HttpGet("avatar")]
-    [ResponseCache(Duration = 300)]
+    [ResponseCache(Location = ResponseCacheLocation.None)]
     public async Task<IActionResult> Avatar(CancellationToken ct)
     {
         var bytes = await cache.GetOrCreateAsync(nameof(BlogCachePartition.Account), ImageCacheKey, async () =>
@@ -27,7 +29,9 @@ public class OwnerAvatarController(
         if (bytes is not null)
         {
             ReadOnlySpan<byte> jpegSignature = [0xFF, 0xD8, 0xFF];
-            return File(bytes, bytes.AsSpan().StartsWith(jpegSignature) ? "image/jpeg" : "image/png");
+            var contentType = bytes.AsSpan().StartsWith(jpegSignature) ? "image/jpeg" : "image/png";
+            var entityTag = new EntityTagHeaderValue($"\"{Convert.ToHexString(SHA256.HashData(bytes))}\"");
+            return File(bytes, contentType, lastModified: null, entityTag);
         }
 
         return PhysicalFile(Path.Join(env.WebRootPath, "images", "default-avatar.png"), "image/png");

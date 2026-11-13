@@ -106,55 +106,48 @@ test('ImageUploader', async (t) => {
         return event;
     };
 
-    for (const [target, size, mimeType, expectedHeight] of [
-        ['avatar', 300, 'image/jpeg', 225],
-        ['siteicon', 512, 'image/png', 384]
-    ]) {
-        for (const source of ['drop', 'change']) {
-            await t.test(`${target} ${source} creates a resized preview and enables upload`, async () => {
-                const uploader = createUploader(target, size, mimeType);
-                const file = { name: 'photo.png', type: 'image/png' };
-                const event = createEvent(source, [file]);
-                const element = nodes.get(source === 'drop' ? `${target}DropTarget` : `${target}ImageFile`);
-                element[source](event);
-                await Promise.resolve();
-
-                assert.equal(event.stopped, true);
-                assert.equal(event.prevented, true);
-                assert.deepEqual(reads, [file]);
-                assert.equal(canvases.length, 1);
-                assert.deepEqual(canvases[0].drawArgs.slice(1), [0, 0, size, expectedHeight]);
-                assert.equal(canvases[0].width, size);
-                assert.equal(canvases[0].height, expectedHeight);
-                assert.equal(uploader.getDataUrl(), `data:${mimeType};base64,cHJldmlldw==`);
-                assert.equal(nodes.get(`${target}DropTarget`).innerHTML,
-                    `<img class="img-fluid" src="data:${mimeType};base64,cHJldmlldw==" />`);
-                assert.equal(nodes.get(`btn-upload-${target}`).disabled, false);
-                assert.equal(nodes.get(`btn-upload-${target}`).classes.has('disabled'), false);
-                assert.deepEqual(messages, []);
-            });
-        }
-    }
-
     for (const source of ['drop', 'change']) {
+        await t.test(`site icon ${source} creates a resized preview and enables upload`, async () => {
+            const uploader = createUploader('siteicon', 512, 'image/png');
+            const file = { name: 'photo.png', type: 'image/png' };
+            const event = createEvent(source, [file]);
+            const element = nodes.get(source === 'drop' ? 'siteiconDropTarget' : 'siteiconImageFile');
+            element[source](event);
+            await Promise.resolve();
+
+            assert.equal(event.stopped, true);
+            assert.equal(event.prevented, true);
+            assert.deepEqual(reads, [file]);
+            assert.equal(canvases.length, 1);
+            assert.deepEqual(canvases[0].drawArgs.slice(1), [0, 0, 512, 384]);
+            assert.equal(canvases[0].width, 512);
+            assert.equal(canvases[0].height, 384);
+            assert.equal(uploader.getDataUrl(), 'data:image/png;base64,cHJldmlldw==');
+            assert.equal(nodes.get('siteiconDropTarget').innerHTML,
+                '<img class="img-fluid" src="data:image/png;base64,cHJldmlldw==" />');
+            assert.equal(nodes.get('btn-upload-siteicon').disabled, false);
+            assert.equal(nodes.get('btn-upload-siteicon').classes.has('disabled'), false);
+            assert.deepEqual(messages, []);
+        });
+
         await t.test(`empty ${source} reports missing image without reading a file`, () => {
-            const uploader = createUploader('avatar', 300, 'image/jpeg');
+            const uploader = createUploader('siteicon', 512, 'image/png');
             uploader.fileSelect(createEvent(source, []));
             assert.deepEqual(messages, ['Please select an image']);
             assert.deepEqual(reads, []);
             assert.equal(uploader.getDataUrl(), '');
-            assert.equal(nodes.get('avatarDropTarget').innerHTML, '');
-            assert.equal(nodes.get('btn-upload-avatar').disabled, true);
+            assert.equal(nodes.get('siteiconDropTarget').innerHTML, '');
+            assert.equal(nodes.get('btn-upload-siteicon').disabled, true);
         });
 
         await t.test(`non-image ${source} reports invalid file without creating a preview`, () => {
-            const uploader = createUploader('avatar', 300, 'image/jpeg');
+            const uploader = createUploader('siteicon', 512, 'image/png');
             uploader.fileSelect(createEvent(source, [{ name: 'notes.txt', type: 'text/plain' }]));
             assert.deepEqual(messages, ['Please select an image file.']);
             assert.deepEqual(reads, []);
             assert.equal(uploader.getDataUrl(), '');
-            assert.equal(nodes.get('avatarDropTarget').innerHTML, '');
-            assert.equal(nodes.get('btn-upload-avatar').disabled, true);
+            assert.equal(nodes.get('siteiconDropTarget').innerHTML, '');
+            assert.equal(nodes.get('btn-upload-siteicon').disabled, true);
         });
     }
 });

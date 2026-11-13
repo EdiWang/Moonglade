@@ -2153,4 +2153,13 @@
   <data name="Verify your identity" xml:space="preserve"><value>本人確認</value></data>
   <data name="Sign in with {0}" xml:space="preserve"><value>{0} でサインイン</value></data>
   <data name="Third-party sign-in failed. Try again or sign in with your local account." xml:space="preserve"><value>外部アカウントでのサインインに失敗しました。もう一度試すか、ローカル アカウントでサインインしてください。</value></data>
+  <data name="Choose a valid PNG or JPEG image." xml:space="preserve">
+    <value>有効な PNG または JPEG 画像を選択してください。</value>
+  </data>
+  <data name="Drag or use the arrow keys to position the image." xml:space="preserve">
+    <value>ドラッグまたは矢印キーで画像の位置を調整します。</value>
+  </data>
+  <data name="Zoom" xml:space="preserve">
+    <value>ズーム</value>
+  </data>
 </root>

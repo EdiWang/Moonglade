@@ -12,14 +12,12 @@
 @Html.AntiForgeryToken()
 
 @section scripts {
-    <script type="module" src="~/js/app/admin.localaccount.mjs"></script>
+    <script type="module" src="~/js/app/admin.localaccount.mjs" asp-append-version="true"></script>
 }
 
 <div id="localizedStrings" style="display:none"
      data-image-updated="@SharedLocalizer["Updated"]"
-     data-please-select-image="@SharedLocalizer["Please select an image"]"
-     data-please-select-image-file="@SharedLocalizer["Please select an image file."]"
-     data-file-apis-not-supported="@SharedLocalizer["The File APIs are not fully supported in this browser."]"
+     data-avatar-invalid-image="@SharedLocalizer["Choose a valid PNG or JPEG image."]"
      data-password-updated="@SharedLocalizer["Password updated."]"
      data-email-updated="@SharedLocalizer["Owner email updated."]">
 </div>
