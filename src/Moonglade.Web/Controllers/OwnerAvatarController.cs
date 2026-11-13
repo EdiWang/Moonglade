@@ -10,21 +10,20 @@ public class OwnerAvatarController(
     OwnerAvatarStore avatars,
     IWebHostEnvironment env,
     ICacheAside cache,
+    AvatarCacheInvalidator avatarCache,
     ICommandMediator commandMediator,
     ILogger<OwnerAvatarController> logger) : BlogControllerBase(commandMediator, logger)
 {
-    private const string ImageCacheKey = "avatar";
-
     [AllowAnonymous]
     [HttpGet("avatar")]
     [ResponseCache(Location = ResponseCacheLocation.None)]
     public async Task<IActionResult> Avatar(CancellationToken ct)
     {
-        var bytes = await cache.GetOrCreateAsync(nameof(BlogCachePartition.Account), ImageCacheKey, async () =>
+        var bytes = await cache.GetOrCreateAsync(nameof(BlogCachePartition.Account), avatarCache.CacheKey, async () =>
         {
             var data = await avatars.ReadImageAsync(ct);
             return string.IsNullOrWhiteSpace(data) ? null : Convert.FromBase64String(data);
-        });
+        }, TimeSpan.FromHours(1));
 
         if (bytes is not null)
         {
@@ -50,7 +49,7 @@ public class OwnerAvatarController(
             return Conflict(exception.Message);
         }
 
-        cache.Remove(nameof(BlogCachePartition.Account), ImageCacheKey);
+        avatarCache.Invalidate();
         await LogActivityAsync(ActivityEvents.AvatarUpdated, "Avatar Image");
         return Ok();
     }

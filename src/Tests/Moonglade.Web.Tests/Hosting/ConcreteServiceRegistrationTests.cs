@@ -43,7 +43,7 @@ public class ConcreteServiceRegistrationTests
         using var first = provider.CreateScope();
         using var second = provider.CreateScope();
 
-        foreach (var type in new[] { typeof(ImageUploadValidator), typeof(CommentSubmissionGuard) })
+        foreach (var type in new[] { typeof(ImageUploadValidator), typeof(CommentSubmissionGuard), typeof(AvatarCacheInvalidator) })
         {
             Assert.Same(first.ServiceProvider.GetRequiredService(type), second.ServiceProvider.GetRequiredService(type));
         }

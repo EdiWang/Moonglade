@@ -90,6 +90,7 @@ internal sealed class LocalAccountHttpFixture : IAsyncDisposable
         builder.Services.AddSingleton(Mock.Of<IQueryMediator>());
         builder.Services.AddInMemoryCacheAside();
         builder.Services.AddSingleton<ThemeCacheInvalidator>();
+        builder.Services.AddSingleton<AvatarCacheInvalidator>();
         builder.Services.AddSingleton<PostCacheInvalidator>();
         builder.Services.AddLocalization(options => options.ResourcesPath = "Resources");
         builder.Services.AddDataProtection().UseEphemeralDataProtectionProvider();

@@ -128,7 +128,7 @@ public partial class AssetsControllerTests
     private OwnerAvatarController CreateAvatarController(ConfigurationCommandRecorder store,
         ILogger<OwnerAvatarController>? logger = null, string? username = null,
         LiteBus.Commands.Abstractions.ICommandMediator? commandMediator = null) =>
-        new(new OwnerAvatarStore(store.Db), _environment.Object, _cache.Object,
+        new(new OwnerAvatarStore(store.Db), _environment.Object, _cache.Object, _avatarCache,
             commandMediator ?? store, logger ?? Mock.Of<ILogger<OwnerAvatarController>>())
         {
             ControllerContext = CreateController(username).ControllerContext
