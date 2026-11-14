@@ -1770,9 +1770,6 @@
   <data name="Use Bootstrap Icons classes (e.g., bi-link-45deg, bi-github)" xml:space="preserve">
     <value>Bootstrap Icons クラスを使用します（例: bi-link-45deg、bi-github）</value>
   </data>
-  <data name="Using local provider" xml:space="preserve">
-    <value>ローカルプロバイダーを使用中</value>
-  </data>
   <data name="View posts tagged with {0}" xml:space="preserve">
     <value>{0} タグの投稿を表示</value>
   </data>

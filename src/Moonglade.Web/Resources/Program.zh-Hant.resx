@@ -1770,9 +1770,6 @@
   <data name="Use Bootstrap Icons classes (e.g., bi-link-45deg, bi-github)" xml:space="preserve">
     <value>使用 Bootstrap Icons 類別（例如 bi-link-45deg、bi-github）</value>
   </data>
-  <data name="Using local provider" xml:space="preserve">
-    <value>正在使用本機提供者</value>
-  </data>
   <data name="View posts tagged with {0}" xml:space="preserve">
     <value>檢視標記為 {0} 的文章</value>
   </data>

@@ -1665,9 +1665,6 @@
   <data name="Use Bootstrap Icons classes (e.g., bi-link-45deg, bi-github)" xml:space="preserve">
     <value>Utilisez les classes Bootstrap Icons (par exemple, bi-link-45deg, bi-github)</value>
   </data>
-  <data name="Using local provider" xml:space="preserve">
-    <value>Utilisation du fournisseur local</value>
-  </data>
   <data name="View posts tagged with {0}" xml:space="preserve">
     <value>Voir les articles portant l'étiquette {0}</value>
   </data>
