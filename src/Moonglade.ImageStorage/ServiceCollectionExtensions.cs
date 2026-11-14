@@ -1,6 +1,5 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Moonglade.ImageStorage.Providers;
 
 namespace Moonglade.ImageStorage;
 
@@ -30,7 +29,7 @@ public static class ServiceCollectionExtensions
         var imageConfiguration = FileSystemImageStorage.ResolveImageStoragePaths(primaryPath, originalPath);
 
         services.AddSingleton(imageConfiguration)
-            .AddSingleton<IBlogImageStorage, FileSystemImageStorage>()
+            .AddSingleton<FileSystemImageStorage>()
             .AddScoped<DatedGuidFileNameGenerator>();
 
         return services;

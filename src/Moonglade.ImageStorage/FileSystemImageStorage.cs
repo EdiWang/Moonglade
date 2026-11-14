@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.Logging;
 using System.Runtime.InteropServices;
 
-namespace Moonglade.ImageStorage.Providers;
+namespace Moonglade.ImageStorage;
 
 /// <summary>
 /// Configuration record for file system image storage settings.
@@ -14,7 +14,7 @@ public record FileSystemImageConfiguration(string PrimaryPath, string OriginalPa
 /// Provides file system-based image storage implementation for blog images.
 /// Stores public and original images in separate directories on the local file system.
 /// </summary>
-public class FileSystemImageStorage : IBlogImageStorage
+public class FileSystemImageStorage
 {
     private readonly string _primaryPath;
     private readonly string _originalPath;

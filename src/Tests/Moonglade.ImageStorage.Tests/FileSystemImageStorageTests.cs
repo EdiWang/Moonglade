@@ -1,9 +1,8 @@
 using Microsoft.Extensions.Logging;
-using Moonglade.ImageStorage.Providers;
 using Moq;
 using System.Text;
 
-namespace Moonglade.ImageStorage.Tests.Providers;
+namespace Moonglade.ImageStorage.Tests;
 
 public class FileSystemImageStorageTests : IDisposable
 {

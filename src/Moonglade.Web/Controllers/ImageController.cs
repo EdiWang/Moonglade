@@ -13,7 +13,7 @@ namespace Moonglade.Web.Controllers;
 
 [Route("image")]
 public class ImageController(
-        IBlogImageStorage imageStorage,
+        FileSystemImageStorage imageStorage,
         ILogger<ImageController> logger,
         IBlogConfig blogConfig,
         IMemoryCache cache,
@@ -159,7 +159,7 @@ public class ImageController(
 
     private void StoreOriginalImageAsync(string fileName, byte[] originalImageData)
     {
-        cannonService.FireAsync<IBlogImageStorage>(async storage =>
+        cannonService.FireAsync<FileSystemImageStorage>(async storage =>
             await storage.InsertOriginalAsync(fileName, originalImageData));
     }
 

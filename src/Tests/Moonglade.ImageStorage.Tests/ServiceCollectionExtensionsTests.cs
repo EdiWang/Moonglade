@@ -1,13 +1,12 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Moonglade.ImageStorage.Providers;
 
 namespace Moonglade.ImageStorage.Tests;
 
 public class ServiceCollectionExtensionsTests
 {
     [Fact]
-    public void AddImageStorage_WithConfiguredPaths_RegistersFileSystemServices()
+    public async Task AddImageStorage_WithConfiguredPaths_RegistersSharedStorageForRequestAndBackgroundScopes()
     {
         var tempDirectory = Path.Combine(Path.GetTempPath(), "moonglade-image-storage-registration-tests", Guid.NewGuid().ToString("N"));
         var primaryPath = Path.Combine(tempDirectory, "primary");
@@ -28,7 +27,16 @@ public class ServiceCollectionExtensionsTests
             var storageConfiguration = serviceProvider.GetRequiredService<FileSystemImageConfiguration>();
             Assert.Equal(Path.GetFullPath(primaryPath), storageConfiguration.PrimaryPath);
             Assert.Equal(Path.GetFullPath(originalPath), storageConfiguration.OriginalPath);
-            Assert.IsType<FileSystemImageStorage>(serviceProvider.GetRequiredService<IBlogImageStorage>());
+            var storage = serviceProvider.GetRequiredService<FileSystemImageStorage>();
+            using var scope = serviceProvider.CreateScope();
+            var backgroundStorage = scope.ServiceProvider.GetRequiredService<FileSystemImageStorage>();
+            Assert.Same(storage, backgroundStorage);
+            byte[] imageBytes = [1, 2, 3];
+            await storage.InsertAsync("photo.png", imageBytes);
+            await backgroundStorage.InsertOriginalAsync("photo-origin.png", imageBytes);
+            Assert.Equal(imageBytes, await File.ReadAllBytesAsync(Path.Combine(primaryPath, "photo.png"), TestContext.Current.CancellationToken));
+            Assert.Equal(imageBytes, await File.ReadAllBytesAsync(Path.Combine(originalPath, "photo-origin.png"), TestContext.Current.CancellationToken));
+            Assert.Null(await storage.OpenReadAsync("photo-origin.png"));
             Assert.IsType<DatedGuidFileNameGenerator>(serviceProvider.GetRequiredService<DatedGuidFileNameGenerator>());
         }
         finally
