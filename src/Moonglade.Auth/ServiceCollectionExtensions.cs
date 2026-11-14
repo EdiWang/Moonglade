@@ -1,10 +1,12 @@
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.DataProtection;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
-using Moonglade.Configuration;
-using Microsoft.Extensions.Options;
-using Microsoft.IdentityModel.Protocols.OpenIdConnect;
+using Moonglade.Auth.Oidc;
+using Moonglade.Data;
 
 namespace Moonglade.Auth;
 
@@ -12,86 +14,47 @@ public static class ServiceCollectionExtensions
 {
     public static IServiceCollection AddBlogAuthentication(this IServiceCollection services, IConfiguration configuration)
     {
-        services.AddSingleton<LocalAccountState>();
-        services.AddSingleton<ILocalAccountReader>(sp => sp.GetRequiredService<LocalAccountState>());
-        services.TryAddSingleton<ConfigurationWriteGate>();
-        var section = configuration.GetSection("Authentication");
-        var authentication = section.Get<AuthenticationSettings>() ?? new AuthenticationSettings();
-        var oidc = authentication.OpenIdConnect ?? new OpenIdConnectAuthenticationSettings();
+        services.AddDataProtection()
+            .SetApplicationName("Moonglade")
+            .PersistKeysToDbContext<BlogDbContext>();
 
-        services.AddSingleton<IValidateOptions<AuthenticationSettings>, AuthenticationSettingsValidator>();
-        services.AddOptions<AuthenticationSettings>()
-            .Bind(section)
-            .ValidateOnStart();
+        services.AddScoped<OwnerAccountStore>();
+        services.AddScoped<OwnerAvatarStore>();
+        services.AddScoped<LocalAccountCookieEvents>();
+        services.TryAddSingleton(TimeProvider.System);
+        services.AddScoped<IOwnerProfileReader>(sp => sp.GetRequiredService<OwnerAccountStore>());
+        services.Configure<AuthenticationSettings>(configuration.GetSection("Authentication"));
         services.AddSingleton<ILocalAccountTotpService, LocalAccountTotpService>();
-
-        switch (authentication.Provider)
-        {
-            case AuthenticationProvider.OpenIdConnect:
-                services.AddAuthentication(options =>
-                {
-                    options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-                    options.DefaultChallengeScheme = BlogAuthSchemas.OpenIdConnect;
-                })
-                    .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme, ConfigureApplicationCookie)
-                    .AddOpenIdConnect(BlogAuthSchemas.OpenIdConnect, options =>
-                    {
-                        options.Authority = oidc.Authority;
-                        options.ClientId = oidc.ClientId;
-                        options.ClientSecret = oidc.ClientSecret;
-                        options.CallbackPath = oidc.CallbackPath;
-                        options.SignedOutCallbackPath = oidc.SignedOutCallbackPath;
-                        options.SignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-                        options.ResponseType = OpenIdConnectResponseType.Code;
-                        options.UsePkce = true;
-                        options.RequireHttpsMetadata = true;
-                        options.GetClaimsFromUserInfoEndpoint = true;
-                        options.SaveTokens = false;
-                        options.MapInboundClaims = false;
-                        options.TokenValidationParameters.NameClaimType = oidc.NameClaimType;
-
-                        options.Scope.Clear();
-                        foreach (var scope in oidc.Scopes ?? [])
-                        {
-                            options.Scope.Add(scope);
-                        }
-                    });
-                break;
-
-            case AuthenticationProvider.Local:
-                services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-                    .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme, ConfigureApplicationCookie);
-                break;
-
-            default:
-                var msg = $"Provider {authentication.Provider} is not supported.";
-                throw new NotSupportedException(msg);
-        }
+        services.AddSingleton<OidcSecretProtection>();
+        services.AddSingleton<OidcBindingFlow>();
+        services.AddMemoryCache();
+        services.AddSingleton<OidcSetupDrafts>();
+        services.AddScoped(sp => new OwnerOidcStore(sp.GetRequiredService<BlogDbContext>(),
+            sp.GetRequiredService<OidcSecretProtection>()));
+        services.AddHttpClient(OwnerOidcHandler.BackchannelClient, client => client.Timeout = TimeSpan.FromSeconds(20))
+            .ConfigurePrimaryHttpMessageHandler(() => new OidcPublicBackchannel())
+            .RemoveAllLoggers();
 
         services.AddAuthorizationBuilder()
-            .AddPolicy(BlogAuthSchemas.AdministratorPolicy, policy =>
+            .AddPolicy(BlogAuthSchemas.AdministratorPolicy, policy => policy
+                .RequireAuthenticatedUser()
+                .RequireRole("Administrator"));
+
+        services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+            .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme, options =>
             {
-                policy.RequireAuthenticatedUser();
-
-                if (authentication.Provider == AuthenticationProvider.Local)
-                {
-                    policy.RequireRole("Administrator");
-                    return;
-                }
-
-                var allowedSubjects = (oidc.AllowedSubjects ?? [])
-                    .ToHashSet(StringComparer.Ordinal);
-                policy.RequireAssertion(context =>
-                    context.User.FindAll("sub").Any(claim => allowedSubjects.Contains(claim.Value)));
-            });
-
-        services.AddAuthentication()
+                options.AccessDeniedPath = "/auth/accessdenied";
+                options.LoginPath = "/auth/signin";
+                options.LogoutPath = "/auth/signout";
+                options.EventsType = typeof(LocalAccountCookieEvents);
+            })
             .AddCookie(BlogAuthSchemas.LocalAccountSetup, options =>
             {
                 options.Cookie.Name = ".Moonglade.LocalAccount.Setup";
                 options.LoginPath = "/auth/signin";
                 options.ExpireTimeSpan = TimeSpan.FromMinutes(10);
                 options.SlidingExpiration = false;
+                options.EventsType = typeof(LocalAccountCookieEvents);
             })
             .AddCookie(BlogAuthSchemas.LocalAccountTwoFactor, options =>
             {
@@ -99,15 +62,37 @@ public static class ServiceCollectionExtensions
                 options.LoginPath = "/auth/signin";
                 options.ExpireTimeSpan = TimeSpan.FromMinutes(10);
                 options.SlidingExpiration = false;
-            });
+                options.EventsType = typeof(LocalAccountCookieEvents);
+            })
+            .AddCookie(BlogAuthSchemas.LocalAccountRememberedDevice, options =>
+            {
+                options.Cookie.Name = "__Host-Moonglade.LocalAccount.RememberedDevice";
+                options.Cookie.Path = "/";
+                options.Cookie.HttpOnly = true;
+                options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+                options.Cookie.SameSite = SameSiteMode.Lax;
+                options.ExpireTimeSpan = TimeSpan.FromDays(30);
+                options.SlidingExpiration = false;
+                options.EventsType = typeof(LocalAccountCookieEvents);
+            })
+            .AddCookie(BlogAuthSchemas.InitialAccountSetup, options =>
+            {
+                options.Cookie.Name = ".Moonglade.InitialAccount.Setup";
+                options.LoginPath = "/auth/setup-account";
+                options.ExpireTimeSpan = TimeSpan.FromMinutes(10);
+                options.SlidingExpiration = false;
+            })
+            .AddCookie(OidcBindingFlow.PendingScheme, options =>
+            {
+                options.Cookie.Name = ".Moonglade.OidcPendingBinding";
+                options.Cookie.HttpOnly = true;
+                options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+                options.Cookie.SameSite = SameSiteMode.Lax;
+                options.ExpireTimeSpan = OidcBindingFlow.Lifetime;
+                options.SlidingExpiration = false;
+            })
+            .AddScheme<AuthenticationSchemeOptions, OwnerOidcHandler>(OidcBindingFlow.Scheme, null);
 
         return services;
-    }
-
-    private static void ConfigureApplicationCookie(CookieAuthenticationOptions options)
-    {
-        options.AccessDeniedPath = "/auth/accessdenied";
-        options.LoginPath = "/auth/signin";
-        options.LogoutPath = "/auth/signout";
     }
 }

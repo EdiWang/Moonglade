@@ -1,8 +1,7 @@
-﻿using LiteBus.Commands.Abstractions;
+using LiteBus.Commands.Abstractions;
 using LiteBus.Queries.Abstractions;
 using Microsoft.Extensions.Logging;
 using Moonglade.Configuration;
-using Moonglade.Auth;
 
 namespace Moonglade.Setup;
 
@@ -19,17 +18,15 @@ public class ConfigInitializer(
     IQueryMediator queryMediator,
     ICommandMediator commandMediator,
     BlogConfig blogConfig,
-    ILogger<ConfigInitializer> logger,
-    LocalAccountState accounts)
+    ILogger<ConfigInitializer> logger)
 {
     public async Task Initialize(bool isNew, CancellationToken cancellationToken = default)
     {
-        var (_, snapshot, account) = await InitializeStoreAsync(isNew, cancellationToken);
+        var (_, snapshot) = await InitializeStoreAsync(isNew, cancellationToken);
         blogConfig.Publish(snapshot);
-        accounts.Publish(account);
     }
 
-    internal async Task<(IDictionary<string, string> Values, BlogSettingsSnapshot Snapshot, LocalAccountSettings Account)> InitializeStoreAsync(
+    internal async Task<(IDictionary<string, string> Values, BlogSettingsSnapshot Snapshot)> InitializeStoreAsync(
         bool isNew, CancellationToken cancellationToken = default)
     {
         try
@@ -37,23 +34,20 @@ public class ConfigInitializer(
             logger.LogInformation("Starting blog configuration initialization. IsNew: {IsNew}", isNew);
 
             var config = await queryMediator.QueryAsync(new ListConfigurationsQuery(), cancellationToken);
-            var accountKey = nameof(LocalAccountSettings);
             var manifestKey = nameof(SystemManifestSettings);
-            if (!isNew && !config.ContainsKey(accountKey))
+            if (!isNew && !config.ContainsKey(manifestKey)
+                && !typeof(BlogSettingsSnapshot).GetProperties().Any(property => config.ContainsKey(property.Name)))
             {
                 throw new InvalidOperationException(
-                    "Stored configuration 'LocalAccountSettings' is missing. Restore a valid value before restarting.");
+                    "Stored installation configuration is missing. Restore valid settings before restarting.");
             }
 
-            var account = config.TryGetValue(accountKey, out var accountJson)
-                ? LocalAccountSettings.ParseStored(accountJson) : LocalAccountSettings.DefaultValue;
             var manifest = config.TryGetValue(manifestKey, out var manifestJson)
                 ? SystemManifestSettings.ParseStored(manifestJson)
                 : isNew ? SystemManifestSettings.DefaultValueNew : SystemManifestSettings.DefaultValue;
 
             // Validate detached settings before any repair writes or runtime publication.
             var (snapshot, defaultsToAdd) = BlogConfig.Parse(config);
-            if (!config.ContainsKey(accountKey)) defaultsToAdd.Add(accountKey, account.ToJson());
             if (!config.ContainsKey(manifestKey)) defaultsToAdd.Add(manifestKey, manifest.ToJson());
             if (!isNew && !config.ContainsKey(manifestKey))
             {
@@ -65,7 +59,7 @@ public class ConfigInitializer(
             if (defaultsToAdd.Count == 0)
             {
                 logger.LogInformation("No configuration keys to initialize");
-                return (config, snapshot, account);
+                return (config, snapshot);
             }
 
             logger.LogInformation(
@@ -80,7 +74,7 @@ public class ConfigInitializer(
             }
 
             logger.LogInformation("Blog configuration initialization completed successfully");
-            return (config, snapshot, account);
+            return (config, snapshot);
         }
         catch (Exception ex)
         {

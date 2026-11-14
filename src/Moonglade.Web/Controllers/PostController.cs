@@ -17,7 +17,8 @@ public class PostController(
     ICommandMediator commandMediator,
     IQueryMediator queryMediator,
     IBlogConfig blogConfig,
-    IStringLocalizer<Program> localizer) : BlogControllerBase(commandMediator)
+    IStringLocalizer<Program> localizer,
+    ILogger<PostController> logger) : BlogControllerBase(commandMediator, logger)
 {
     [HttpGet("list")]
     public async Task<IActionResult> List(
@@ -76,10 +77,10 @@ public class PostController(
         await CommandMediator.SendAsync(new DeletePostCommand(postId, SoftDelete: true));
 
         await LogActivityAsync(
-            EventType.PostDeleted,
-            "Delete Post (Move to Recycle Bin)",
+            ActivityEvents.PostDeleted,
             $"Post #{postId}",
-            ActivityLogMetaData.Create(("PostId", postId)));
+            ActivityLogDetails.Create(("PostId", postId)),
+            targetId: postId.ToString());
 
         return NoContent();
     }
@@ -90,10 +91,10 @@ public class PostController(
         await CommandMediator.SendAsync(new PublishPostCommand(postId));
 
         await LogActivityAsync(
-            EventType.PostPublished,
-            "Publish Post",
+            ActivityEvents.PostPublished,
             $"Post #{postId}",
-            ActivityLogMetaData.Create(("PostId", postId)));
+            ActivityLogDetails.Create(("PostId", postId)),
+            targetId: postId.ToString());
 
         return NoContent();
     }
@@ -104,10 +105,10 @@ public class PostController(
         await CommandMediator.SendAsync(new UnpublishPostCommand(postId));
 
         await LogActivityAsync(
-            EventType.PostUnpublished,
-            "Unpublish Post",
+            ActivityEvents.PostUnpublished,
             $"Post #{postId}",
-            ActivityLogMetaData.Create(("PostId", postId)));
+            ActivityLogDetails.Create(("PostId", postId)),
+            targetId: postId.ToString());
 
         return NoContent();
     }
@@ -124,7 +125,7 @@ public class PostController(
     }
 
     [HttpGet("meta")]
-    public async Task<IActionResult> GetMeta([FromServices] IOptions<RequestLocalizationOptions> locOptions)
+    public async Task<IActionResult> GetMeta([FromServices] IOptions<RequestLocalizationOptions> locOptions, [FromServices] IOwnerProfileReader ownerProfiles)
     {
         var settings = blogConfig.Capture();
         var cats = await queryMediator.QueryAsync(new ListCategoriesQuery());
@@ -132,7 +133,7 @@ public class PostController(
         var response = new PostEditorMeta
         {
             EditorChoice = settings.ContentSettings.DefaultEditor.ToString().ToLowerInvariant(),
-            DefaultAuthor = settings.GeneralSettings.OwnerName,
+            DefaultAuthor = (await ownerProfiles.ReadPresentationAsync(HttpContext?.RequestAborted ?? default)).Name,
             Categories = cats.Select(c => new CategoryBrief
             {
                 Id = c.Id,
@@ -204,7 +205,10 @@ public class PostController(
             User.Identity?.Name ?? string.Empty,
             HttpContext.Connection.RemoteIpAddress?.ToString() ?? string.Empty,
             Request.Headers.UserAgent.ToString(),
-            UrlHelper.ResolveRootUrl(HttpContext, null, removeTailSlash: true));
+            UrlHelper.ResolveRootUrl(HttpContext, null, removeTailSlash: true))
+        {
+            TraceIdentifier = HttpContext.TraceIdentifier
+        };
     }
 
     private static string GetScheduleValidationMessage(ScheduledPublishTimeResolutionStatus status) => status switch

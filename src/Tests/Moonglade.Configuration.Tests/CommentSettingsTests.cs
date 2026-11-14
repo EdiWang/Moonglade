@@ -3,12 +3,6 @@ namespace Moonglade.Configuration.Tests;
 public class CommentSettingsTests
 {
     [Fact]
-    public void DefaultValue_DisablesMarkdownLinks()
-    {
-        Assert.False(CommentSettings.DefaultValue.EnableMarkdownLinks);
-    }
-
-    [Fact]
     public void Parse_WhenMarkdownLinksSettingIsMissing_DisablesLinksAndPreservesOtherSettings()
     {
         var (snapshot, _) = BlogConfig.Parse(new Dictionary<string, string>

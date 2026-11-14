@@ -14,19 +14,19 @@ namespace Moonglade.Web.Tests.Services;
 public class LocalAccountRateLimitPolicyTests
 {
     [Fact]
-    public void GetPartition_CombinesSignInStepClientIpAndUsername()
+    public void GetPartition_CombinesSignInStepClientIpAndEmail()
     {
         var policy = CreatePolicy(new LocalAccountRateLimitOptions());
         var context = CreateHttpContext("/SignIn", "POST", IPAddress.Parse("192.0.2.10"));
         context.Request.ContentType = "application/x-www-form-urlencoded";
         context.Request.Form = new FormCollection(new Dictionary<string, StringValues>
         {
-            ["Username"] = "Admin"
+            ["Email"] = "Owner@Example.test"
         });
 
         var partition = policy.GetPartition(context);
 
-        Assert.Equal("signin|192.0.2.10|admin", partition.PartitionKey);
+        Assert.Equal("signin|192.0.2.10|owner@example.test", partition.PartitionKey);
     }
 
     [Fact]
@@ -134,6 +134,7 @@ public class LocalAccountRateLimitPolicyTests
     [InlineData(typeof(SignInModel))]
     [InlineData(typeof(SetupAuthenticatorModel))]
     [InlineData(typeof(VerifyAuthenticatorModel))]
+    [InlineData(typeof(SetupAccountModel))]
     public void LocalAccountPages_UseLocalAccountRateLimitPolicy(Type pageModelType)
     {
         var attribute = pageModelType.GetCustomAttributes(typeof(EnableRateLimitingAttribute), inherit: false)

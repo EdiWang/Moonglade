@@ -1,4 +1,4 @@
-﻿@page "/admin/settings/content"
+@page "/admin/settings/content"
 @{
     var snapshot = ViewData.CaptureSettings(SettingsReader);
 }
@@ -6,24 +6,28 @@
     var settings = snapshot.ContentSettings;
 }
 
-@section scripts {
-    <script type="module" src="~/js/app/admin.settings.content.mjs"></script>
+@section head {
+    <link href="~/_content/Moonglade.Editor.StaticAssets/moonglade-editor/moonglade-editor.css" rel="stylesheet" asp-append-version="true" />
 }
 
-<div id="localizedStrings" style="display:none"
-     data-settings-updated="@SharedLocalizer["Settings Updated"]">
-</div>
+@section scripts {
+    <script type="module" src="~/js/app/admin.settings.content.editor.mjs" asp-append-version="true"></script>
+}
+
+@section adminnavigation {
+    <partial name="_SettingsNavigation" />
+}
 
 @section admintoolbar {
     <partial name="_SettingsHeader" />
 }
 
-<form id="form-settings" asp-controller="Settings" asp-action="Content">
+<form id="form-settings" class="admin-settings-page" asp-controller="Settings" asp-action="Content">
     <div class="admin-settings-entry-container">
-        <div class="row">
-            <div class="col-md-6">
-                <h4 class="admin-subtitle fw-bold mb-2">@SharedLocalizer["Editor"]</h4>
-                <div class="settings-entry row align-items-center py-3 px-2 rounded-3 border mb-3">
+        <div>
+            <div class="admin-settings-section">
+                <h4 class="admin-subtitle fw-bold">@SharedLocalizer["Editor"]</h4>
+                <div class="settings-entry row align-items-center">
                     <div class="col-auto">
                         <i class="bi-pencil-square settings-entry-icon"></i>
                     </div>
@@ -31,7 +35,7 @@
                         <label asp-for="@settings.DefaultEditor"></label>
                         <div class="form-text">@SharedLocalizer["Applies to new posts only."]</div>
                     </div>
-                    <div class="col-md-5">
+                    <div class="col-5">
                         <select asp-for="@settings.DefaultEditor" class="form-select">
                             <option value="Html">HTML</option>
                             <option value="Markdown">Markdown</option>
@@ -39,9 +43,9 @@
                     </div>
                 </div>
 
-                <h4 class="admin-subtitle fw-bold mb-2">@SharedLocalizer["Posts list"]</h4>
-                <div class="rounded-3 border mb-3">
-                    <div class="settings-entry row align-items-center rounded-3 py-3 px-2">
+                <h4 class="admin-subtitle fw-bold">@SharedLocalizer["Posts list"]</h4>
+                <div class="admin-settings-group">
+                    <div class="settings-entry row align-items-center">
                         <div class="col-auto">
                             <i class="bi-sort-numeric-down settings-entry-icon"></i>
                         </div>
@@ -49,11 +53,20 @@
                             <label asp-for="@settings.PostListPageSize"></label>
                         </div>
                         <div class="col-4">
-                            <input asp-for="@settings.PostListPageSize" class="form-control" min="1" max="30" required />
+                            <select asp-for="@settings.PostListPageSize" data-setting-number="" class="form-select" required>
+                                @if (settings.PostListPageSize is not (5 or 10 or 15 or 20))
+                                {
+                                    <option value="@settings.PostListPageSize" disabled hidden>@settings.PostListPageSize</option>
+                                }
+                                <option value="5">5</option>
+                                <option value="10">10</option>
+                                <option value="15">15</option>
+                                <option value="20">20</option>
+                            </select>
                         </div>
                     </div>
 
-                    <div class="border-top settings-entry row align-items-center rounded-bottom-3 py-3 px-2">
+                    <div class="settings-entry row align-items-center">
                         <div class="col-auto">
                             <i class="settings-entry-icon bi-hash"></i>
                         </div>
@@ -61,21 +74,28 @@
                             <label asp-for="@settings.MaximumPageNumbersToDisplay"></label>
                         </div>
                         <div class="col-4">
-                            <input asp-for="@settings.MaximumPageNumbersToDisplay" class="form-control" min="2" max="10" required />
+                            <select asp-for="@settings.MaximumPageNumbersToDisplay" data-setting-number="" class="form-select" required>
+                                @if (settings.MaximumPageNumbersToDisplay is not (5 or 10))
+                                {
+                                    <option value="@settings.MaximumPageNumbersToDisplay" disabled hidden>@settings.MaximumPageNumbersToDisplay</option>
+                                }
+                                <option value="5">5</option>
+                                <option value="10">10</option>
+                            </select>
                         </div>
                     </div>
                 </div>
 
-                <h4 class="admin-subtitle fw-bold mb-2">@SharedLocalizer["Reading posts"]</h4>
+                <h4 class="admin-subtitle fw-bold">@SharedLocalizer["Reading posts"]</h4>
 
-                <div class="settings-entry row align-items-center py-3 px-2 rounded-3 border mb-1">
+                <div class="settings-entry row align-items-center">
                     <div class="col-auto">
                         <i class="bi-check2-circle settings-entry-icon"></i>
                     </div>
                     <div class="col">
                         <label asp-for="@settings.PostTitleAlignment" class="me-4"></label>
                     </div>
-                    <div class="col-md-5 text-end">
+                    <div class="col-5 text-end">
                         <div class="form-check form-check-inline">
                             @Html.RadioButtonFor(model => settings.PostTitleAlignment, PostTitleAlignment.Left, new { id = PostTitleAlignment.Left.ToString(), @class = "form-check-input" })
                             <label class="form-check-label" for="@PostTitleAlignment.Left">@SharedLocalizer["Left"]</label>
@@ -87,38 +107,38 @@
                     </div>
                 </div>
 
-                <div class="settings-entry row align-items-center py-3 px-2 rounded-3 border mb-1">
+                <div class="settings-entry row align-items-center">
                     <div class="col-auto">
                         <i class="bi-list-nested settings-entry-icon"></i>
                     </div>
                     <div class="col">
                         <label asp-for="@settings.DocumentOutline" class="form-check-label"></label>
                     </div>
-                    <div class="col-md-5 text-end">
+                    <div class="col-5 text-end">
                         <div class="form-check form-switch form-control-lg">
                             <input type="hidden" name="DocumentOutline" value="false">
-                            <input type="checkbox" name="DocumentOutline" value="true" class="form-check-input" @(settings.DocumentOutline ? "checked" : null)>
+                            <input type="checkbox" id="@Html.IdFor(m => settings.DocumentOutline)" name="DocumentOutline" value="true" class="form-check-input" @(settings.DocumentOutline ? "checked" : null)>
                         </div>
                     </div>
                 </div>
 
-                <div class="settings-entry row align-items-center py-3 px-2 rounded-3 border mb-1">
+                <div class="settings-entry row align-items-center">
                     <div class="col-auto">
                         <i class="bi-eye settings-entry-icon"></i>
                     </div>
                     <div class="col">
                         <label asp-for="@settings.EnableViewCount" class="form-check-label"></label>
                     </div>
-                    <div class="col-md-5 text-end">
+                    <div class="col-5 text-end">
                         <div class="form-check form-switch form-control-lg">
                             <input type="hidden" name="EnableViewCount" value="false">
-                            <input type="checkbox" name="EnableViewCount" value="true" class="form-check-input" @(settings.EnableViewCount ? "checked" : null)>
+                            <input type="checkbox" id="@Html.IdFor(m => settings.EnableViewCount)" name="EnableViewCount" value="true" class="form-check-input" @(settings.EnableViewCount ? "checked" : null)>
                         </div>
                     </div>
                 </div>
 
-                <div class="rounded-3 border">
-                    <div class="settings-entry row align-items-center rounded-3 py-3 px-2">
+                <div class="admin-settings-expander">
+                    <div class="settings-entry admin-settings-expander-header">
                         <div class="col-auto">
                             <i class="bi-card-text settings-entry-icon"></i>
                         </div>
@@ -126,29 +146,36 @@
                             <label asp-for="@settings.ShowPostFooter" class="form-check-label"></label>
                             <div class="form-text">@SharedLocalizer["e.g. Your blog post license information."]</div>
                         </div>
-                        <div class="col-md-5 text-end">
+                        <div class="col-5 text-end">
                             <div class="form-check form-switch form-control-lg">
                                 <input type="hidden" name="ShowPostFooter" value="false">
-                                <input type="checkbox" name="ShowPostFooter" value="true" class="form-check-input" @(settings.ShowPostFooter ? "checked" : null)>
+                                <input type="checkbox" id="@Html.IdFor(m => settings.ShowPostFooter)" name="ShowPostFooter" value="true" class="form-check-input" @(settings.ShowPostFooter ? "checked" : null)>
                             </div>
                         </div>
+                        <button type="button" class="admin-settings-expander-toggle" data-bs-toggle="collapse" data-bs-target="#settings-post-footer" aria-controls="settings-post-footer" aria-expanded="@(settings.ShowPostFooter ? "true" : "false")" aria-label="@Html.DisplayNameFor(m => settings.ShowPostFooter)">
+                            <i class="bi bi-chevron-down" aria-hidden="true"></i>
+                        </button>
                     </div>
-                    <div class="border-top p-2">
-                        <div class="form-floating">
-                            <textarea asp-for="@settings.PostFooterHtmlPitch"
-                                      placeholder="@Html.DisplayNameFor(m => settings.PostFooterHtmlPitch)"
-                                      class="form-control form-control-sm h-100px"
-                                      spellcheck="false"></textarea>
-                            <label class="form-label" asp-for="@settings.PostFooterHtmlPitch"></label>
+                    <div id="settings-post-footer" class="collapse @(settings.ShowPostFooter ? "show" : null)">
+                        <div class="admin-settings-expander-body">
+                            <div class="admin-settings-detail">
+                                <div class="form-floating">
+                                    <textarea asp-for="@settings.PostFooterHtmlPitch" data-setting-edit=""
+                                              placeholder="@Html.DisplayNameFor(m => settings.PostFooterHtmlPitch)"
+                                              class="form-control form-control-sm h-100px"
+                                              spellcheck="false"></textarea>
+                                    <label class="form-label" asp-for="@settings.PostFooterHtmlPitch"></label>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="col-md-6">
-                <h4 class="admin-subtitle fw-bold mb-2">@SharedLocalizer["Call-out"]</h4>
+            <div class="admin-settings-section">
+                <h4 class="admin-subtitle fw-bold">@SharedLocalizer["Call-out"]</h4>
 
-                <div class="rounded-3 border mb-2">
-                    <div class="settings-entry row align-items-center rounded-3 py-3 px-2">
+                <div class="admin-settings-expander">
+                    <div class="settings-entry admin-settings-expander-header">
                         <div class="col-auto">
                             <i class="bi-menu-button-wide-fill settings-entry-icon"></i>
                         </div>
@@ -156,27 +183,33 @@
                             <label asp-for="@settings.ShowCalloutSection" class="form-check-label"></label>
                             <div class="form-text">@SharedLocalizer["The call-out section will display on top of every page in the website."]</div>
                         </div>
-                        <div class="col-md-5 text-end">
+                        <div class="col-5 text-end">
                             <div class="form-check form-switch form-control-lg">
                                 <input type="hidden" name="ShowCalloutSection" value="false">
-                                <input type="checkbox" name="ShowCalloutSection" value="true" class="form-check-input" @(settings.ShowCalloutSection ? "checked" : null)>
+                                <input type="checkbox" id="@Html.IdFor(m => settings.ShowCalloutSection)" name="ShowCalloutSection" value="true" class="form-check-input" @(settings.ShowCalloutSection ? "checked" : null)>
                             </div>
                         </div>
+                        <button type="button" class="admin-settings-expander-toggle" data-bs-toggle="collapse" data-bs-target="#settings-callout" aria-controls="settings-callout" aria-expanded="@(settings.ShowCalloutSection ? "true" : "false")" aria-label="@SharedLocalizer["Call-out"]">
+                            <i class="bi bi-chevron-down" aria-hidden="true"></i>
+                        </button>
                     </div>
-                    <div class="border-top p-2">
-                        <div class="form-floating">
-                            <textarea asp-for="@settings.CalloutSectionHtmlPitch"
-                                      placeholder="@Html.DisplayNameFor(m => settings.CalloutSectionHtmlPitch)"
-                                      class="form-control form-control-sm h-100px"
-                                      spellcheck="false"></textarea>
-                            <label class="form-label" asp-for="@settings.CalloutSectionHtmlPitch"></label>
+                    <div id="settings-callout" class="collapse @(settings.ShowCalloutSection ? "show" : null)">
+                        <div class="admin-settings-expander-body">
+                            <div class="admin-settings-detail">
+                                <div class="form-floating">
+                                    <textarea asp-for="@settings.CalloutSectionHtmlPitch" data-setting-edit=""
+                                              placeholder="@Html.DisplayNameFor(m => settings.CalloutSectionHtmlPitch)"
+                                              class="form-control form-control-sm h-100px"
+                                              spellcheck="false"></textarea>
+                                    <label class="form-label" asp-for="@settings.CalloutSectionHtmlPitch"></label>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-    <div class="admin-settings-action-container border-top pt-2 mt-2">
-        <input id="btn-save-settings" type="submit" value="@SharedLocalizer["Save"]" class="btn btn-outline-accent" />
-    </div>
 </form>
+
+<partial name="_SettingEditModal" />

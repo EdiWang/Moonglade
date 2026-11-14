@@ -1,4 +1,4 @@
-﻿using LiteBus.Commands.Abstractions;
+using LiteBus.Commands.Abstractions;
 using LiteBus.Events.Abstractions;
 using LiteBus.Queries.Abstractions;
 using Microsoft.AspNetCore.RateLimiting;
@@ -19,7 +19,7 @@ public class CommentController(
         IBlogConfig blogConfig,
         CommentSubmissionGuard submissionGuard,
         IEventMediator eventMediator,
-        ILogger<CommentController> logger) : BlogControllerBase(commandMediator)
+        ILogger<CommentController> logger) : BlogControllerBase(commandMediator, logger)
 {
     [HttpPost("{postId:guid}")]
     [AllowAnonymous]
@@ -56,16 +56,6 @@ public class CommentController(
             return ValidationProblem(ModelState);
         }
 
-        await LogActivityAsync(
-            EventType.CommentCreated,
-            "Create Comment",
-            item.PostTitle,
-            ActivityLogMetaData.Create(
-                ("CommentId", item.Id),
-                ("Username", item.Username),
-                ("PostId", postId)),
-            username: item.Username);
-
         // Send email notification
         if (settings.NotificationSettings.SendEmailOnNewComment)
         {
@@ -77,7 +67,8 @@ public class CommentController(
                         item.Email,
                         item.IpAddress,
                         item.PostTitle,
-                        item.CommentContent) { Snapshot = settings },
+                        item.CommentContent)
+                    { Snapshot = settings },
                     cancellationToken: HttpContext.RequestAborted);
             }
             catch (Exception ex)
@@ -99,10 +90,10 @@ public class CommentController(
             await CommandMediator.SendAsync(new ToggleApprovalCommand([commentId]));
 
             await LogActivityAsync(
-                EventType.CommentApprovalToggled,
-                "Toggle Comment Approval",
+                ActivityEvents.CommentApprovalToggled,
                 $"Comment #{commentId}",
-                ActivityLogMetaData.Create(("CommentId", commentId)));
+                ActivityLogDetails.Create(("CommentId", commentId)),
+                targetId: commentId.ToString());
 
             return Ok(commentId);
         }
@@ -120,10 +111,9 @@ public class CommentController(
             await CommandMediator.SendAsync(new DeleteCommentsCommand(commentIds));
 
             await LogActivityAsync(
-                EventType.CommentDeleted,
-                "Delete Comments",
+                ActivityEvents.CommentDeleted,
                 $"{commentIds.Length} comment(s)",
-                ActivityLogMetaData.Create(("CommentIds", commentIds)));
+                ActivityLogDetails.Create(("CommentIds", commentIds)));
 
             return Ok(commentIds);
         }
@@ -182,12 +172,10 @@ public class CommentController(
             var reply = await CommandMediator.SendAsync(new ReplyCommentCommand(commentId, replyContent) { Snapshot = settings });
 
             await LogActivityAsync(
-                EventType.CommentReplied,
-                "Reply to Comment",
+                ActivityEvents.CommentReplied,
                 reply.Title,
-                ActivityLogMetaData.Create(
-                    ("CommentId", commentId),
-                    ("ReplyContent", replyContent)));
+                ActivityLogDetails.Create(("CommentId", commentId)),
+                targetId: commentId.ToString());
 
             // Send email notification
             if (settings.NotificationSettings.SendEmailOnCommentReply && !string.IsNullOrWhiteSpace(reply.Email))
@@ -201,7 +189,8 @@ public class CommentController(
                             reply.CommentContent,
                             reply.Title,
                             reply.ReplyContentHtml,
-                            postLink) { Snapshot = settings },
+                            postLink)
+                        { Snapshot = settings },
                         cancellationToken: HttpContext.RequestAborted);
                 }
                 catch (Exception ex)

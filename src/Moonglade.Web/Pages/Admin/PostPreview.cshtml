@@ -1,6 +1,8 @@
 ﻿@page "/admin/post/preview/{postId:guid}"
+@inject Moonglade.Auth.IOwnerProfileReader OwnerProfiles
 @{
     var snapshot = ViewData.CaptureSettings(SettingsReader);
+    var presentation = await ViewData.CaptureOwnerPresentationAsync(OwnerProfiles, HttpContext.RequestAborted);
 }
 @using Microsoft.AspNetCore.Mvc.TagHelpers
 @using Moonglade.Data.DTO
@@ -16,7 +18,7 @@
 @section meta {
     <meta name="robots" content="noindex, nofollow" />
     <meta name="title" content="@Post.Title" />
-    <meta name="author" content="@(string.IsNullOrWhiteSpace(Post.Author) ? snapshot.GeneralSettings.OwnerName : Post.Author) " />
+    <meta name="author" content="@(string.IsNullOrWhiteSpace(Post.Author) ? presentation.Name : Post.Author) " />
     <meta name="post-is-published" content="@((Model.Post.PostStatus == PostStatus.Published).ToString().ToLower())" />
 }
 

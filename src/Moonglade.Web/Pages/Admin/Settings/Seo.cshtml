@@ -1,0 +1,152 @@
+@page "/admin/settings/seo"
+@inject IConfiguration Configuration
+
+@{
+    var settings = ViewData.CaptureSettings(SettingsReader).SEOSettings;
+}
+
+@section scripts {
+    <script type="module" src="~/js/app/admin.settings.content.mjs"></script>
+}
+
+@section adminnavigation {
+    <partial name="_SettingsNavigation" />
+}
+
+<form id="form-settings" class="admin-settings-page" asp-controller="Settings" asp-action="Seo" spellcheck="false">
+    <div class="admin-settings-entry-container">
+        <div>
+            <div class="admin-settings-section">
+                <div class="mb-3">
+                    <h4 class="admin-subtitle fw-bold">@SharedLocalizer["SEO"]</h4>
+
+                    <div class="settings-entry row align-items-center">
+                        <div class="col-auto">
+                            <i class="bi-link settings-entry-icon"></i>
+                        </div>
+                        <div class="col">
+                            <label asp-for="@settings.CanonicalPrefix"></label>
+                            <div class="form-text">@SharedLocalizer["Set a primary domain if your website binds to multiple domian names."]</div>
+                        </div>
+                        <div class="col-5 text-end">
+                            <input asp-for="@settings.CanonicalPrefix" data-setting-edit="" class="form-control" />
+                        </div>
+                    </div>
+
+                    <div class="settings-entry row align-items-center">
+                        <div class="col-auto">
+                            <i class="bi-file-word settings-entry-icon"></i>
+                        </div>
+                        <div class="col">
+                            <label asp-for="@settings.MetaKeyword"></label>
+                        </div>
+                        <div class="col-5 text-end">
+                            <input asp-for="@settings.MetaKeyword" data-setting-edit="" class="form-control" required />
+                        </div>
+                    </div>
+
+                    <div class="settings-entry row align-items-center">
+                        <div class="col-auto">
+                            <i class="bi-map settings-entry-icon"></i>
+                        </div>
+                        <div class="col">
+                            <label asp-for="@settings.EnableSiteMap" class="form-check-label"></label>
+                        </div>
+                        <div class="col-4 text-end">
+                            <div class="form-check form-switch form-control-lg">
+                                <input asp-for="@settings.EnableSiteMap" class="form-check-input" />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="settings-entry">
+                        <div class="col-auto">
+                            <i class="bi-robot settings-entry-icon" aria-hidden="true"></i>
+                        </div>
+                        <div class="col">
+                            <label asp-for="@settings.RobotsTxtContent"></label>
+                        </div>
+                        <div class="col">
+                            <textarea asp-for="@settings.RobotsTxtContent" data-setting-edit='@Html.DisplayNameFor(m => settings.RobotsTxtContent)' class="form-control textarea-code" cols="60" rows="10" spellcheck="false"></textarea>
+                        </div>
+                    </div>
+
+                    <div class="settings-entry row align-items-center">
+                        <div class="col-auto">
+                            <i class="bi-file-earmark-check settings-entry-icon"></i>
+                        </div>
+                        <div class="col">
+                            <span>@SharedLocalizer["Index Now"]</span>
+                        </div>
+                        <div class="col-4 text-end">
+                            @if (string.IsNullOrWhiteSpace(Configuration["IndexNow:ApiKey"]))
+                            {
+                                <text>@SharedLocalizer["Not configured"]</text>
+                            }
+                            else
+                            {
+                                <code>@Configuration["IndexNow:ApiKey"]</code>
+                            }
+                        </div>
+                    </div>
+
+                    <div class="settings-entry row align-items-center">
+                        <div class="col-auto">
+                            <i class="bi-braces settings-entry-icon"></i>
+                        </div>
+                        <div class="col">
+                            <label asp-for="@settings.EnableJsonLdBlogPosting" class="form-check-label"></label>
+                        </div>
+                        <div class="col-4 text-end">
+                            <div class="form-check form-switch form-control-lg">
+                                <input asp-for="@settings.EnableJsonLdBlogPosting" class="form-check-input" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div>
+                    <h4 class="admin-subtitle fw-bold">
+                        @SharedLocalizer["Dublin Core Metadata"]
+                    </h4>
+                    <div class="admin-settings-expander">
+                        <div class="settings-entry admin-settings-expander-header">
+                            <div class="col-auto">
+                                <i class="bi bi-globe settings-entry-icon"></i>
+                            </div>
+                            <div class="col">
+                                <label asp-for="@settings.UseDublinCoreMetaData" class="form-check-label"></label>
+                            </div>
+                            <div class="col-5 text-end">
+                                <div class="form-check form-switch form-control-lg">
+                                    <input asp-for="@settings.UseDublinCoreMetaData" class="form-check-input" />
+                                </div>
+                            </div>
+                            <button type="button" class="admin-settings-expander-toggle" data-bs-toggle="collapse" data-bs-target="#settings-dublin-core" aria-controls="settings-dublin-core" aria-expanded="@(settings.UseDublinCoreMetaData ? "true" : "false")" aria-label="@SharedLocalizer["Dublin Core Metadata"]">
+                                <i class="bi bi-chevron-down" aria-hidden="true"></i>
+                            </button>
+                        </div>
+
+                        <div id="settings-dublin-core" class="collapse @(settings.UseDublinCoreMetaData ? "show" : null)">
+                            <div class="admin-settings-expander-body">
+                                <div class="settings-entry row align-items-center">
+                                    <div class="col-auto">
+                                        <i class="bi-link settings-entry-icon"></i>
+                                    </div>
+                                    <div class="col">
+                                        <label asp-for="@settings.DcLicenseUrl"></label>
+                                    </div>
+                                    <div class="col-5 text-end">
+                                        <input asp-for="@settings.DcLicenseUrl" data-setting-edit="" class="form-control" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+<partial name="_SettingEditModal" />

@@ -1,10 +1,13 @@
+#nullable enable annotations
+
+using Moonglade.Auth;
 using Moonglade.Configuration;
 using Moonglade.Email.Core;
 using System.Text.Json;
 
 namespace Moonglade.Email.Tests.Notifications;
 
-public class EmailNotificationEventHandlerTests
+public partial class EmailNotificationEventHandlerTests
 {
     [Fact]
     public async Task CommentNotification_UsesSuppliedCaptureAcrossPublication_AndDirectNextOperationRefreshes()
@@ -12,17 +15,17 @@ public class EmailNotificationEventHandlerTests
         var config = CreateBlogConfig();
         var retained = config.Capture();
         var queue = new CapturingEmailNotificationQueue();
-        var handler = new CommentNotificationEventHandler(queue, config, CreateAvailableStatus());
+        var profiles = new ProfileReader();
+        var handler = new CommentNotificationEventHandler(queue, config, CreateAvailableStatus(), profiles);
         config.Publish(retained with
         {
-            GeneralSettings = retained.GeneralSettings with { OwnerEmail = "after@example.com" },
             NotificationSettings = retained.NotificationSettings with { EnableEmailSending = false }
         });
 
         await handler.HandleAsync(new CommentEvent("Reader", "reader@example.com", "127.0.0.1", "Post", "Content") { Snapshot = retained },
             TestContext.Current.CancellationToken);
 
-        Assert.Equal(retained.GeneralSettings.OwnerEmail, Assert.Single(queue.Notifications).DistributionList);
+        Assert.Equal("admin@example.com", Assert.Single(queue.Notifications).DistributionList);
 
         await handler.HandleAsync(new CommentEvent("Reader", "reader@example.com", "127.0.0.1", "Post", "Content"),
             TestContext.Current.CancellationToken);
@@ -39,7 +42,7 @@ public class EmailNotificationEventHandlerTests
         var blogConfig = CreateBlogConfig();
         blogConfig.Publish(blogConfig.Capture() with { CommentSettings = blogConfig.Capture().CommentSettings with { EnableMarkdownLinks = enableLinks ?? false } });
         var queue = new CapturingEmailNotificationQueue();
-        var handler = new CommentNotificationEventHandler(queue, blogConfig, CreateAvailableStatus());
+        var handler = new CommentNotificationEventHandler(queue, blogConfig, CreateAvailableStatus(), new ProfileReader());
         const string markdown = "[example](https://example.com)";
 
         await handler.HandleAsync(new CommentEvent("Reader", "reader@example.com", "127.0.0.1", "Post", markdown),
@@ -61,7 +64,7 @@ public class EmailNotificationEventHandlerTests
     public async Task CommentNotificationEventHandler_WhenEmailSendingEnabled_EnqueuesNewCommentNotification()
     {
         var queue = new CapturingEmailNotificationQueue();
-        var handler = new CommentNotificationEventHandler(queue, CreateBlogConfig(), CreateAvailableStatus());
+        var handler = new CommentNotificationEventHandler(queue, CreateBlogConfig(), CreateAvailableStatus(), new ProfileReader());
 
         await handler.HandleAsync(
             new CommentEvent("Reader", "reader@example.com", "127.0.0.1", "Hello Post", "**Great** post"),
@@ -85,7 +88,7 @@ public class EmailNotificationEventHandlerTests
         var queue = new CapturingEmailNotificationQueue();
         var blogConfig = CreateBlogConfig();
         blogConfig.Publish(blogConfig.Capture() with { NotificationSettings = blogConfig.Capture().NotificationSettings with { EnableEmailSending = false } });
-        var handler = new CommentNotificationEventHandler(queue, blogConfig, CreateAvailableStatus());
+        var handler = new CommentNotificationEventHandler(queue, blogConfig, CreateAvailableStatus(), new ProfileReader());
 
         await handler.HandleAsync(
             new CommentEvent("Reader", "reader@example.com", "127.0.0.1", "Hello Post", "Great post"),
@@ -101,7 +104,7 @@ public class EmailNotificationEventHandlerTests
         var handler = new CommentNotificationEventHandler(
             queue,
             CreateBlogConfig(),
-            CreateUnavailableStatus());
+            CreateUnavailableStatus(), new ProfileReader());
 
         await handler.HandleAsync(
             new CommentEvent("Reader", "reader@example.com", "127.0.0.1", "Hello Post", "Great post"),
@@ -162,7 +165,7 @@ public class EmailNotificationEventHandlerTests
     public async Task MentionNotificationHandler_WhenEmailSendingEnabled_EnqueuesBeingPingedNotification()
     {
         var queue = new CapturingEmailNotificationQueue();
-        var handler = new MentionNotificationHandler(queue, CreateBlogConfig(), CreateAvailableStatus());
+        var handler = new MentionNotificationHandler(queue, CreateBlogConfig(), CreateAvailableStatus(), new ProfileReader());
 
         await handler.HandleAsync(
             new MentionEvent(
@@ -192,7 +195,7 @@ public class EmailNotificationEventHandlerTests
         var handler = new MentionNotificationHandler(
             queue,
             CreateBlogConfig(),
-            CreateUnavailableStatus());
+            CreateUnavailableStatus(), new ProfileReader());
 
         await handler.HandleAsync(
             new MentionEvent(
@@ -210,7 +213,7 @@ public class EmailNotificationEventHandlerTests
     public async Task TestNotificationHandler_WhenEmailSendingEnabled_EnqueuesTestMailNotification()
     {
         var queue = new CapturingEmailNotificationQueue();
-        var handler = new TestNotificationHandler(queue, CreateBlogConfig(), CreateAvailableStatus());
+        var handler = new TestNotificationHandler(queue, CreateBlogConfig(), CreateAvailableStatus(), new ProfileReader());
 
         await handler.HandleAsync(new TestEmailEvent(), TestContext.Current.CancellationToken);
 
@@ -227,7 +230,7 @@ public class EmailNotificationEventHandlerTests
         var handler = new TestNotificationHandler(
             queue,
             CreateBlogConfig(),
-            CreateUnavailableStatus());
+            CreateUnavailableStatus(), new ProfileReader());
 
         await handler.HandleAsync(new TestEmailEvent(), TestContext.Current.CancellationToken);
 
@@ -236,10 +239,6 @@ public class EmailNotificationEventHandlerTests
 
     private static BlogConfig CreateBlogConfig() => new(new BlogSettingsSnapshot
     {
-        GeneralSettings = new GeneralSettings
-        {
-            OwnerEmail = "admin@example.com"
-        },
         NotificationSettings = new NotificationSettings
         {
             EnableEmailSending = true
@@ -286,6 +285,21 @@ public class EmailNotificationEventHandlerTests
         {
             Notifications.Add(notification);
             return Task.FromResult(Guid.NewGuid());
+        }
+
+    }
+
+    private sealed class ProfileReader : IOwnerProfileReader
+    {
+        public Task<OwnerPresentation> ReadPresentationAsync(CancellationToken ct = default) =>
+            Task.FromResult(OwnerPresentation.Default);
+
+        public OwnerProfile? Owner { get; set; } = new(Guid.NewGuid(), "admin@example.com");
+        public int Reads { get; private set; }
+        public Task<OwnerProfile?> ReadProfileAsync(CancellationToken ct = default)
+        {
+            Reads++;
+            return Task.FromResult(Owner);
         }
     }
 }

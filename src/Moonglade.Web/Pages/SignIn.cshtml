@@ -4,12 +4,14 @@
 }
 @inject ICacheAside Cache
 @inject ThemeCacheInvalidator ThemeCache
+@inject Moonglade.Auth.Oidc.OwnerOidcStore OwnerOidc
 @model Moonglade.Web.Pages.SignInModel
 @using Edi.AspNetCore.Utils
 @using Moonglade.Utils
 
 @{
     Layout = null;
+    var oidc = await OwnerOidc.ReadSignInOptionAsync(HttpContext.RequestAborted);
 
     var themeCss = await Cache.GetOrCreateAsync(BlogCachePartition.General.ToString(), ThemeCache.GetCacheKey(snapshot.AppearanceSettings.ThemeId), async () =>
     {
@@ -18,13 +20,13 @@
 }
 
 <!DOCTYPE html>
-<html>
+<html lang="@snapshot.GeneralSettings.DefaultLanguageCode">
 <head>
     <title>
         @SharedLocalizer["Admin Sign In"]
     </title>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <partial name="_Favicons" />
     <link href="~/lib/twitter-bootstrap/css/bootstrap.min.css" rel="stylesheet" />
     <link href="~/css/base.css" rel="stylesheet" />
@@ -35,35 +37,39 @@
     }
     <link href="~/Moonglade.Web.styles.css" rel="stylesheet" />
 </head>
-<body>
-    <div class="container">
-        <main class="position-relative">
-            <div class="position-absolute top-50 start-50 translate-middle">
-                <div class="login-card card shadow">
-                    <div class="card-body">
-                        <h5 class="card-title text-center mb-4">@SharedLocalizer["Sign In"]</h5>
+<body class="bg-gray-1">
+    <main class="signin-page">
+        <div class="signin-content">
+            <h1 class="h4 mb-4">@SharedLocalizer["Sign In"]</h1>
 
-                        <form method="post">
-                            <div asp-validation-summary="All" class="text-danger"></div>
-                            <div class="form-floating mb-3">
-                                <input asp-for="Username" class="form-control" placeholder="@Html.DisplayNameFor(m => m.Username)" required minlength="2" maxlength="32" />
-                                <label asp-for="Username"></label>
-                            </div>
-                            <div class="form-floating mb-3">
-                                <input asp-for="Password" class="form-control" required pattern="^(?=.*[a-zA-Z])(?=.*[0-9])[A-Za-z0-9._~!@@#$^&*]{8,}$" placeholder="@Html.DisplayNameFor(m => m.Password)" minlength="8" maxlength="32" />
-                                <label asp-for="Password"></label>
-                            </div>
-
-                            <input type="submit" value="@SharedLocalizer["Sign In"]" class="btn w-100 btn-accent" />
-                        </form>
-                    </div>
+            @if (Model.OidcFailed)
+            {
+                <div class="alert alert-warning" role="alert">@SharedLocalizer["Third-party sign-in failed. Try again or sign in with your local account."]</div>
+            }
+            <form method="post">
+                <div asp-validation-summary="All" class="text-danger" role="alert"></div>
+                <div class="mb-3">
+                    <label asp-for="Email" class="form-label"></label>
+                    <input asp-for="Email" class="form-control" type="email" autocomplete="username" autocapitalize="none" spellcheck="false" required maxlength="254" />
                 </div>
-                <p class="text-muted mt-4 small text-center">
-                    Moonglade @VersionHelper.AppVersion
-                </p>
-            </div>
-        </main>
-    </div>
+                <div class="mb-4">
+                    <label asp-for="Password" class="form-label"></label>
+                    <input asp-for="Password" class="form-control" autocomplete="current-password" required />
+                </div>
+
+                <input type="submit" value="@SharedLocalizer["Sign In"]" class="btn w-100 btn-accent" />
+            </form>
+            @if (oidc is not null)
+            {
+                <form method="post" asp-page-handler="Oidc" class="mt-3">
+                    <button type="submit" class="btn btn-outline-accent w-100 text-break">@SharedLocalizer["Sign in with {0}", oidc.DisplayName]</button>
+                </form>
+            }
+            <p class="text-muted mt-4 mb-0 small">
+                Moonglade @VersionHelper.AppVersion
+            </p>
+        </div>
+    </main>
     <script type="module" src="~/js/app/base.mjs"></script>
 </body>
 </html>

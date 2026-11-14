@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
+using Moonglade.Auth;
 using Moonglade.Configuration;
 using Moonglade.Data;
 using Moonglade.Data.Entities;
@@ -33,21 +34,32 @@ public class SyndicationSnapshotTests
         {
             db.Post.Add(new PostEntity
             {
-                Id = Guid.NewGuid(), Title = $"Post {i}", Slug = $"post-{i}", Author = "Author",
-                PostContent = "<p>Full marker</p><img src=\"/image/photo.png\">", ContentAbstract = "Summary marker",
-                ContentLanguageCode = "en-us", ContentType = "html", IsFeedIncluded = true, PostStatus = PostStatus.Published,
-                CreateTimeUtc = DateTime.UtcNow.AddDays(-2), PubDateUtc = DateTime.UtcNow.AddDays(-1), RouteLink = $"2026/1/1/post-{i}",
+                Id = Guid.NewGuid(),
+                Title = $"Post {i}",
+                Slug = $"post-{i}",
+                Author = "Author",
+                PostContent = "<p>Full marker</p><img src=\"/image/photo.png\">",
+                ContentAbstract = "Summary marker",
+                ContentLanguageCode = "en-us",
+                ContentType = "html",
+                IsFeedIncluded = true,
+                PostStatus = PostStatus.Published,
+                CreateTimeUtc = DateTime.UtcNow.AddDays(-2),
+                PubDateUtc = DateTime.UtcNow.AddDays(-1),
+                RouteLink = $"2026/1/1/post-{i}",
                 PostCategory = [new PostCategoryEntity { CategoryId = cat.Id }]
             });
         }
         await db.SaveChangesAsync(ct);
         var owner = new BlogConfig(new BlogSettingsSnapshot
         {
-            GeneralSettings = GeneralSettings.DefaultValue with { SiteTitle = "Before", OwnerEmail = "before@example.com" },
+            GeneralSettings = GeneralSettings.DefaultValue with { SiteTitle = "Before" },
             FeedSettings = new FeedSettings { FeedItemCount = 3, UseFullContent = true },
             ImageSettings = new ImageSettings { EnableCDNRedirect = true, CDNEndpoint = "https://before.example.com" }
         });
         var retained = owner.Capture();
+        var profile = new OwnerProfile(Guid.NewGuid(), "before@example.com");
+        var retainedProfile = profile;
         var reader = new CountingReader(owner);
         var context = new DefaultHttpContext();
         context.Request.Scheme = "https";
@@ -57,7 +69,7 @@ public class SyndicationSnapshotTests
         var rss = new GetRssStringQueryHandler(reader, source, accessor);
         var atomHandler = new GetAtomStringQueryHandler(reader, source, accessor);
         Task<string> Read() => atom
-            ? atomHandler.HandleAsync(new GetAtomStringQuery(category ? "tech" : null), ct)
+            ? atomHandler.HandleAsync(new GetAtomStringQuery(category ? "tech" : null, Owner: profile), ct)
             : rss.HandleAsync(new GetRssStringQuery(category ? "tech" : null), ct);
         barrier.Enabled = true;
 
@@ -65,10 +77,11 @@ public class SyndicationSnapshotTests
         await barrier.Started.Task.WaitAsync(TimeSpan.FromSeconds(10), ct);
         owner.Publish(owner.Capture() with
         {
-            GeneralSettings = owner.Capture().GeneralSettings with { SiteTitle = "After", OwnerEmail = "after@example.com" },
+            GeneralSettings = owner.Capture().GeneralSettings with { SiteTitle = "After" },
             FeedSettings = new FeedSettings { FeedItemCount = 1, UseFullContent = false },
             ImageSettings = new ImageSettings { EnableCDNRedirect = false }
         });
+        profile = profile with { Email = "after@example.com" };
         barrier.Resume.SetResult();
         var first = await pending;
 
@@ -89,12 +102,13 @@ public class SyndicationSnapshotTests
         Assert.Equal(2, reader.Captures);
 
         var supplied = atom
-            ? await atomHandler.HandleAsync(new GetAtomStringQuery(category ? "tech" : null, retained), ct)
+            ? await atomHandler.HandleAsync(new GetAtomStringQuery(category ? "tech" : null, retained, retainedProfile), ct)
             : await rss.HandleAsync(new GetRssStringQuery(category ? "tech" : null, retained), ct);
 
         Assert.Contains("Before", supplied);
         Assert.Contains("https://before.example.com/photo.png", supplied);
         Assert.Equal(3, EntryCount(supplied, atom));
+        if (atom) Assert.Contains("before@example.com", supplied);
         Assert.Equal(2, reader.Captures);
     }
 

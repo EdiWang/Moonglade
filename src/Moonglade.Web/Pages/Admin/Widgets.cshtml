@@ -33,11 +33,13 @@
 </div>
 
 @section admintoolbar {
-    <div class="admin-toolbar pb-2 border-bottom mb-3">
-        <a x-on:click="initCreateWidget()" class="btn btn-outline-accent" role="button">
-            <i class="bi-plus-lg"></i>
-            @SharedLocalizer["New"]
-        </a>
+    <div class="admin-toolbar admin-toolbar-row">
+        <div class="admin-toolbar-group">
+            <button type="button" x-on:click="initCreateWidget()" class="btn btn-sm btn-outline-accent">
+                <i class="bi-plus-lg" aria-hidden="true"></i>
+                @SharedLocalizer["New"]
+            </button>
+        </div>
     </div>
 }
 
@@ -54,27 +56,37 @@
     @SharedLocalizer["No widgets yet."]
 </div>
 
-<section class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+<section class="row row-cols-3 admin-card-grid">
     <template x-for="widget in sortedWidgets" :key="widget.id">
         <div class="col">
-            <div class="card shadow-sm h-100">
+            <div class="card admin-card">
                 <div class="card-body">
                     <div class="d-flex justify-content-between align-items-start mb-2">
-                        <h6 class="card-title mb-0">
-                            <span x-text="widget.title"></span>
+                        <h6 class="card-title mb-0 pe-3">
+                            <span :id="`widget-card-title-${widget.id}`" x-text="widget.title"></span>
                             <span x-show="!widget.isEnabled" class="badge bg-secondary ms-1">@SharedLocalizer["Disabled"]</span>
                         </h6>
                     </div>
-                    <hr class="my-2" />
-                    <div x-html="renderWidgetContent(widget)" class="small"></div>
+                    <div x-html="renderWidgetContent(widget)" class="small admin-widget-preview"></div>
                 </div>
-                <div class="card-footer">
-                    <a x-on:click="editWidget(widget.id)" class="btn btn-sm btn-outline-accent me-2" role="button">
-                        <i class="bi-pen"></i> @SharedLocalizer["Edit"]
-                    </a>
-                    <a x-on:click="deleteWidget(widget.id)" class="btn btn-sm btn-outline-danger" role="button">
-                        <i class="bi-trash"></i>
-                    </a>
+                <div class="dropdown admin-card-actions position-absolute top-0 end-0">
+                    <button type="button" class="btn btn-sm btn-link text-body-secondary text-decoration-none"
+                            data-bs-toggle="dropdown" aria-expanded="false"
+                            aria-label="@SharedLocalizer["Actions"]" :aria-describedby="`widget-card-title-${widget.id}`">
+                        <i class="bi-three-dots" aria-hidden="true"></i>
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end">
+                        <li>
+                            <button type="button" class="dropdown-item" x-on:click="editWidget(widget.id)">
+                                <i class="bi-pen me-2" aria-hidden="true"></i>@SharedLocalizer["Edit"]
+                            </button>
+                        </li>
+                        <li>
+                            <button type="button" class="dropdown-item text-danger" x-on:click="deleteWidget(widget.id)">
+                                <i class="bi-trash me-2" aria-hidden="true"></i>@SharedLocalizer["Delete"]
+                            </button>
+                        </li>
+                    </ul>
                 </div>
             </div>
         </div>
@@ -243,7 +255,7 @@
 
             <!-- Fixed Bottom Buttons -->
             <div class="border-top p-3 bg-light">
-                <div class="d-grid gap-2">
+                <div class="d-grid gap-2 admin-offcanvas-actions">
                     <button type="submit" class="btn btn-accent">@SharedLocalizer["Save"]</button>
                     <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="offcanvas">@SharedLocalizer["Cancel"]</button>
                 </div>

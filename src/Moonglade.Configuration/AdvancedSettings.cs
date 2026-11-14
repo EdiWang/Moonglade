@@ -1,16 +1,11 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.Text.Json.Serialization;
 using Moonglade.Utils;
+using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace Moonglade.Configuration;
 
 public sealed record AdvancedSettings : IBlogSettings<AdvancedSettings>, IValidatableObject
 {
-    [Display(Name = "robots.txt")]
-    [DataType(DataType.MultilineText)]
-    [MaxLength(1024)]
-    public string RobotsTxtContent { get; init; }
-
     [Display(Name = "Head JavaScript")]
     [DataType(DataType.MultilineText)]
     [MaxLength(4096)]
@@ -33,9 +28,6 @@ public sealed record AdvancedSettings : IBlogSettings<AdvancedSettings>, IValida
     [Display(Name = "Enable OPML")]
     public bool EnableOpml { get; init; } = true;
 
-    [Display(Name = "Enable Site Map")]
-    public bool EnableSiteMap { get; init; } = true;
-
     [Display(Name = "Enable Post Scheduler")]
     public bool EnablePostScheduler { get; init; } = true;
 
@@ -44,9 +36,6 @@ public sealed record AdvancedSettings : IBlogSettings<AdvancedSettings>, IValida
 
     [Display(Name = "Show warning when clicking external links in comments")]
     public bool WarnCommentExternalLink { get; init; } = true;
-
-    [Display(Name = "Enable JSON-LD BlogPosting")]
-    public bool EnableJsonLdBlogPosting { get; init; } = true;
 
     public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
     {

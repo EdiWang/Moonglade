@@ -1,9 +1,10 @@
-using System.Text.Json.Serialization;
 using LiteBus.Events.Abstractions;
+using Moonglade.Auth;
 using Moonglade.Configuration;
 using Moonglade.Email.Core;
 using Moonglade.Utils;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace Moonglade.Email;
 
@@ -21,7 +22,8 @@ public record CommentEvent(
 public class CommentNotificationEventHandler(
     IEmailNotificationQueue queue,
     IBlogConfig blogConfig,
-    EmailCapabilityStatus capabilityStatus) : IEventHandler<CommentEvent>
+    EmailCapabilityStatus capabilityStatus,
+    IOwnerProfileReader ownerProfiles) : IEventHandler<CommentEvent>
 {
     public async Task HandleAsync(CommentEvent notification, CancellationToken ct)
     {
@@ -30,6 +32,9 @@ public class CommentNotificationEventHandler(
         {
             return;
         }
+
+        var owner = await ownerProfiles.ReadProfileAsync(ct);
+        if (owner is null) return;
 
         var payload = new NewCommentPayload
         {
@@ -44,7 +49,7 @@ public class CommentNotificationEventHandler(
         await queue.EnqueueAsync(new EmailNotification
         {
             MessageType = MessageTypes.NewCommentNotification,
-            DistributionList = settings.GeneralSettings.OwnerEmail,
+            DistributionList = owner.Email,
             MessageBody = JsonSerializer.Serialize(payload, MoongladeJsonSerializerOptions.Default)
         }, ct);
     }

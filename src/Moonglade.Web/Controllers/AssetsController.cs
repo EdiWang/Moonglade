@@ -14,71 +14,8 @@ public class AssetsController(
     IWebHostEnvironment env,
     ILogger<AssetsController> logger,
     SiteIconBuilder siteIconBuilder,
-    ICommandMediator commandMediator) : BlogControllerBase(commandMediator)
+    ICommandMediator commandMediator) : BlogControllerBase(commandMediator, logger)
 {
-    [AllowAnonymous]
-    [HttpGet("avatar")]
-    [ResponseCache(Duration = 300)]
-    public async Task<IActionResult> Avatar(ICacheAside cache)
-    {
-        var bytes = await cache.GetOrCreateAsync(BlogCachePartition.General.ToString(), "avatar", async () =>
-        {
-            logger.LogTrace("Avatar not on cache, getting new avatar image...");
-
-            var data = await queryMediator.QueryAsync(new GetAssetQuery(AssetId.AvatarBase64));
-            if (string.IsNullOrWhiteSpace(data)) return null;
-
-            var avatarBytes = Convert.FromBase64String(data);
-            return avatarBytes;
-        });
-
-        if (bytes != null) return File(bytes, "image/png");
-
-        var fallbackImageFile = Path.Join($"{env.WebRootPath}", "images", "default-avatar.png");
-        return PhysicalFile(fallbackImageFile, "image/png");
-    }
-
-    [HttpPost("avatar")]
-    [TypeFilter(typeof(ClearBlogCache), Arguments = [BlogCachePartition.General, "avatar"])]
-    public async Task<IActionResult> Avatar([FromBody] string base64Img)
-    {
-        base64Img = base64Img.Trim();
-        if (!Helper.TryParseBase64(base64Img, out var base64Chars))
-        {
-            logger.LogWarning("Bad base64 is used when setting avatar.");
-            return Conflict("Bad base64 data");
-        }
-
-        try
-        {
-            using var bmp = SKBitmap.Decode(base64Chars);
-            if (bmp is null)
-            {
-                return Conflict("Invalid image data.");
-            }
-
-            if (bmp.Height != bmp.Width || bmp.Height + bmp.Width != 600)
-            {
-                return Conflict("Image size must be 300x300.");
-            }
-        }
-        catch (Exception e)
-        {
-            logger.LogError(e, "Invalid base64img Image");
-            return Conflict("Invalid image data.");
-        }
-
-        await eventMediator.PublishAsync(new SaveAssetEvent(AssetId.AvatarBase64, base64Img));
-        logger.LogInformation("Avatar image updated successfully.");
-
-        await LogActivityAfterSaveAsync(logger,
-            EventType.AvatarUpdated,
-            "Update Avatar",
-            "Avatar Image");
-
-        return Ok();
-    }
-
     #region Site Icon
 
     [AllowAnonymous]
@@ -145,10 +82,10 @@ public class AssetsController(
         logger.LogInformation("Site icon image updated successfully.");
 
         await LogActivityAsync(
-            EventType.SiteIconUpdated,
-            "Update Site Icon",
+            ActivityEvents.SiteIconUpdated,
             "Site Icon",
-            ActivityLogMetaData.Create(("ImageSize", $"{bmp.Width}x{bmp.Height}")));
+            ActivityLogDetails.Create(("ImageSize", $"{bmp.Width}x{bmp.Height}")),
+            targetId: AssetId.SiteIconBase64.ToString());
 
         return NoContent();
     }

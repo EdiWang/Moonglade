@@ -7,7 +7,7 @@ namespace Moonglade.ActivityLog;
 public record ListActivityLogsQuery(
     int PageSize = 10,
     int PageIndex = 1,
-    EventType[]? EventTypes = null,
+    string[]? EventKeys = null,
     DateTime? StartTimeUtc = null,
     DateTime? EndTimeUtc = null) : IQuery<(List<ActivityLogItem> Logs, int TotalCount)>;
 
@@ -28,13 +28,16 @@ public class ListActivityLogsQueryHandler(BlogDbContext db)
                 $"{nameof(request.PageIndex)} can not be less than 1, current value: {request.PageIndex}.");
         }
 
-        var eventIds = request.EventTypes?.Select(et => (int)et).ToArray();
+        if (request.EventKeys?.Any(key => !ActivityEvents.IsSupported(key)) == true)
+        {
+            throw new ArgumentException("Unsupported activity event filter.", nameof(request));
+        }
 
         IQueryable<ActivityLogEntity> query = db.ActivityLog.AsNoTracking();
 
-        if (eventIds is { Length: > 0 })
+        if (request.EventKeys is { Length: > 0 })
         {
-            query = query.Where(e => eventIds.Contains(e.EventId));
+            query = query.Where(e => request.EventKeys.Contains(e.EventKey));
         }
 
         if (request.StartTimeUtc.HasValue)
@@ -52,24 +55,14 @@ public class ListActivityLogsQueryHandler(BlogDbContext db)
         var skip = (request.PageIndex - 1) * request.PageSize;
         var entities = await query
             .OrderByDescending(e => e.EventTimeUtc)
+            .ThenByDescending(e => e.Id)
             .Skip(skip)
             .Take(request.PageSize)
             .ToListAsync(ct);
 
-        var logs = entities.Select(ToDto).ToList();
+        var logs = entities.Select(ActivityLogItem.FromEntity).ToList();
 
         return (logs, totalCount);
     }
 
-    private static ActivityLogItem ToDto(ActivityLogEntity entity) => new()
-    {
-        Id = entity.Id,
-        EventType = (EventType)entity.EventId,
-        EventTimeUtc = entity.EventTimeUtc ?? DateTime.MinValue,
-        ActorId = entity.ActorId,
-        Operation = entity.Operation,
-        TargetName = entity.TargetName,
-        IpAddress = entity.IpAddress,
-        UserAgent = entity.UserAgent
-    };
 }

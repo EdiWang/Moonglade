@@ -21,8 +21,6 @@ public sealed class EmailNotificationPageState
 
     public IReadOnlyList<string> ValidationErrors { get; }
 
-    public string ProviderLabel => "SMTP";
-
     public string SenderAddress { get; }
 
     public bool EmailEnabled { get; }

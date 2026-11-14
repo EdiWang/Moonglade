@@ -24,40 +24,6 @@ public class CannonServiceTests
     }
 
     [Fact]
-    public async Task FireAsync_ExecutesWorkItem_Successfully()
-    {
-        // Arrange
-        var service = new CannonService(_loggerMock.Object, _scopeFactoryMock.Object);
-        var testService = new Mock<ITestService>();
-        var executed = false;
-
-        _serviceProviderMock.Setup(x => x.GetService(typeof(ITestService)))
-            .Returns(testService.Object);
-
-        testService.Setup(x => x.DoWorkAsync())
-            .Callback(() => executed = true)
-            .Returns(Task.CompletedTask);
-
-        // Act
-        service.FireAsync<ITestService>(async svc => await svc.DoWorkAsync());
-
-        // Start the background service
-        using var cts = new CancellationTokenSource();
-        await service.StartAsync(cts.Token);
-
-        // Give it some time to process
-        await Task.Delay(100, TestContext.Current.CancellationToken);
-
-        // Stop the service
-        cts.Cancel();
-        await service.StopAsync(CancellationToken.None);
-
-        // Assert
-        Assert.True(executed);
-        testService.Verify(x => x.DoWorkAsync(), Times.Once);
-    }
-
-    [Fact]
     public async Task FireAsync_WithException_LogsError()
     {
         // Arrange

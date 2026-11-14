@@ -21,22 +21,26 @@
      data-schedule-cancelled="@SharedLocalizer["Schedule cancelled, post moved to drafts"]">
 </div>
 
+@section adminnavigation {
+    <partial name="_PostManageNavigation" />
+}
+
 @section admintoolbar {
     <partial name="_PostManageHeader" />
 }
 
 @Html.AntiForgeryToken()
 
-@if (!snapshot.AdvancedSettings.EnablePostScheduler)
-{
-    <div class="alert alert-warning mb-3">
-        @SharedLocalizer["Post scheduler is disabled, pending posts will not be published automatically."]
-    </div>
-}
+<div class="admin-panel">
+    @if (!snapshot.AdvancedSettings.EnablePostScheduler)
+    {
+        <div class="alert alert-warning mb-3">
+            @SharedLocalizer["Post scheduler is disabled, pending posts will not be published automatically."]
+        </div>
+    }
 
-<div>
     <div x-show="isLoading"
-         class="text-muted mb-3"
+         class="text-muted"
          :class="{ 'd-flex align-items-center': isLoading }">
         <div class="spinner-border spinner-border-sm me-2" role="status"></div>
         <span>@SharedLocalizer["Loading..."]</span>
@@ -46,11 +50,11 @@
         <partial name="_NoPosts" />
     </div>
 
-    <div x-show="!isLoading && hasPosts">
+    <div x-show="!isLoading && hasPosts" class="admin-list">
         <template x-for="post in sortedPosts" :key="post.id">
-            <div :id="`post-${post.id}`" class="admin-post-entry p-3 mb-2 rounded-3 shadow-sm border">
+            <div :id="`post-${post.id}`" class="admin-post-entry admin-list-item">
                 <div class="row">
-                    <div class="col">
+                    <div class="col admin-list-content">
                         <a :href="`/admin/post/edit/${post.id}`">
                             <h6 x-text="post.title"></h6>
                         </a>
@@ -68,7 +72,7 @@
                         </div>
                     </div>
 
-                    <div class="col-auto">
+                    <div class="col-auto admin-list-actions">
                         <button class="btn btn-outline-accent btn-sm btn-publish"
                                 x-on:click="showPublishModal(post.id)">
                             <i class="bi-send"></i>

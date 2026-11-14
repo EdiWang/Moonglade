@@ -3,8 +3,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Moonglade.ActivityLog;
+using Moonglade.Auth;
 using Moonglade.Configuration;
-using Moonglade.Data.Entities;
 using Moonglade.Features.Asset;
 using Moonglade.Setup;
 using Moonglade.Web.Controllers;
@@ -16,14 +16,12 @@ namespace Moonglade.Web.Tests.Controllers;
 
 public partial class AssetsControllerTests
 {
-    private const string OriginalAvatarUrl = "https://legacy-cdn.example.com/avatar.png";
-
     [Theory]
     [InlineData(false, false)]
     [InlineData(false, true)]
     [InlineData(true, false)]
     [InlineData(true, true)]
-    public async Task Avatar_Post_WhenAuditFails_PreservesSavedLocalAssetWithoutChangingSettings(bool enableCdn, bool canceledAudit)
+    public async Task Avatar_Post_WhenAuditFails_PreservesSavedAvatarWithoutChangingSettings(bool enableCdn, bool canceledAudit)
     {
         var config = CreateAvatarConfig(enableCdn);
         var original = config.Capture();
@@ -33,75 +31,47 @@ public partial class AssetsControllerTests
             ? new OperationCanceledException("Audit dispatch canceled.")
             : new InvalidOperationException("Audit dispatch unavailable.");
         mediator.ActivityLogFailure = failure;
-        ConfigureAssetHandler(mediator);
-        var logger = new Mock<ILogger<AssetsController>>();
-        var controller = CreateController("avatar-admin", commandMediator: mediator, logger: logger.Object);
+        var logger = new Mock<ILogger<OwnerAvatarController>>();
+        var controller = CreateAvatarController(mediator, logger.Object, "avatar-admin");
         controller.HttpContext.TraceIdentifier = "avatar-audit-trace";
         var base64 = Convert.ToBase64String(CreatePngBytes(300, 300));
-        mediator.Db.BlogAsset.Add(new BlogAssetEntity
-        {
-            Id = AssetId.AvatarBase64, Base64Data = Convert.ToBase64String([1, 2, 3]), LastModifiedTimeUtc = DateTime.UtcNow
-        });
-        await mediator.Db.SaveChangesAsync(TestContext.Current.CancellationToken);
+        var ct = TestContext.Current.CancellationToken;
+        await new OwnerAvatarStore(mediator.Db).SetGravatarAsync(true, ct);
         var rowsBefore = await mediator.Db.BlogConfiguration.AsNoTracking().OrderBy(row => row.CfgKey).ToListAsync(TestContext.Current.CancellationToken);
 
-        Assert.IsType<OkResult>(await controller.Avatar(base64));
+        Assert.IsType<OkResult>(await controller.Upload(base64, TestContext.Current.CancellationToken));
 
-        Assert.Equal(base64, (await mediator.Db.BlogAsset.AsNoTracking().SingleAsync(
-            p => p.Id == AssetId.AvatarBase64, TestContext.Current.CancellationToken)).Base64Data);
+        var avatar = await mediator.Db.OwnerAvatar.AsNoTracking().SingleAsync(ct);
+        Assert.Equal(base64, avatar.ImageBase64);
+        Assert.True(avatar.UseGravatar);
         Assert.Same(original, config.Capture());
         var rowsAfter = await mediator.Db.BlogConfiguration.AsNoTracking().OrderBy(row => row.CfgKey).ToListAsync(TestContext.Current.CancellationToken);
         Assert.Equal(rowsBefore.Select(row => (row.CfgKey, row.CfgValue, row.LastModifiedTimeUtc)),
             rowsAfter.Select(row => (row.CfgKey, row.CfgValue, row.LastModifiedTimeUtc)));
         var audit = Assert.IsType<CreateActivityLogCommand>(Assert.Single(mediator.Commands));
-        Assert.Equal(EventType.AvatarUpdated, audit.EventType);
-        Assert.Equal("Update Avatar", audit.Operation);
-        Assert.Equal("Avatar Image", audit.TargetName);
-        Assert.Equal("avatar-admin", audit.ActorId);
-        Assert.Null(audit.MetaData);
-        AssertAvatarAuditFailure(logger, controller, failure, base64, OriginalAvatarUrl, audit.ActorId);
-    }
-
-    [Theory]
-    [InlineData(false)]
-    [InlineData(true)]
-    public async Task Avatar_Post_WhenSaveEventFails_PropagatesFailureWithoutAuditing(bool canceledSave)
-    {
-        Exception failure = canceledSave
-            ? new OperationCanceledException("Asset event canceled.")
-            : new InvalidOperationException("Asset event failed.");
-        _eventMediator.Setup(p => p.PublishAsync(
-                It.IsAny<SaveAssetEvent>(), It.IsAny<EventMediationSettings>(), It.IsAny<CancellationToken>()))
-            .ThrowsAsync(failure);
-        var logger = new Mock<ILogger<AssetsController>>();
-        var controller = CreateController(logger: logger.Object);
-
-        Assert.Same(failure, await Record.ExceptionAsync(() => controller.Avatar(Convert.ToBase64String(CreatePngBytes(300, 300)))));
-
-        _eventMediator.Verify(p => p.PublishAsync(
-            It.IsAny<SaveAssetEvent>(), It.IsAny<EventMediationSettings>(), It.IsAny<CancellationToken>()), Times.Once);
-        Assert.Empty(_commandMediator.Commands);
-        AssertNoAssetAuditError(logger);
+        Assert.Equal(ActivityEvents.AvatarUpdated, audit.EventKey);
+        Assert.Equal("Avatar Image", audit.TargetDisplayName);
+        Assert.Null(audit.TargetId);
+        Assert.Equal("avatar-admin", audit.ActorDisplayName);
+        Assert.Null(audit.Details);
+        AssertAvatarAuditFailure(logger, controller, failure, base64, audit.ActorDisplayName!);
     }
 
     [Fact]
-    public async Task Avatar_Post_WhenAssetPersistenceFails_PropagatesFailureWithoutAuditing()
+    public async Task Avatar_Post_WhenAvatarPersistenceFails_PropagatesFailureWithoutAuditing()
     {
         var config = CreateAvatarConfig();
         using var mediator = new ConfigurationCommandRecorder();
         mediator.Initialize(config);
-        ConfigureAssetHandler(mediator);
-        var logger = new Mock<ILogger<AssetsController>>();
-        var controller = CreateController(commandMediator: mediator, logger: logger.Object);
+        var logger = new Mock<ILogger<OwnerAvatarController>>();
+        var controller = CreateAvatarController(mediator, logger.Object);
         await mediator.Db.Database.ExecuteSqlRawAsync(
-            "CREATE TRIGGER reject_avatar_asset BEFORE INSERT ON BlogAsset BEGIN SELECT RAISE(ABORT, 'Asset save rejected'); END;",
+            "CREATE TRIGGER reject_avatar BEFORE INSERT ON OwnerAvatar BEGIN SELECT RAISE(ABORT, 'Asset save rejected'); END;",
             TestContext.Current.CancellationToken);
 
-        await Assert.ThrowsAsync<DbUpdateException>(() => controller.Avatar(Convert.ToBase64String(CreatePngBytes(300, 300))));
+        await Assert.ThrowsAsync<DbUpdateException>(() => controller.Upload(Convert.ToBase64String(CreatePngBytes(300, 300)), TestContext.Current.CancellationToken));
 
-        Assert.Empty(await mediator.Db.BlogAsset.AsNoTracking().ToListAsync(TestContext.Current.CancellationToken));
-        Assert.Equal(OriginalAvatarUrl, (await ReadAvatarGeneralSettings(mediator)).AvatarUrl);
-        Assert.Equal(OriginalAvatarUrl, config.Capture().GeneralSettings.AvatarUrl);
+        Assert.Empty(await mediator.Db.OwnerAvatar.AsNoTracking().ToListAsync(TestContext.Current.CancellationToken));
         Assert.Empty(mediator.Commands);
         AssertNoAssetAuditError(logger);
     }
@@ -115,23 +85,22 @@ public partial class AssetsControllerTests
         var original = config.Capture();
         using var mediator = new ConfigurationCommandRecorder();
         mediator.Initialize(config);
-        ConfigureAssetHandler(mediator);
-        var controller = CreateController(commandMediator: mediator);
+        var controller = CreateAvatarController(mediator);
         var base64 = Convert.ToBase64String(CreatePngBytes(300, 300));
         await mediator.Db.Database.ExecuteSqlRawAsync(
             "CREATE TRIGGER reject_avatar_settings BEFORE UPDATE ON BlogConfiguration BEGIN SELECT RAISE(ABORT, 'Settings save rejected'); END;",
             TestContext.Current.CancellationToken);
 
-        Assert.IsType<OkResult>(await controller.Avatar(base64));
+        Assert.IsType<OkResult>(await controller.Upload(base64, TestContext.Current.CancellationToken));
 
-        Assert.Equal(base64, (await mediator.Db.BlogAsset.AsNoTracking().SingleAsync(TestContext.Current.CancellationToken)).Base64Data);
+        Assert.Equal(base64, (await mediator.Db.OwnerAvatar.AsNoTracking().SingleAsync(TestContext.Current.CancellationToken)).ImageBase64);
         Assert.Same(original, config.Capture());
         Assert.Equal(original.GeneralSettings.ToJson(), (await ReadAvatarGeneralSettings(mediator)).ToJson());
         Assert.IsType<CreateActivityLogCommand>(Assert.Single(mediator.Commands));
     }
 
     [Fact]
-    public async Task UpdateSiteIcon_WhenAuditFails_StillPropagatesFailureAfterSavingAssetAndRegeneratingIcons()
+    public async Task UpdateSiteIcon_WhenAuditFails_PreservesSuccessAfterSavingAssetAndRegeneratingIcons()
     {
         var config = CreateAvatarConfig();
         using var mediator = new ConfigurationCommandRecorder();
@@ -143,7 +112,7 @@ public partial class AssetsControllerTests
         var controller = CreateController(commandMediator: mediator, logger: logger.Object);
         var base64 = Convert.ToBase64String(CreatePngBytes(64, 64));
 
-        Assert.Same(failure, await Assert.ThrowsAsync<InvalidOperationException>(() => controller.UpdateSiteIcon(base64)));
+        Assert.IsType<NoContentResult>(await controller.UpdateSiteIcon(base64));
 
         Assert.Equal(base64, (await mediator.Db.BlogAsset.AsNoTracking().SingleAsync(
             p => p.Id == AssetId.SiteIconBase64, TestContext.Current.CancellationToken)).Base64Data);
@@ -151,10 +120,19 @@ public partial class AssetsControllerTests
         Assert.Equal(32, bitmap.Width);
         Assert.Equal(32, bitmap.Height);
         Assert.Equal(SKColors.Blue, bitmap.GetPixel(16, 16));
-        Assert.Equal(EventType.SiteIconUpdated, Assert.IsType<CreateActivityLogCommand>(Assert.Single(mediator.Commands)).EventType);
-        Assert.Equal(OriginalAvatarUrl, (await ReadAvatarGeneralSettings(mediator)).AvatarUrl);
-        AssertNoAssetAuditError(logger);
+        Assert.Equal(ActivityEvents.SiteIconUpdated, Assert.IsType<CreateActivityLogCommand>(Assert.Single(mediator.Commands)).EventKey);
+        Assert.Equal(config.Capture().GeneralSettings, await ReadAvatarGeneralSettings(mediator));
+        AssertAvatarAuditFailure(logger, controller, failure, base64);
     }
+
+    private OwnerAvatarController CreateAvatarController(ConfigurationCommandRecorder store,
+        ILogger<OwnerAvatarController>? logger = null, string? username = null,
+        LiteBus.Commands.Abstractions.ICommandMediator? commandMediator = null) =>
+        new(new OwnerAvatarStore(store.Db), _environment.Object, _cache.Object, _avatarCache,
+            commandMediator ?? store, logger ?? Mock.Of<ILogger<OwnerAvatarController>>())
+        {
+            ControllerContext = CreateController(username).ControllerContext
+        };
 
     private void ConfigureAssetHandler(ConfigurationCommandRecorder mediator)
     {
@@ -169,7 +147,6 @@ public partial class AssetsControllerTests
     {
         var general = GeneralSettings.DefaultValue;
         general = general with { SiteTitle = "Avatar test site" };
-        general = general with { AvatarUrl = OriginalAvatarUrl };
         return new BlogConfig(new BlogSettingsSnapshot
         {
             GeneralSettings = general,
@@ -181,16 +158,16 @@ public partial class AssetsControllerTests
         (await mediator.Db.BlogConfiguration.AsNoTracking().SingleAsync(
             p => p.CfgKey == nameof(GeneralSettings), TestContext.Current.CancellationToken)).CfgValue.FromJson<GeneralSettings>();
 
-    private static void AssertAvatarAuditFailure(Mock<ILogger<AssetsController>> logger, AssetsController controller,
+    private static void AssertAvatarAuditFailure<T>(Mock<ILogger<T>> logger, ControllerBase controller,
         Exception failure, params string[] excludedValues)
     {
         var invocation = Assert.Single(logger.Invocations,
             p => p.Method.Name == nameof(ILogger.Log) && Equals(p.Arguments[0], LogLevel.Error));
-        Assert.Same(failure, invocation.Arguments[3]);
+        Assert.Null(invocation.Arguments[3]);
         var state = Assert.IsAssignableFrom<IReadOnlyList<KeyValuePair<string, object?>>>(invocation.Arguments[2]);
-        Assert.Equal(new[] { "EventType", "Operation", "TraceIdentifier", "{OriginalFormat}" }, state.Select(p => p.Key));
-        Assert.Contains(state, p => p.Key == "EventType" && Equals(p.Value, EventType.AvatarUpdated));
-        Assert.Contains(state, p => p.Key == "Operation" && Equals(p.Value, "Update Avatar"));
+        Assert.Equal(new[] { "EventKey", "FailureType", "TraceIdentifier", "{OriginalFormat}" }, state.Select(p => p.Key));
+        Assert.Contains(state, p => p.Key == "EventKey" && ActivityEvents.IsSupported(p.Value?.ToString()));
+        Assert.Contains(state, p => p.Key == "FailureType" && Equals(p.Value, failure.GetType().Name));
         Assert.Contains(state, p => p.Key == "TraceIdentifier" && Equals(p.Value, controller.HttpContext.TraceIdentifier));
         var message = invocation.Arguments[2]?.ToString() ?? string.Empty;
         Assert.Contains("Changes saved, but activity logging failed", message);
@@ -199,7 +176,7 @@ public partial class AssetsControllerTests
             Assert.DoesNotContain(value, message);
     }
 
-    private static void AssertNoAssetAuditError(Mock<ILogger<AssetsController>> logger) =>
+    private static void AssertNoAssetAuditError(Mock<ILogger<OwnerAvatarController>> logger) =>
         Assert.DoesNotContain(logger.Invocations,
             p => p.Method.Name == nameof(ILogger.Log) && Equals(p.Arguments[0], LogLevel.Error));
 }

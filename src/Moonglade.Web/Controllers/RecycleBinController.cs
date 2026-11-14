@@ -10,7 +10,8 @@ namespace Moonglade.Web.Controllers;
 public class RecycleBinController(
     ICacheAside cache,
     IQueryMediator queryMediator,
-    ICommandMediator commandMediator) : BlogControllerBase(commandMediator)
+    ICommandMediator commandMediator,
+    ILogger<RecycleBinController> logger) : BlogControllerBase(commandMediator, logger)
 {
     [HttpGet("list/recyclebin")]
     public async Task<IActionResult> List()
@@ -27,10 +28,10 @@ public class RecycleBinController(
         await CommandMediator.SendAsync(new RestorePostCommand(postId));
 
         await LogActivityAsync(
-            EventType.PostRestored,
-            "Restore Post",
+            ActivityEvents.PostRestored,
             $"Post #{postId}",
-            ActivityLogMetaData.Create(("PostId", postId)));
+            ActivityLogDetails.Create(("PostId", postId)),
+            targetId: postId.ToString());
 
         return NoContent();
     }
@@ -41,10 +42,10 @@ public class RecycleBinController(
         await CommandMediator.SendAsync(new DeletePostCommand(postId));
 
         await LogActivityAsync(
-            EventType.PostPermanentlyDeleted,
-            "Permanently Delete Post",
+            ActivityEvents.PostPermanentlyDeleted,
             $"Post #{postId}",
-            ActivityLogMetaData.Create(("PostId", postId)));
+            ActivityLogDetails.Create(("PostId", postId)),
+            targetId: postId.ToString());
 
         return NoContent();
     }
@@ -60,12 +61,12 @@ public class RecycleBinController(
         cache.Remove(BlogCachePartition.Page.ToString(), page.Slug.ToLower());
 
         await LogActivityAsync(
-            EventType.PageRestored,
-            "Restore Page",
+            ActivityEvents.PageRestored,
             page.Title,
-            ActivityLogMetaData.Create(
+            ActivityLogDetails.Create(
                 ("PageId", pageId),
-                ("Slug", page.Slug)));
+                ("Slug", page.Slug)),
+            targetId: pageId.ToString());
 
         return NoContent();
     }
@@ -81,12 +82,12 @@ public class RecycleBinController(
         cache.Remove(BlogCachePartition.Page.ToString(), page.Slug.ToLower());
 
         await LogActivityAsync(
-            EventType.PagePermanentlyDeleted,
-            "Permanently Delete Page",
+            ActivityEvents.PagePermanentlyDeleted,
             page.Title,
-            ActivityLogMetaData.Create(
+            ActivityLogDetails.Create(
                 ("PageId", pageId),
-                ("Slug", page.Slug)));
+                ("Slug", page.Slug)),
+            targetId: pageId.ToString());
 
         return NoContent();
     }
@@ -103,10 +104,9 @@ public class RecycleBinController(
         }
 
         await LogActivityAsync(
-            EventType.PageRecycleBinCleared,
-            "Clear Page Recycle Bin",
+            ActivityEvents.PageRecycleBinCleared,
             "All deleted pages",
-            ActivityLogMetaData.Create(("Count", slugs.Length)));
+            ActivityLogDetails.Create(("Count", slugs.Length)));
 
         return NoContent();
     }
@@ -117,10 +117,9 @@ public class RecycleBinController(
         var guids = await CommandMediator.SendAsync(new EmptyRecycleBinCommand());
 
         await LogActivityAsync(
-            EventType.RecycleBinCleared,
-            "Clear Recycle Bin",
+            ActivityEvents.RecycleBinCleared,
             "All deleted posts",
-            ActivityLogMetaData.Create(("Count", guids.Count())));
+            ActivityLogDetails.Create(("Count", guids.Count())));
 
         return NoContent();
     }

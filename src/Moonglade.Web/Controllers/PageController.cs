@@ -8,7 +8,11 @@ using Moonglade.Features.Page;
 namespace Moonglade.Web.Controllers;
 
 [Route("api/[controller]")]
-public class PageController(ICacheAside cache, IQueryMediator queryMediator, ICommandMediator commandMediator) : BlogControllerBase(commandMediator)
+public class PageController(
+    ICacheAside cache,
+    IQueryMediator queryMediator,
+    ICommandMediator commandMediator,
+    ILogger<PageController> logger) : BlogControllerBase(commandMediator, logger)
 {
     [HttpPost]
     [TypeFilter(typeof(ClearBlogCache), Arguments = [BlogCacheType.SiteMap])]
@@ -19,13 +23,13 @@ public class PageController(ICacheAside cache, IQueryMediator queryMediator, ICo
         cache.Remove(BlogCachePartition.Page.ToString(), model.Slug.ToLower());
 
         await LogActivityAsync(
-            EventType.PageCreated,
-            "Create Page",
+            ActivityEvents.PageCreated,
             model.Title,
-            ActivityLogMetaData.Create(
+            ActivityLogDetails.Create(
                 ("PageId", uid),
                 ("Slug", model.Slug),
-                ("IsPublished", model.IsPublished)));
+                ("IsPublished", model.IsPublished)),
+            targetId: uid.ToString());
 
         return Ok(new PageIdResponse(uid));
     }
@@ -39,13 +43,13 @@ public class PageController(ICacheAside cache, IQueryMediator queryMediator, ICo
         cache.Remove(BlogCachePartition.Page.ToString(), model.Slug.ToLower());
 
         await LogActivityAsync(
-            EventType.PageUpdated,
-            "Update Page",
+            ActivityEvents.PageUpdated,
             model.Title,
-            ActivityLogMetaData.Create(
+            ActivityLogDetails.Create(
                 ("PageId", uid),
                 ("Slug", model.Slug),
-                ("IsPublished", model.IsPublished)));
+                ("IsPublished", model.IsPublished)),
+            targetId: uid.ToString());
 
         return Ok(new PageIdResponse(uid));
     }
@@ -61,12 +65,12 @@ public class PageController(ICacheAside cache, IQueryMediator queryMediator, ICo
         cache.Remove(BlogCachePartition.Page.ToString(), page.Slug);
 
         await LogActivityAsync(
-            EventType.PageDeleted,
-            "Delete Page",
+            ActivityEvents.PageDeleted,
             page.Title,
-            ActivityLogMetaData.Create(
+            ActivityLogDetails.Create(
                 ("PageId", id),
-                ("Slug", page.Slug)));
+                ("Slug", page.Slug)),
+            targetId: id.ToString());
 
         return NoContent();
     }

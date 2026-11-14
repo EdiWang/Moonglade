@@ -6,7 +6,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Moonglade.Configuration;
 
-public record UpdateConfigurationCommand : ICommand
+public record UpdateConfigurationCommand : ICommand<ConfigurationSaveResult>
 {
     public object Settings { get; }
 
@@ -24,20 +24,31 @@ public class UpdateConfigurationCommandHandler(
     BlogConfig blogConfig,
     IEventMediator eventMediator,
     ConfigurationWriteGate gate,
-    ILogger<UpdateConfigurationCommandHandler> logger) : ICommandHandler<UpdateConfigurationCommand>
+    ILogger<UpdateConfigurationCommandHandler> logger)
+    : ICommandHandler<UpdateConfigurationCommand, ConfigurationSaveResult>,
+        ICommandHandler<PatchConfigurationCommand, ConfigurationSaveResult>
 {
-    public async Task HandleAsync(UpdateConfigurationCommand request, CancellationToken ct)
+    public Task<ConfigurationSaveResult> HandleAsync(UpdateConfigurationCommand request, CancellationToken ct) =>
+        SaveAsync(request.Settings.GetType(), _ => request.Settings, ct);
+
+    public Task<ConfigurationSaveResult> HandleAsync(PatchConfigurationCommand request, CancellationToken ct) =>
+        SaveAsync(request.SettingsType, request.Apply, ct);
+
+    private async Task<ConfigurationSaveResult> SaveAsync(Type settingsType, Func<object, object> replace, CancellationToken ct)
     {
-        var settings = request.Settings;
-        var name = settings.GetType().Name;
+        var name = settingsType.Name;
         await gate.WaitAsync(ct);
         try
         {
             var property = typeof(BlogSettingsSnapshot).GetProperty(name)
                 ?? throw new InvalidOperationException($"Unknown blog setting '{name}'.");
+            var current = blogConfig.Capture();
+            var previous = property.GetValue(current);
+            var settings = replace(previous);
             Validator.ValidateObject(settings, new ValidationContext(settings), true);
+            var result = SettingsChangeProjection.Compare(previous, settings);
 
-            var candidate = blogConfig.Capture() with { };
+            var candidate = current with { };
             property.SetValue(candidate, settings);
 
             var entity = await db.BlogConfiguration.SingleOrDefaultAsync(p => p.CfgKey == name, ct)
@@ -60,6 +71,7 @@ public class UpdateConfigurationCommandHandler(
                 await eventMediator.PublishAsync(new ConfigurationChangedEvent([name]), CancellationToken.None);
 
             logger.LogInformation("Configuration updated successfully: {Name}", name);
+            return result;
         }
         catch (Exception ex)
         {

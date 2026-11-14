@@ -16,16 +16,18 @@
 </div>
 
 @section admintoolbar {
-    <div class="admin-toolbar pb-2 border-bottom mb-3 d-flex flex-column flex-md-row align-items-start align-items-md-center gap-2">
-        <a x-on:click="initCreateTag()" class="btn btn-outline-accent" role="button">
-            <i class="bi-plus-lg"></i>
-            @SharedLocalizer["New"]
-        </a>
+    <div class="admin-toolbar admin-toolbar-row">
+        <div class="admin-toolbar-group">
+            <button type="button" x-on:click="initCreateTag()" class="btn btn-sm btn-outline-accent">
+                <i class="bi-plus-lg" aria-hidden="true"></i>
+                @SharedLocalizer["New"]
+            </button>
+        </div>
 
         <input x-model="tagFilter"
                x-on:input="filterTags()"
                type="text"
-               class="form-control admin-tags-filter ms-md-auto"
+               class="form-control admin-tags-filter ms-auto"
                maxlength="32"
                placeholder="@SharedLocalizer["Filter"]"
                aria-label="@SharedLocalizer["Filter tags"]">
@@ -34,31 +36,33 @@
 
 @Html.AntiForgeryToken()
 
-<div>
+<div class="admin-panel">
     <div x-show="isLoading"
-         class="text-muted mb-3"
+         class="text-muted"
          :class="{ 'd-flex align-items-center': isLoading }">
         <div class="spinner-border spinner-border-sm me-2" role="status"></div>
         <span>@SharedLocalizer["Loading tags..."]</span>
     </div>
 
-    <div x-show="!isLoading && !hasTags" class="alert alert-info" role="alert">
+    <div x-show="!isLoading && !hasTags" class="alert alert-info mb-0" role="alert">
         @SharedLocalizer["No tags found. Create your first tag to get started."]
     </div>
 
-    <div x-show="!isLoading && hasTags" class="tag-manager-container">
+    <div x-show="!isLoading && hasTags && groupedTags.length === 0" class="alert alert-info mb-0" role="alert">
+        @SharedLocalizer["no items to show"]
+    </div>
+
+    <div x-show="!isLoading && hasTags" class="tag-manager-container admin-list">
         <template x-for="group in groupedTags" :key="group.letter">
-            <div class="tag-letter-group mb-4" :id="'tag-group-' + group.letter">
+            <div class="tag-letter-group admin-list-item border-0 gap-3" :id="'tag-group-' + group.letter">
                 <div class="tag-letter-tile">
                     <span x-text="group.letter"></span>
                 </div>
                 <ul class="list-unstyled ul-tag-mgr mb-0" role="list">
                     <template x-for="tagItem in group.tags" :key="tagItem.id">
-                        <li :id="`li-tag-${tagItem.id}`" class="admin-tag-item border rounded me-1">
-                            <i x-show="tagItem.postCount === 0"
-                               class="bi-exclamation-triangle-fill text-warning tag-warning"
-                               title="@SharedLocalizer["Tags without posts"]"
-                               aria-label="@SharedLocalizer["Tags without posts"]"></i>
+                        <li :id="`li-tag-${tagItem.id}`" class="admin-tag-item border rounded me-1"
+                            :class="{ 'border-warning': tagItem.postCount === 0 }">
+                            <span x-show="tagItem.postCount === 0" class="visually-hidden">@SharedLocalizer["Tags without posts"]</span>
                             <span class="span-tagcontent-editable"
                                   contenteditable="true"
                                   spellcheck="false"
@@ -68,7 +72,7 @@
                                   x-text="tagItem.displayName">
                             </span>
                             <span class="tag-postcount"
-                                  :title="`${tagItem.postCount} @SharedLocalizer["posts"]`"
+                                  :title="`@SharedLocalizer["{0} posts", "${tagItem.postCount}"]`"
                                   x-text="tagItem.postCount">
                             </span>
                             <a class="btn-delete"
@@ -112,13 +116,13 @@
                     @SharedLocalizer["Please provide a valid tag name."]
                 </div>
             </div>
-            <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="offcanvas">
-                    @SharedLocalizer["Cancel"]
-                </button>
+            <div class="d-grid gap-2 admin-offcanvas-actions">
                 <button type="submit" class="btn btn-outline-accent">
                     <i class="bi-check-lg"></i>
                     @SharedLocalizer["Submit"]
+                </button>
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="offcanvas">
+                    @SharedLocalizer["Cancel"]
                 </button>
             </div>
         </form>

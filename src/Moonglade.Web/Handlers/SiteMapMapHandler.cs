@@ -17,9 +17,14 @@ public class SiteMapMapHandler
         BlogDbContext db)
     {
         var settings = blogConfig.Capture();
+        if (!settings.SEOSettings.EnableSiteMap)
+        {
+            return Results.NotFound();
+        }
+
         var xml = await cache.GetOrCreateAsync(BlogCachePartition.General.ToString(), postCacheInvalidator.GetSiteMapCacheKey(settings), async () =>
         {
-            var url = UrlHelper.ResolveRootUrl(httpContext, settings.GeneralSettings.CanonicalPrefix, true, true);
+            var url = UrlHelper.ResolveRootUrl(httpContext, settings.SEOSettings.CanonicalPrefix, true, true);
             var data = await GetSiteMapData(url, db, httpContext.RequestAborted);
             return data;
         }, TimeSpan.FromHours(1));

@@ -1,6 +1,6 @@
-﻿
-using System.Text.Json;
+
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json;
 
 namespace Moonglade.Configuration;
 
@@ -40,6 +40,7 @@ public class BlogConfig : IBlogConfig
             ContentSettings = Read<ContentSettings>(),
             CommentSettings = Read<CommentSettings>(),
             NotificationSettings = Read<NotificationSettings>(),
+            SEOSettings = Read<SEOSettings>(),
             FeedSettings = Read<FeedSettings>(),
             ImageSettings = Read<ImageSettings>(),
             AdvancedSettings = Read<AdvancedSettings>(),

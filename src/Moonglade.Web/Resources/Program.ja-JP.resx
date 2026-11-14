@@ -292,7 +292,7 @@
     <value>メモリとディスクからデータ・オブジェクトを削除</value>
   </data>
   <data name="Delete selected" xml:space="preserve">
-    <value>チェックしたコメントを削除する</value>
+    <value>選択した項目を削除</value>
   </data>
   <data name="Description" xml:space="preserve">
     <value>説明</value>
@@ -661,7 +661,7 @@
     <value>購読する</value>
   </data>
   <data name="System" xml:space="preserve">
-    <value>制</value>
+    <value>システム</value>
   </data>
   <data name="Tag name" xml:space="preserve">
     <value>タグ名</value>
@@ -764,6 +764,12 @@
   </data>
   <data name="Account" xml:space="preserve">
     <value>アカウント</value>
+  </data>
+  <data name="Account Settings" xml:space="preserve">
+    <value>アカウント設定</value>
+  </data>
+  <data name="Sign Out" xml:space="preserve">
+    <value>ログアウト</value>
   </data>
   <data name="Include in feed and sitemap" xml:space="preserve">
     <value>サブスクリプションとサイトマップを追加する</value>
@@ -1026,6 +1032,9 @@
   <data name="Scheduled for" xml:space="preserve">
     <value>予定日</value>
   </data>
+  <data name="Scheduled Publish Time" xml:space="preserve">
+    <value>公開予定日時</value>
+  </data>
   <data name="Publish Post" xml:space="preserve">
     <value>記事を公開する</value>
   </data>
@@ -1157,6 +1166,9 @@
   </data>
   <data name="Post published" xml:space="preserve">
     <value>投稿を公開しました</value>
+  </data>
+  <data name="Post automatically published" xml:space="preserve">
+    <value>投稿が自動公開されました</value>
   </data>
   <data name="Post restored" xml:space="preserve">
     <value>投稿を復元しました</value>
@@ -1329,8 +1341,8 @@
   <data name="{0} posts" xml:space="preserve">
     <value>{0} 件の投稿</value>
   </data>
-  <data name="* Changing site icon requires restarting the application" xml:space="preserve">
-    <value>* サイトアイコンの変更にはアプリケーションの再起動が必要です</value>
+  <data name="The site icon updates immediately after a successful upload. Your browser may still show the previous icon from its cache." xml:space="preserve">
+    <value>アップロードが完了すると、サイトアイコンはすぐに更新されます。ブラウザーのキャッシュにより、以前のアイコンが表示されることがあります。</value>
   </data>
   <data name="* Global script that will be injected into every page&apos;s {0} section." xml:space="preserve">
     <value>* すべてのページの {0} セクションに挿入されるグローバルスクリプトです。</value>
@@ -1385,9 +1397,6 @@
   </data>
   <data name="Are you sure you want to clear all activity logs? This action will be recorded." xml:space="preserve">
     <value>すべてのアクティビティログをクリアしますか？この操作は記録されます。</value>
-  </data>
-  <data name="Are you sure you want to delete this activity log?" xml:space="preserve">
-    <value>このアクティビティログを削除しますか？</value>
   </data>
   <data name="Are you sure you want to remove this button?" xml:space="preserve">
     <value>このボタンを削除しますか？</value>
@@ -1533,6 +1542,9 @@
   <data name="Image URL is required" xml:space="preserve">
     <value>画像 URL は必須です</value>
   </data>
+  <data name="SEO" xml:space="preserve">
+    <value>SEO</value>
+  </data>
   <data name="Index Now" xml:space="preserve">
     <value>IndexNow</value>
   </data>
@@ -1580,9 +1592,6 @@
   </data>
   <data name="Local account is not secure. It&apos;s recommended to use {0} for authentication. Click {1} to configure." xml:space="preserve">
     <value>ローカルアカウントは安全ではありません。認証には {0} の使用を推奨します。設定するには {1} をクリックしてください。</value>
-  </data>
-  <data name="Log deleted" xml:space="preserve">
-    <value>ログを削除しました</value>
   </data>
   <data name="Activity logs are cleared" xml:space="preserve">
     <value>アクティビティログをクリアしました</value>
@@ -1836,6 +1845,9 @@
   <data name="This Month" xml:space="preserve">
     <value>今月</value>
   </data>
+  <data name="This Year" xml:space="preserve">
+    <value>今年</value>
+  </data>
   <data name="Taxonomy" xml:space="preserve">
     <value>カテゴリーとタグ</value>
   </data>
@@ -1875,6 +1887,12 @@
   <data name="Verify" xml:space="preserve">
     <value>検証</value>
   </data>
+  <data name="Remember this device" xml:space="preserve">
+    <value>このデバイスを記憶する</value>
+  </data>
+  <data name="Skip authenticator codes for 30 days. Only use this on a device you trust." xml:space="preserve">
+    <value>30 日間、認証コードの入力を省略します。信頼できるデバイスでのみ使用してください。</value>
+  </data>
   <data name="Verify Authenticator" xml:space="preserve">
     <value>認証アプリを検証</value>
   </data>
@@ -1910,9 +1928,6 @@
   </data>
   <data name="Email notification configuration is invalid." xml:space="preserve">
     <value>メール通知の設定が無効です。</value>
-  </data>
-  <data name="Provider" xml:space="preserve">
-    <value>プロバイダー</value>
   </data>
   <data name="Sender Address" xml:space="preserve">
     <value>送信者アドレス</value>
@@ -2009,5 +2024,142 @@
   </data>
   <data name="Changes wake the scheduler. Publishing already in progress is not canceled." xml:space="preserve">
     <value>変更するとスケジューラーが起動します。すでに開始した公開処理は取り消されません。</value>
+  </data>
+  <data name="Account authenticator reset" xml:space="preserve"><value>アカウントの認証アプリをリセットしました</value></data>
+  <data name="Account profile updated" xml:space="preserve">
+    <value>アカウントプロフィールを更新しました</value>
+  </data>
+  <data name="Account password updated" xml:space="preserve"><value>アカウントのパスワードを更新しました</value></data>
+  <data name="Activity" xml:space="preserve"><value>操作</value></data>
+  <data name="Activity log" xml:space="preserve"><value>操作ログ</value></data>
+  <data name="Activity log cleared" xml:space="preserve"><value>操作ログを消去しました</value></data>
+  <data name="Actor type" xml:space="preserve"><value>操作者の種類</value></data>
+  <data name="Administrator" xml:space="preserve"><value>管理者</value></data>
+  <data name="Advanced settings updated" xml:space="preserve"><value>詳細設定を更新しました</value></data>
+  <data name="Appearance settings updated" xml:space="preserve"><value>外観設定を更新しました</value></data>
+  <data name="Avatar updated" xml:space="preserve"><value>アバターを更新しました</value></data>
+  <data name="Category ID" xml:space="preserve"><value>カテゴリ ID</value></data>
+  <data name="Comment approval toggled" xml:space="preserve"><value>コメントの承認状態を切り替えました</value></data>
+  <data name="Comment ID" xml:space="preserve"><value>コメント ID</value></data>
+  <data name="Comment IDs" xml:space="preserve"><value>コメント ID 一覧</value></data>
+  <data name="Comment replied to" xml:space="preserve"><value>コメントに返信しました</value></data>
+  <data name="Comment settings updated" xml:space="preserve"><value>コメント設定を更新しました</value></data>
+  <data name="Content settings updated" xml:space="preserve"><value>コンテンツ設定を更新しました</value></data>
+  <data name="Count" xml:space="preserve"><value>件数</value></data>
+  <data name="Custom menu settings updated" xml:space="preserve"><value>カスタムメニュー設定を更新しました</value></data>
+  <data name="Deleted count" xml:space="preserve"><value>削除件数</value></data>
+  <data name="Detail" xml:space="preserve"><value>詳細</value></data>
+  <data name="Enable CDN redirect" xml:space="preserve"><value>CDN リダイレクトを有効にする</value></data>
+  <data name="Enable watermark" xml:space="preserve"><value>透かしを有効にする</value></data>
+  <data name="File ID" xml:space="preserve"><value>ファイル ID</value></data>
+  <data name="File size" xml:space="preserve"><value>ファイルサイズ</value></data>
+  <data name="SEO settings updated" xml:space="preserve"><value>SEO 設定を更新しました</value></data>
+  <data name="General settings updated" xml:space="preserve"><value>一般設定を更新しました</value></data>
+  <data name="Hours" xml:space="preserve"><value>時間数</value></data>
+  <data name="Image dimensions" xml:space="preserve"><value>画像サイズ</value></data>
+  <data name="Image settings updated" xml:space="preserve"><value>画像設定を更新しました</value></data>
+  <data name="Image uploaded" xml:space="preserve"><value>画像をアップロードしました</value></data>
+  <data name="Images" xml:space="preserve"><value>画像</value></data>
+  <data name="No additional activity details are available." xml:space="preserve"><value>追加の操作詳細はありません。</value></data>
+  <data name="Notification settings updated" xml:space="preserve"><value>通知設定を更新しました</value></data>
+  <data name="Page created" xml:space="preserve"><value>ページを作成しました</value></data>
+  <data name="Page ID" xml:space="preserve"><value>ページ ID</value></data>
+  <data name="Page moved to recycle bin" xml:space="preserve"><value>ページをゴミ箱に移動しました</value></data>
+  <data name="Page permanently deleted" xml:space="preserve"><value>ページを完全に削除しました</value></data>
+  <data name="Page recycle bin cleared" xml:space="preserve"><value>ページのゴミ箱を空にしました</value></data>
+  <data name="Page updated" xml:space="preserve"><value>ページを更新しました</value></data>
+  <data name="Post created" xml:space="preserve"><value>記事を作成しました</value></data>
+  <data name="Post ID" xml:space="preserve"><value>記事 ID</value></data>
+  <data name="Post moved to recycle bin" xml:space="preserve"><value>記事をゴミ箱に移動しました</value></data>
+  <data name="Post permanently deleted" xml:space="preserve"><value>記事を完全に削除しました</value></data>
+  <data name="Post recycle bin cleared" xml:space="preserve"><value>記事のゴミ箱を空にしました</value></data>
+  <data name="Post schedule cancelled" xml:space="preserve"><value>記事の公開予約を取り消しました</value></data>
+  <data name="Post schedule postponed" xml:space="preserve"><value>記事の公開予約を延期しました</value></data>
+  <data name="Post status" xml:space="preserve"><value>記事の状態</value></data>
+  <data name="Post updated" xml:space="preserve"><value>記事を更新しました</value></data>
+  <data name="Previous file name" xml:space="preserve"><value>以前のファイル名</value></data>
+  <data name="Require comment review" xml:space="preserve"><value>コメントの審査を必須にする</value></data>
+  <data name="Site assets" xml:space="preserve"><value>サイトのリソース</value></data>
+  <data name="Site icon updated" xml:space="preserve"><value>サイトアイコンを更新しました</value></data>
+  <data name="Site title" xml:space="preserve"><value>サイトタイトル</value></data>
+  <data name="Skip watermark" xml:space="preserve"><value>透かしを省略する</value></data>
+  <data name="Subscription settings updated" xml:space="preserve"><value>購読設定を更新しました</value></data>
+  <data name="Tag created" xml:space="preserve"><value>タグを作成しました</value></data>
+  <data name="Tag ID" xml:space="preserve"><value>タグ ID</value></data>
+  <data name="Target ID" xml:space="preserve"><value>対象 ID</value></data>
+  <data name="Theme created" xml:space="preserve"><value>テーマを作成しました</value></data>
+  <data name="Theme deleted" xml:space="preserve"><value>テーマを削除しました</value></data>
+  <data name="Theme ID" xml:space="preserve"><value>テーマ ID</value></data>
+  <data name="Themes" xml:space="preserve"><value>テーマ</value></data>
+  <data name="User Agent" xml:space="preserve"><value>ユーザーエージェント</value></data>
+  <data name="Verification file toggled" xml:space="preserve"><value>検証ファイルの状態を切り替えました</value></data>
+  <data name="Widget ID" xml:space="preserve"><value>ウィジェット ID</value></data>
+  <data name="Draft" xml:space="preserve"><value>下書き</value></data>
+  <data name="Enable JSON-LD BlogPosting" xml:space="preserve"><value>JSON-LD BlogPosting を有効にする</value></data>
+  <data name="Enable Post Scheduler" xml:space="preserve"><value>記事の予約公開を有効にする</value></data>
+  <data name="Enable view count" xml:space="preserve"><value>閲覧回数の集計を有効にする</value></data>
+  <data name="Maximum page numbers to display in pagination" xml:space="preserve"><value>ページ番号の最大表示数</value></data>
+  <data name="New value" xml:space="preserve"><value>新しい値</value></data>
+  <data name="No change values are available for this update." xml:space="preserve"><value>この更新には表示できる変更値がありません。</value></data>
+  <data name="Previous value" xml:space="preserve"><value>以前の値</value></data>
+  <data name="Setting" xml:space="preserve"><value>設定項目</value></data>
+  <data name="Settings changes" xml:space="preserve"><value>設定の変更</value></data>
+  <data name="Show comment section on mobile screens" xml:space="preserve"><value>モバイル画面にコメント欄を表示する</value></data>
+  <data name="Watermark opacity" xml:space="preserve"><value>透かしの不透明度</value></data>
+  <data name="Move up" xml:space="preserve">
+    <value>上へ移動</value>
+  </data>
+  <data name="Move down" xml:space="preserve">
+    <value>下へ移動</value>
+  </data>
+  <data name="Set up Account" xml:space="preserve">
+    <value>アカウントを設定</value>
+  </data>
+  <data name="Create Account" xml:space="preserve">
+    <value>アカウントを作成</value>
+  </data>
+  <data name="Update your password for administrator sign-in." xml:space="preserve"><value>管理者ログイン用のパスワードを更新します。</value></data>
+  <data name="Owner email updated." xml:space="preserve"><value>所有者のメールアドレスを更新しました。</value></data>
+  <data name="This public address is used for feeds, Gravatar and blog notifications." xml:space="preserve"><value>この公開アドレスはフィード、Gravatar、ブログ通知に使用されます。</value></data>
+  <data name="Changing this address signs you out. Sign in again with the new email." xml:space="preserve"><value>変更後はサインアウトされます。新しいメールアドレスで再度サインインしてください。</value></data>
+  <data name="Third-party sign-in" xml:space="preserve"><value>外部アカウントでのサインイン</value></data>
+  <data name="Configure an OpenID Connect provider and link an external account." xml:space="preserve"><value>OpenID Connect プロバイダーを設定して外部アカウントを連携します。</value></data>
+  <data name="Manage" xml:space="preserve"><value>管理</value></data>
+  <data name="External sign-in could not be completed. Check the provider settings and try again." xml:space="preserve"><value>外部サインインを完了できませんでした。プロバイダーの設定を確認して、もう一度お試しください。</value></data>
+  <data name="Confirm the external account" xml:space="preserve"><value>外部アカウントを確認</value></data>
+  <data name="Bind account" xml:space="preserve"><value>アカウントを連携</value></data>
+  <data name="Unbind account" xml:space="preserve"><value>アカウントの連携を解除</value></data>
+  <data name="Bound account" xml:space="preserve"><value>連携済みアカウント</value></data>
+  <data name="Waiting for account binding" xml:space="preserve"><value>アカウント連携待ち</value></data>
+  <data name="Provider display name" xml:space="preserve"><value>プロバイダーの表示名</value></data>
+  <data name="Public HTTPS authority" xml:space="preserve"><value>公開 HTTPS Authority</value></data>
+  <data name="Client ID" xml:space="preserve"><value>クライアント ID</value></data>
+  <data name="Client secret" xml:space="preserve"><value>クライアント シークレット</value></data>
+  <data name="Leave blank to keep the saved secret." xml:space="preserve"><value>保存済みのシークレットを保持するには空欄にしてください。</value></data>
+  <data name="Redirect URI" xml:space="preserve"><value>リダイレクト URI</value></data>
+  <data name="Delete provider" xml:space="preserve"><value>プロバイダーを削除</value></data>
+  <data name="Delete the provider configuration and its account binding." xml:space="preserve"><value>プロバイダーの設定とアカウントの連携を削除します。</value></data>
+  <data name="Confirm deletion before deleting the provider." xml:space="preserve"><value>プロバイダーの削除を確認してください。</value></data>
+  <data name="Enter valid provider settings." xml:space="preserve"><value>有効なプロバイダー設定を入力してください。</value></data>
+  <data name="The binding request expired. Try again." xml:space="preserve"><value>連携リクエストの有効期限が切れました。もう一度お試しください。</value></data>
+  <data name="The provider settings changed. Reload the page and try again." xml:space="preserve"><value>プロバイダー設定が変更されました。ページを再読み込みして、もう一度お試しください。</value></data>
+  <data name="The provider settings could not be saved. Reload the page and try again." xml:space="preserve"><value>プロバイダー設定を保存できませんでした。ページを再読み込みして、もう一度お試しください。</value></data>
+  <data name="Verify your local password and applicable authenticator code." xml:space="preserve"><value>ローカルのパスワードと、必要に応じて認証コードを確認してください。</value></data>
+  <data name="Enter a client secret for this provider." xml:space="preserve"><value>このプロバイダーのクライアント シークレットを入力してください。</value></data>
+  <data name="Enter a valid name, public HTTPS authority, client ID and client secret." xml:space="preserve"><value>有効な名前、公開 HTTPS Authority、クライアント ID、クライアント シークレットを入力してください。</value></data>
+  <data name="The provider returned an invalid external account." xml:space="preserve"><value>プロバイダーから無効な外部アカウントが返されました。</value></data>
+  <data name="Unbind the external account before changing the authority or client ID." xml:space="preserve"><value>Authority またはクライアント ID を変更する前に、外部アカウントの連携を解除してください。</value></data>
+  <data name="Step {0} of {1}" xml:space="preserve"><value>ステップ {0} / {1}</value></data>
+  <data name="Verify your identity" xml:space="preserve"><value>本人確認</value></data>
+  <data name="Sign in with {0}" xml:space="preserve"><value>{0} でサインイン</value></data>
+  <data name="Third-party sign-in failed. Try again or sign in with your local account." xml:space="preserve"><value>外部アカウントでのサインインに失敗しました。もう一度試すか、ローカル アカウントでサインインしてください。</value></data>
+  <data name="Choose a valid PNG or JPEG image." xml:space="preserve">
+    <value>有効な PNG または JPEG 画像を選択してください。</value>
+  </data>
+  <data name="Drag or use the arrow keys to position the image. Scroll to zoom." xml:space="preserve">
+    <value>ドラッグまたは矢印キーで画像の位置を調整します。マウスホイールで拡大・縮小できます。</value>
+  </data>
+  <data name="Zoom" xml:space="preserve">
+    <value>ズーム</value>
   </data>
 </root>

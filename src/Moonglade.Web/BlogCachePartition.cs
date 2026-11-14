@@ -6,5 +6,6 @@ public enum BlogCachePartition
     Post,
     Page,
     RssCategory,
-    AtomCategory
+    AtomCategory,
+    Account
 }

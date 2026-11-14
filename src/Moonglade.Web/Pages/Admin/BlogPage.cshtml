@@ -14,6 +14,10 @@
      data-page-deleted="@SharedLocalizer["Page deleted"]">
 </div>
 
+@section adminnavigation {
+    <partial name="_PageManageNavigation" />
+}
+
 @section admintoolbar {
     <partial name="_PageManageHeader" />
 }
@@ -34,28 +38,39 @@
     </div>
 </div>
 
-<div x-show="!isLoading && hasPages" class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4">
+<div x-show="!isLoading && hasPages" class="row row-cols-4 admin-card-grid">
     <template x-for="page in sortedPages" :key="page.id">
         <div class="col">
-            <div class="card shadow-sm mb-4" :id="`card-${page.id}`">
+            <div class="card admin-card" :id="`card-${page.id}`">
                 <div class="card-body">
-                    <div class="d-flex justify-content-between align-items-start gap-2">
-                        <h6 class="card-title">
+                    <div class="d-flex flex-wrap justify-content-between align-items-start gap-2 pe-3">
+                        <h6 class="card-title" :id="`page-card-title-${page.id}`">
                             <a :href="`/page/${encodeURIComponent(page.slug)}`" target="_blank" x-text="page.title"></a>
                         </h6>
                         <span x-show="page.isPublished" x-cloak class="badge bg-success">@SharedLocalizer["Published"]</span>
                         <span x-show="!page.isPublished" x-cloak class="badge bg-secondary">@SharedLocalizer["Unpublished"]</span>
                     </div>
-                    <p class="mt-2 h-30px" x-text="page.slug"></p>
+                    <p class="mt-2" x-text="page.slug"></p>
                     <small class="text-muted" x-text="formatDate(page.createTimeUtc)"></small>
                 </div>
-                <div class="card-footer">
-                    <a class="btn btn-outline-accent btn-sm btn-edit" :href="`./page/edit/${page.id}`">
-                        <i class="bi-pen"></i>
-                    </a>
-                    <a x-on:click="showDeleteModal(page.id)" class="btn btn-outline-danger btn-sm btn-delete" role="button">
-                        <i class="bi-trash"></i>
-                    </a>
+                <div class="dropdown admin-card-actions position-absolute top-0 end-0">
+                    <button type="button" class="btn btn-sm btn-link text-body-secondary text-decoration-none"
+                            data-bs-toggle="dropdown" aria-expanded="false"
+                            aria-label="@SharedLocalizer["Actions"]" :aria-describedby="`page-card-title-${page.id}`">
+                        <i class="bi-three-dots" aria-hidden="true"></i>
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end">
+                        <li>
+                            <a class="dropdown-item" :href="`./page/edit/${page.id}`">
+                                <i class="bi-pen me-2" aria-hidden="true"></i>@SharedLocalizer["Edit"]
+                            </a>
+                        </li>
+                        <li>
+                            <button type="button" class="dropdown-item text-danger" x-on:click="showDeleteModal(page.id)">
+                                <i class="bi-trash me-2" aria-hidden="true"></i>@SharedLocalizer["Delete"]
+                            </button>
+                        </li>
+                    </ul>
                 </div>
             </div>
         </div>

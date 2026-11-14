@@ -22,7 +22,7 @@ public class LocalAccountTotpServiceTests
         var service = new LocalAccountTotpService();
         var secret = service.GenerateSecret();
 
-        var result = service.VerifyCode(secret, "000000");
+        var result = service.VerifyCode(secret, "invalid-code");
 
         Assert.False(result);
     }

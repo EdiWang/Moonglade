@@ -1,13 +1,8 @@
 import { fetch2 } from './httpService.mjs?v=1500'
-import { handleSettingsSubmit } from './admin.settings.mjs';
+import { initializeSettings } from './admin.settings.mjs';
 import { success, error } from './toastService.mjs';
 import { getLocalizedString } from './utils.module.mjs';
 import { createMoongladeCodeEditor } from '/_content/Moonglade.Editor.StaticAssets/moonglade-editor/moonglade-editor.code.js';
-
-async function handleSubmit(event) {
-    cssContentEditor.syncToTextarea();
-    await handleSettingsSubmit(event);
-}
 
 var themeModal = new bootstrap.Modal(document.getElementById('thememodal'));
 
@@ -39,16 +34,32 @@ window.deleteTheme = async function (id) {
     }
 }
 
-let cssContentEditor = null;
+initializeSettings({
+    createEditor(name, textarea) {
+        if (name !== 'CssCode') return;
 
-cssContentEditor = createMoongladeCodeEditor({
-    language: 'css',
-    element: document.querySelector('#CssContentEditor'),
-    textarea: document.querySelector('#ViewModel_CssCode'),
-    height: 'calc(100vh - 450px)',
-    lineWrapping: true,
-    tabSize: 2
+        const element = document.createElement('div');
+        textarea.classList.add('d-none');
+        textarea.before(element);
+        const editor = createMoongladeCodeEditor({
+            language: 'css',
+            element,
+            textarea,
+            height: 'min(50vh, 24rem)',
+            lineWrapping: true,
+            tabSize: 2
+        });
+        const editable = element.querySelector('.cm-content');
+        editable.setAttribute('aria-labelledby', textarea.getAttribute('aria-labelledby'));
+        editable.setAttribute('aria-describedby', textarea.getAttribute('aria-describedby'));
+        return editor;
+    },
+    onSaved(fields) {
+        if (!('ThemeId' in fields)) return;
+        for (const theme of document.querySelectorAll('.theme-selector-container')) {
+            const active = Number(theme.dataset.themeId) === fields.ThemeId;
+            theme.classList.toggle('active', active);
+            theme.querySelector('.theme-selector-footer').classList.toggle('active', active);
+        }
+    }
 });
-
-const form = document.querySelector('#form-settings');
-form.addEventListener('submit', handleSubmit);

@@ -1,27 +1,17 @@
 using Moonglade.Email.Core;
 using Moonglade.Web.Pages.Admin.Settings;
-using System.Xml.Linq;
 
 namespace Moonglade.Web.Tests.Pages.Admin.Settings;
 
 public class EmailNotificationPageStateTests
 {
-    private const string SetupPromptResourceKey =
-        "Email notifications are not configured. Add email provider settings to enable this feature.";
-
-    private const string InvalidConfigurationResourceKey =
-        "Email notification configuration is invalid.";
-
     [Theory]
-    [InlineData(EmailCapabilityState.Available, false, false, false, true)]
-    [InlineData(EmailCapabilityState.NotConfigured, true, false, false, false)]
-    [InlineData(EmailCapabilityState.Invalid, false, true, false, false)]
-    [InlineData(EmailCapabilityState.Disabled, false, false, true, false)]
-    public void Create_MapsCapabilityStateToPagePresentation(
+    [InlineData(EmailCapabilityState.Available, true)]
+    [InlineData(EmailCapabilityState.NotConfigured, false)]
+    [InlineData(EmailCapabilityState.Invalid, false)]
+    [InlineData(EmailCapabilityState.Disabled, false)]
+    public void Create_MapsCapabilityStateToTestEmailAvailability(
         EmailCapabilityState expectedState,
-        bool showNotConfiguredPrompt,
-        bool showInvalidConfiguration,
-        bool showDisabledNotice,
         bool canSendTestEmail)
     {
         var (serviceOptions, workerOptions) = CreateOptions(expectedState);
@@ -34,9 +24,6 @@ public class EmailNotificationPageStateTests
 
         Assert.Equal(expectedState, pageState.CapabilityState);
         Assert.Equal(serviceOptions.Enabled, pageState.EmailEnabled);
-        Assert.Equal(showNotConfiguredPrompt, pageState.ShowNotConfiguredPrompt);
-        Assert.Equal(showInvalidConfiguration, pageState.ShowInvalidConfiguration);
-        Assert.Equal(showDisabledNotice, pageState.ShowDisabledNotice);
         Assert.Equal(canSendTestEmail, pageState.CanSendTestEmail);
 
         if (expectedState == EmailCapabilityState.NotConfigured)
@@ -69,7 +56,7 @@ public class EmailNotificationPageStateTests
     [InlineData("", "sender@example.com")]
     [InlineData(null, "sender@example.com")]
     [InlineData("   ", "sender@example.com")]
-    public void Create_SmtpSenderAddress_DisplaysEffectiveSender(string? configuredAddress, string expectedAddress)
+    public void Create_SmtpSenderAddress_UsesEffectiveSender(string? configuredAddress, string expectedAddress)
     {
         var (serviceOptions, workerOptions) = CreateOptions(EmailCapabilityState.Available);
         serviceOptions.SmtpSenderAddress = configuredAddress;
@@ -77,7 +64,6 @@ public class EmailNotificationPageStateTests
         var pageState = EmailNotificationPageState.Create(
             CreateStatus(serviceOptions, workerOptions), serviceOptions, emailSendingEnabled: true);
 
-        Assert.Equal("SMTP", pageState.ProviderLabel);
         Assert.Equal(expectedAddress, pageState.SenderAddress);
         Assert.True(pageState.CanSendTestEmail);
     }
@@ -91,33 +77,8 @@ public class EmailNotificationPageStateTests
         var pageState = EmailNotificationPageState.Create(
             CreateStatus(serviceOptions, workerOptions), serviceOptions, emailSendingEnabled: true);
 
-        Assert.True(pageState.ShowInvalidConfiguration);
         Assert.False(pageState.CanSendTestEmail);
         Assert.Contains(pageState.ValidationErrors, error => error.Contains("Email:SmtpSenderAddress", StringComparison.Ordinal));
-    }
-
-    [Theory]
-    [InlineData("Program.zh-Hans.resx")]
-    [InlineData("Program.zh-Hant.resx")]
-    [InlineData("Program.de-DE.resx")]
-    [InlineData("Program.ja-JP.resx")]
-    public void NotificationCapabilityResourceKeys_AreLocalized(string resourceFileName)
-    {
-        var resourcePath = Path.Combine(
-            FindWebProjectRoot(),
-            "Resources",
-            resourceFileName);
-        var document = XDocument.Load(resourcePath);
-        var resourceKeys = document
-            .Root!
-            .Elements("data")
-            .Select(element => (string?)element.Attribute("name"))
-            .ToHashSet(StringComparer.Ordinal);
-
-        Assert.Contains(SetupPromptResourceKey, resourceKeys);
-        Assert.Contains(InvalidConfigurationResourceKey, resourceKeys);
-        Assert.Contains("Email notifications are disabled.", resourceKeys);
-        Assert.Contains("Email Notifications", resourceKeys);
     }
 
     private static EmailCapabilityStatus CreateStatus(
@@ -154,22 +115,5 @@ public class EmailNotificationPageStateTests
         }
 
         return (serviceOptions, workerOptions);
-    }
-
-    private static string FindWebProjectRoot()
-    {
-        var directory = new DirectoryInfo(AppContext.BaseDirectory);
-        while (directory is not null)
-        {
-            var candidate = Path.Combine(directory.FullName, "src", "Moonglade.Web");
-            if (Directory.Exists(candidate))
-            {
-                return candidate;
-            }
-
-            directory = directory.Parent;
-        }
-
-        throw new DirectoryNotFoundException("Could not locate src/Moonglade.Web.");
     }
 }

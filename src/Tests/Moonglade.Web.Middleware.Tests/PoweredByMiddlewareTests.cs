@@ -16,7 +16,7 @@ public class PoweredByMiddlewareTests
     }
 
     [Fact]
-    public async Task Invoke_ShouldAddXPoweredByHeader()
+    public async Task Invoke_AddsXPoweredByHeaderAndCallsNext()
     {
         // Arrange
         var context = new DefaultHttpContext();
@@ -26,20 +26,7 @@ public class PoweredByMiddlewareTests
         await _middleware.Invoke(context);
 
         // Assert
-        Assert.True(context.Response.Headers.ContainsKey("X-Powered-By"));
         Assert.Equal(expectedHeaderValue, context.Response.Headers["X-Powered-By"].ToString());
-    }
-
-    [Fact]
-    public async Task Invoke_ShouldCallNextMiddleware()
-    {
-        // Arrange
-        var context = new DefaultHttpContext();
-
-        // Act
-        await _middleware.Invoke(context);
-
-        // Assert
         _mockNext.Verify(next => next.Invoke(context), Times.Once);
     }
 
@@ -57,21 +44,6 @@ public class PoweredByMiddlewareTests
         // Assert
         Assert.Equal(existingHeaderValue, context.Response.Headers["X-Powered-By"].ToString());
         _mockNext.Verify(next => next.Invoke(context), Times.Once);
-    }
-
-    [Fact]
-    public async Task Invoke_HeaderValueShouldContainMoongladeAndVersion()
-    {
-        // Arrange
-        var context = new DefaultHttpContext();
-
-        // Act
-        await _middleware.Invoke(context);
-
-        // Assert
-        var headerValue = context.Response.Headers["X-Powered-By"].ToString();
-        Assert.Contains("Moonglade", headerValue);
-        Assert.Contains(VersionHelper.AppVersion, headerValue);
     }
 
     [Fact]

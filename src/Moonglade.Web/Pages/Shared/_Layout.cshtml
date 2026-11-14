@@ -1,5 +1,6 @@
 ﻿@{
     var snapshot = ViewData.CaptureSettings(SettingsReader);
+    var presentation = await ViewData.CaptureOwnerPresentationAsync(OwnerProfiles, Context.RequestAborted);
 }
 @using Moonglade.Utils
 @using Microsoft.AspNetCore.Localization
@@ -7,9 +8,11 @@
 @inject IConfiguration Configuration
 @inject ICacheAside Cache
 @inject ThemeCacheInvalidator ThemeCache
+@inject Moonglade.Auth.IOwnerProfileReader OwnerProfiles
 
 @{
-    var avatarUrl = Url.Action("Avatar", "Assets");
+    var avatarUrl = Url.Action("Avatar", "OwnerAvatar");
+    var owner = await ViewData.CaptureOwnerAsync(OwnerProfiles, Context.RequestAborted);
 
     // Resolve culture
     // Post language > User set display language > System default language
@@ -37,16 +40,16 @@
 }
 <!DOCTYPE html>
 <html lang="@langCode" data-bs-theme="@(clientPreferDarkMode ? "dark" : null)">
-<head profile=@(snapshot.GeneralSettings.UseDublinCoreMetaData ? "http://dublincore.org/documents/dcq-html/" : null)>
+<head profile=@(snapshot.SEOSettings.UseDublinCoreMetaData ? "http://dublincore.org/documents/dcq-html/" : null)>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    @if (snapshot.GeneralSettings.UseDublinCoreMetaData)
+    @if (snapshot.SEOSettings.UseDublinCoreMetaData)
     {
         <link rel="schema.DC" href="http://purl.org/dc/elements/1.1/" />
         <link rel="schema.DCTERMS" href="http://purl.org/dc/terms/" />
     }
 
-    <meta name="keywords" content="@(ViewBag.Keywords ?? Html.Raw(snapshot.GeneralSettings.MetaKeyword))" />
+    <meta name="keywords" content="@(ViewBag.Keywords ?? Html.Raw(snapshot.SEOSettings.MetaKeyword))" />
 
     @await RenderSectionAsync("meta", false)
     @if (IsSectionDefined("opengraph"))
@@ -58,7 +61,7 @@
         <partial name="_OpenGraph" />
     }
 
-    <metadesc description="@(ViewBag.MetaDescription ?? snapshot.GeneralSettings.Description)" />
+    <metadesc description="@(ViewBag.MetaDescription ?? presentation.Description)" />
 
     <title>
         @(ViewBag.TitlePrefix)@(null == ViewBag.TitlePrefix ? string.Empty : " - ")@snapshot.GeneralSettings.SiteTitle
@@ -70,9 +73,9 @@
         <link rel="dns-prefetch" href="@UrlHelper.GetDNSPrefetchUrl(snapshot.ImageSettings.CDNEndpoint)" />
     }
 
-    @if (!string.IsNullOrWhiteSpace(snapshot.GeneralSettings.CanonicalPrefix))
+    @if (!string.IsNullOrWhiteSpace(snapshot.SEOSettings.CanonicalPrefix))
     {
-        <link rel="canonical" href="@(UrlHelper.ResolveCanonicalUrl(snapshot.GeneralSettings.CanonicalPrefix, Context.Request.Path))" />
+        <link rel="canonical" href="@(UrlHelper.ResolveCanonicalUrl(snapshot.SEOSettings.CanonicalPrefix, Context.Request.Path))" />
     }
 
     <link rel="start" title="@snapshot.GeneralSettings.SiteTitle" href="~/" />
@@ -189,9 +192,9 @@
         {
             <section class="profile-mobile d-block d-sm-none d-print-none">
                 <div class="card-background-container">
-                    @if (snapshot.GeneralSettings.UseGravatarAsProfilePicture)
+                    @if (owner?.UseGravatar == true)
                     {
-                        <gravatar class="card-bkimg" email="@snapshot.GeneralSettings.OwnerEmail" size="256" />
+                        <gravatar class="card-bkimg" email="@owner.Email" size="256" />
                     }
                     else
                     {
@@ -201,23 +204,23 @@
                 <div class="blogger-intro-content">
                     <div class="row">
                         <div class="col-3">
-                            @if (snapshot.GeneralSettings.UseGravatarAsProfilePicture)
+                            @if (owner?.UseGravatar == true)
                             {
                                 <gravatar class="rounded-circle blogger-head-pic"
                                           size="256"
-                                          alt="@snapshot.GeneralSettings.OwnerName"
-                                          email="@snapshot.GeneralSettings.OwnerEmail" />
+                                          alt="@presentation.Name"
+                                          email="@owner.Email" />
                             }
                             else
                             {
                                 <img src="@avatarUrl"
-                                     alt="@snapshot.GeneralSettings.OwnerName"
+                                     alt="@presentation.Name"
                                      class="rounded-circle blogger-head-pic" />
                             }
                         </div>
                         <div class="col-9 position-relative">
                             <h4 class="text-center w-100 position-absolute top-50 start-50 translate-middle">
-                                @snapshot.GeneralSettings.Description
+                                @presentation.Description
                             </h4>
                         </div>
                     </div>

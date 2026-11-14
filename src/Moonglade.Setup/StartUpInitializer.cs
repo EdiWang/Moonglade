@@ -71,7 +71,11 @@ public class StartUpInitializer(
 
     private async Task<bool> IsDatabaseEmptyAsync(CancellationToken ct)
     {
-        return !await context.BlogConfiguration.AnyAsync(ct)
+        return !await context.OwnerAvatar.AnyAsync(ct)
+            && !await context.OwnerAccount.AnyAsync(ct)
+            && !await context.OwnerOidc.AnyAsync(ct)
+            && !await context.DataProtectionKeys.AnyAsync(ct)
+            && !await context.BlogConfiguration.AnyAsync(ct)
             && !await context.Post.AnyAsync(ct)
             && !await context.Category.AnyAsync(ct)
             && !await context.Tag.AnyAsync(ct)

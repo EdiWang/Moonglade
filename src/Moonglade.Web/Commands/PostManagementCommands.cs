@@ -1,10 +1,15 @@
+#nullable enable annotations
+
 using LiteBus.Commands.Abstractions;
 using Moonglade.ActivityLog;
 using Moonglade.BackgroundServices;
 using Moonglade.Data.DTO;
+using Moonglade.Data.Entities;
 using Moonglade.Features.Post;
 using Moonglade.IndexNow.Client;
+using Moonglade.Web.Services;
 using Moonglade.Webmention;
+using System.Text.Json.Serialization;
 
 namespace Moonglade.Web.Commands;
 
@@ -12,7 +17,11 @@ public record PostOperationContext(
     string ActorId,
     string IpAddress,
     string UserAgent,
-    string RootUrl);
+    string RootUrl)
+{
+    [JsonIgnore]
+    public string? TraceIdentifier { get; init; }
+}
 
 public record PostOperationResult(
     bool Succeeded,
@@ -48,6 +57,7 @@ public class SavePostCommandHandler(
         {
             var model = request.Payload;
             var isNewPost = model.PostId == Guid.Empty;
+            var postTitle = model.Title;
 
             var wakeScheduledPublisher = PrepareScheduledPost(model);
 
@@ -61,17 +71,27 @@ public class SavePostCommandHandler(
                 logger.LogInformation("Scheduled publish wake-up triggered for post: {PostId}", postEntity.Id);
             }
 
-            await PostActivityLogger.LogAsync(
+            var activityEventKey = isNewPost ? ActivityEvents.PostCreated : ActivityEvents.PostUpdated;
+            var activityDetails = ActivityLogDetails.Create(
+                ("PostId", postEntity.Id),
+                ("Slug", postEntity.RouteLink),
+                ("PostStatus", model.PostStatus));
+            await ActivityLogDispatcher.SendAsync(
                 commandMediator,
-                request.Context,
-                isNewPost ? EventType.PostCreated : EventType.PostUpdated,
-                isNewPost ? "Create Post" : "Update Post",
-                model.Title,
-                ActivityLogMetaData.Create(
-                    ("PostId", postEntity.Id),
-                    ("Slug", postEntity.RouteLink),
-                    ("PostStatus", model.PostStatus)),
-                ct);
+                logger,
+                activityEventKey,
+                () => new CreateActivityLogCommand(
+                    activityEventKey,
+                    ActivityActorKind.Administrator,
+                    request.Context.ActorId,
+                    TargetId: postEntity.Id.ToString(),
+                    TargetDisplayName: postTitle,
+                    Details: activityDetails,
+                    IpAddress: request.Context.IpAddress,
+                    UserAgent: request.Context.UserAgent),
+                ActivityLogDispatchSource.PostSave,
+                traceIdentifier: request.Context.TraceIdentifier,
+                ct: ct);
 
             if (model.PostStatus == PostStatus.Published)
             {
@@ -151,26 +171,4 @@ public class SavePostCommandHandler(
         return new Uri(new Uri(rootUrl), $"post/{routeLink.ToLower()}");
     }
 
-}
-
-file static class PostActivityLogger
-{
-    public static async Task LogAsync(
-        ICommandMediator commandMediator,
-        PostOperationContext context,
-        EventType eventType,
-        string operation,
-        string targetName,
-        object metaData,
-        CancellationToken ct)
-    {
-        await commandMediator.SendAsync(new CreateActivityLogCommand(
-            eventType,
-            context.ActorId,
-            operation,
-            targetName,
-            metaData,
-            context.IpAddress,
-            context.UserAgent), ct);
-    }
 }

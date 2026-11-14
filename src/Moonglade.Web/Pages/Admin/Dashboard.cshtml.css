@@ -1,4 +1,6 @@
 .admin-dashboard {
+    display: grid;
+    gap: 16px;
     width: 100%;
 }
 
@@ -7,20 +9,15 @@
     font-weight: 700;
 }
 
-.dashboard-metric,
-.dashboard-panel {
-    background-color: var(--bs-white);
-    border: 1px solid var(--bs-border-color);
-    border-radius: 8px;
-    box-shadow: 0 1px 2px rgba(0, 0, 0, .04);
-}
-
 .dashboard-metric {
     align-items: center;
     display: flex;
     gap: 1rem;
     min-height: 112px;
-    padding: 1rem;
+}
+
+.dashboard-metric > div:last-child {
+    min-width: 0;
 }
 
 .dashboard-metric-icon {
@@ -44,10 +41,7 @@
     font-size: 2rem;
     font-weight: 700;
     line-height: 1.15;
-}
-
-.dashboard-panel {
-    padding: 1rem;
+    overflow-wrap: anywhere;
 }
 
 .dashboard-count-grid {
@@ -73,49 +67,51 @@
 .dashboard-count-item strong {
     font-size: 1.65rem;
     line-height: 1.2;
+    overflow-wrap: anywhere;
 }
 
 .dashboard-count-link {
     text-decoration: none;
 }
 
-.dashboard-count-item:has(.dashboard-count-link:hover) {
-    color: var(--accent-color1);
+.dashboard-count-item:has(.dashboard-count-link:hover),
+.dashboard-count-item:has(.dashboard-count-link:focus-visible) {
+    color: var(--bs-link-hover-color);
+}
+
+.dashboard-count-item:has(.dashboard-count-link:focus-visible) {
+    outline: 2px solid currentColor;
+    outline-offset: 3px;
 }
 
 .dashboard-empty {
     align-items: center;
-    background-color: var(--bs-secondary-bg);
-    border-radius: 8px;
     display: flex;
+    justify-content: center;
     min-height: 88px;
     padding: 1rem;
-}
-
-.dashboard-draft-empty {
-    background-color: transparent;
-    justify-content: center;
 }
 
 .dashboard-post-list {
     display: grid;
-    gap: .75rem;
 }
 
-.dashboard-post-item {
-    background-color: var(--bs-secondary-bg);
-    border-radius: 8px;
+.dashboard-post-list ::deep .dashboard-post-item {
     color: inherit;
     display: flex;
     flex-direction: column;
     gap: .4rem;
-    min-height: 88px;
-    padding: 1rem;
     text-decoration: none;
 }
 
-.dashboard-post-item:hover {
-    color: var(--accent-color1);
+.dashboard-post-list ::deep .dashboard-post-item:hover,
+.dashboard-post-list ::deep .dashboard-post-item:focus-visible {
+    color: var(--bs-link-hover-color);
+}
+
+.dashboard-post-list ::deep .dashboard-post-item:focus-visible {
+    outline: 2px solid currentColor;
+    outline-offset: 3px;
 }
 
 .dashboard-post-title {
@@ -129,15 +125,4 @@
     flex-wrap: wrap;
     font-size: .85rem;
     gap: .35rem .5rem;
-}
-
-[data-bs-theme="dark"] .dashboard-metric,
-[data-bs-theme="dark"] .dashboard-panel {
-    background-color: var(--bs-body-bg);
-}
-
-@media (max-width: 575.98px) {
-    .dashboard-count-grid {
-        grid-template-columns: 1fr;
-    }
 }

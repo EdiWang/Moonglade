@@ -13,15 +13,19 @@
      data-confirm-delete="@SharedLocalizer["Are you sure you want to delete this post?"]">
 </div>
 
+@section adminnavigation {
+    <partial name="_PostManageNavigation" />
+}
+
 @section admintoolbar {
     <partial name="_PostManageHeader" />
 }
 
 @Html.AntiForgeryToken()
 
-<div>
+<div class="admin-panel">
     <div x-show="isLoading"
-         class="text-muted mb-3"
+         class="text-muted"
          :class="{ 'd-flex align-items-center': isLoading }">
         <div class="spinner-border spinner-border-sm me-2" role="status"></div>
         <span>@SharedLocalizer["Loading posts..."]</span>
@@ -31,42 +35,44 @@
         <partial name="_NoPosts" />
     </div>
 
-    <template x-for="post in posts" :key="post.id">
-        <div :id="`post-${post.id}`" class="admin-post-entry p-3 mb-2 rounded-3 shadow-sm border">
-            <div class="row">
-                <div class="col">
-                    <a :href="getPostUrl(post)"
-                       class="d-inline-block"
-                       :title="post.slug"
-                       target="_blank">
-                        <h6>
-                            <span x-text="post.title"></span>
-                            <i x-show="post.isFeatured" class="bi-star-fill text-warning"></i>
-                            <span x-show="post.isOutdated" class="badge rounded-pill text-bg-secondary ms-2">@SharedLocalizer["Outdated"]</span>
-                        </h6>
-                    </a>
-                    <div class="mb-2" x-text="post.contentAbstract"></div>
-                    <div>
-                        <i class="bi-calendar-event"></i>
-                        <span class="text-muted me-2">
-                            <time :data-utc-label="post.pubDateUtc" x-text="post.pubDateUtc"></time>
-                        </span>
+    <div x-show="!isLoading && hasPosts" class="admin-list">
+        <template x-for="post in posts" :key="post.id">
+            <div :id="`post-${post.id}`" class="admin-post-entry admin-list-item">
+                <div class="row">
+                    <div class="col admin-list-content">
+                        <a :href="getPostUrl(post)"
+                           class="d-inline-block"
+                           :title="post.slug"
+                           target="_blank">
+                            <h6>
+                                <span x-text="post.title"></span>
+                                <i x-show="post.isFeatured" class="bi-star-fill text-warning"></i>
+                                <span x-show="post.isOutdated" class="badge rounded-pill text-bg-secondary ms-2">@SharedLocalizer["Outdated"]</span>
+                            </h6>
+                        </a>
+                        <div class="mb-2" x-text="post.contentAbstract"></div>
+                        <div>
+                            <i class="bi-calendar-event"></i>
+                            <span class="text-muted me-2">
+                                <time :data-utc-label="post.pubDateUtc" x-text="post.pubDateUtc"></time>
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="col-auto admin-list-actions">
+                        <a class="btn btn-outline-accent btn-sm btn-edit"
+                           :href="`/admin/post/edit/${post.id}`">
+                            <i class="bi-pen"></i>
+                        </a>
+                        <button class="btn btn-outline-danger btn-sm btn-delete"
+                                x-on:click="deletePost(post.id)">
+                            <i class="bi-trash"></i>
+                        </button>
                     </div>
                 </div>
-
-                <div class="col-auto">
-                    <a class="btn btn-outline-accent btn-sm btn-edit" 
-                       :href="`/admin/post/edit/${post.id}`">
-                        <i class="bi-pen"></i>
-                    </a>
-                    <button class="btn btn-outline-danger btn-sm btn-delete" 
-                            x-on:click="deletePost(post.id)">
-                        <i class="bi-trash"></i>
-                    </button>
-                </div>
             </div>
-        </div>
-    </template>
+        </template>
+    </div>
 
 <!-- Filter Offcanvas -->
 <div class="offcanvas offcanvas-end" tabindex="-1" x-ref="filterCanvas" aria-labelledby="filterCanvasLabel">
@@ -109,7 +115,7 @@
 
             <!-- Fixed Bottom Buttons -->
             <div class="border-top p-3 bg-light">
-                <div class="d-grid gap-2">
+                <div class="d-grid gap-2 admin-offcanvas-actions">
                     <button type="submit" class="btn btn-accent">
                         <i class="bi-funnel"></i> @SharedLocalizer["Apply Filter"]
                     </button>
@@ -122,49 +128,50 @@
     </div>
 </div>
 
-    <div x-show="!isLoading && hasPosts" class="d-flex justify-content-between align-items-center mt-4">
-        <nav x-show="totalPages > 1" aria-label="Page navigation">
-            <ul class="pagination mb-0">
-                <li class="page-item" :class="{ 'disabled': currentPage === 1 }">
-                    <a class="page-link" href="#" x-on:click.prevent="goToPage(1)">
-                        <span aria-hidden="true">&laquo;&laquo;</span>
-                    </a>
+</div>
+
+<div x-show.important="hasPosts" class="admin-pagination d-flex flex-wrap justify-content-between align-items-center gap-3 mt-3">
+    <nav x-show="totalPages > 1" aria-label="Page navigation">
+        <ul class="pagination pagination-sm mb-0">
+            <li class="page-item" :class="{ 'disabled': currentPage === 1 }">
+                <a class="page-link" href="#" x-on:click.prevent="goToPage(1)">
+                    <span aria-hidden="true">&laquo;&laquo;</span>
+                </a>
+            </li>
+
+            <li class="page-item" :class="{ 'disabled': currentPage === 1 }">
+                <a class="page-link" href="#" x-on:click.prevent="goToPage(currentPage - 1)">
+                    <span aria-hidden="true">&laquo;</span>
+                </a>
+            </li>
+
+            <template x-for="page in paginationPages" :key="page">
+                <li class="page-item" :class="{ 'active': page === currentPage }">
+                    <a class="page-link" href="#" x-on:click.prevent="goToPage(page)" x-text="page"></a>
                 </li>
+            </template>
 
-                <li class="page-item" :class="{ 'disabled': currentPage === 1 }">
-                    <a class="page-link" href="#" x-on:click.prevent="goToPage(currentPage - 1)">
-                        <span aria-hidden="true">&laquo;</span>
-                    </a>
-                </li>
+            <li class="page-item" :class="{ 'disabled': currentPage === totalPages }">
+                <a class="page-link" href="#" x-on:click.prevent="goToPage(currentPage + 1)">
+                    <span aria-hidden="true">&raquo;</span>
+                </a>
+            </li>
 
-                <template x-for="page in paginationPages" :key="page">
-                    <li class="page-item" :class="{ 'active': page === currentPage }">
-                        <a class="page-link" href="#" x-on:click.prevent="goToPage(page)" x-text="page"></a>
-                    </li>
-                </template>
+            <li class="page-item" :class="{ 'disabled': currentPage === totalPages }">
+                <a class="page-link" href="#" x-on:click.prevent="goToPage(totalPages)">
+                    <span aria-hidden="true">&raquo;&raquo;</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
 
-                <li class="page-item" :class="{ 'disabled': currentPage === totalPages }">
-                    <a class="page-link" href="#" x-on:click.prevent="goToPage(currentPage + 1)">
-                        <span aria-hidden="true">&raquo;</span>
-                    </a>
-                </li>
-
-                <li class="page-item" :class="{ 'disabled': currentPage === totalPages }">
-                    <a class="page-link" href="#" x-on:click.prevent="goToPage(totalPages)">
-                        <span aria-hidden="true">&raquo;&raquo;</span>
-                    </a>
-                </li>
-            </ul>
-        </nav>
-
-        <div class="d-flex align-items-center gap-2">
-            <label class="form-label mb-0 text-nowrap">@SharedLocalizer["Page Size"]</label>
-            <select class="form-select form-select-sm" style="width: auto;"
-                    x-on:change="changePageSize($event.target.value)">
-                <template x-for="size in pageSizeOptions" :key="size">
-                    <option :value="size" x-text="size" :selected="size === pageSize"></option>
-                </template>
-            </select>
-        </div>
+    <div class="d-flex align-items-center gap-2 ms-auto">
+        <label class="form-label mb-0 text-nowrap">@SharedLocalizer["Page Size"]</label>
+        <select class="form-select form-select-sm" style="width: auto;"
+                x-on:change="changePageSize($event.target.value)">
+            <template x-for="size in pageSizeOptions" :key="size">
+                <option :value="size" x-text="size" :selected="size === pageSize"></option>
+            </template>
+        </select>
     </div>
 </div>

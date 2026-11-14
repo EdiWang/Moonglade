@@ -1,8 +1,8 @@
 using Edi.AspNetCore.Utils;
-using System.Text.Json.Serialization;
-using System.ComponentModel.DataAnnotations;
 using Moonglade.Configuration;
+using System.ComponentModel.DataAnnotations;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace Moonglade.Setup;
 

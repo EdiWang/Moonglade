@@ -1,0 +1,161 @@
+@page "/admin/account/oidc"
+@model Moonglade.Web.Pages.Admin.OwnerOidcModel
+@{
+    ViewBag.Title = SharedLocalizer["Third-party sign-in"];
+    ViewBag.AdminBackUrl = Url.Page("/Admin/LocalAccount");
+}
+
+<div class="admin-settings-page">
+    <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
+    @if (Model.Failed)
+    {
+        <div class="alert alert-warning" role="alert">@SharedLocalizer["External sign-in could not be completed. Check the provider settings and try again."]</div>
+    }
+
+    @if (Model.Pending is { } pending)
+    {
+        <section class="admin-panel p-4 mb-3" aria-labelledby="oidc-confirm-title">
+            <h2 id="oidc-confirm-title" class="h5">@SharedLocalizer["Confirm the external account"]</h2>
+            <p class="mb-1 fw-semibold text-break">@pending.Label</p>
+            <p class="text-body-secondary text-break">@pending.Issuer · @pending.Subject</p>
+            <form method="post" class="d-flex gap-2">
+                <input asp-for="Revision" type="hidden" id="ConfirmRevision" />
+                <button asp-page-handler="Confirm" type="submit" class="btn btn-outline-accent">@SharedLocalizer["Bind account"]</button>
+                <button asp-page-handler="Cancel" type="submit" class="btn btn-outline-secondary">@SharedLocalizer["Cancel"]</button>
+            </form>
+        </section>
+    }
+    else if (Model.CanReuseProof)
+    {
+        <form method="post" asp-page-handler="Bind" class="admin-panel p-4">
+            <input asp-for="Revision" type="hidden" id="BindRevision" />
+            <p class="small text-body-secondary mb-1">@SharedLocalizer["Step {0} of {1}", 3, 3]</p>
+            <h1 class="h5 mb-2">@SharedLocalizer["Bind account"]</h1>
+            <p class="text-break">@Model.Settings?.DisplayName</p>
+            <div class="d-flex flex-wrap gap-2">
+                <button type="submit" class="btn btn-outline-accent">@SharedLocalizer["Bind account"]</button>
+                <button asp-page-handler="Cancel" type="submit" class="btn btn-outline-secondary">@SharedLocalizer["Cancel"]</button>
+            </div>
+        </form>
+    }
+    else
+    {
+    @if (Model.Settings is { Enabled: true, AccountLabel: null })
+    {
+        <form method="post" asp-page-handler="Bind" class="admin-panel p-4 mb-3">
+            <input asp-for="Revision" type="hidden" id="BindRevision" />
+            <p class="text-body-secondary">@SharedLocalizer["Waiting for account binding"]</p>
+            <button type="submit" class="btn btn-outline-accent">@SharedLocalizer["Bind account"]</button>
+        </form>
+    }
+    <form id="oidc-settings-form" method="post" asp-page-handler="Save" class="admin-panel p-4">
+        <input asp-for="Revision" type="hidden" />
+        @if (Model.Settings is { } settings && (!settings.Enabled || settings.AccountLabel is not null))
+        {
+            <p class="text-body-secondary">
+                @if (!settings.Enabled)
+                {
+                    @SharedLocalizer["Disabled"]
+                }
+                else if (settings.AccountLabel is not null)
+                {
+                    @SharedLocalizer["Bound account"]
+                }
+                @if (settings.AccountLabel is { } label)
+                {
+                    <span class="fw-semibold ms-2 text-break">@label</span>
+                }
+            </p>
+        }
+        else if (Model.Settings is null)
+        {
+            <p class="small text-body-secondary mb-1">@SharedLocalizer["Step {0} of {1}", 1, 3]</p>
+            <h1 class="h5 mb-3">@SharedLocalizer["Third-party sign-in"]</h1>
+        }
+        <div class="mb-3">
+            <label asp-for="DisplayName" class="form-label">@SharedLocalizer["Provider display name"]</label>
+            <input asp-for="DisplayName" class="form-control" maxlength="100" required />
+        </div>
+        <div class="mb-3">
+            <label asp-for="Authority" class="form-label">@SharedLocalizer["Public HTTPS authority"]</label>
+            <input asp-for="Authority" type="url" class="form-control" maxlength="500" required readonly="@(Model.Settings?.AccountLabel is not null)" />
+        </div>
+        <div class="mb-3">
+            <label asp-for="ClientId" class="form-label">@SharedLocalizer["Client ID"]</label>
+            <input asp-for="ClientId" class="form-control" maxlength="500" required readonly="@(Model.Settings?.AccountLabel is not null)" />
+        </div>
+        <div class="mb-3">
+            <label for="ClientSecret" class="form-label">@SharedLocalizer["Client secret"]</label>
+            <input id="ClientSecret" name="ClientSecret" type="password" class="form-control"
+                   autocomplete="new-password" maxlength="4000" required="@(Model.Settings is null)" />
+            @if (Model.Settings is not null)
+            {
+                <div class="form-text">@SharedLocalizer["Leave blank to keep the saved secret."]</div>
+            }
+        </div>
+        <div class="mb-3">
+            <label for="OidcCallbackUrl" class="form-label">@SharedLocalizer["Redirect URI"]</label>
+            <input id="OidcCallbackUrl" class="form-control" value="@Model.CallbackUrl" readonly />
+        </div>
+        @if (Model.Settings is not null)
+        {
+            <div class="mb-3">
+                <label for="CurrentPassword" class="form-label">@SharedLocalizer["Current password"]</label>
+                <input id="CurrentPassword" name="CurrentPassword" type="password" class="form-control" autocomplete="current-password" required />
+            </div>
+            @if (Model.RequireTotp)
+            {
+                <div class="mb-3">
+                    <label for="AuthenticatorCode" class="form-label">@SharedLocalizer["Authenticator code"]</label>
+                    <input id="AuthenticatorCode" name="AuthenticatorCode" class="form-control" autocomplete="one-time-code"
+                           inputmode="numeric" pattern="[0-9]{6}" maxlength="6" required />
+                </div>
+            }
+        }
+        <div class="d-flex flex-wrap gap-2">
+            <button type="submit" class="btn btn-outline-accent">@SharedLocalizer[Model.Settings is null ? "Continue" : "Save"]</button>
+            @if (Model.Settings is null)
+            {
+                <a asp-page="/Admin/LocalAccount" class="btn btn-outline-secondary">@SharedLocalizer["Cancel"]</a>
+            }
+            @if (Model.Settings is { } current)
+            {
+                @if (current.AccountLabel is not null)
+                {
+                    <button asp-page-handler="Manage" formnovalidate type="submit" name="operation" value="unbind"
+                            class="btn btn-outline-secondary">@SharedLocalizer["Unbind account"]</button>
+                }
+                <button asp-page-handler="Manage" formnovalidate type="submit" name="operation" value="@(current.Enabled ? "disable" : "enable")"
+                        class="btn btn-outline-secondary">@(current.Enabled ? SharedLocalizer["Disable"] : SharedLocalizer["Enable"])</button>
+            }
+        </div>
+        @if (Model.Settings is not null)
+        {
+            <button type="button" class="btn btn-outline-danger mt-3" aria-haspopup="dialog"
+                    data-bs-toggle="modal" data-bs-target="#deleteOidcProviderModal">@SharedLocalizer["Delete provider"]</button>
+        }
+    </form>
+    @if (Model.Settings is not null)
+    {
+        <div class="modal fade" id="deleteOidcProviderModal" tabindex="-1" aria-labelledby="deleteOidcProviderTitle"
+             aria-describedby="deleteOidcProviderDescription" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="deleteOidcProviderTitle">@SharedLocalizer["Delete provider"]</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="@SharedLocalizer["Close"]"></button>
+                    </div>
+                    <div class="modal-body" id="deleteOidcProviderDescription">
+                        @SharedLocalizer["Delete the provider configuration and its account binding."]
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">@SharedLocalizer["Cancel"]</button>
+                        <button asp-page-handler="Manage" asp-route-operation="delete" form="oidc-settings-form" formnovalidate
+                                type="submit" name="ConfirmDelete" value="true" class="btn btn-outline-danger">@SharedLocalizer["Delete provider"]</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+    }
+</div>

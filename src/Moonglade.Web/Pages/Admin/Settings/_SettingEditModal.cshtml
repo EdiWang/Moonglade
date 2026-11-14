@@ -1,0 +1,20 @@
+<div class="modal fade" id="setting-edit-modal" tabindex="-1" aria-labelledby="setting-edit-title"
+     data-change="@SharedLocalizer["Change"]" data-saving="@SharedLocalizer["Saving..."]"
+     data-updated="@SharedLocalizer["Settings Updated"]">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+        <form class="modal-content" novalidate>
+            <div class="modal-header">
+                <h2 class="modal-title fs-5" id="setting-edit-title"></h2>
+            </div>
+            <div class="modal-body">
+                <div id="setting-edit-help" class="mb-3" hidden></div>
+                <div id="setting-edit-field"></div>
+                <div id="setting-edit-error" class="text-danger small mt-2" role="alert" hidden></div>
+            </div>
+            <div class="modal-footer bg-body-tertiary">
+                <button type="submit" class="btn btn-accent">@SharedLocalizer["Save"]</button>
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">@SharedLocalizer["Cancel"]</button>
+            </div>
+        </form>
+    </div>
+</div>

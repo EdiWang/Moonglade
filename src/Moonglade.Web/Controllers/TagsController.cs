@@ -3,11 +3,15 @@ using LiteBus.Queries.Abstractions;
 using Moonglade.ActivityLog;
 using Moonglade.Features.Tag;
 using System.ComponentModel.DataAnnotations;
+using System.Globalization;
 
 namespace Moonglade.Web.Controllers;
 
 [Route("api/[controller]")]
-public class TagsController(IQueryMediator queryMediator, ICommandMediator commandMediator) : BlogControllerBase(commandMediator)
+public class TagsController(
+    IQueryMediator queryMediator,
+    ICommandMediator commandMediator,
+    ILogger<TagsController> logger) : BlogControllerBase(commandMediator, logger)
 {
     [HttpGet("names")]
     public async Task<IActionResult> Names()
@@ -38,9 +42,9 @@ public class TagsController(IQueryMediator queryMediator, ICommandMediator comma
         var tag = await CommandMediator.SendAsync(new CreateTagCommand(name.Trim()));
 
         await LogActivityAsync(
-            EventType.TagCreated,
-            "Create Tag",
-            name.Trim());
+            ActivityEvents.TagCreated,
+            tag.DisplayName,
+            targetId: tag.Id.ToString(CultureInfo.InvariantCulture));
 
         return Ok(tag);
     }
@@ -52,10 +56,10 @@ public class TagsController(IQueryMediator queryMediator, ICommandMediator comma
         if (oc == OperationCode.ObjectNotFound) return NotFound();
 
         await LogActivityAsync(
-            EventType.TagUpdated,
-            "Update Tag",
+            ActivityEvents.TagUpdated,
             name,
-            ActivityLogMetaData.Create(("TagId", id)));
+            ActivityLogDetails.Create(("TagId", id)),
+            targetId: id.ToString(CultureInfo.InvariantCulture));
 
         return NoContent();
     }
@@ -67,10 +71,10 @@ public class TagsController(IQueryMediator queryMediator, ICommandMediator comma
         if (oc == OperationCode.ObjectNotFound) return NotFound();
 
         await LogActivityAsync(
-            EventType.TagDeleted,
-            "Delete Tag",
-            $"Tag #{id}",
-            ActivityLogMetaData.Create(("TagId", id)));
+            ActivityEvents.TagDeleted,
+            $"Tag #{id.ToString(CultureInfo.InvariantCulture)}",
+            ActivityLogDetails.Create(("TagId", id)),
+            targetId: id.ToString(CultureInfo.InvariantCulture));
 
         return NoContent();
     }

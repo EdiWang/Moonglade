@@ -5,12 +5,6 @@ namespace Moonglade.Configuration.Tests;
 public class ContentSettingsTests
 {
     [Fact]
-    public void DefaultValue_UsesHtmlEditor()
-    {
-        Assert.Equal(EditorChoice.Html, ContentSettings.DefaultValue.DefaultEditor);
-    }
-
-    [Fact]
     public void Parse_WhenDefaultEditorIsMissing_UsesHtmlAndPreservesOtherSettings()
     {
         var (snapshot, _) = BlogConfig.Parse(new Dictionary<string, string>

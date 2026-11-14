@@ -13,6 +13,7 @@ using Moonglade.Web.Controllers;
 using Moonglade.Web.Tests.TestSupport;
 using Moq;
 using System.ComponentModel.DataAnnotations;
+using System.Security.Claims;
 
 namespace Moonglade.Web.Tests.Controllers;
 
@@ -33,7 +34,6 @@ public partial class SettingsControllerTests
         var content = new ContentSettings { DefaultEditor = EditorChoice.Markdown };
         var site = GeneralSettings.DefaultValue;
         site = site with { SiteTitle = "Saved title" };
-        site = site with { AvatarUrl = config.Capture().GeneralSettings.AvatarUrl };
         var expectedJson = general ? site.ToJson() : content.ToJson();
         var key = general ? nameof(GeneralSettings) : nameof(ContentSettings);
 
@@ -44,10 +44,10 @@ public partial class SettingsControllerTests
         Assert.Equal(expectedJson, await ReadStoredSettings(mediator, key));
         Assert.Collection(mediator.Commands,
             command => Assert.IsType<UpdateConfigurationCommand>(command),
-            command => Assert.Equal(general ? EventType.SettingsGeneralUpdated : EventType.SettingsContentUpdated,
-                Assert.IsType<CreateActivityLogCommand>(command).EventType));
+            command => Assert.Equal(general ? ActivityEvents.SettingsGeneralUpdated : ActivityEvents.SettingsContentUpdated,
+                Assert.IsType<CreateActivityLogCommand>(command).EventKey));
         AssertAuditFailure(logger, controller, failure,
-            general ? EventType.SettingsGeneralUpdated : EventType.SettingsContentUpdated, site.SiteTitle);
+            general ? ActivityEvents.SettingsGeneralUpdated : ActivityEvents.SettingsContentUpdated, site.SiteTitle);
     }
 
     [Fact]
@@ -70,7 +70,7 @@ public partial class SettingsControllerTests
         Assert.Same(original, config.Capture().GeneralSettings);
         Assert.Equal(original.ToJson(), await ReadStoredSettings(mediator, nameof(GeneralSettings)));
         Assert.Equal(image.ToJson(), await ReadStoredSettings(mediator, nameof(ImageSettings)));
-        AssertAuditFailure(logger, controller, failure, EventType.SettingsImageUpdated, image.CDNEndpoint);
+        AssertAuditFailure(logger, controller, failure, ActivityEvents.SettingsImageUpdated, image.CDNEndpoint);
     }
 
     [Fact]
@@ -81,28 +81,32 @@ public partial class SettingsControllerTests
         var failure = CreateAuditFailure();
         using var mediator = new ConfigurationCommandRecorder { ActivityLogFailure = failure };
         var authentication = new Mock<IAuthenticationService>();
-        var logger = new Mock<ILogger<SettingsController>>();
-        var controller = CreateController(config, mediator, authentication, logger: logger.Object, account: original);
+        var logger = new Mock<ILogger<AccountController>>();
+        var controller = CreateController(original, mediator, authentication, logger.Object);
         var request = new UpdateLocalAccountPasswordRequest
         {
             OldPassword = "Password1",
-            NewPassword = "NewPassword2",
-            NewUsername = "updated-admin"
+            NewPassword = "NewPassword2"
         };
 
         var result = await controller.UpdateLocalAccountPassword(request);
 
         Assert.IsType<NoContentResult>(result);
-        var saved = (await ReadStoredSettings(mediator, nameof(LocalAccountSettings))).FromJson<LocalAccountSettings>();
-        Assert.Equal("updated-admin", saved.Username);
+        var saved = await mediator.Db.OwnerAccount.AsNoTracking().SingleAsync(TestContext.Current.CancellationToken);
+        Assert.Equal(original.Email, saved.Email);
+        Assert.Equal(original.Id, saved.Id);
         Assert.NotEqual(original.PasswordSalt, saved.PasswordSalt);
         Assert.Equal(SecurityHelper.HashPassword("NewPassword2", saved.PasswordSalt), saved.PasswordHash);
         Assert.Equal(original.TotpSecret, saved.TotpSecret);
-        Assert.True(saved.IsTotpEnabled);
-        Assert.Equal(saved.ToJson(), mediator.Accounts.Read().ToJson());
+        Assert.NotEqual(original.Revision, saved.Revision);
+        var current = await mediator.Accounts.ReadAsync(TestContext.Current.CancellationToken);
+        Assert.True(current!.IsTotpEnabled);
+        authentication.Verify(p => p.SignInAsync(controller.HttpContext, CookieAuthenticationDefaults.AuthenticationScheme,
+            It.Is<ClaimsPrincipal>(principal => LocalAccountPrincipal.Matches(principal, current)), It.IsAny<AuthenticationProperties>()), Times.Once);
         authentication.Verify(p => p.SignOutAsync(It.IsAny<HttpContext>(), It.IsAny<string>(), It.IsAny<AuthenticationProperties>()), Times.Never);
-        AssertAuditFailure(logger, controller, failure, EventType.SettingsPasswordUpdated,
-            request.OldPassword, request.NewPassword, request.NewUsername, saved.PasswordHash, saved.PasswordSalt, saved.TotpSecret);
+        AssertAuditFailure(logger, controller, failure, ActivityEvents.SettingsPasswordUpdated,
+            request.OldPassword, request.NewPassword, saved.PasswordHash!, saved.PasswordSalt!, saved.TotpSecret!);
+        Assert.Null(mediator.Single<CreateActivityLogCommand>().Details);
     }
 
     [Theory]
@@ -115,27 +119,28 @@ public partial class SettingsControllerTests
         var failure = CreateAuditFailure(canceledAudit);
         using var mediator = new ConfigurationCommandRecorder { ActivityLogFailure = failure };
         var authentication = new Mock<IAuthenticationService>();
-        var logger = new Mock<ILogger<SettingsController>>();
-        var controller = CreateController(config, mediator, authentication, logger: logger.Object, account: original);
+        var logger = new Mock<ILogger<AccountController>>();
+        var controller = CreateController(original, mediator, authentication, logger.Object);
         authentication.Setup(p => p.SignOutAsync(It.IsAny<HttpContext>(), It.IsAny<string>(), It.IsAny<AuthenticationProperties>()))
-            .Callback(() => Assert.False(mediator.Accounts.Read().IsTotpEnabled))
+            .Callback(() => Assert.Null(mediator.Db.OwnerAccount.AsNoTracking().Single().TotpSecret))
             .Returns(Task.CompletedTask);
 
         var result = await controller.ResetLocalAccountTotp(new ResetLocalAccountTotpRequest { CurrentPassword = "Password1" });
 
         Assert.IsType<NoContentResult>(result);
-        var saved = (await ReadStoredSettings(mediator, nameof(LocalAccountSettings))).FromJson<LocalAccountSettings>();
-        Assert.Equal(original.Username, saved.Username);
+        var saved = await mediator.Db.OwnerAccount.AsNoTracking().SingleAsync(TestContext.Current.CancellationToken);
+        Assert.Equal(original.Email, saved.Email);
         Assert.Equal(original.PasswordHash, saved.PasswordHash);
         Assert.Equal(original.PasswordSalt, saved.PasswordSalt);
-        Assert.Empty(saved.TotpSecret);
-        Assert.False(saved.IsTotpEnabled);
-        Assert.Equal(saved.ToJson(), mediator.Accounts.Read().ToJson());
+        Assert.Null(saved.TotpSecret);
+        Assert.False((await mediator.Accounts.ReadAsync(TestContext.Current.CancellationToken))!.IsTotpEnabled);
+        Assert.NotNull(saved.LocalInitializedUtc);
         foreach (var scheme in new[] { CookieAuthenticationDefaults.AuthenticationScheme, BlogAuthSchemas.LocalAccountSetup, BlogAuthSchemas.LocalAccountTwoFactor })
             authentication.Verify(p => p.SignOutAsync(controller.HttpContext, scheme, null), Times.Once);
         authentication.VerifyNoOtherCalls();
-        AssertAuditFailure(logger, controller, failure, EventType.SettingsAuthenticatorReset,
-            "Password1", original.PasswordHash, original.PasswordSalt, original.TotpSecret, original.Username);
+        AssertAuditFailure(logger, controller, failure, ActivityEvents.SettingsAuthenticatorReset,
+            "Password1", original.PasswordHash!, original.PasswordSalt!, original.TotpSecret!, original.Email);
+        Assert.Null(mediator.Single<CreateActivityLogCommand>().Details);
     }
 
     [Theory]
@@ -147,21 +152,25 @@ public partial class SettingsControllerTests
         var config = new BlogConfig();
         using var mediator = new ConfigurationCommandRecorder { ActivityLogFailure = CreateAuditFailure() };
         var authentication = new Mock<IAuthenticationService>();
-        var logger = new Mock<ILogger<SettingsController>>();
-        var controller = CreateController(config, mediator, authentication, logger: logger.Object, account: account);
+        var logger = new Mock<ILogger<AccountController>>();
+        var controller = CreateController(account, mediator, authentication, logger.Object);
         await mediator.Db.Database.ExecuteSqlRawAsync(
-            "CREATE TRIGGER reject_settings BEFORE UPDATE ON BlogConfiguration BEGIN SELECT RAISE(ABORT, 'Save rejected'); END;",
+            "CREATE TRIGGER reject_settings BEFORE UPDATE ON OwnerAccount BEGIN SELECT RAISE(ABORT, 'Save rejected'); END;",
             TestContext.Current.CancellationToken);
 
         await Assert.ThrowsAsync<DbUpdateException>(() => resetTotp
             ? controller.ResetLocalAccountTotp(new ResetLocalAccountTotpRequest { CurrentPassword = "Password1" })
             : controller.UpdateLocalAccountPassword(new UpdateLocalAccountPasswordRequest
             {
-                OldPassword = "Password1", NewPassword = "NewPassword2", NewUsername = "updated-admin"
+                OldPassword = "Password1",
+                NewPassword = "NewPassword2"
             }));
 
-        Assert.Equal(account.ToJson(), mediator.Accounts.Read().ToJson());
-        Assert.Equal(account.ToJson(), await ReadStoredSettings(mediator, nameof(LocalAccountSettings)));
+        var saved = await mediator.Db.OwnerAccount.AsNoTracking().SingleAsync(TestContext.Current.CancellationToken);
+        Assert.Equal(account.PasswordHash, saved.PasswordHash);
+        Assert.Equal(account.PasswordSalt, saved.PasswordSalt);
+        Assert.Equal(account.TotpSecret, saved.TotpSecret);
+        Assert.Equal(account.Revision, saved.Revision);
         Assert.Empty(mediator.Commands.OfType<CreateActivityLogCommand>());
         Assert.Empty(logger.Invocations);
         authentication.Verify(p => p.SignOutAsync(It.IsAny<HttpContext>(), It.IsAny<string>(), It.IsAny<AuthenticationProperties>()), Times.Never);
@@ -235,16 +244,14 @@ public partial class SettingsControllerTests
         var authentication = new Mock<IAuthenticationService>();
         authentication.Setup(p => p.SignOutAsync(It.IsAny<HttpContext>(), CookieAuthenticationDefaults.AuthenticationScheme, null))
             .ThrowsAsync(failure);
-        var controller = CreateController(config, mediator, authentication, account: account);
+        var controller = CreateController(account, mediator, authentication);
 
         Assert.Same(failure, await Assert.ThrowsAsync<InvalidOperationException>(() =>
             controller.ResetLocalAccountTotp(new ResetLocalAccountTotpRequest { CurrentPassword = "Password1" })));
 
-        Assert.False(mediator.Accounts.Read().IsTotpEnabled);
-        Assert.Empty(mediator.Accounts.Read().TotpSecret);
-        var saved = (await ReadStoredSettings(mediator, nameof(LocalAccountSettings))).FromJson<LocalAccountSettings>();
-        Assert.False(saved.IsTotpEnabled);
-        Assert.Empty(saved.TotpSecret);
+        Assert.False((await mediator.Accounts.ReadAsync(TestContext.Current.CancellationToken))!.IsTotpEnabled);
+        var saved = await mediator.Db.OwnerAccount.AsNoTracking().SingleAsync(TestContext.Current.CancellationToken);
+        Assert.Null(saved.TotpSecret);
         Assert.Single(mediator.Commands.OfType<CreateActivityLogCommand>());
         authentication.Verify(p => p.SignOutAsync(controller.HttpContext, CookieAuthenticationDefaults.AuthenticationScheme, null), Times.Once);
     }
@@ -256,14 +263,15 @@ public partial class SettingsControllerTests
     private static async Task<string> ReadStoredSettings(ConfigurationCommandRecorder mediator, string key) =>
         (await mediator.Db.BlogConfiguration.AsNoTracking().SingleAsync(p => p.CfgKey == key, TestContext.Current.CancellationToken)).CfgValue;
 
-    private static void AssertAuditFailure(Mock<ILogger<SettingsController>> logger, SettingsController controller,
-        Exception failure, EventType eventType, params string[] excludedValues)
+    private static void AssertAuditFailure<T>(Mock<ILogger<T>> logger, ControllerBase controller,
+        Exception failure, string eventKey, params string[] excludedValues)
     {
         var invocation = Assert.Single(logger.Invocations, p => p.Method.Name == nameof(ILogger.Log));
         Assert.Equal(LogLevel.Error, invocation.Arguments[0]);
-        Assert.Same(failure, invocation.Arguments[3]);
+        Assert.Null(invocation.Arguments[3]);
         var state = Assert.IsAssignableFrom<IReadOnlyList<KeyValuePair<string, object?>>>(invocation.Arguments[2]);
-        Assert.Contains(state, p => p.Key == "EventType" && Equals(p.Value, eventType));
+        Assert.Contains(state, p => p.Key == "EventKey" && Equals(p.Value, eventKey));
+        Assert.Contains(state, p => p.Key == "FailureType" && Equals(p.Value, failure.GetType().Name));
         Assert.Contains(state, p => p.Key == "TraceIdentifier" && Equals(p.Value, controller.HttpContext.TraceIdentifier));
         var message = invocation.Arguments[2]?.ToString() ?? string.Empty;
         Assert.Contains("saved", message, StringComparison.OrdinalIgnoreCase);

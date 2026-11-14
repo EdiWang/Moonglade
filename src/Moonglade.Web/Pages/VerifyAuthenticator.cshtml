@@ -18,13 +18,13 @@
 }
 
 <!DOCTYPE html>
-<html>
+<html lang="@snapshot.GeneralSettings.DefaultLanguageCode">
 <head>
     <title>
         @SharedLocalizer["Verify Authenticator"]
     </title>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <partial name="_Favicons" />
     <link href="~/lib/twitter-bootstrap/css/bootstrap.min.css" rel="stylesheet" />
     <link href="~/css/base.css" rel="stylesheet" />
@@ -35,28 +35,28 @@
     }
     <link href="~/Moonglade.Web.styles.css" rel="stylesheet" />
 </head>
-<body>
-    <div class="container">
-        <main class="position-relative">
-            <div class="position-absolute top-50 start-50 translate-middle">
-                <div class="login-card card shadow">
-                    <div class="card-body">
-                        <h5 class="card-title text-center mb-4">@SharedLocalizer["Verify Authenticator"]</h5>
+<body class="bg-gray-1">
+    <main class="authenticator-page">
+        <div class="authenticator-content">
+            <h1 class="h4 mb-4">@SharedLocalizer["Verify Authenticator"]</h1>
 
-                        <form method="post">
-                            <div asp-validation-summary="All" class="text-danger"></div>
-                            <partial name="_AuthenticatorCode" />
+            <form method="post">
+                <div asp-validation-summary="All" class="text-danger" role="alert"></div>
+                <partial name="_AuthenticatorCode" />
 
-                            <input type="submit" value="@SharedLocalizer["Verify"]" class="btn w-100 btn-accent" />
-                        </form>
-                    </div>
+                <div class="form-check mb-4">
+                    <input asp-for="RememberDevice" class="form-check-input" aria-describedby="remember-device-help" />
+                    <label asp-for="RememberDevice" class="form-check-label">@SharedLocalizer["Remember this device"]</label>
+                    <div id="remember-device-help" class="form-text">@SharedLocalizer["Skip authenticator codes for 30 days. Only use this on a device you trust."]</div>
                 </div>
-                <p class="text-muted mt-4 small text-center">
-                    Moonglade @VersionHelper.AppVersion
-                </p>
-            </div>
-        </main>
-    </div>
+
+                <input type="submit" value="@SharedLocalizer["Verify"]" class="btn w-100 btn-accent" />
+            </form>
+            <p class="text-muted mt-4 mb-0 small">
+                Moonglade @VersionHelper.AppVersion
+            </p>
+        </div>
+    </main>
     <script type="module" src="~/js/app/base.mjs"></script>
     <script type="module" src="~/js/app/authenticator-code.mjs" asp-append-version="true"></script>
 </body>

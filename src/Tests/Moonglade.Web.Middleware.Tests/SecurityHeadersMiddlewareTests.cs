@@ -16,7 +16,7 @@ public class SecurityHeadersMiddlewareTests
     }
 
     [Fact]
-    public async Task Invoke_ShouldAddXContentTypeOptionsHeader()
+    public async Task Invoke_AddsXContentTypeOptionsHeaderAndCallsNext()
     {
         // Arrange
         var context = new DefaultHttpContext();
@@ -25,20 +25,7 @@ public class SecurityHeadersMiddlewareTests
         await _middleware.Invoke(context);
 
         // Assert
-        Assert.True(context.Response.Headers.ContainsKey("X-Content-Type-Options"));
         Assert.Equal("nosniff", context.Response.Headers["X-Content-Type-Options"].ToString());
-    }
-
-    [Fact]
-    public async Task Invoke_ShouldCallNextMiddleware()
-    {
-        // Arrange
-        var context = new DefaultHttpContext();
-
-        // Act
-        await _middleware.Invoke(context);
-
-        // Assert
         _mockNext.Verify(next => next.Invoke(context), Times.Once);
     }
 

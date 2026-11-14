@@ -292,7 +292,7 @@
     <value>删除内存及磁盘上的数据对象</value>
   </data>
   <data name="Delete selected" xml:space="preserve">
-    <value>删除勾选的评论</value>
+    <value>删除所选项</value>
   </data>
   <data name="Description" xml:space="preserve">
     <value>描述</value>
@@ -765,6 +765,12 @@
   <data name="Account" xml:space="preserve">
     <value>账号</value>
   </data>
+  <data name="Account Settings" xml:space="preserve">
+    <value>账号设置</value>
+  </data>
+  <data name="Sign Out" xml:space="preserve">
+    <value>退出登录</value>
+  </data>
   <data name="Include in feed and sitemap" xml:space="preserve">
     <value>加入订阅及网站地图</value>
   </data>
@@ -1029,6 +1035,9 @@
   <data name="Scheduled for" xml:space="preserve">
     <value>计划于</value>
   </data>
+  <data name="Scheduled Publish Time" xml:space="preserve">
+    <value>计划发布时间</value>
+  </data>
   <data name="Publish Post" xml:space="preserve">
     <value>发布文章</value>
   </data>
@@ -1157,6 +1166,9 @@
   </data>
   <data name="Post published" xml:space="preserve">
     <value>文章已发布</value>
+  </data>
+  <data name="Post automatically published" xml:space="preserve">
+    <value>文章已自动发布</value>
   </data>
   <data name="Post restored" xml:space="preserve">
     <value>文章已恢复</value>
@@ -1329,8 +1341,8 @@
   <data name="{0} posts" xml:space="preserve">
     <value>{0} 篇文章</value>
   </data>
-  <data name="* Changing site icon requires restarting the application" xml:space="preserve">
-    <value>* 更改站点图标需要重启应用程序</value>
+  <data name="The site icon updates immediately after a successful upload. Your browser may still show the previous icon from its cache." xml:space="preserve">
+    <value>上传成功后，站点图标会立即更新。浏览器可能因缓存继续显示旧图标。</value>
   </data>
   <data name="* Global script that will be injected into every page&apos;s {0} section." xml:space="preserve">
     <value>* 将注入到每个页面 {0} 区域的全局脚本。</value>
@@ -1385,9 +1397,6 @@
   </data>
   <data name="Are you sure you want to clear all activity logs? This action will be recorded." xml:space="preserve">
     <value>确定要清除所有活动日志吗？此操作将被记录。</value>
-  </data>
-  <data name="Are you sure you want to delete this activity log?" xml:space="preserve">
-    <value>确定要删除这条活动日志吗？</value>
   </data>
   <data name="Are you sure you want to remove this button?" xml:space="preserve">
     <value>确定要移除此按钮吗？</value>
@@ -1533,6 +1542,9 @@
   <data name="Image URL is required" xml:space="preserve">
     <value>图片 URL 为必填项</value>
   </data>
+  <data name="SEO" xml:space="preserve">
+    <value>SEO</value>
+  </data>
   <data name="Index Now" xml:space="preserve">
     <value>IndexNow</value>
   </data>
@@ -1580,9 +1592,6 @@
   </data>
   <data name="Local account is not secure. It&apos;s recommended to use {0} for authentication. Click {1} to configure." xml:space="preserve">
     <value>本地帐户不够安全。建议使用 {0} 进行身份验证。点击 {1} 进行配置。</value>
-  </data>
-  <data name="Log deleted" xml:space="preserve">
-    <value>日志已删除</value>
   </data>
   <data name="Activity logs are cleared" xml:space="preserve">
     <value>活动日志已清除</value>
@@ -1836,6 +1845,9 @@
   <data name="This Month" xml:space="preserve">
     <value>本月</value>
   </data>
+  <data name="This Year" xml:space="preserve">
+    <value>今年</value>
+  </data>
   <data name="Taxonomy" xml:space="preserve">
     <value>分类和标签</value>
   </data>
@@ -1875,6 +1887,12 @@
   <data name="Verify" xml:space="preserve">
     <value>验证</value>
   </data>
+  <data name="Remember this device" xml:space="preserve">
+    <value>记住此设备</value>
+  </data>
+  <data name="Skip authenticator codes for 30 days. Only use this on a device you trust." xml:space="preserve">
+    <value>30 天内无需输入验证码。请仅在受信任的设备上使用。</value>
+  </data>
   <data name="Verify Authenticator" xml:space="preserve">
     <value>验证身份验证器</value>
   </data>
@@ -1910,9 +1928,6 @@
   </data>
   <data name="Email notification configuration is invalid." xml:space="preserve">
     <value>邮件通知配置无效。</value>
-  </data>
-  <data name="Provider" xml:space="preserve">
-    <value>提供程序</value>
   </data>
   <data name="Sender Address" xml:space="preserve">
     <value>发件人地址</value>
@@ -2009,5 +2024,142 @@
   </data>
   <data name="Changes wake the scheduler. Publishing already in progress is not canceled." xml:space="preserve">
     <value>更改会唤醒定时发布任务。已经开始的发布不会被取消。</value>
+  </data>
+  <data name="Account authenticator reset" xml:space="preserve"><value>账户验证器已重置</value></data>
+  <data name="Account profile updated" xml:space="preserve">
+    <value>账户资料已更新</value>
+  </data>
+  <data name="Account password updated" xml:space="preserve"><value>账户密码已更新</value></data>
+  <data name="Activity" xml:space="preserve"><value>活动</value></data>
+  <data name="Activity log" xml:space="preserve"><value>活动日志</value></data>
+  <data name="Activity log cleared" xml:space="preserve"><value>活动日志已清空</value></data>
+  <data name="Actor type" xml:space="preserve"><value>操作者类型</value></data>
+  <data name="Administrator" xml:space="preserve"><value>管理员</value></data>
+  <data name="Advanced settings updated" xml:space="preserve"><value>高级设置已更新</value></data>
+  <data name="Appearance settings updated" xml:space="preserve"><value>外观设置已更新</value></data>
+  <data name="Avatar updated" xml:space="preserve"><value>头像已更新</value></data>
+  <data name="Category ID" xml:space="preserve"><value>分类 ID</value></data>
+  <data name="Comment approval toggled" xml:space="preserve"><value>评论审核状态已切换</value></data>
+  <data name="Comment ID" xml:space="preserve"><value>评论 ID</value></data>
+  <data name="Comment IDs" xml:space="preserve"><value>评论 ID 列表</value></data>
+  <data name="Comment replied to" xml:space="preserve"><value>评论已回复</value></data>
+  <data name="Comment settings updated" xml:space="preserve"><value>评论设置已更新</value></data>
+  <data name="Content settings updated" xml:space="preserve"><value>内容设置已更新</value></data>
+  <data name="Count" xml:space="preserve"><value>数量</value></data>
+  <data name="Custom menu settings updated" xml:space="preserve"><value>自定义菜单设置已更新</value></data>
+  <data name="Deleted count" xml:space="preserve"><value>删除数量</value></data>
+  <data name="Detail" xml:space="preserve"><value>详情</value></data>
+  <data name="Enable CDN redirect" xml:space="preserve"><value>启用 CDN 重定向</value></data>
+  <data name="Enable watermark" xml:space="preserve"><value>启用水印</value></data>
+  <data name="File ID" xml:space="preserve"><value>文件 ID</value></data>
+  <data name="File size" xml:space="preserve"><value>文件大小</value></data>
+  <data name="SEO settings updated" xml:space="preserve"><value>SEO 设置已更新</value></data>
+  <data name="General settings updated" xml:space="preserve"><value>常规设置已更新</value></data>
+  <data name="Hours" xml:space="preserve"><value>小时数</value></data>
+  <data name="Image dimensions" xml:space="preserve"><value>图像尺寸</value></data>
+  <data name="Image settings updated" xml:space="preserve"><value>图像设置已更新</value></data>
+  <data name="Image uploaded" xml:space="preserve"><value>图像已上传</value></data>
+  <data name="Images" xml:space="preserve"><value>图像</value></data>
+  <data name="No additional activity details are available." xml:space="preserve"><value>没有其他活动详情。</value></data>
+  <data name="Notification settings updated" xml:space="preserve"><value>通知设置已更新</value></data>
+  <data name="Page created" xml:space="preserve"><value>页面已创建</value></data>
+  <data name="Page ID" xml:space="preserve"><value>页面 ID</value></data>
+  <data name="Page moved to recycle bin" xml:space="preserve"><value>页面已移至回收站</value></data>
+  <data name="Page permanently deleted" xml:space="preserve"><value>页面已永久删除</value></data>
+  <data name="Page recycle bin cleared" xml:space="preserve"><value>页面回收站已清空</value></data>
+  <data name="Page updated" xml:space="preserve"><value>页面已更新</value></data>
+  <data name="Post created" xml:space="preserve"><value>文章已创建</value></data>
+  <data name="Post ID" xml:space="preserve"><value>文章 ID</value></data>
+  <data name="Post moved to recycle bin" xml:space="preserve"><value>文章已移至回收站</value></data>
+  <data name="Post permanently deleted" xml:space="preserve"><value>文章已永久删除</value></data>
+  <data name="Post recycle bin cleared" xml:space="preserve"><value>文章回收站已清空</value></data>
+  <data name="Post schedule cancelled" xml:space="preserve"><value>文章发布计划已取消</value></data>
+  <data name="Post schedule postponed" xml:space="preserve"><value>文章发布计划已推迟</value></data>
+  <data name="Post status" xml:space="preserve"><value>文章状态</value></data>
+  <data name="Post updated" xml:space="preserve"><value>文章已更新</value></data>
+  <data name="Previous file name" xml:space="preserve"><value>原文件名</value></data>
+  <data name="Require comment review" xml:space="preserve"><value>要求审核评论</value></data>
+  <data name="Site assets" xml:space="preserve"><value>站点资源</value></data>
+  <data name="Site icon updated" xml:space="preserve"><value>站点图标已更新</value></data>
+  <data name="Site title" xml:space="preserve"><value>站点标题</value></data>
+  <data name="Skip watermark" xml:space="preserve"><value>跳过水印</value></data>
+  <data name="Subscription settings updated" xml:space="preserve"><value>订阅设置已更新</value></data>
+  <data name="Tag created" xml:space="preserve"><value>标签已创建</value></data>
+  <data name="Tag ID" xml:space="preserve"><value>标签 ID</value></data>
+  <data name="Target ID" xml:space="preserve"><value>目标 ID</value></data>
+  <data name="Theme created" xml:space="preserve"><value>主题已创建</value></data>
+  <data name="Theme deleted" xml:space="preserve"><value>主题已删除</value></data>
+  <data name="Theme ID" xml:space="preserve"><value>主题 ID</value></data>
+  <data name="Themes" xml:space="preserve"><value>主题</value></data>
+  <data name="User Agent" xml:space="preserve"><value>用户代理</value></data>
+  <data name="Verification file toggled" xml:space="preserve"><value>验证文件状态已切换</value></data>
+  <data name="Widget ID" xml:space="preserve"><value>小组件 ID</value></data>
+  <data name="Draft" xml:space="preserve"><value>草稿</value></data>
+  <data name="Enable JSON-LD BlogPosting" xml:space="preserve"><value>启用 JSON-LD BlogPosting</value></data>
+  <data name="Enable Post Scheduler" xml:space="preserve"><value>启用文章定时发布</value></data>
+  <data name="Enable view count" xml:space="preserve"><value>启用访问次数统计</value></data>
+  <data name="Maximum page numbers to display in pagination" xml:space="preserve"><value>分页最多显示的页码数</value></data>
+  <data name="New value" xml:space="preserve"><value>新值</value></data>
+  <data name="No change values are available for this update." xml:space="preserve"><value>此更新没有可显示的变更值。</value></data>
+  <data name="Previous value" xml:space="preserve"><value>旧值</value></data>
+  <data name="Setting" xml:space="preserve"><value>设置项</value></data>
+  <data name="Settings changes" xml:space="preserve"><value>设置变更</value></data>
+  <data name="Show comment section on mobile screens" xml:space="preserve"><value>在移动设备上显示评论区</value></data>
+  <data name="Watermark opacity" xml:space="preserve"><value>水印不透明度</value></data>
+  <data name="Move up" xml:space="preserve">
+    <value>上移</value>
+  </data>
+  <data name="Move down" xml:space="preserve">
+    <value>下移</value>
+  </data>
+  <data name="Set up Account" xml:space="preserve">
+    <value>设置账户</value>
+  </data>
+  <data name="Create Account" xml:space="preserve">
+    <value>创建账户</value>
+  </data>
+  <data name="Update your password for administrator sign-in." xml:space="preserve"><value>更新用于管理员登录的密码。</value></data>
+  <data name="Owner email updated." xml:space="preserve"><value>所有者邮箱已更新。</value></data>
+  <data name="This public address is used for feeds, Gravatar and blog notifications." xml:space="preserve"><value>此公开地址用于订阅源、Gravatar 和博客通知。</value></data>
+  <data name="Changing this address signs you out. Sign in again with the new email." xml:space="preserve"><value>更改此地址后将退出登录，请使用新邮箱重新登录。</value></data>
+  <data name="Third-party sign-in" xml:space="preserve"><value>第三方登录</value></data>
+  <data name="Configure an OpenID Connect provider and link an external account." xml:space="preserve"><value>配置 OpenID Connect 提供商并绑定外部账号。</value></data>
+  <data name="Manage" xml:space="preserve"><value>管理</value></data>
+  <data name="External sign-in could not be completed. Check the provider settings and try again." xml:space="preserve"><value>无法完成外部登录。请检查提供商设置后重试。</value></data>
+  <data name="Confirm the external account" xml:space="preserve"><value>确认外部账号</value></data>
+  <data name="Bind account" xml:space="preserve"><value>绑定账号</value></data>
+  <data name="Unbind account" xml:space="preserve"><value>解绑账号</value></data>
+  <data name="Bound account" xml:space="preserve"><value>已绑定账号</value></data>
+  <data name="Waiting for account binding" xml:space="preserve"><value>等待绑定账号</value></data>
+  <data name="Provider display name" xml:space="preserve"><value>提供商显示名称</value></data>
+  <data name="Public HTTPS authority" xml:space="preserve"><value>公网 HTTPS Authority</value></data>
+  <data name="Client ID" xml:space="preserve"><value>客户端 ID</value></data>
+  <data name="Client secret" xml:space="preserve"><value>客户端密钥</value></data>
+  <data name="Leave blank to keep the saved secret." xml:space="preserve"><value>留空可保留已保存的密钥。</value></data>
+  <data name="Redirect URI" xml:space="preserve"><value>重定向 URI</value></data>
+  <data name="Delete provider" xml:space="preserve"><value>删除提供商</value></data>
+  <data name="Delete the provider configuration and its account binding." xml:space="preserve"><value>删除提供商配置及其账号绑定。</value></data>
+  <data name="Confirm deletion before deleting the provider." xml:space="preserve"><value>请确认删除提供商。</value></data>
+  <data name="Enter valid provider settings." xml:space="preserve"><value>请输入有效的提供商设置。</value></data>
+  <data name="The binding request expired. Try again." xml:space="preserve"><value>绑定请求已过期，请重试。</value></data>
+  <data name="The provider settings changed. Reload the page and try again." xml:space="preserve"><value>提供商设置已更改。请重新加载页面后重试。</value></data>
+  <data name="The provider settings could not be saved. Reload the page and try again." xml:space="preserve"><value>无法保存提供商设置。请重新加载页面后重试。</value></data>
+  <data name="Verify your local password and applicable authenticator code." xml:space="preserve"><value>请验证本地密码以及所需的验证码。</value></data>
+  <data name="Enter a client secret for this provider." xml:space="preserve"><value>请输入此提供商的客户端密钥。</value></data>
+  <data name="Enter a valid name, public HTTPS authority, client ID and client secret." xml:space="preserve"><value>请输入有效的名称、公网 HTTPS Authority、客户端 ID 和客户端密钥。</value></data>
+  <data name="The provider returned an invalid external account." xml:space="preserve"><value>提供商返回了无效的外部账号。</value></data>
+  <data name="Unbind the external account before changing the authority or client ID." xml:space="preserve"><value>更改 Authority 或客户端 ID 前，请先解绑外部账号。</value></data>
+  <data name="Step {0} of {1}" xml:space="preserve"><value>第 {0} 步，共 {1} 步</value></data>
+  <data name="Verify your identity" xml:space="preserve"><value>验证身份</value></data>
+  <data name="Sign in with {0}" xml:space="preserve"><value>使用 {0} 登录</value></data>
+  <data name="Third-party sign-in failed. Try again or sign in with your local account." xml:space="preserve"><value>第三方登录失败。请重试，或使用本地账号登录。</value></data>
+  <data name="Choose a valid PNG or JPEG image." xml:space="preserve">
+    <value>请选择有效的 PNG 或 JPEG 图片。</value>
+  </data>
+  <data name="Drag or use the arrow keys to position the image. Scroll to zoom." xml:space="preserve">
+    <value>拖动图片或使用方向键调整位置。滚动鼠标滚轮缩放。</value>
+  </data>
+  <data name="Zoom" xml:space="preserve">
+    <value>缩放</value>
   </data>
 </root>

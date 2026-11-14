@@ -1,13 +1,15 @@
 ﻿using LiteBus.Commands.Abstractions;
 using Moonglade.ActivityLog;
 using System.ComponentModel.DataAnnotations;
+using System.Globalization;
 
 namespace Moonglade.Web.Controllers;
 
 [Route("api/[controller]")]
 public class ThemeController(
     ICommandMediator commandMediator,
-    ThemeCacheInvalidator themes) : BlogControllerBase(commandMediator)
+    ThemeCacheInvalidator themes,
+    ILogger<ThemeController> logger) : BlogControllerBase(commandMediator, logger)
 {
     [HttpPost]
     public async Task<IActionResult> Create(CreateThemeRequest request)
@@ -27,12 +29,12 @@ public class ThemeController(
         themes.Invalidate();
 
         await LogActivityAsync(
-            EventType.ThemeCreated,
-            "Create Theme",
+            ActivityEvents.ThemeCreated,
             request.Name,
-            ActivityLogMetaData.Create(
+            ActivityLogDetails.Create(
                 ("ThemeId", id),
-                ("AccentColor", request.AccentColor)));
+                ("AccentColor", request.AccentColor)),
+            targetId: id.ToString(CultureInfo.InvariantCulture));
 
         return Ok(id);
     }
@@ -46,10 +48,10 @@ public class ThemeController(
         {
             themes.Invalidate();
             await LogActivityAsync(
-                EventType.ThemeDeleted,
-                "Delete Theme",
-                $"Theme #{id}",
-                ActivityLogMetaData.Create(("ThemeId", id)));
+                ActivityEvents.ThemeDeleted,
+                $"Theme #{id.ToString(CultureInfo.InvariantCulture)}",
+                ActivityLogDetails.Create(("ThemeId", id)),
+                targetId: id.ToString(CultureInfo.InvariantCulture));
         }
 
         return oc switch

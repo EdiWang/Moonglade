@@ -11,7 +11,7 @@ public class OpenSearchMapHandler
 
     public static Delegate Handler => Handle;
 
-    public static async Task Handle(HttpContext httpContext, IBlogConfig blogConfig)
+    public static async Task Handle(HttpContext httpContext, IBlogConfig blogConfig, IOwnerProfileReader ownerProfiles)
     {
         var settings = blogConfig.Capture();
         if (!settings.AdvancedSettings.EnableOpenSearch)
@@ -20,8 +20,9 @@ public class OpenSearchMapHandler
             return;
         }
 
-        var hasCanonicalPrefix = !string.IsNullOrWhiteSpace(settings.GeneralSettings.CanonicalPrefix);
-        var siteRootUrl = UrlHelper.ResolveRootUrl(httpContext, settings.GeneralSettings.CanonicalPrefix, hasCanonicalPrefix);
+        var presentation = await ownerProfiles.ReadPresentationAsync(httpContext.RequestAborted);
+        var hasCanonicalPrefix = !string.IsNullOrWhiteSpace(settings.SEOSettings.CanonicalPrefix);
+        var siteRootUrl = UrlHelper.ResolveRootUrl(httpContext, settings.SEOSettings.CanonicalPrefix, hasCanonicalPrefix);
         var baseUrl = siteRootUrl.TrimEnd('/');
 
         await using var ms = new MemoryStream();
@@ -32,7 +33,7 @@ public class OpenSearchMapHandler
             await writer.WriteStartElementAsync(null, "OpenSearchDescription", Xmlns);
 
             await writer.WriteElementStringAsync(null, "ShortName", null, settings.GeneralSettings.SiteTitle);
-            await writer.WriteElementStringAsync(null, "Description", null, settings.GeneralSettings.Description);
+            await writer.WriteElementStringAsync(null, "Description", null, presentation.Description);
 
             await writer.WriteStartElementAsync(null, "Image", null);
             await writer.WriteAttributeStringAsync(null, "height", null, "16");

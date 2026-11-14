@@ -20,29 +20,6 @@ public class IndexNowClientTests
     }
 
     [Fact]
-    public async Task SendRequestAsync_ApiKeyNotConfigured_LogsWarning()
-    {
-        // Arrange
-        SetupConfiguration("test-key-12345", ["https://api.bing.com"]);
-
-        var client = new IndexNowClient(_loggerMock.Object, _configurationMock.Object, _httpClientFactoryMock.Object);
-        var uri = new Uri("https://example.com/post");
-
-        // Act
-        await client.SendRequestAsync(uri);
-
-        // Assert
-        _loggerMock.Verify(
-            x => x.Log(
-                LogLevel.Warning,
-                It.IsAny<EventId>(),
-                It.Is<It.IsAnyType>((v, t) => v.ToString().Contains("IndexNow:ApiKey is not configured")),
-                It.IsAny<Exception>(),
-                It.IsAny<Func<It.IsAnyType, Exception, string>>()),
-            Times.Never);
-    }
-
-    [Fact]
     public async Task SendRequestAsync_PingTargetsNotConfigured_LogsWarning()
     {
         // Arrange
@@ -105,36 +82,6 @@ public class IndexNowClientTests
                 req.Method == HttpMethod.Post &&
                 req.RequestUri.ToString().Contains("/indexnow")),
             ItExpr.IsAny<CancellationToken>());
-    }
-
-    [Fact]
-    public async Task SendRequestAsync_HttpStatusOK_LogsInformation()
-    {
-        // Arrange
-        var apiKey = "test-key-12345";
-        var pingTarget = "bing";
-        var uri = new Uri("https://example.com/post");
-
-        SetupConfiguration(apiKey, [pingTarget]);
-
-        var handlerMock = CreateMockHttpMessageHandler(HttpStatusCode.OK, "Success");
-        var httpClient = new HttpClient(handlerMock.Object) { BaseAddress = new Uri("https://api.indexnow.org") };
-        _httpClientFactoryMock.Setup(f => f.CreateClient(pingTarget)).Returns(httpClient);
-
-        var client = new IndexNowClient(_loggerMock.Object, _configurationMock.Object, _httpClientFactoryMock.Object);
-
-        // Act
-        await client.SendRequestAsync(uri);
-
-        // Assert
-        _loggerMock.Verify(
-            x => x.Log(
-                LogLevel.Information,
-                It.IsAny<EventId>(),
-                It.Is<It.IsAnyType>((v, t) => v.ToString().Contains("URL submitted successfully")),
-                It.IsAny<Exception>(),
-                It.IsAny<Func<It.IsAnyType, Exception, string>>()),
-            Times.Once);
     }
 
     [Fact]

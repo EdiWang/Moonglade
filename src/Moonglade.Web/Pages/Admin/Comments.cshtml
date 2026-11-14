@@ -22,7 +22,7 @@
 @section head {
     <style>
         .mdrendered-comment-content img {
-            max-width: 720px;
+            max-width: min(720px, 100%);
         }
 
         .reply-container {
@@ -32,168 +32,169 @@
     </style>
 }
 @section admintoolbar {
-    <div class="admin-toolbar pb-2 border-bottom mb-3">
-        <div class="row">
-            <div class="col">
-                <a x-on:click="openFilter()" class="btn btn-outline-accent me-2" role="button">
-                    <i class="bi-funnel"></i>
-                    @SharedLocalizer["Filter"]
-                    <span x-show="activeFilterCount > 0" class="badge bg-danger ms-1" x-text="activeFilterCount"></span>
-                </a>
-                <a href="javascript:void(0);"
-                   x-on:click="deleteSelectedComments()"
-                   class="btn btn-outline-danger btn-delete-selected"
-                   x-show="selectedCommentIds.length > 0">
-                    <i class="bi-trash"></i>
-                    <span x-text="`@SharedLocalizer["Delete selected"] (${selectedCommentIds.length})`"></span>
-                </a>
+    <div class="admin-toolbar admin-toolbar-row">
+        <div class="admin-toolbar-group">
+            <button type="button"
+                    x-on:click="deleteSelectedComments()"
+                    class="btn btn-sm btn-outline-danger btn-delete-selected"
+                    x-show="selectedCommentIds.length > 0">
+                <i class="bi-trash" aria-hidden="true"></i>
+                <span x-text="`@SharedLocalizer["Delete selected"] (${selectedCommentIds.length})`"></span>
+            </button>
+        </div>
+        <div class="admin-toolbar-group ms-auto">
+            <div class="text-muted admin-toolbar-text">
+                <span x-text="commentCount"></span> @SharedLocalizer["item(s)"]
             </div>
-            <div class="col-auto">
-                <div class="text-muted admin-toolbar-text">
-                    <span x-text="commentCount"></span> item(s)
-                </div>
-            </div>
+            <button type="button" x-on:click="openFilter()" class="btn btn-sm btn-outline-accent">
+                <i class="bi-funnel" aria-hidden="true"></i>
+                @SharedLocalizer["Filter"]
+                <span x-show="activeFilterCount > 0" class="badge bg-danger ms-1" x-text="activeFilterCount"></span>
+            </button>
         </div>
     </div>
 }
 
-<div>
+<div class="admin-panel">
     <div x-show="isLoading"
-         class="text-muted mb-3"
+         class="text-muted"
          :class="{ 'd-flex align-items-center': isLoading }">
         <div class="spinner-border spinner-border-sm me-2" role="status"></div>
         <span>@SharedLocalizer["Loading..."]</span>
     </div>
 
     <div x-show="!isLoading && !hasComments">
-        <div class="alert alert-info">
+        <div class="alert alert-info mb-0">
             @SharedLocalizer["No Comments"]
         </div>
     </div>
 
-    <template x-for="item in comments" :key="item.id">
-        <div :id="`panel-comment-${item.id}`" class="admin-comment-entry p-3 mb-3 rounded-3 shadow-sm border row g-1">
-            <div class="form-check col-auto">
-                <input type="checkbox" 
-                       class="form-check-input chk-cid" 
-                       :id="`comment-item-chk-${item.id}`" 
-                       :value="item.id"
-                       x-model="selectedCommentIds" />
-                <label class="form-check-label" :for="`comment-item-chk-${item.id}`"></label>
-            </div>
+    <div x-show="!isLoading && hasComments" class="admin-list">
+        <template x-for="item in comments" :key="item.id">
+            <div :id="`panel-comment-${item.id}`" class="admin-comment-entry admin-list-item d-flex gap-3">
+                <div class="form-check flex-shrink-0">
+                    <input type="checkbox"
+                           class="form-check-input chk-cid"
+                           :id="`comment-item-chk-${item.id}`"
+                           :value="item.id"
+                           x-model="selectedCommentIds" />
+                    <label class="form-check-label" :for="`comment-item-chk-${item.id}`"></label>
+                </div>
 
-            <div class="col">
-                <h6>
-                    <span x-text="item.username"></span>
-                    <template x-if="item.email">
+                <div class="admin-list-content flex-grow-1">
+                    <h6>
+                        <span x-text="item.username"></span>
+                        <template x-if="item.email">
+                            <span>
+                                (<a :href="`mailto:${item.email}`" x-text="item.email"></a>)
+                            </span>
+                        </template>
+                    </h6>
+                    <div class="mdrendered-comment-content" x-html="item.commentContent"></div>
+                    <div class="text-muted" x-text="item.postTitle"></div>
+
+                    <small class="text-muted">
                         <span>
-                            (<a :href="`mailto:${item.email}`" class="d-none d-sm-inline" x-text="item.email"></a>)
+                            <time :data-utc-label="item.createTimeUtc" x-text="item.createTimeUtc"></time>
                         </span>
-                    </template>
-                </h6>
-                <div class="mdrendered-comment-content" x-html="item.commentContent"></div>
-                <div class="text-muted" x-text="item.postTitle"></div>
+                        <span class="text-muted">(<span x-text="item.ipAddress"></span>)</span>
+                    </small>
 
-                <small class="text-muted">
-                    <span>
-                        <time :data-utc-label="item.createTimeUtc" x-text="item.createTimeUtc"></time>
-                    </span>
-                    <span class="text-muted d-none d-sm-inline">(<span x-text="item.ipAddress"></span>)</span>
-                </small>
-
-                <div class="reply-ui mt-3" x-show="item.showReplyForm">
-                    <form x-on:submit.prevent="replyComment(item.id)">
-                        <div class="mb-2">
-                            <textarea class="form-control"
-                                      :id="`replycontent-${item.id}`"
-                                      x-model="item.replyContent"
-                                      placeholder="@SharedLocalizer["Content"]" 
-                                      type="text"></textarea>
-                        </div>
-
-                        <button type="submit" class="btn btn-sm btn-outline-accent">
-                            @SharedLocalizer["Reply"]
-                        </button>
-                    </form>
-                </div>
-                <div class="reply-list">
-                    <template x-for="(reply, index) in item.replies.slice().reverse()" :key="index">
-                        <div>
-                            <hr />
-                            <div class="reply-container">
-                                <div x-html="reply.replyContentHtml"></div>
-                                <small class="text-muted">
-                                    <time :data-utc-label="reply.replyTimeUtc" x-text="reply.replyTimeUtc"></time>
-                                </small>
+                    <div class="reply-ui mt-3" x-show="item.showReplyForm">
+                        <form x-on:submit.prevent="replyComment(item.id)">
+                            <div class="mb-2">
+                                <textarea class="form-control"
+                                          :id="`replycontent-${item.id}`"
+                                          x-model="item.replyContent"
+                                          placeholder="@SharedLocalizer["Content"]"
+                                          type="text"></textarea>
                             </div>
-                        </div>
-                    </template>
+
+                            <button type="submit" class="btn btn-sm btn-outline-accent">
+                                @SharedLocalizer["Reply"]
+                            </button>
+                        </form>
+                    </div>
+                    <div class="reply-list">
+                        <template x-for="(reply, index) in item.replies.slice().reverse()" :key="index">
+                            <div>
+                                <hr />
+                                <div class="reply-container">
+                                    <div x-html="reply.replyContentHtml"></div>
+                                    <small class="text-muted">
+                                        <time :data-utc-label="reply.replyTimeUtc" x-text="reply.replyTimeUtc"></time>
+                                    </small>
+                                </div>
+                            </div>
+                        </template>
+                    </div>
+                </div>
+
+                <div class="admin-list-actions flex-shrink-0">
+                    <a href="javascript:void(0);"
+                       class="btn btn-sm"
+                       :class="item.isApproved ? 'btn-success' : 'btn-outline-success'"
+                       x-on:click="toggleApproval(item.id)">
+                        <i class="bi-check2"></i>
+                    </a>
+                    <button class="btn btn-sm btn-outline-accent"
+                            x-on:click="item.showReplyForm = !item.showReplyForm">
+                        <i class="bi-reply-fill"></i>
+                    </button>
+                    <button class="btn btn-sm btn-outline-danger"
+                            x-on:click="deleteComment(item.id)">
+                        <i class="bi-trash"></i>
+                    </button>
                 </div>
             </div>
+        </template>
+    </div>
 
-            <div class="col-auto">
-                <a href="javascript:void(0);" 
-                   class="btn btn-sm"
-                   :class="item.isApproved ? 'btn-success' : 'btn-outline-success'"
-                   x-on:click="toggleApproval(item.id)">
-                    <i class="bi-check2"></i>
+</div>
+
+<div x-show.important="hasComments" class="admin-pagination d-flex flex-wrap justify-content-between align-items-center gap-3 mt-3">
+    <nav x-show="totalPages > 1" aria-label="Page navigation">
+        <ul class="pagination pagination-sm mb-0">
+            <li class="page-item" :class="{ 'disabled': currentPage === 1 }">
+                <a class="page-link" href="#" x-on:click.prevent="goToPage(1)">
+                    <span aria-hidden="true">&laquo;&laquo;</span>
                 </a>
-                <button class="btn btn-sm btn-outline-accent" 
-                        x-on:click="item.showReplyForm = !item.showReplyForm">
-                    <i class="bi-reply-fill"></i>
-                </button>
-                <button class="btn btn-sm btn-outline-danger" 
-                        x-on:click="deleteComment(item.id)">
-                    <i class="bi-trash"></i>
-                </button>
-            </div>
-        </div>
-    </template>
+            </li>
 
-    <div x-show="!isLoading && hasComments" class="d-flex justify-content-between align-items-center mt-4">
-        <nav x-show="totalPages > 1" aria-label="Page navigation">
-            <ul class="pagination mb-0">
-                <li class="page-item" :class="{ 'disabled': currentPage === 1 }">
-                    <a class="page-link" href="#" x-on:click.prevent="goToPage(1)">
-                        <span aria-hidden="true">&laquo;&laquo;</span>
-                    </a>
+            <li class="page-item" :class="{ 'disabled': currentPage === 1 }">
+                <a class="page-link" href="#" x-on:click.prevent="goToPage(currentPage - 1)">
+                    <span aria-hidden="true">&laquo;</span>
+                </a>
+            </li>
+
+            <template x-for="page in paginationPages" :key="page">
+                <li class="page-item" :class="{ 'active': page === currentPage }">
+                    <a class="page-link" href="#" x-on:click.prevent="goToPage(page)" x-text="page"></a>
                 </li>
+            </template>
 
-                <li class="page-item" :class="{ 'disabled': currentPage === 1 }">
-                    <a class="page-link" href="#" x-on:click.prevent="goToPage(currentPage - 1)">
-                        <span aria-hidden="true">&laquo;</span>
-                    </a>
-                </li>
+            <li class="page-item" :class="{ 'disabled': currentPage === totalPages }">
+                <a class="page-link" href="#" x-on:click.prevent="goToPage(currentPage + 1)">
+                    <span aria-hidden="true">&raquo;</span>
+                </a>
+            </li>
 
-                <template x-for="page in paginationPages" :key="page">
-                    <li class="page-item" :class="{ 'active': page === currentPage }">
-                        <a class="page-link" href="#" x-on:click.prevent="goToPage(page)" x-text="page"></a>
-                    </li>
-                </template>
+            <li class="page-item" :class="{ 'disabled': currentPage === totalPages }">
+                <a class="page-link" href="#" x-on:click.prevent="goToPage(totalPages)">
+                    <span aria-hidden="true">&raquo;&raquo;</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
 
-                <li class="page-item" :class="{ 'disabled': currentPage === totalPages }">
-                    <a class="page-link" href="#" x-on:click.prevent="goToPage(currentPage + 1)">
-                        <span aria-hidden="true">&raquo;</span>
-                    </a>
-                </li>
-
-                <li class="page-item" :class="{ 'disabled': currentPage === totalPages }">
-                    <a class="page-link" href="#" x-on:click.prevent="goToPage(totalPages)">
-                        <span aria-hidden="true">&raquo;&raquo;</span>
-                    </a>
-                </li>
-            </ul>
-        </nav>
-
-        <div class="d-flex align-items-center gap-2">
-            <label class="form-label mb-0 text-nowrap">@SharedLocalizer["Page Size"]</label>
-            <select class="form-select form-select-sm" style="width: auto;"
-                    x-on:change="changePageSize($event.target.value)">
-                <template x-for="size in pageSizeOptions" :key="size">
-                    <option :value="size" x-text="size" :selected="size === pageSize"></option>
-                </template>
-            </select>
-        </div>
+    <div class="d-flex align-items-center gap-2 ms-auto">
+        <label class="form-label mb-0 text-nowrap">@SharedLocalizer["Page Size"]</label>
+        <select class="form-select form-select-sm" style="width: auto;"
+                x-on:change="changePageSize($event.target.value)">
+            <template x-for="size in pageSizeOptions" :key="size">
+                <option :value="size" x-text="size" :selected="size === pageSize"></option>
+            </template>
+        </select>
     </div>
 </div>
 
@@ -246,7 +247,7 @@
 
             <!-- Fixed Bottom Buttons -->
             <div class="border-top p-3 bg-light">
-                <div class="d-grid gap-2">
+                <div class="d-grid gap-2 admin-offcanvas-actions">
                     <button type="submit" class="btn btn-accent">
                         <i class="bi-funnel"></i> @SharedLocalizer["Apply Filter"]
                     </button>

@@ -18,11 +18,13 @@
 </div>
 
 @section admintoolbar {
-    <div class="admin-toolbar pb-2 border-bottom mb-3">
-        <a x-on:click="initCreateCategory()" class="btn btn-outline-accent" role="button">
-            <i class="bi-plus-lg"></i>
-            @SharedLocalizer["New"]
-        </a>
+    <div class="admin-toolbar admin-toolbar-row">
+        <div class="admin-toolbar-group">
+            <button type="button" x-on:click="initCreateCategory()" class="btn btn-sm btn-outline-accent">
+                <i class="bi-plus-lg" aria-hidden="true"></i>
+                @SharedLocalizer["New"]
+            </button>
+        </div>
     </div>
 }
 
@@ -39,24 +41,35 @@
     @SharedLocalizer["No categories yet."]
 </div>
 
-<div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4">
+<div class="row row-cols-4 admin-card-grid">
     <template x-for="cat in sortedCategories" :key="cat.id">
         <div class="col">
-            <div class="card shadow-sm">
+            <div class="card admin-card admin-category-card">
                 <div class="card-body">
-                    <h6 class="card-title">
+                    <h6 class="card-title mb-0 pe-3" :id="`category-title-${cat.id}`">
                         <a :href="`/category/${encodeURIComponent(cat.slug)}`" target="_blank" x-text="cat.displayName"></a>
                     </h6>
-                    <p class="mt-2 h-30px" x-text="cat.note"></p>
+                    <p class="mt-2" x-text="cat.note"></p>
                     <small class="text-muted" x-text="cat.slug"></small>
                 </div>
-                <div class="card-footer">
-                    <a x-on:click="editCategory(cat.id)" class="btn btn-sm btn-outline-accent me-2" role="button">
-                        <i class="bi-pen"></i>
-                    </a>
-                    <a x-on:click="deleteCategory(cat.id)" class="btn btn-sm btn-outline-danger" role="button">
-                        <i class="bi-trash"></i>
-                    </a>
+                <div class="dropdown admin-card-actions position-absolute top-0 end-0">
+                    <button type="button" class="btn btn-sm btn-link text-body-secondary text-decoration-none"
+                            data-bs-toggle="dropdown" aria-expanded="false"
+                            aria-label="@SharedLocalizer["Actions"]" :aria-describedby="`category-title-${cat.id}`">
+                        <i class="bi-three-dots" aria-hidden="true"></i>
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end">
+                        <li>
+                            <button type="button" class="dropdown-item" x-on:click="editCategory(cat.id)">
+                                <i class="bi-pen me-2" aria-hidden="true"></i>@SharedLocalizer["Edit"]
+                            </button>
+                        </li>
+                        <li>
+                            <button type="button" class="dropdown-item text-danger" x-on:click="deleteCategory(cat.id)">
+                                <i class="bi-trash me-2" aria-hidden="true"></i>@SharedLocalizer["Delete"]
+                            </button>
+                        </li>
+                    </ul>
                 </div>
             </div>
         </div>
@@ -91,7 +104,7 @@
 
             <!-- Fixed Bottom Buttons -->
             <div class="border-top p-3 bg-light">
-                <div class="d-grid gap-2">
+                <div class="d-grid gap-2 admin-offcanvas-actions">
                     <button type="submit" class="btn btn-accent">@SharedLocalizer["Submit"]</button>
                     <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="offcanvas">@SharedLocalizer["Cancel"]</button>
                 </div>

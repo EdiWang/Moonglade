@@ -1,25 +1,24 @@
 import { fetch2 } from './httpService.mjs?v=1500'
-import { handleSettingsSubmit } from './admin.settings.mjs';
+import { initializeSettings } from './admin.settings.mjs';
 import { success, error } from './toastService.mjs';
 import { getLocalizedString } from './utils.module.mjs';
 
-function toggleButtonState(button, isDisabled) {
-    if (isDisabled) {
-        button.classList.add('disabled');
-        button.setAttribute('disabled', 'disabled');
-    } else {
-        button.classList.remove('disabled');
-        button.removeAttribute('disabled');
-    }
+const form = document.getElementById('form-settings');
+const testEmailButton = document.getElementById('a-send-test-mail');
+let canSendTestEmail = !testEmailButton.disabled;
+let sendingTestEmail = false;
+
+function updateTestEmailButton() {
+    testEmailButton.disabled = sendingTestEmail || !canSendTestEmail;
 }
 
 async function sendTestEmail() {
-    const testEmailButton = document.querySelector('#a-send-test-mail');
     if (testEmailButton.disabled) {
         return;
     }
 
-    toggleButtonState(testEmailButton, true);
+    sendingTestEmail = true;
+    updateTestEmailButton();
 
     try {
         const queued = await fetch2('/api/settings/email/test', 'POST', {});
@@ -29,11 +28,18 @@ async function sendTestEmail() {
     } catch (err) {
         error(err);
     } finally {
-        toggleButtonState(testEmailButton, false);
+        sendingTestEmail = false;
+        updateTestEmailButton();
     }
 }
 
-document.getElementById('a-send-test-mail').addEventListener('click', sendTestEmail);
+testEmailButton.addEventListener('click', sendTestEmail);
 
-const form = document.querySelector('#form-settings');
-form.addEventListener('submit', handleSettingsSubmit);
+initializeSettings({
+    onSaved(fields) {
+        if ('EnableEmailSending' in fields) {
+            canSendTestEmail = form.dataset.emailCapabilityState === 'Available' && fields.EnableEmailSending;
+            updateTestEmailButton();
+        }
+    }
+});

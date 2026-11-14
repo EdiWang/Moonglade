@@ -1,8 +1,9 @@
-using System.Text.Json.Serialization;
 using LiteBus.Events.Abstractions;
+using Moonglade.Auth;
 using Moonglade.Configuration;
 using Moonglade.Email.Core;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace Moonglade.Email;
 
@@ -20,7 +21,8 @@ public record MentionEvent(
 public class MentionNotificationHandler(
     IEmailNotificationQueue queue,
     IBlogConfig blogConfig,
-    EmailCapabilityStatus capabilityStatus) : IEventHandler<MentionEvent>
+    EmailCapabilityStatus capabilityStatus,
+    IOwnerProfileReader ownerProfiles) : IEventHandler<MentionEvent>
 {
     public async Task HandleAsync(MentionEvent notification, CancellationToken ct)
     {
@@ -29,6 +31,9 @@ public class MentionNotificationHandler(
         {
             return;
         }
+
+        var owner = await ownerProfiles.ReadProfileAsync(ct);
+        if (owner is null) return;
 
         var payload = new PingPayload
         {
@@ -42,7 +47,7 @@ public class MentionNotificationHandler(
         await queue.EnqueueAsync(new EmailNotification
         {
             MessageType = MessageTypes.BeingPinged,
-            DistributionList = settings.GeneralSettings.OwnerEmail,
+            DistributionList = owner.Email,
             MessageBody = JsonSerializer.Serialize(payload, MoongladeJsonSerializerOptions.Default)
         }, ct);
     }

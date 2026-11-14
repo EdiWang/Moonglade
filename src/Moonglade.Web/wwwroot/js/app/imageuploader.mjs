@@ -22,8 +22,10 @@ export class ImageUploader {
                     if (modal) modal.hide();
 
                     success(getLocalizedString('imageUpdated'));
-                    var d = new Date();
-                    document.querySelector(`.blogadmin-${targetName}`).src = `/${targetName}?${d.getTime()}`;
+                    const preview = document.querySelector(`.blogadmin-${targetName}`);
+                    const previewUrl = new URL(preview.src);
+                    previewUrl.searchParams.set('v', Date.now());
+                    preview.src = previewUrl.href;
                 } catch (err) {
                     error(err);
                 } finally {
@@ -40,12 +42,10 @@ export class ImageUploader {
             evt.preventDefault();
 
             if (window.File && window.FileReader && window.FileList && window.Blob) {
-                var file;
-                if (evt.dataTransfer) {
-                    file = evt.dataTransfer.files[0];
-                    document.querySelector(`.custom-file-label-${targetName}`).innerText = file.name;
-                } else {
-                    file = evt.target.files[0];
+                var file = evt.dataTransfer ? evt.dataTransfer.files[0] : evt.target.files[0];
+                if (!file) {
+                    error(getLocalizedString('pleaseSelectImage'));
+                    return;
                 }
 
                 if (!file.type.match('image.*')) {

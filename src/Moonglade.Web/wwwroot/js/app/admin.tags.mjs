@@ -3,6 +3,7 @@ import { fetch2 } from './httpService.mjs?v=1500';
 import { success, error } from './toastService.mjs';
 import { getLocalizedString } from './utils.module.mjs';
 import { showDeleteConfirmModal, hideConfirmModal, escapeHtml } from './adminModal.mjs';
+import { createOffcanvas } from './admin.offcanvas.mjs';
 
 Alpine.data('tagManager', () => ({
 tags: [],
@@ -15,7 +16,7 @@ formData: {
 originalTagNames: {},
 
 async init() {
-    this.editCanvas = new bootstrap.Offcanvas(this.$refs.editTagCanvas);
+    this.editCanvas = createOffcanvas(this.$refs.editTagCanvas);
     await this.loadTags();
 },
 

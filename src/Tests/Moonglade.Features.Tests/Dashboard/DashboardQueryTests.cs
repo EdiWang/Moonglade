@@ -48,6 +48,7 @@ public class DashboardQueryTests
         Assert.Equal(3, stats.YesterdayViews);
         Assert.Equal(8, stats.ThisWeekViews);
         Assert.Equal(15, stats.ThisMonthViews);
+        Assert.Equal(26, stats.ThisYearViews);
         Assert.Equal(2, stats.PublishedPostCount);
         Assert.Equal(1, stats.DraftPostCount);
         Assert.Equal(1, stats.ScheduledPostCount);
@@ -84,6 +85,7 @@ public class DashboardQueryTests
         var stats = await handler.HandleAsync(new GetDashboardStatsQuery(), TestContext.Current.CancellationToken);
 
         Assert.Equal([newestDraftId, newDraftId], stats.RecentDrafts.Select(p => p.Id));
+        Assert.Equal(0, stats.ThisYearViews);
         Assert.Equal("Newest Draft", stats.RecentDrafts[0].Title);
         Assert.Equal(new DateTime(2024, 4, 4, 0, 0, 0, DateTimeKind.Utc), stats.RecentDrafts[0].DateUtc);
         Assert.Equal([newestPublishedId, newPublishedId], stats.RecentPublishedPosts.Select(p => p.Id));
@@ -112,6 +114,30 @@ public class DashboardQueryTests
         Assert.Equal(3, stats.YesterdayViews);
         Assert.Equal(15, stats.ThisWeekViews);
         Assert.Equal(7, stats.ThisMonthViews);
+    }
+
+    [Fact]
+    public async Task GetDashboardStatsQuery_OnlyCountsCurrentYearThroughTodayInYearlyViews()
+    {
+        using var db = CreateDbContext();
+        var now = new DateTime(2025, 1, 1, 8, 0, 0, DateTimeKind.Utc);
+
+        db.PostViewDaily.AddRange(
+            CreatePostViewDaily(new DateOnly(2024, 12, 30), 5),
+            CreatePostViewDaily(new DateOnly(2024, 12, 31), 3),
+            CreatePostViewDaily(new DateOnly(2025, 1, 1), 7),
+            CreatePostViewDaily(new DateOnly(2025, 1, 2), 11));
+
+        await db.SaveChangesAsync(TestContext.Current.CancellationToken);
+
+        var handler = new GetDashboardStatsQueryHandler(db);
+
+        var stats = await handler.HandleAsync(new GetDashboardStatsQuery(now), TestContext.Current.CancellationToken);
+
+        Assert.Equal(3, stats.YesterdayViews);
+        Assert.Equal(15, stats.ThisWeekViews);
+        Assert.Equal(7, stats.ThisMonthViews);
+        Assert.Equal(7, stats.ThisYearViews);
     }
 
     private static PostViewDailyEntity CreatePostViewDaily(DateOnly dateUtc, int viewCount) =>

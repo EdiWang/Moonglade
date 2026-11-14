@@ -1,0 +1,15 @@
+.admin-activity-table {
+    table-layout: fixed;
+}
+
+.activity-log-column-time {
+    width: 14rem;
+}
+
+.activity-log-column-actor {
+    width: 11rem;
+}
+
+.activity-log-column-actions {
+    width: 6rem;
+}

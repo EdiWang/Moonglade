@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
+using Moonglade.Auth;
 using Moonglade.Configuration;
 using Moonglade.Data;
 using Moonglade.Data.Entities;
@@ -9,6 +10,42 @@ namespace Moonglade.Syndication.Tests;
 
 public class SyndicationQueryHandlerTests
 {
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public async Task Atom_SuppliedOwnerOrMissingProfile_PreservesItemsAndDoesNotAffectRss(bool category)
+    {
+        using var db = await CreateFeedDatabaseAsync();
+        var config = CreateBlogConfig();
+        var accessor = CreateHttpContextAccessor();
+        var source = new SyndicationDataSource(accessor, db);
+        var handler = new GetAtomStringQueryHandler(config, source, accessor);
+        var rss = new GetRssStringQueryHandler(config, source, accessor);
+        var ct = TestContext.Current.CancellationToken;
+        var slug = category ? "tech" : null;
+        var rssBefore = await rss.HandleAsync(new GetRssStringQuery(slug), ct);
+        var missing = XDocument.Parse(await handler.HandleAsync(new GetAtomStringQuery(slug), ct));
+        var configured = XDocument.Parse(await handler.HandleAsync(new GetAtomStringQuery(slug,
+            Owner: new OwnerProfile(Guid.NewGuid(), "public@example.test")), ct));
+        XNamespace atom = "http://www.w3.org/2005/Atom";
+
+        Assert.Equal(category ? 1 : 2, missing.Descendants(atom + "entry").Count());
+        Assert.Equal(missing.Descendants(atom + "title").Select(title => title.Value),
+            configured.Descendants(atom + "title").Select(title => title.Value));
+        Assert.Empty(missing.Descendants(atom + "email"));
+        Assert.All(missing.Descendants(atom + "entry"), entry =>
+            Assert.Equal("Author", entry.Element(atom + "author")?.Element(atom + "name")?.Value));
+        Assert.All(configured.Descendants(atom + "entry"), entry =>
+            Assert.Equal("public@example.test", entry.Element(atom + "author")?.Element(atom + "email")?.Value));
+        var firstRss = XDocument.Parse(rssBefore);
+        var nextRss = XDocument.Parse(await rss.HandleAsync(new GetRssStringQuery(slug), ct));
+        Assert.Equal(category ? 1 : 2, firstRss.Descendants("item").Count());
+        Assert.All(firstRss.Descendants("item"), item => Assert.Null(item.Element("author")));
+        firstRss.Root?.Element("channel")?.Element("pubDate")?.Remove();
+        nextRss.Root?.Element("channel")?.Element("pubDate")?.Remove();
+        Assert.True(XNode.DeepEquals(firstRss, nextRss));
+    }
+
     [Fact]
     public async Task GetRssStringQuery_DataSourceReturnsNull_ReturnsNull()
     {
@@ -57,11 +94,11 @@ public class SyndicationQueryHandlerTests
     {
         using var db = await CreateFeedDatabaseAsync();
         var blogConfig = CreateBlogConfig();
-        blogConfig.Publish(blogConfig.Capture() with { GeneralSettings = blogConfig.Capture().GeneralSettings with { OwnerEmail = "owner@example.com" } });
         var accessor = CreateHttpContextAccessor("https", "blog.example.com");
         var handler = new GetAtomStringQueryHandler(blogConfig, new SyndicationDataSource(accessor, db), accessor);
 
-        var result = await handler.HandleAsync(new GetAtomStringQuery("tech"), TestContext.Current.CancellationToken);
+        var result = await handler.HandleAsync(new GetAtomStringQuery("tech", Owner: new OwnerProfile(Guid.NewGuid(), "owner@example.com")),
+            TestContext.Current.CancellationToken);
 
         var doc = XDocument.Parse(result);
         Assert.Equal("feed", doc.Root!.Name.LocalName);
@@ -80,10 +117,8 @@ public class SyndicationQueryHandlerTests
             GeneralSettings = new GeneralSettings
             {
                 SiteTitle = "Test Blog",
-                Description = "Test Description",
                 Copyright = "© Test",
-                DefaultLanguageCode = "en-us",
-                OwnerEmail = "test@example.com"
+                DefaultLanguageCode = "en-us"
             }
         });
     }

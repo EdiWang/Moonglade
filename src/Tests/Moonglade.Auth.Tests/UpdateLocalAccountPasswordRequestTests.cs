@@ -17,7 +17,6 @@ public class UpdateLocalAccountPasswordRequestTests
     {
         var request = new UpdateLocalAccountPasswordRequest
         {
-            NewUsername = "newadmin",
             OldPassword = "Password1",
             NewPassword = "Password2"
         };
@@ -27,72 +26,70 @@ public class UpdateLocalAccountPasswordRequestTests
     }
 
     [Theory]
-    [InlineData(null)]
-    [InlineData("")]
-    [InlineData("ab")]          // too short
-    [InlineData("user@name")]   // invalid char
-    [InlineData("12345678901234567")] // 17 chars, too long
-    public void Invalid_Username_FailsValidation(string username)
+    [InlineData(false)]
+    [InlineData(true)]
+    public void Missing_Passwords_FailForTheirOwnField(bool empty)
     {
+        var password = empty ? "" : null;
         var request = new UpdateLocalAccountPasswordRequest
         {
-            NewUsername = username,
-            OldPassword = "Password1",
-            NewPassword = "Password2"
+            OldPassword = password,
+            NewPassword = password
         };
 
         var results = ValidateModel(request);
-        Assert.NotEmpty(results);
+        Assert.Contains(results, result => result.MemberNames.Contains(nameof(UpdateLocalAccountPasswordRequest.OldPassword)));
+        Assert.Contains(results, result => result.MemberNames.Contains(nameof(UpdateLocalAccountPasswordRequest.NewPassword)));
     }
 
     [Theory]
-    [InlineData("abc")]         // only letters, no digit
-    [InlineData("12345678")]    // only digits, no letter
-    [InlineData("Pass1")]       // too short (< 8)
-    [InlineData(null)]
-    [InlineData("")]
-    public void Invalid_NewPassword_FailsValidation(string password)
+    [InlineData("missing-digit")]
+    [InlineData("missing-letter")]
+    [InlineData("short")]
+    [InlineData("null")]
+    [InlineData("empty")]
+    public void Invalid_NewPassword_FailsValidation(string scenario)
     {
+        var password = InvalidPassword(scenario);
         var request = new UpdateLocalAccountPasswordRequest
         {
-            NewUsername = "admin",
             OldPassword = "Password1",
             NewPassword = password
         };
 
         var results = ValidateModel(request);
-        Assert.NotEmpty(results);
+        Assert.Contains(results, result => result.MemberNames.Contains(nameof(UpdateLocalAccountPasswordRequest.NewPassword)));
     }
 
     [Theory]
-    [InlineData("abc")]
-    [InlineData("12345678")]
-    [InlineData("Pass1")]
-    [InlineData(null)]
-    [InlineData("")]
-    public void Invalid_OldPassword_FailsValidation(string password)
+    [InlineData("missing-digit")]
+    [InlineData("missing-letter")]
+    [InlineData("short")]
+    [InlineData("null")]
+    [InlineData("empty")]
+    public void Invalid_OldPassword_FailsValidation(string scenario)
     {
+        var password = InvalidPassword(scenario);
         var request = new UpdateLocalAccountPasswordRequest
         {
-            NewUsername = "admin",
             OldPassword = password,
             NewPassword = "Password2"
         };
 
         var results = ValidateModel(request);
-        Assert.NotEmpty(results);
+        Assert.Contains(results, result => result.MemberNames.Contains(nameof(UpdateLocalAccountPasswordRequest.OldPassword)));
     }
 
     [Theory]
-    [InlineData("Abcdefg1")]
-    [InlineData("MyP4ssword")]
-    [InlineData("Test1234")]
-    [InlineData("a1b2c3d4e5")]
-    public void Valid_Passwords_PassValidation(string password)
+    [InlineData(0)]
+    [InlineData(1)]
+    [InlineData(2)]
+    [InlineData(3)]
+    public void Valid_Passwords_PassValidation(int scenario)
     {
+        var password = new[] { "Abcdefg1", "MyP4ssword", "Test1234", "a1b2c3d4e5" }[scenario];
         var request = new UpdateLocalAccountPasswordRequest
         {
-            NewUsername = "admin",
             OldPassword = password,
             NewPassword = password
         };
@@ -100,4 +97,13 @@ public class UpdateLocalAccountPasswordRequestTests
         var results = ValidateModel(request);
         Assert.Empty(results);
     }
+
+    private static string InvalidPassword(string scenario) => scenario switch
+    {
+        "missing-digit" => "abcdefgh",
+        "missing-letter" => "12345678",
+        "short" => "Pass1",
+        "null" => null,
+        _ => ""
+    };
 }

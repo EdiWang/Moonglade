@@ -1,4 +1,3 @@
-import { handleSettingsSubmit } from './admin.settings.mjs';
+import { initializeSettings } from './admin.settings.mjs?v=3';
 
-const form = document.querySelector('#form-settings');
-form.addEventListener('submit', handleSettingsSubmit);
+initializeSettings();

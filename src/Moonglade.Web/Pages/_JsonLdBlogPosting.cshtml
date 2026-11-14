@@ -1,5 +1,7 @@
+@inject Moonglade.Auth.IOwnerProfileReader OwnerProfiles
 @{
     var snapshot = ViewData.CaptureSettings(SettingsReader);
+    var presentation = await ViewData.CaptureOwnerPresentationAsync(OwnerProfiles, Context.RequestAborted);
 }
 @model Moonglade.Web.Pages.PostModel
 @using Moonglade.Utils
@@ -8,11 +10,11 @@
 
 @{
     var authorName = string.IsNullOrWhiteSpace(Model.Post.Author)
-        ? snapshot.GeneralSettings.OwnerName
+        ? presentation.Name
         : Model.Post.Author;
 
-    var postUrl = !string.IsNullOrWhiteSpace(snapshot.GeneralSettings.CanonicalPrefix)
-        ? UrlHelper.ResolveCanonicalUrl(snapshot.GeneralSettings.CanonicalPrefix, Context.Request.Path)
+    var postUrl = !string.IsNullOrWhiteSpace(snapshot.SEOSettings.CanonicalPrefix)
+        ? UrlHelper.ResolveCanonicalUrl(snapshot.SEOSettings.CanonicalPrefix, Context.Request.Path)
         : $"{Context.Request.Scheme}://{Context.Request.Host}{Context.Request.Path}";
 
     var jsonLd = new Dictionary<string, object>

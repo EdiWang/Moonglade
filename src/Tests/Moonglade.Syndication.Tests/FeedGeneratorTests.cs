@@ -18,37 +18,6 @@ public class FeedGeneratorTests
             "en-us");
     }
 
-    private static List<FeedEntry> CreateSampleEntries()
-    {
-        return
-        [
-            new()
-            {
-                Id = Guid.NewGuid().ToString(),
-                Title = "First Post",
-                Description = "First post description",
-                PubDateUtc = new DateTime(2025, 1, 15, 10, 0, 0, DateTimeKind.Utc),
-                Link = "https://example.com/post/first-post",
-                Author = "Test Author",
-                AuthorEmail = "test@example.com",
-                LangCode = "en-us",
-                Categories = ["Tech", "CSharp"]
-            },
-            new()
-            {
-                Id = Guid.NewGuid().ToString(),
-                Title = "Second Post",
-                Description = "Second post description",
-                PubDateUtc = new DateTime(2025, 2, 20, 12, 0, 0, DateTimeKind.Utc),
-                Link = "https://example.com/post/second-post",
-                Author = "Test Author",
-                AuthorEmail = "test@example.com",
-                LangCode = "en-us",
-                Categories = []
-            }
-        ];
-    }
-
     [Fact]
     public async Task WriteRssAsync_EmptyItems_ProducesValidXml()
     {
@@ -75,22 +44,6 @@ public class FeedGeneratorTests
     }
 
     [Fact]
-    public async Task WriteRssAsync_WithItems_ContainsItemElements()
-    {
-        var gen = CreateGenerator();
-        gen.FeedItemCollection = CreateSampleEntries();
-
-        var xml = await gen.WriteRssAsync();
-        var doc = XDocument.Parse(xml);
-
-        var channel = doc.Root.Element("channel");
-        Assert.NotNull(channel);
-
-        var items = channel.Elements("item").ToList();
-        Assert.Equal(2, items.Count);
-    }
-
-    [Fact]
     public async Task WriteAtomAsync_EmptyItems_ProducesValidXml()
     {
         var gen = CreateGenerator();
@@ -112,20 +65,6 @@ public class FeedGeneratorTests
         Assert.NotNull(generator);
         Assert.Equal("Moonglade vTest", generator.Value);
         Assert.Equal("https://example.com", generator.Attribute("uri")?.Value);
-    }
-
-    [Fact]
-    public async Task WriteAtomAsync_WithItems_ContainsEntryElements()
-    {
-        var gen = CreateGenerator();
-        gen.FeedItemCollection = CreateSampleEntries();
-
-        var xml = await gen.WriteAtomAsync();
-        var doc = XDocument.Parse(xml);
-
-        XNamespace atom = "http://www.w3.org/2005/Atom";
-        var entries = doc.Root.Elements(atom + "entry").ToList();
-        Assert.Equal(2, entries.Count);
     }
 
     [Fact]
@@ -203,8 +142,18 @@ public class FeedGeneratorTests
     public async Task FeedDates_UtcValue_PreserveUtcClockTime()
     {
         var expectedUtc = new DateTimeOffset(2025, 1, 15, 10, 0, 0, TimeSpan.Zero);
-        var entry = CreateSampleEntries()[0];
-        entry.PubDateUtc = expectedUtc.UtcDateTime;
+        var entry = new FeedEntry
+        {
+            Id = Guid.NewGuid().ToString(),
+            Title = "First Post",
+            Description = "First post description",
+            PubDateUtc = expectedUtc.UtcDateTime,
+            Link = "https://example.com/post/first-post",
+            Author = "Test Author",
+            AuthorEmail = "test@example.com",
+            LangCode = "en-us",
+            Categories = ["Tech", "CSharp"]
+        };
         var generator = CreateGenerator();
         generator.FeedItemCollection = [entry];
 

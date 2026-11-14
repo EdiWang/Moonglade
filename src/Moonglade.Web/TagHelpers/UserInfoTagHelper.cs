@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Razor.TagHelpers;
 using System.Security.Claims;
+using System.Text.Encodings.Web;
 
 namespace Moonglade.Web.TagHelpers;
 
@@ -30,7 +31,7 @@ public class UserInfoTagHelper : TagHelper
         var name = GetName();
         var email = GetEmail();
 
-        output.TagName = "div";
+        output.TagName = "span";
         output.Attributes.SetAttribute("class", TagClassBase);
 
         switch (UserInfoDisplay)
@@ -58,11 +59,11 @@ public class UserInfoTagHelper : TagHelper
         }
 
         var nameHtml = !string.IsNullOrWhiteSpace(name)
-            ? $"<div class='{TagClassBase}-name'>{name}</div>"
+            ? $"<span class='{TagClassBase}-name'>{HtmlEncoder.Default.Encode(name)}</span>"
             : string.Empty;
 
         var emailHtml = !string.IsNullOrWhiteSpace(email)
-            ? $"<div class='{TagClassBase}-email'>{email}</div>"
+            ? $"<span class='{TagClassBase}-email'>{HtmlEncoder.Default.Encode(email)}</span>"
             : string.Empty;
 
         output.Content.SetHtmlContent($"{nameHtml}{emailHtml}");

@@ -12,15 +12,19 @@
      data-post-deleted="@SharedLocalizer["Post deleted"]">
 </div>
 
+@section adminnavigation {
+    <partial name="_PostManageNavigation" />
+}
+
 @section admintoolbar {
     <partial name="_PostManageHeader" />
 }
 
 @Html.AntiForgeryToken()
 
-<div>
+<div class="admin-panel">
     <div x-show="isLoading"
-         class="text-muted mb-3"
+         class="text-muted"
          :class="{ 'd-flex align-items-center': isLoading }">
         <div class="spinner-border spinner-border-sm me-2" role="status"></div>
         <span>@SharedLocalizer["Loading drafts..."]</span>
@@ -30,32 +34,34 @@
         <partial name="_NoPosts" />
     </div>
 
-    <template x-for="post in posts" :key="post.id">
-        <div :id="`post-${post.id}`" class="admin-post-entry p-3 mb-2 rounded-3 shadow-sm border">
-            <div class="d-flex">
-                <div class="flex-grow-1">
-                    <a :href="`/admin/post/edit/${post.id}`">
-                        <h6 x-text="post.title"></h6>
-                    </a>
-                    <div>
-                        <i class="bi-calendar-event"></i>
-                        <span class="text-muted me-2">
-                            <time :data-utc-label="post.createTimeUtc" x-text="post.createTimeUtc"></time>
-                        </span>
+    <div x-show="!isLoading && hasPosts" class="admin-list">
+        <template x-for="post in posts" :key="post.id">
+            <div :id="`post-${post.id}`" class="admin-post-entry admin-list-item">
+                <div class="d-flex gap-3">
+                    <div class="flex-grow-1 admin-list-content">
+                        <a :href="`/admin/post/edit/${post.id}`">
+                            <h6 x-text="post.title"></h6>
+                        </a>
+                        <div>
+                            <i class="bi-calendar-event"></i>
+                            <span class="text-muted me-2">
+                                <time :data-utc-label="post.createTimeUtc" x-text="post.createTimeUtc"></time>
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="admin-list-actions flex-shrink-0">
+                        <a class="btn btn-outline-accent btn-sm btn-edit"
+                           :href="`/admin/post/edit/${post.id}`">
+                            <i class="bi-pen"></i>
+                        </a>
+                        <button class="btn btn-outline-danger btn-sm btn-delete"
+                                x-on:click="openDeleteModal(post.id, post.title)">
+                            <i class="bi-trash"></i>
+                        </button>
                     </div>
                 </div>
-
-                <div>
-                    <a class="btn btn-outline-accent btn-sm btn-edit" 
-                       :href="`/admin/post/edit/${post.id}`">
-                        <i class="bi-pen"></i>
-                    </a>
-                    <button class="btn btn-outline-danger btn-sm btn-delete" 
-                            x-on:click="openDeleteModal(post.id, post.title)">
-                        <i class="bi-trash"></i>
-                    </button>
-                </div>
             </div>
-        </div>
-    </template>
+        </template>
+    </div>
 </div>

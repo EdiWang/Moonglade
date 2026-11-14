@@ -121,19 +121,19 @@
     <value>* 圖片寬度和高度必須相同</value>
   </data>
   <data name="* Requires restarting application" xml:space="preserve">
-    <value>* 需要重新啟動應用程式生效</value>
+    <value>* 需要重新啟動應用程式才會生效</value>
   </data>
   <data name="* Username: moonglade" xml:space="preserve">
-    <value>* 使用者名稱: moonglade</value>
+    <value>* 用戶名稱：moonglade</value>
   </data>
   <data name=".NET Version" xml:space="preserve">
     <value>.NET 版本</value>
   </data>
   <data name=".png file" xml:space="preserve">
-    <value>.png 文件</value>
+    <value>.png 檔案</value>
   </data>
   <data name=".png or .jpg file" xml:space="preserve">
-    <value>.png 或 .jpg 文件</value>
+    <value>.png 或 .jpg 檔案</value>
   </data>
   <data name="About" xml:space="preserve">
     <value>關於</value>
@@ -142,7 +142,7 @@
     <value>摘要</value>
   </data>
   <data name="Account Information" xml:space="preserve">
-    <value>帳號資訊</value>
+    <value>帳戶資料</value>
   </data>
   <data name="Action" xml:space="preserve">
     <value>操作</value>
@@ -154,7 +154,7 @@
     <value>管理員登入</value>
   </data>
   <data name="Advanced" xml:space="preserve">
-    <value>高級</value>
+    <value>進階</value>
   </data>
   <data name="Advanced Settings" xml:space="preserve">
     <value>進階設定</value>
@@ -166,7 +166,7 @@
     <value>全部標籤</value>
   </data>
   <data name="Archive" xml:space="preserve">
-    <value>歸檔</value>
+    <value>文章彙整</value>
   </data>
   <data name="Are you sure?" xml:space="preserve">
     <value>確定嗎？</value>
@@ -175,46 +175,46 @@
     <value>作者</value>
   </data>
   <data name="Author Name" xml:space="preserve">
-    <value>作者名字</value>
+    <value>作者名稱</value>
   </data>
   <data name="Admin Email" xml:space="preserve">
-    <value>博主 Email</value>
+    <value>管理員電郵地址</value>
   </data>
   <data name="Block Comment" xml:space="preserve">
-    <value>阻止評論</value>
+    <value>封鎖留言</value>
   </data>
   <data name="Blocked words" xml:space="preserve">
-    <value>違禁詞</value>
+    <value>封鎖字詞</value>
   </data>
   <data name="Blocked words will be masked as *** in comment content." xml:space="preserve">
-    <value>評論內容中的違禁詞將被替換為***</value>
+    <value>留言內容中的封鎖字詞會以 *** 遮蓋。</value>
   </data>
   <data name="Blog Identity" xml:space="preserve">
-    <value>部落格身份</value>
+    <value>網誌識別資料</value>
   </data>
   <data name="Blog posts" xml:space="preserve">
-    <value>部落格文章</value>
+    <value>網誌文章</value>
   </data>
   <data name="Blog title" xml:space="preserve">
-    <value>博客標題</value>
+    <value>網誌標題</value>
   </data>
   <data name="Call-out" xml:space="preserve">
-    <value>條幅</value>
+    <value>公告欄</value>
   </data>
   <data name="Call-out section HTML code" xml:space="preserve">
-    <value>橫幅HTML內容</value>
+    <value>公告欄 HTML 程式碼</value>
   </data>
   <data name="Cancel" xml:space="preserve">
     <value>取消</value>
   </data>
   <data name="Canonical URL prefix" xml:space="preserve">
-    <value>網址(Canonical URL)</value>
+    <value>標準網址前綴（Canonical URL）</value>
   </data>
   <data name="Categories" xml:space="preserve">
     <value>分類</value>
   </data>
   <data name="Category Information" xml:space="preserve">
-    <value>分類資訊</value>
+    <value>分類資料</value>
   </data>
   <data name="Change" xml:space="preserve">
     <value>更改</value>
@@ -223,19 +223,19 @@
     <value>更換頭像</value>
   </data>
   <data name="Change Publish Date" xml:space="preserve">
-    <value>修改發布日期</value>
+    <value>更改發佈日期</value>
   </data>
   <data name="Change Site Icon" xml:space="preserve">
     <value>更換網站圖示</value>
   </data>
   <data name="Changing publish date will modify the URL of the post, and may cause unexpected results like breaking links on third parties that were pointing to this post. Please check the checkbox below if you confirm." xml:space="preserve">
-    <value>更改發布日期會影響文章URL，可能會破壞其他地方指向文章的連結。仍要更改，請勾選下面的複選框。</value>
+    <value>更改發佈日期會變更文章網址，可能導致第三方網站指向此文章的連結失效。如確定要更改，請勾選下方的核取方塊。</value>
   </data>
   <data name="Check now" xml:space="preserve">
-    <value>立即檢查更新</value>
+    <value>立即檢查</value>
   </data>
   <data name="Check online for new Moonglade release." xml:space="preserve">
-    <value>在線檢查新版本的Moonglade</value>
+    <value>在網上檢查 Moonglade 是否有新版本。</value>
   </data>
   <data name="Clear all" xml:space="preserve">
     <value>清空全部</value>
@@ -247,13 +247,13 @@
     <value>關閉</value>
   </data>
   <data name="Comment of this post is disabled." xml:space="preserve">
-    <value>本文評論已關閉</value>
+    <value>本文的留言功能已停用。</value>
   </data>
   <data name="Comments" xml:space="preserve">
-    <value>評論</value>
+    <value>留言</value>
   </data>
   <data name="Comments require review and approval" xml:space="preserve">
-    <value>評論需要管理員審核</value>
+    <value>留言須經管理員審核批准</value>
   </data>
   <data name="Content" xml:space="preserve">
     <value>內容</value>
@@ -262,19 +262,19 @@
     <value>繼續</value>
   </data>
   <data name="Copyright" xml:space="preserve">
-    <value>版權信息</value>
+    <value>版權資料</value>
   </data>
   <data name="Create" xml:space="preserve">
-    <value>新建</value>
+    <value>新增</value>
   </data>
   <data name="Create Tag" xml:space="preserve">
     <value>建立標籤</value>
   </data>
   <data name="Create Time (UTC)" xml:space="preserve">
-    <value>創建時間(UTC)</value>
+    <value>建立時間（UTC）</value>
   </data>
   <data name="Current Endpoint:" xml:space="preserve">
-    <value>目前終端機：</value>
+    <value>目前端點：</value>
   </data>
   <data name="Custom CSS" xml:space="preserve">
     <value>自訂 CSS</value>
@@ -286,13 +286,13 @@
     <value>數據目錄</value>
   </data>
   <data name="Delete" xml:space="preserve">
-    <value>徹底刪除</value>
+    <value>刪除</value>
   </data>
   <data name="Delete cached objects both in memory and on disk" xml:space="preserve">
-    <value>刪除記憶體及磁碟上的資料物件</value>
+    <value>刪除記憶體及磁碟上的緩存物件</value>
   </data>
   <data name="Delete selected" xml:space="preserve">
-    <value>刪除勾選的評論</value>
+    <value>刪除已選取項目</value>
   </data>
   <data name="Description" xml:space="preserve">
     <value>描述</value>
@@ -301,25 +301,25 @@
     <value>目錄</value>
   </data>
   <data name="Disabled" xml:space="preserve">
-    <value>不顯示</value>
+    <value>已停用</value>
   </data>
   <data name="Display name" xml:space="preserve">
     <value>顯示名稱</value>
   </data>
   <data name="Display Order" xml:space="preserve">
-    <value>顯示序位</value>
+    <value>顯示次序</value>
   </data>
   <data name="Docker Container" xml:space="preserve">
-    <value>運行在Docker 容器中</value>
+    <value>Docker 容器</value>
   </data>
   <data name="Drafts" xml:space="preserve">
     <value>草稿</value>
   </data>
   <data name="Drag and drop image file here" xml:space="preserve">
-    <value>拖曳圖片檔到此處</value>
+    <value>將圖片檔案拖放至此處</value>
   </data>
   <data name="e.g. Your blog post license information." xml:space="preserve">
-    <value>例如：部落格文章的授權協議</value>
+    <value>例如：網誌文章的授權條款。</value>
   </data>
   <data name="Edit on" xml:space="preserve">
     <value>編輯於</value>
@@ -328,34 +328,34 @@
     <value>編輯器</value>
   </data>
   <data name="Email address to receive notifications from this blog." xml:space="preserve">
-    <value>用於接收部落格系統通知的郵箱</value>
+    <value>用於接收此網誌通知的電郵地址。</value>
   </data>
   <data name="Email Options" xml:space="preserve">
-    <value>Email 選項</value>
+    <value>電郵選項</value>
   </data>
   <data name="Empty Recycle Bin" xml:space="preserve">
     <value>清空回收站</value>
   </data>
   <data name="Enable CDN for images" xml:space="preserve">
-    <value>啟用圖片CDN</value>
+    <value>啟用圖片 CDN</value>
   </data>
   <data name="Enable Comment" xml:space="preserve">
-    <value>是否允許留言</value>
+    <value>啟用留言</value>
   </data>
   <data name="Enable comments" xml:space="preserve">
-    <value>開啟評論</value>
+    <value>啟用留言</value>
   </data>
   <data name="Enable Custom CSS" xml:space="preserve">
-    <value>使用自訂CSS</value>
+    <value>啟用自訂 CSS</value>
   </data>
   <data name="Enable email sending" xml:space="preserve">
-    <value>啟用Email發送</value>
+    <value>啟用電郵傳送</value>
   </data>
   <data name="Enable Gravatar in comment list" xml:space="preserve">
-    <value>在評論清單中開啟Gravatar頭像</value>
+    <value>在留言清單中啟用 Gravatar 頭像</value>
   </data>
   <data name="Enable OpenSearch" xml:space="preserve">
-    <value>啟用OpenSearch</value>
+    <value>啟用 OpenSearch</value>
   </data>
   <data name="Enable FOAF" xml:space="preserve">
     <value>啟用 FOAF</value>
@@ -364,19 +364,19 @@
     <value>啟用網站地圖</value>
   </data>
   <data name="Enable word filter" xml:space="preserve">
-    <value>啟用違禁詞過濾</value>
+    <value>啟用字詞篩選</value>
   </data>
   <data name="Enabled watermark" xml:space="preserve">
-    <value>啟用浮水印</value>
+    <value>啟用水印</value>
   </data>
   <data name="Endpoint" xml:space="preserve">
-    <value>CDN 終端</value>
+    <value>端點</value>
   </data>
   <data name="Environment" xml:space="preserve">
     <value>環境</value>
   </data>
   <data name="Export Data" xml:space="preserve">
-    <value>導出數據</value>
+    <value>匯出數據</value>
   </data>
   <data name="Featured" xml:space="preserve">
     <value>精選</value>
@@ -385,13 +385,13 @@
     <value>精選文章</value>
   </data>
   <data name="Font size" xml:space="preserve">
-    <value>字號</value>
+    <value>字體大小</value>
   </data>
   <data name="Footer" xml:space="preserve">
     <value>頁尾</value>
   </data>
   <data name="Footer HTML code" xml:space="preserve">
-    <value>頁腳HTML區域</value>
+    <value>頁尾 HTML 程式碼</value>
   </data>
   <data name="General" xml:space="preserve">
     <value>一般</value>
@@ -409,25 +409,25 @@
     <value>主頁</value>
   </data>
   <data name="HTML Pitch" xml:space="preserve">
-    <value>HTML區域</value>
+    <value>HTML 區域</value>
   </data>
   <data name="Icon" xml:space="preserve">
-    <value>圖標</value>
+    <value>圖示</value>
   </data>
   <data name="Icon CSS Class" xml:space="preserve">
-    <value>圖示CSS類別名稱</value>
+    <value>圖示 CSS 類別名稱</value>
   </data>
   <data name="Image" xml:space="preserve">
     <value>圖片</value>
   </data>
   <data name="Invalid Icon CSS Class" xml:space="preserve">
-    <value>無效的圖示CSS類別名稱</value>
+    <value>無效的圖示 CSS 類別名稱</value>
   </data>
   <data name="It will show up once blog administrator approved your comment." xml:space="preserve">
-    <value>部落客審核通過後，您的評論會在此顯示</value>
+    <value>管理員批准後，您的留言便會顯示。</value>
   </data>
   <data name="Keep origin image" xml:space="preserve">
-    <value>保留原圖</value>
+    <value>保留原始圖片</value>
   </data>
   <data name="Language" xml:space="preserve">
     <value>語言</value>
@@ -439,7 +439,7 @@
     <value>左側</value>
   </data>
   <data name="Link" xml:space="preserve">
-    <value>鏈接</value>
+    <value>連結</value>
   </data>
   <data name="Logo text" xml:space="preserve">
     <value>Logo 文字</value>
@@ -448,13 +448,13 @@
     <value>主機名稱</value>
   </data>
   <data name="Mask Word" xml:space="preserve">
-    <value>打碼違禁詞</value>
+    <value>遮蓋字詞</value>
   </data>
   <data name="Memory" xml:space="preserve">
     <value>記憶體</value>
   </data>
   <data name="Menu Editor" xml:space="preserve">
-    <value>選單編輯器</value>
+    <value>功能表編輯器</value>
   </data>
   <data name="Menus" xml:space="preserve">
     <value>功能表</value>
@@ -475,10 +475,10 @@
     <value>新建</value>
   </data>
   <data name="No Archive" xml:space="preserve">
-    <value>暫無歸檔</value>
+    <value>暫無文章彙整</value>
   </data>
   <data name="no items to show" xml:space="preserve">
-    <value>無條目需要顯示</value>
+    <value>沒有可顯示的項目</value>
   </data>
   <data name="No Matching Result" xml:space="preserve">
     <value>找不到相關結果</value>
@@ -502,22 +502,22 @@
     <value>通知選項</value>
   </data>
   <data name="Only letters, numbers, - and [] are allowed." xml:space="preserve">
-    <value>僅允許字母、數字、-及[]</value>
+    <value>只允許字母、數字、- 及 []。</value>
   </data>
   <data name="Only lower case letters and hyphens are allowed." xml:space="preserve">
-    <value>必須為小寫英文字元或中劃線</value>
+    <value>只允許小寫英文字母及連字號。</value>
   </data>
   <data name="Options" xml:space="preserve">
     <value>選項</value>
   </data>
   <data name="or override with environment variables." xml:space="preserve">
-    <value>或使用變數覆蓋</value>
+    <value>或以環境變數覆寫。</value>
   </data>
   <data name="Order" xml:space="preserve">
-    <value>序號</value>
+    <value>次序</value>
   </data>
   <data name="Owner email" xml:space="preserve">
-    <value>博主信箱</value>
+    <value>網誌擁有者電郵地址</value>
   </data>
   <data name="Pages" xml:space="preserve">
     <value>頁面</value>
@@ -526,10 +526,10 @@
     <value>密碼</value>
   </data>
   <data name="Post footer HTML code" xml:space="preserve">
-    <value>文章頁腳HTML內容</value>
+    <value>文章頁尾 HTML 程式碼</value>
   </data>
   <data name="Post list page size" xml:space="preserve">
-    <value>文章分頁數量</value>
+    <value>文章清單每頁篇數</value>
   </data>
   <data name="Posts" xml:space="preserve">
     <value>文章</value>
@@ -541,7 +541,7 @@
     <value>處理中……</value>
   </data>
   <data name="Providing your email address can enable blog admin to send notifications for replying your comment. Your email address will also be used to show Gravatar if it has one." xml:space="preserve">
-    <value>輸入您的電子郵件以接收回覆通知並顯示您的Gravatar頭像。</value>
+    <value>提供電郵地址後，管理員便可向您傳送留言回覆通知。如該地址已設定 Gravatar，亦會用於顯示您的頭像。</value>
   </data>
   <data name="Publish" xml:space="preserve">
     <value>發佈</value>
@@ -562,28 +562,28 @@
     <value>回收站</value>
   </data>
   <data name="Refresh the page to see your comment." xml:space="preserve">
-    <value>刷新頁面以查看您的評論</value>
+    <value>重新整理頁面以查看您的留言。</value>
   </data>
   <data name="Release time" xml:space="preserve">
     <value>發佈時間</value>
   </data>
   <data name="Replied at" xml:space="preserve">
-    <value>回復於</value>
+    <value>回覆時間</value>
   </data>
   <data name="Reply" xml:space="preserve">
-    <value>回復</value>
+    <value>回覆</value>
   </data>
   <data name="Reset Password" xml:space="preserve">
-    <value>重置密碼</value>
+    <value>重設密碼</value>
   </data>
   <data name="Restart" xml:space="preserve">
-    <value>重啟</value>
+    <value>重新啟動</value>
   </data>
   <data name="Restart Website" xml:space="preserve">
-    <value>重啟網站</value>
+    <value>重新啟動網站</value>
   </data>
   <data name="Restore" xml:space="preserve">
-    <value>恢復</value>
+    <value>還原</value>
   </data>
   <data name="Right" xml:space="preserve">
     <value>右側</value>
@@ -592,46 +592,46 @@
     <value>路由名稱</value>
   </data>
   <data name="Save" xml:space="preserve">
-    <value>保存</value>
+    <value>儲存</value>
   </data>
   <data name="Scan QR Code on your phone" xml:space="preserve">
-    <value>在手機上掃描二維碼</value>
+    <value>使用手機掃描二維碼</value>
   </data>
   <data name="Search" xml:space="preserve">
-    <value>搜索</value>
+    <value>搜尋</value>
   </data>
   <data name="Search Result" xml:space="preserve">
     <value>搜尋結果</value>
   </data>
   <data name="Security Settings" xml:space="preserve">
-    <value>安全設置</value>
+    <value>安全設定</value>
   </data>
   <data name="Send email on comment reply" xml:space="preserve">
-    <value>評論被回復時發送Email通知使用者</value>
+    <value>留言獲回覆時傳送電郵通知用戶</value>
   </data>
   <data name="Send email on new comment" xml:space="preserve">
-    <value>有新評論時發送Email通知管理員</value>
+    <value>收到新留言時傳送電郵通知管理員</value>
   </data>
   <data name="Send Test Email" xml:space="preserve">
-    <value>發送測試郵件</value>
+    <value>傳送測試電郵</value>
   </data>
   <data name="Server Information" xml:space="preserve">
     <value>伺服器資訊</value>
   </data>
   <data name="Set a primary domain if your website binds to multiple domian names." xml:space="preserve">
-    <value>若您的網站綁定了多個功能變數名稱，請填寫主功能變數名稱</value>
+    <value>如網站綁定了多個域名，請設定主要域名。</value>
   </data>
   <data name="Show call-out section" xml:space="preserve">
-    <value>顯示橫幅區</value>
+    <value>顯示公告欄</value>
   </data>
   <data name="Show customize footer on each post" xml:space="preserve">
-    <value>在每篇文章底下顯示自定義頁腳</value>
+    <value>在每篇文章下方顯示自訂頁尾</value>
   </data>
   <data name="Show warning when clicking external links in posts" xml:space="preserve">
-    <value>點擊文章中的外部連結時彈出警告</value>
+    <value>按下文章中的外部連結時顯示警告</value>
   </data>
   <data name="Show warning when clicking external links in comments" xml:space="preserve">
-    <value>點擊評論中的外部連結時彈出警告</value>
+    <value>按下留言中的外部連結時顯示警告</value>
   </data>
   <data name="Side Bar" xml:space="preserve">
     <value>側邊欄</value>
@@ -640,10 +640,10 @@
     <value>側邊欄位置</value>
   </data>
   <data name="Side bar HTML code" xml:space="preserve">
-    <value>側邊欄HTML區域</value>
+    <value>側邊欄 HTML 程式碼</value>
   </data>
   <data name="Sign In" xml:space="preserve">
-    <value>登錄</value>
+    <value>登入</value>
   </data>
   <data name="Start Time" xml:space="preserve">
     <value>啟動時間</value>
@@ -664,31 +664,31 @@
     <value>系統</value>
   </data>
   <data name="Tag name" xml:space="preserve">
-    <value>標籤名</value>
+    <value>標籤名稱</value>
   </data>
   <data name="Tags" xml:space="preserve">
     <value>標籤</value>
   </data>
   <data name="Thanks for your comment." xml:space="preserve">
-    <value>感謝您的評論</value>
+    <value>感謝您的留言。</value>
   </data>
   <data name="Thanks, your comment is pending approval now." xml:space="preserve">
-    <value>謝謝，您的評論已提交審核</value>
+    <value>謝謝，您的留言正等待審核。</value>
   </data>
   <data name="The call-out section will display on top of every page in the website." xml:space="preserve">
-    <value>公告區將在網站中每個頁面頂部顯示</value>
+    <value>公告欄會顯示在網站每個頁面的頂部。</value>
   </data>
   <data name="The first {0} character(s) will be used as abstract if you leave this field blank." xml:space="preserve">
-    <value>留空自動選取文章前 {0} 字元作為摘要</value>
+    <value>如留空，會自動選取文章首 {0} 個字元作為摘要。</value>
   </data>
   <data name="Theme" xml:space="preserve">
     <value>主題</value>
   </data>
   <data name="This field is required." xml:space="preserve">
-    <value>必填</value>
+    <value>此欄位為必填項。</value>
   </data>
   <data name="This is a preview for draft content." xml:space="preserve">
-    <value>該頁面為草稿預覽</value>
+    <value>此頁面為草稿內容預覽。</value>
   </data>
   <data name="Title" xml:space="preserve">
     <value>標題</value>
@@ -700,70 +700,76 @@
     <value>上傳</value>
   </data>
   <data name="Upload Image" xml:space="preserve">
-    <value>上傳頭圖</value>
+    <value>上傳圖片</value>
   </data>
   <data name="URL" xml:space="preserve">
-    <value>鏈接</value>
+    <value>網址</value>
   </data>
   <data name="Url (Relative or Absolute)" xml:space="preserve">
-    <value>連結 （相對或絕對）</value>
+    <value>網址（相對或絕對）</value>
   </data>
   <data name="Use full blog post content instead of abstract" xml:space="preserve">
     <value>使用文章全文作為內容而非摘要</value>
   </data>
   <data name="Use [c] for copyright mark: &amp;copy;, [year] for current year." xml:space="preserve">
-    <value>使用 [c] 表示版權符號 copy; ，[year] 表示當前年份</value>
+    <value>使用 [c] 表示版權符號 &amp;copy;，使用 [year] 表示目前年份。</value>
   </data>
   <data name="User Account" xml:space="preserve">
     <value>用戶帳戶</value>
   </data>
   <data name="User Name" xml:space="preserve">
-    <value>使用者名</value>
+    <value>用戶名稱</value>
   </data>
   <data name="Username" xml:space="preserve">
-    <value>使用者名</value>
+    <value>用戶名稱</value>
   </data>
   <data name="Version" xml:space="preserve">
     <value>版本</value>
   </data>
   <data name="Watermark" xml:space="preserve">
-    <value>浮浮水印</value>
+    <value>水印</value>
   </data>
   <data name="Watermark text" xml:space="preserve">
-    <value>浮浮水印文字</value>
+    <value>水印文字</value>
   </data>
   <data name="Word filter mode" xml:space="preserve">
-    <value>違禁詞遮罩模式</value>
+    <value>字詞篩選模式</value>
   </data>
   <data name="Word filter keywords" xml:space="preserve">
-    <value>違禁詞列表</value>
+    <value>字詞篩選關鍵字</value>
   </data>
   <data name="Separate keywords with |" xml:space="preserve">
     <value>使用 | 分隔關鍵字</value>
   </data>
   <data name="Worker Process" xml:space="preserve">
-    <value>工作進程</value>
+    <value>工作處理程序</value>
   </data>
   <data name="Your comments (Markdown supported)" xml:space="preserve">
-    <value>您的評論（支援Markdown）</value>
+    <value>您的留言（支援 Markdown）</value>
   </data>
   <data name="Use Markdown editor" xml:space="preserve">
     <value>使用 Markdown 編輯器</value>
   </data>
   <data name="Your description" xml:space="preserve">
-    <value>博主簡介</value>
+    <value>您的簡介</value>
   </data>
   <data name="Your name" xml:space="preserve">
-    <value>博主名字</value>
+    <value>您的名稱</value>
   </data>
   <data name="Center" xml:space="preserve">
-    <value>居中</value>
+    <value>置中</value>
   </data>
   <data name="Export" xml:space="preserve">
     <value>匯出</value>
   </data>
   <data name="Account" xml:space="preserve">
-    <value>帳號</value>
+    <value>帳戶</value>
+  </data>
+  <data name="Account Settings" xml:space="preserve">
+    <value>帳戶設定</value>
+  </data>
+  <data name="Sign Out" xml:space="preserve">
+    <value>登出</value>
   </data>
   <data name="Include in feed and sitemap" xml:space="preserve">
     <value>加入訂閱及網站地圖</value>
@@ -772,22 +778,22 @@
     <value>側邊欄顯示標籤數量</value>
   </data>
   <data name="Login IP" xml:space="preserve">
-    <value>登錄IP</value>
+    <value>登入 IP</value>
   </data>
   <data name="Login Time (UTC)" xml:space="preserve">
-    <value>登入時間 （UTC）</value>
+    <value>登入時間（UTC）</value>
   </data>
   <data name="No comments yet" xml:space="preserve">
-    <value>暫無評論</value>
+    <value>暫無留言</value>
   </data>
   <data name="Feed items" xml:space="preserve">
-    <value>訂閱條目數量</value>
+    <value>訂閱項目數量</value>
   </data>
   <data name="The number of entries to include in RSS/ATOM feed." xml:space="preserve">
-    <value>RSS/ATOM 中包含的條目數量</value>
+    <value>RSS/Atom 訂閱中包含的項目數量。</value>
   </data>
   <data name="lower case English letters (a-z) and numbers (0-9) with/out hyphen (-) in middle." xml:space="preserve">
-    <value>小寫英文字母（a-z）和數位（0-9），可以帶或不帶連符（-）</value>
+    <value>小寫英文字母（a-z）及數字（0-9），中間可包含連字號（-）。</value>
   </data>
   <data name="RSS / Atom Feed" xml:space="preserve">
     <value>RSS / Atom 訂閱</value>
@@ -796,7 +802,7 @@
     <value>ASP.NET Core 環境</value>
   </data>
   <data name="Warning: This blog post is marked as outdated by it's author. Consider finding more recent information on this topic to ensure that you are utilizing the most up-to-date and effective strategies." xml:space="preserve">
-    <value>警告：此博客文章已被作者標記為過時。 請考慮尋找關於該主題的更近期的資訊，以確保您使用的是最新和最有效的策略。</value>
+    <value>警告：作者已將此網誌文章標記為過時。請參考此主題的較新資料，以確保您採用最新且有效的方法。</value>
   </data>
   <data name="No categories" xml:space="preserve">
     <value>沒有分類</value>
@@ -805,34 +811,34 @@
     <value>自動</value>
   </data>
   <data name="Dark" xml:space="preserve">
-    <value>黑暗</value>
+    <value>深色</value>
   </data>
   <data name="Light" xml:space="preserve">
-    <value>明亮</value>
+    <value>淺色</value>
   </data>
   <data name="External Links May Pose a Security Risk" xml:space="preserve">
     <value>外部連結可能會帶來安全風險</value>
   </data>
   <data name="Link URL:" xml:space="preserve">
-    <value>連結URL：</value>
+    <value>連結網址：</value>
   </data>
   <data name="By clicking &quot;Continue&quot;, you agree that you are aware of the risks and will proceed at your own discretion." xml:space="preserve">
-    <value>點擊「繼續」，即表示您同意您了解風險並將自行決定繼續。</value>
+    <value>按下「繼續」，即表示您已了解風險，並自行決定是否繼續。</value>
   </data>
   <data name="You are about to leave this website and go to an external link." xml:space="preserve">
     <value>您即將離開本網站並轉到外部連結。</value>
   </data>
   <data name="This link could lead to websites with malicious content, phishing attempts, or other security threats. It is important to exercise caution when clicking on any external link." xml:space="preserve">
-    <value>此連結可能會導致網站包含惡意內容、網路釣魚嘗試或其他安全威脅。 點擊任何外部連結時務必謹慎。</value>
+    <value>此連結可能指向含有惡意內容、網絡釣魚或其他安全威脅的網站。按下任何外部連結時，請務必謹慎。</value>
   </data>
   <data name="By continuing to browse this website and accessing any external links, you acknowledge and accept the following:" xml:space="preserve">
-    <value>繼續瀏覽本網站並訪問任何外部連結，即表示您承認並接受以下內容：</value>
+    <value>繼續瀏覽本網站及開啟任何外部連結，即表示您知悉並接受以下事項：</value>
   </data>
   <data name="The website owner and administrators are not responsible for the content or security of external websites." xml:space="preserve">
     <value>網站擁有者和管理員不對外部網站的內容或安全負責。</value>
   </data>
   <data name="Your personal information and computer system may be at risk when visiting external websites." xml:space="preserve">
-    <value>當訪問外部網站時，您的個人資訊和計算機系統可能會面臨風險。</value>
+    <value>瀏覽外部網站時，您的個人資料及電腦系統可能面臨風險。</value>
   </data>
   <data name="It is your responsibility to ensure the safety and security of your own browsing experience." xml:space="preserve">
     <value>您有責任確保自己的瀏覽體驗安全。</value>
@@ -841,52 +847,52 @@
     <value>使用我的 Gravatar 作為頭像</value>
   </data>
   <data name="Please make sure you have setup Gravatar with your email address" xml:space="preserve">
-    <value>請確保你已經使用你的 Email 註冊了 Gravatar</value>
+    <value>請確保您已使用電郵地址設定 Gravatar</value>
   </data>
   <data name="Enter your email to receive reply notifications and display your Gravatar. Your email will not be displayed publicly." xml:space="preserve">
-    <value>輸入您的電子郵件以接收回復通知並顯示您的 Gravatar。 您的電子郵件不會公開顯示。</value>
+    <value>輸入電郵地址以接收回覆通知及顯示 Gravatar 頭像。您的電郵地址不會公開顯示。</value>
   </data>
   <data name="Email (Optional)" xml:space="preserve">
-    <value>Email （可選）</value>
+    <value>電郵地址（選填）</value>
   </data>
   <data name="Default language" xml:space="preserve">
-    <value>默認語言</value>
+    <value>預設語言</value>
   </data>
   <data name="Blog will use this language for SEO by default unless specified in blog post." xml:space="preserve">
-    <value>博客系統將預設使用此語言進行搜尋引擎優化，除非在博客文章中指定語言。</value>
+    <value>除非文章另有指定，網誌會預設使用此語言進行搜尋引擎優化。</value>
   </data>
   <data name="Profile" xml:space="preserve">
     <value>個人資料</value>
   </data>
   <data name="Dublin Core Metadata" xml:space="preserve">
-    <value>都柏林核心元數據</value>
+    <value>Dublin Core 中繼資料</value>
   </data>
   <data name="Dublin Core License URL" xml:space="preserve">
-    <value>都柏林核心許可證URL</value>
+    <value>Dublin Core 授權條款網址</value>
   </data>
   <data name="Use Dublin Core Metadata" xml:space="preserve">
-    <value>使用都柏林核心元數據</value>
+    <value>使用 Dublin Core 中繼資料</value>
   </data>
   <data name="Subscription buttons" xml:space="preserve">
     <value>訂閱按鈕</value>
   </data>
   <data name="Side bar items" xml:space="preserve">
-    <value>側邊欄專案</value>
+    <value>側邊欄項目</value>
   </data>
   <data name="Show or hide widgets that display on the side bar" xml:space="preserve">
-    <value>顯示或隱藏顯示在側邊欄上的小組件</value>
+    <value>顯示或隱藏側邊欄的小工具</value>
   </data>
   <data name="Comment provider" xml:space="preserve">
-    <value>評論模組提供程式</value>
+    <value>留言服務提供者</value>
   </data>
   <data name="Built in" xml:space="preserve">
     <value>內置</value>
   </data>
   <data name="Third party" xml:space="preserve">
-    <value>三方</value>
+    <value>第三方</value>
   </data>
   <data name="Set to 0 to never close comments after any days" xml:space="preserve">
-    <value>設置為 0 表示在任何日期後從不關閉評論</value>
+    <value>設為 0 可讓留言功能不受文章發佈天數限制</value>
   </data>
   <data name="Old to new" xml:space="preserve">
     <value>從舊到新</value>
@@ -895,16 +901,16 @@
     <value>從新到舊</value>
   </data>
   <data name="Blocked words will be masked as * in content." xml:space="preserve">
-    <value>被遮罩的單詞將在內容中被替換為“*”</value>
+    <value>內容中的封鎖字詞會以 * 遮蓋。</value>
   </data>
   <data name="How many words to use for generating abstract when it's absent, change this value will only affect new posts" xml:space="preserve">
-    <value>當摘要不存在時，使用多少個單詞來生成摘要，更改此值只會影響新文章</value>
+    <value>未填寫摘要時，自動產生摘要所使用的字數。更改此值只會影響新文章。</value>
   </data>
   <data name="Automatically close comments on posts older than x days" xml:space="preserve">
-    <value>自動關閉超過 x 天的文章的評論</value>
+    <value>文章發佈超過 x 天後自動關閉留言</value>
   </data>
   <data name="Comments display order" xml:space="preserve">
-    <value>評論顯示順序</value>
+    <value>留言顯示次序</value>
   </data>
   <data name="Post title alignment" xml:space="preserve">
     <value>文章標題對齊方式</value>
@@ -916,34 +922,34 @@
     <value>在側邊導航欄顯示文章大綱</value>
   </data>
   <data name="Watermark will be placed at the right bottom corner of the image" xml:space="preserve">
-    <value>浮浮水印將放置在圖像的右下角</value>
+    <value>水印會加在圖片右下角</value>
   </data>
   <data name="Save the origin image as a backup while adding watermark" xml:space="preserve">
-    <value>添加浮浮浮水印時將原始影像保存為備份</value>
+    <value>加入水印時，保留原始圖片作備份</value>
   </data>
   <data name="CDN endpoint" xml:space="preserve">
-    <value>CDN 終端</value>
+    <value>CDN 端點</value>
   </data>
   <data name="Add watermark only when image pixcel (HxW) is greater than this value." xml:space="preserve">
-    <value>僅當圖像圖元 （HxW） 大於此值時添加浮浮水印。</value>
+    <value>只在圖片像素總數（高 × 寬）大於此值時加入水印。</value>
   </data>
   <data name="Transparency value (0-255)." xml:space="preserve">
-    <value>透明度值 （0-255）</value>
+    <value>透明度值（0–255）。</value>
   </data>
   <data name="Watermark skip pixel threshold" xml:space="preserve">
-    <value>跳過浮浮浮水印圖元閾值</value>
+    <value>略過水印的像素門檻</value>
   </data>
   <data name="Enable Webmention" xml:space="preserve">
     <value>啟用 Webmention</value>
   </data>
   <data name="Enable OPML" xml:space="preserve">
-    <value>啟用OPML</value>
+    <value>啟用 OPML</value>
   </data>
   <data name="Foot JavaScript" xml:space="preserve">
-    <value>尾部 JavaScript</value>
+    <value>頁尾 JavaScript</value>
   </data>
   <data name="Using a third party script may cause your website to be blocked by some browsers or ad blockers, it can have security risks too. Please use with caution." xml:space="preserve">
-    <value>使用第三方腳本可能會導致您的網站被某些瀏覽器或廣告攔截器阻止，也可能存在安全風險。 請謹慎使用。</value>
+    <value>使用第三方指令碼可能令網站被部分瀏覽器或廣告攔截器封鎖，亦可能帶來安全風險。請謹慎使用。</value>
   </data>
   <data name="Server Time Zone" xml:space="preserve">
     <value>伺服器時區</value>
@@ -955,10 +961,10 @@
     <value>報告問題</value>
   </data>
   <data name="Forwarded Headers" xml:space="preserve">
-    <value>轉發頭</value>
+    <value>轉發標頭</value>
   </data>
   <data name="Client IP Address" xml:space="preserve">
-    <value>用戶端IP位址</value>
+    <value>用戶端 IP 地址</value>
   </data>
   <data name="Filter" xml:space="preserve">
     <value>篩選</value>
@@ -967,13 +973,13 @@
     <value>清空功能表</value>
   </data>
   <data name="Example code" xml:space="preserve">
-    <value>樣例代碼</value>
+    <value>範例程式碼</value>
   </data>
   <data name="Example" xml:space="preserve">
-    <value>樣例</value>
+    <value>範例</value>
   </data>
   <data name="Enable custom menus" xml:space="preserve">
-    <value>啟用自定義功能表</value>
+    <value>啟用自訂功能表</value>
   </data>
   <data name="Change Password" xml:space="preserve">
     <value>修改密碼</value>
@@ -985,7 +991,7 @@
     <value>取消發佈文章</value>
   </data>
   <data name="Unpublishing this post will remove it from the public site and turn it into a draft. This will have impact on SEO. Please confirm." xml:space="preserve">
-    <value>取消發佈此文章會將其從公共網站中刪除，並將其轉換為草稿。 這將對 SEO 產生影響。 請確認。</value>
+    <value>取消發佈後，此文章將不再公開顯示，並會轉為草稿。這會影響搜尋引擎優化（SEO）。請確認。</value>
   </data>
   <data name="Confirm" xml:space="preserve">
     <value>確認</value>
@@ -997,10 +1003,10 @@
     <value>用戶主題</value>
   </data>
   <data name="No user themes found, create one to get started." xml:space="preserve">
-    <value>未找到使用者主題，請創建一個以開始使用。</value>
+    <value>找不到用戶主題，請先建立一個。</value>
   </data>
   <data name="You have reached the maximum number of user themes." xml:space="preserve">
-    <value>您已達到使用者主題的最大數量。</value>
+    <value>用戶主題數量已達上限。</value>
   </data>
   <data name="Appearance" xml:space="preserve">
     <value>外觀</value>
@@ -1015,10 +1021,10 @@
     <value>閱讀文章</value>
   </data>
   <data name="This post is scheduled to be published. Are you sure you want to publish it now?" xml:space="preserve">
-    <value>此帖子已安排定時發佈。 您確定要現在發佈嗎？</value>
+    <value>此文章已安排定時發佈。確定要立即發佈嗎？</value>
   </data>
   <data name="Scheduled" xml:space="preserve">
-    <value>計劃</value>
+    <value>已安排定時發佈</value>
   </data>
   <data name="Postpone" xml:space="preserve">
     <value>推遲</value>
@@ -1027,7 +1033,10 @@
     <value>現在發佈</value>
   </data>
   <data name="Scheduled for" xml:space="preserve">
-    <value>計劃於</value>
+    <value>預定發佈時間</value>
+  </data>
+  <data name="Scheduled Publish Time" xml:space="preserve">
+    <value>預定發佈時間</value>
   </data>
   <data name="Publish Post" xml:space="preserve">
     <value>發佈文章</value>
@@ -1039,34 +1048,34 @@
     <value>是</value>
   </data>
   <data name="Loading menu settings..." xml:space="preserve">
-    <value>載入選單設定中...</value>
+    <value>正在載入功能表設定...</value>
   </data>
   <data name="Edit Menu Item" xml:space="preserve">
-    <value>編輯選單項</value>
+    <value>編輯功能表項目</value>
   </data>
   <data name="Leave empty for dropdown menu with sub-items only" xml:space="preserve">
-    <value>留空表示僅包含子選單項的下拉選單</value>
+    <value>如只需包含子項目的下拉式功能表，請留空</value>
   </data>
   <data name="Bootstrap Icons class name" xml:space="preserve">
-    <value>Bootstrap Icons 類名</value>
+    <value>Bootstrap Icons 類別名稱</value>
   </data>
   <data name="Open in new tab" xml:space="preserve">
     <value>在新分頁中開啟</value>
   </data>
   <data name="Edit Sub Menu Item" xml:space="preserve">
-    <value>編輯子選單項</value>
+    <value>編輯子功能表項目</value>
   </data>
   <data name="Add Sub Menu Item" xml:space="preserve">
-    <value>新增子選單項</value>
+    <value>新增子功能表項目</value>
   </data>
   <data name="Add Sub Menu" xml:space="preserve">
-    <value>新增子選單</value>
+    <value>新增子功能表</value>
   </data>
   <data name="No menu items" xml:space="preserve">
-    <value>暫無選單項</value>
+    <value>暫無功能表項目</value>
   </data>
   <data name="Click 'Add Menu Item' to create your first menu." xml:space="preserve">
-    <value>點擊「新增選單項」來建立您的第一個選單。</value>
+    <value>按下「新增功能表項目」以建立第一個功能表。</value>
   </data>
   <data name="Loading drafts..." xml:space="preserve">
     <value>載入草稿中...</value>
@@ -1087,10 +1096,10 @@
     <value>確認刪除</value>
   </data>
   <data name="Add Menu Item" xml:space="preserve">
-    <value>新增選單項</value>
+    <value>新增功能表項目</value>
   </data>
   <data name="Settings saved successfully" xml:space="preserve">
-    <value>設定已成功保存</value>
+    <value>設定已成功儲存</value>
   </data>
   <data name="Title is required" xml:space="preserve">
     <value>標題為必填項</value>
@@ -1099,13 +1108,13 @@
     <value>標題和連結為必填項</value>
   </data>
   <data name="Are you sure you want to delete this menu item?" xml:space="preserve">
-    <value>確定要刪除此選單項嗎？</value>
+    <value>確定要刪除此功能表項目嗎？</value>
   </data>
   <data name="Are you sure you want to delete this sub menu item?" xml:space="preserve">
-    <value>確定要刪除此子選單項嗎？</value>
+    <value>確定要刪除此子功能表項目嗎？</value>
   </data>
   <data name="Are you sure you want to clear all menu items?" xml:space="preserve">
-    <value>確定要清空所有選單項嗎？</value>
+    <value>確定要清空所有功能表項目嗎？</value>
   </data>
   <data name="Filter.." xml:space="preserve">
     <value>篩選..</value>
@@ -1120,10 +1129,10 @@
     <value>您確定要刪除「{0}」嗎？</value>
   </data>
   <data name="Are you sure you want to empty the recycle bin? This action cannot be undone." xml:space="preserve">
-    <value>您確定要清空資源回收筒嗎？此操作無法復原。</value>
+    <value>確定要清空回收站嗎？此操作無法復原。</value>
   </data>
   <data name="Are you sure you want to publish this post now?" xml:space="preserve">
-    <value>您確定要立即發布這篇文章嗎？</value>
+    <value>確定要立即發佈這篇文章嗎？</value>
   </data>
   <data name="Category deleted" xml:space="preserve">
     <value>分類已刪除</value>
@@ -1153,31 +1162,34 @@
     <value>文章已刪除。</value>
   </data>
   <data name="Post postponed for {0} hour(s)" xml:space="preserve">
-    <value>文章已延後 {0} 小時</value>
+    <value>文章已延遲 {0} 小時發佈</value>
   </data>
   <data name="Post published" xml:space="preserve">
-    <value>文章已發布</value>
+    <value>文章已發佈</value>
+  </data>
+  <data name="Post automatically published" xml:space="preserve">
+    <value>文章已自動發佈</value>
   </data>
   <data name="Post restored" xml:space="preserve">
     <value>文章已還原</value>
   </data>
   <data name="Post scheduler is disabled, pending posts will not be published automatically." xml:space="preserve">
-    <value>文章排程器已停用，待發布的文章不會自動發布。</value>
+    <value>文章定時發佈功能已停用，待發佈的文章不會自動發佈。</value>
   </data>
   <data name="Search user name or email" xml:space="preserve">
-    <value>搜尋使用者名稱或電子郵件</value>
+    <value>搜尋用戶名稱或電郵地址</value>
   </data>
   <data name="Comment deleted" xml:space="preserve">
-    <value>評論已刪除</value>
+    <value>留言已刪除</value>
   </data>
   <data name="Comments deleted" xml:space="preserve">
-    <value>評論已刪除</value>
+    <value>留言已刪除</value>
   </data>
   <data name="Are you sure you want to delete this comment?" xml:space="preserve">
-    <value>確定要刪除這則評論嗎？</value>
+    <value>確定要刪除此留言嗎？</value>
   </data>
   <data name="Are you sure you want to delete selected comments?" xml:space="preserve">
-    <value>確定要刪除選取的評論嗎？</value>
+    <value>確定要刪除已選取的留言嗎？</value>
   </data>
   <data name="Widgets" xml:space="preserve">
     <value>小工具</value>
@@ -1195,13 +1207,13 @@
     <value>管理分類連結</value>
   </data>
   <data name="Manage comments link" xml:space="preserve">
-    <value>管理評論連結</value>
+    <value>管理留言連結</value>
   </data>
   <data name="Manage tags link" xml:space="preserve">
     <value>管理標籤連結</value>
   </data>
   <data name="Manage menus link" xml:space="preserve">
-    <value>管理選單連結</value>
+    <value>管理功能表連結</value>
   </data>
   <data name="Manage widgets" xml:space="preserve">
     <value>管理小工具</value>
@@ -1213,7 +1225,7 @@
     <value>包含 AI 輔助內容</value>
   </data>
   <data name="This post contains AI-generated or AI-assisted edits." xml:space="preserve">
-    <value>本文包含 AI 創作或輔助潤色的部分。</value>
+    <value>本文包含由 AI 產生或輔助編輯的內容。</value>
   </data>
   <data name="Sort" xml:space="preserve">
     <value>排序</value>
@@ -1237,10 +1249,10 @@
     <value>所有語言</value>
   </data>
   <data name="Published from" xml:space="preserve">
-    <value>發布起始日期</value>
+    <value>發佈開始日期</value>
   </data>
   <data name="Published to" xml:space="preserve">
-    <value>發布結束日期</value>
+    <value>發佈結束日期</value>
   </data>
   <data name="Clear" xml:space="preserve">
     <value>清除</value>
@@ -1291,34 +1303,34 @@
     <value>關鍵字（以逗號 "," 分隔）</value>
   </data>
   <data name="Schedule Publish" xml:space="preserve">
-    <value>排程發布</value>
+    <value>定時發佈</value>
   </data>
   <data name="Modify Slug" xml:space="preserve">
     <value>修改 Slug</value>
   </data>
   <data name="This post was published for a period of time, changing slug will result in breaking SEO, would you like to continue?" xml:space="preserve">
-    <value>此文章已發布一段時間，修改 Slug 會影響 SEO，是否繼續？</value>
+    <value>此文章已發佈一段時間，更改 Slug 會影響搜尋引擎優化（SEO），是否繼續？</value>
   </data>
   <data name="Scheduled for: {0}" xml:space="preserve">
-    <value>排程發布：{0}</value>
+    <value>預定發佈時間：{0}</value>
   </data>
   <data name="Please select a scheduled publish time." xml:space="preserve">
-    <value>請選擇排程發布時間。</value>
+    <value>請選擇預定發佈時間。</value>
   </data>
   <data name="Client time zone information is invalid. Please reload the page and choose the time again." xml:space="preserve">
-    <value>用戶端時區資訊無效。請重新整理頁面並重新選擇時間。</value>
+    <value>用戶端時區資料無效。請重新整理頁面並重新選擇時間。</value>
   </data>
   <data name="The selected time does not exist in this time zone because of a daylight-saving transition. Please choose another time." xml:space="preserve">
-    <value>由於日光節約時間切換，所選時間在此時區中不存在。請選擇其他時間。</value>
+    <value>由於夏令時間轉換，所選時間在此時區中不存在。請選擇其他時間。</value>
   </data>
   <data name="The selected time occurs twice in this time zone because of a daylight-saving transition. Please choose another time." xml:space="preserve">
-    <value>由於日光節約時間切換，所選時間在此時區中會出現兩次。請選擇其他時間。</value>
+    <value>由於夏令時間轉換，所選時間在此時區中會出現兩次。請選擇其他時間。</value>
   </data>
   <data name="Edit Post" xml:space="preserve">
     <value>編輯文章</value>
   </data>
   <data name="Post unpublished" xml:space="preserve">
-    <value>文章已取消發布</value>
+    <value>文章已取消發佈</value>
   </data>
   <data name="[-21, -30]: before Profile, [-11, -20]: before Tags, [-1, -10]: before Categories, [0, 999]: after Categories" xml:space="preserve">
     <value>[-21, -30]：在個人資料之前，[-11, -20]：在標籤之前，[-1, -10]：在分類之前，[0, 999]：在分類之後</value>
@@ -1329,8 +1341,8 @@
   <data name="{0} posts" xml:space="preserve">
     <value>{0} 篇文章</value>
   </data>
-  <data name="* Changing site icon requires restarting the application" xml:space="preserve">
-    <value>* 變更網站圖示需要重新啟動應用程式</value>
+  <data name="The site icon updates immediately after a successful upload. Your browser may still show the previous icon from its cache." xml:space="preserve">
+    <value>上傳成功後，網站圖示會立即更新。瀏覽器可能因緩存而繼續顯示舊圖示。</value>
   </data>
   <data name="* Global script that will be injected into every page&apos;s {0} section." xml:space="preserve">
     <value>* 將注入到每個頁面 {0} 區段的全域指令碼。</value>
@@ -1342,7 +1354,7 @@
     <value>* 請使用有效的 {0} 程式碼。</value>
   </data>
   <data name="Actions" xml:space="preserve">
-    <value>動作</value>
+    <value>操作</value>
   </data>
   <data name="Active tags" xml:space="preserve">
     <value>活躍標籤</value>
@@ -1386,9 +1398,6 @@
   <data name="Are you sure you want to clear all activity logs? This action will be recorded." xml:space="preserve">
     <value>確定要清除所有活動記錄嗎？此操作將被記錄。</value>
   </data>
-  <data name="Are you sure you want to delete this activity log?" xml:space="preserve">
-    <value>確定要刪除此活動記錄嗎？</value>
-  </data>
   <data name="Are you sure you want to remove this button?" xml:space="preserve">
     <value>確定要移除此按鈕嗎？</value>
   </data>
@@ -1402,7 +1411,7 @@
     <value>返回</value>
   </data>
   <data name="Be at least 8 characters long." xml:space="preserve">
-    <value>至少 8 個字元。</value>
+    <value>長度至少為 8 個字元。</value>
   </data>
   <data name="Bootstrap button classes excluding &apos;btn&apos; (e.g., btn-sm btn-outline-primary, btn-danger)" xml:space="preserve">
     <value>不含 &apos;btn&apos; 的 Bootstrap 按鈕類別（例如 btn-sm btn-outline-primary、btn-danger）</value>
@@ -1459,10 +1468,10 @@
     <value>降冪</value>
   </data>
   <data name="Display Order must be between -30 and 999." xml:space="preserve">
-    <value>顯示順序必須介於 -30 和 999 之間。</value>
+    <value>顯示次序必須介乎 -30 至 999。</value>
   </data>
   <data name="Domain" xml:space="preserve">
-    <value>網域</value>
+    <value>域名</value>
   </data>
   <data name="e.g. https://cdn.edi.wang/ediwang-images" xml:space="preserve">
     <value>例如 https://cdn.edi.wang/ediwang-images</value>
@@ -1483,7 +1492,7 @@
     <value>編輯標籤</value>
   </data>
   <data name="Email" xml:space="preserve">
-    <value>電子郵件</value>
+    <value>電郵</value>
   </data>
   <data name="Enabled" xml:space="preserve">
     <value>已啟用</value>
@@ -1533,11 +1542,14 @@
   <data name="Image URL is required" xml:space="preserve">
     <value>圖片 URL 為必填項</value>
   </data>
+  <data name="SEO" xml:space="preserve">
+    <value>SEO</value>
+  </data>
   <data name="Index Now" xml:space="preserve">
     <value>IndexNow</value>
   </data>
   <data name="IP Address" xml:space="preserve">
-    <value>IP 位址</value>
+    <value>IP 地址</value>
   </data>
   <data name="Languages" xml:space="preserve">
     <value>語言</value>
@@ -1579,10 +1591,7 @@
     <value>正在載入小工具...</value>
   </data>
   <data name="Local account is not secure. It&apos;s recommended to use {0} for authentication. Click {1} to configure." xml:space="preserve">
-    <value>本機帳戶不夠安全。建議使用 {0} 進行驗證。點選 {1} 進行設定。</value>
-  </data>
-  <data name="Log deleted" xml:space="preserve">
-    <value>記錄已刪除</value>
+    <value>本機帳戶不夠安全。建議使用 {0} 進行身份驗證。按下 {1} 進行設定。</value>
   </data>
   <data name="Activity logs are cleared" xml:space="preserve">
     <value>活動記錄已清除</value>
@@ -1615,7 +1624,7 @@
     <value>新分頁</value>
   </data>
   <data name="New username" xml:space="preserve">
-    <value>新使用者名稱</value>
+    <value>新用戶名稱</value>
   </data>
   <data name="No active tags found" xml:space="preserve">
     <value>找不到活躍標籤</value>
@@ -1672,7 +1681,7 @@
     <value>頁面已還原</value>
   </data>
   <data name="Page Size" xml:space="preserve">
-    <value>頁面大小</value>
+    <value>每頁項目數量</value>
   </data>
   <data name="Password updated." xml:space="preserve">
     <value>密碼已更新。</value>
@@ -1684,19 +1693,19 @@
     <value>請提供有效的標籤名稱。</value>
   </data>
   <data name="Powered by" xml:space="preserve">
-    <value>由以下專案提供支援：</value>
+    <value>技術支援：</value>
   </data>
   <data name="Saving..." xml:space="preserve">
     <value>正在儲存...</value>
   </data>
   <data name="Schedule cancelled, post moved to drafts" xml:space="preserve">
-    <value>排程已取消，文章已移至草稿</value>
+    <value>已取消定時發佈，文章已移至草稿</value>
   </data>
   <data name="Send" xml:space="preserve">
     <value>傳送</value>
   </data>
   <data name="Set a time in your local time zone to schedule the post to be automatically published." xml:space="preserve">
-    <value>設定本地時區中的時間，以排程文章自動發布。</value>
+    <value>請按本地時區設定文章自動發佈的時間。</value>
   </data>
   <data name="Set to 0 to hide tags widget" xml:space="preserve">
     <value>設定為 0 可隱藏標籤小工具</value>
@@ -1714,7 +1723,7 @@
     <value>排序依據</value>
   </data>
   <data name="Sort Order" xml:space="preserve">
-    <value>排序順序</value>
+    <value>排序次序</value>
   </data>
   <data name="Source Title" xml:space="preserve">
     <value>來源標題</value>
@@ -1774,7 +1783,7 @@
     <value>小工具已刪除</value>
   </data>
   <data name="Widget Information" xml:space="preserve">
-    <value>小工具資訊</value>
+    <value>小工具資料</value>
   </data>
   <data name="Widget Type" xml:space="preserve">
     <value>小工具類型</value>
@@ -1789,10 +1798,10 @@
     <value>最多可以新增 3 個按鈕</value>
   </data>
   <data name="You have unsaved changes, are you sure to leave this page?" xml:space="preserve">
-    <value>你有未儲存的變更，確定要離開此頁面嗎？</value>
+    <value>您有尚未儲存的變更，確定要離開此頁面嗎？</value>
   </data>
   <data name="Your password must be:" xml:space="preserve">
-    <value>你的密碼必須符合：</value>
+    <value>您的密碼必須符合以下要求：</value>
   </data>
   <data name="Create Time" xml:space="preserve">
     <value>建立時間</value>
@@ -1807,19 +1816,19 @@
     <value>請選擇圖片檔案。</value>
   </data>
   <data name="Reply posted" xml:space="preserve">
-    <value>回覆已發布</value>
+    <value>回覆已發佈</value>
   </data>
   <data name="The File APIs are not fully supported in this browser." xml:space="preserve">
     <value>此瀏覽器不完全支援 File API。</value>
   </data>
   <data name="Theme deleted." xml:space="preserve">
-    <value>佈景主題已刪除。</value>
+    <value>主題已刪除。</value>
   </data>
   <data name="Dashboard" xml:space="preserve">
-    <value>儀表板</value>
+    <value>資訊主頁</value>
   </data>
   <data name="Blog overview" xml:space="preserve">
-    <value>部落格概覽</value>
+    <value>網誌概覽</value>
   </data>
   <data name="New Post" xml:space="preserve">
     <value>新增文章</value>
@@ -1831,10 +1840,13 @@
     <value>昨日</value>
   </data>
   <data name="This Week" xml:space="preserve">
-    <value>本週</value>
+    <value>本星期</value>
   </data>
   <data name="This Month" xml:space="preserve">
     <value>本月</value>
+  </data>
+  <data name="This Year" xml:space="preserve">
+    <value>今年</value>
   </data>
   <data name="Taxonomy" xml:space="preserve">
     <value>分類與標籤</value>
@@ -1861,13 +1873,13 @@
     <value>已更新</value>
   </data>
   <data name="Authenticator code" xml:space="preserve">
-    <value>驗證器代碼</value>
+    <value>驗證碼</value>
   </data>
   <data name="Set up Authenticator" xml:space="preserve">
     <value>設定驗證器</value>
   </data>
   <data name="Authenticator QR code" xml:space="preserve">
-    <value>驗證器 QR Code</value>
+    <value>驗證器二維碼</value>
   </data>
   <data name="Manual setup key" xml:space="preserve">
     <value>手動設定金鑰</value>
@@ -1875,11 +1887,17 @@
   <data name="Verify" xml:space="preserve">
     <value>驗證</value>
   </data>
+  <data name="Remember this device" xml:space="preserve">
+    <value>記住此裝置</value>
+  </data>
+  <data name="Skip authenticator codes for 30 days. Only use this on a device you trust." xml:space="preserve">
+    <value>30 天內無需輸入驗證碼。請只在信任的裝置上使用。</value>
+  </data>
   <data name="Verify Authenticator" xml:space="preserve">
-    <value>驗證身份驗證器</value>
+    <value>確認驗證器</value>
   </data>
   <data name="Local account sign-in is protected by an authenticator app." xml:space="preserve">
-    <value>本機帳號登入已受到驗證器應用程式保護。</value>
+    <value>本機帳戶登入受驗證器應用程式保護。</value>
   </data>
   <data name="Reset Authenticator" xml:space="preserve">
     <value>重設驗證器</value>
@@ -1888,37 +1906,34 @@
     <value>目前密碼</value>
   </data>
   <data name="Resetting the authenticator signs you out and requires setting up a new authenticator app on the next sign-in." xml:space="preserve">
-    <value>重設驗證器會讓你登出，並要求你在下次登入時設定新的驗證器應用程式。</value>
+    <value>重設驗證器會將您登出，並要求您在下次登入時設定新的驗證器應用程式。</value>
   </data>
   <data name="Update your local username and password for administrator sign-in." xml:space="preserve">
-    <value>更新管理員登入使用的本機使用者名稱與密碼。</value>
+    <value>更新管理員登入所用的本機用戶名稱及密碼。</value>
   </data>
   <data name="Clear the current authenticator setup and enroll a new app on next sign-in." xml:space="preserve">
     <value>清除目前驗證器設定，並在下次登入時綁定新的應用程式。</value>
   </data>
   <data name="Email notifications are disabled." xml:space="preserve">
-    <value>Email 通知已停用。</value>
+    <value>電郵通知已停用。</value>
   </data>
   <data name="Email Notifications" xml:space="preserve">
-    <value>Email 通知</value>
+    <value>電郵通知</value>
   </data>
   <data name="Please configure email provider settings in appsettings.json." xml:space="preserve">
-    <value>請在 `appsettings.json` 中設定郵件提供者設定。</value>
+    <value>請在 appsettings.json 中設定電郵服務提供者。</value>
   </data>
   <data name="Email notifications are not configured. Add email provider settings to enable this feature." xml:space="preserve">
-    <value>尚未設定電子郵件通知。請新增郵件提供者設定以啟用此功能。</value>
+    <value>尚未設定電郵通知。請加入電郵服務提供者設定以啟用此功能。</value>
   </data>
   <data name="Email notification configuration is invalid." xml:space="preserve">
-    <value>電子郵件通知設定無效。</value>
-  </data>
-  <data name="Provider" xml:space="preserve">
-    <value>提供者</value>
+    <value>電郵通知設定無效。</value>
   </data>
   <data name="Sender Address" xml:space="preserve">
-    <value>寄件者地址</value>
+    <value>寄件者電郵地址</value>
   </data>
   <data name="Test email is queued." xml:space="preserve">
-    <value>測試郵件已加入佇列。</value>
+    <value>測試電郵已加入隊列。</value>
   </data>
   <data name="Verification Files" xml:space="preserve">
     <value>驗證檔案</value>
@@ -2002,12 +2017,149 @@
     <value>預設編輯器</value>
   </data>
   <data name="Applies to new posts only." xml:space="preserve">
-    <value>僅適用於新建文章。</value>
+    <value>只適用於新文章。</value>
   </data>
   <data name="Enable Markdown links in comments and replies" xml:space="preserve">
-    <value>啟用評論及回覆中的 Markdown 連結</value>
+    <value>啟用留言及回覆中的 Markdown 連結</value>
   </data>
   <data name="Changes wake the scheduler. Publishing already in progress is not canceled." xml:space="preserve">
     <value>變更會喚醒定時發佈工作。已經開始的發佈不會被取消。</value>
+  </data>
+  <data name="Account authenticator reset" xml:space="preserve"><value>帳戶驗證器已重設</value></data>
+  <data name="Account profile updated" xml:space="preserve">
+    <value>帳戶資料已更新</value>
+  </data>
+  <data name="Account password updated" xml:space="preserve"><value>帳戶密碼已更新</value></data>
+  <data name="Activity" xml:space="preserve"><value>活動</value></data>
+  <data name="Activity log" xml:space="preserve"><value>活動記錄</value></data>
+  <data name="Activity log cleared" xml:space="preserve"><value>活動記錄已清空</value></data>
+  <data name="Actor type" xml:space="preserve"><value>操作者類型</value></data>
+  <data name="Administrator" xml:space="preserve"><value>管理員</value></data>
+  <data name="Advanced settings updated" xml:space="preserve"><value>進階設定已更新</value></data>
+  <data name="Appearance settings updated" xml:space="preserve"><value>外觀設定已更新</value></data>
+  <data name="Avatar updated" xml:space="preserve"><value>頭像已更新</value></data>
+  <data name="Category ID" xml:space="preserve"><value>分類 ID</value></data>
+  <data name="Comment approval toggled" xml:space="preserve"><value>留言審核狀態已切換</value></data>
+  <data name="Comment ID" xml:space="preserve"><value>留言 ID</value></data>
+  <data name="Comment IDs" xml:space="preserve"><value>留言 ID 清單</value></data>
+  <data name="Comment replied to" xml:space="preserve"><value>留言已回覆</value></data>
+  <data name="Comment settings updated" xml:space="preserve"><value>留言設定已更新</value></data>
+  <data name="Content settings updated" xml:space="preserve"><value>內容設定已更新</value></data>
+  <data name="Count" xml:space="preserve"><value>數量</value></data>
+  <data name="Custom menu settings updated" xml:space="preserve"><value>自訂功能表設定已更新</value></data>
+  <data name="Deleted count" xml:space="preserve"><value>刪除數量</value></data>
+  <data name="Detail" xml:space="preserve"><value>詳細資料</value></data>
+  <data name="Enable CDN redirect" xml:space="preserve"><value>啟用 CDN 重新導向</value></data>
+  <data name="Enable watermark" xml:space="preserve"><value>啟用水印</value></data>
+  <data name="File ID" xml:space="preserve"><value>檔案 ID</value></data>
+  <data name="File size" xml:space="preserve"><value>檔案大小</value></data>
+  <data name="SEO settings updated" xml:space="preserve"><value>SEO 設定已更新</value></data>
+  <data name="General settings updated" xml:space="preserve"><value>一般設定已更新</value></data>
+  <data name="Hours" xml:space="preserve"><value>小時數</value></data>
+  <data name="Image dimensions" xml:space="preserve"><value>圖片尺寸</value></data>
+  <data name="Image settings updated" xml:space="preserve"><value>圖片設定已更新</value></data>
+  <data name="Image uploaded" xml:space="preserve"><value>圖片已上傳</value></data>
+  <data name="Images" xml:space="preserve"><value>圖片</value></data>
+  <data name="No additional activity details are available." xml:space="preserve"><value>沒有其他活動詳細資料。</value></data>
+  <data name="Notification settings updated" xml:space="preserve"><value>通知設定已更新</value></data>
+  <data name="Page created" xml:space="preserve"><value>頁面已建立</value></data>
+  <data name="Page ID" xml:space="preserve"><value>頁面 ID</value></data>
+  <data name="Page moved to recycle bin" xml:space="preserve"><value>頁面已移至回收站</value></data>
+  <data name="Page permanently deleted" xml:space="preserve"><value>頁面已永久刪除</value></data>
+  <data name="Page recycle bin cleared" xml:space="preserve"><value>頁面回收站已清空</value></data>
+  <data name="Page updated" xml:space="preserve"><value>頁面已更新</value></data>
+  <data name="Post created" xml:space="preserve"><value>文章已建立</value></data>
+  <data name="Post ID" xml:space="preserve"><value>文章 ID</value></data>
+  <data name="Post moved to recycle bin" xml:space="preserve"><value>文章已移至回收站</value></data>
+  <data name="Post permanently deleted" xml:space="preserve"><value>文章已永久刪除</value></data>
+  <data name="Post recycle bin cleared" xml:space="preserve"><value>文章回收站已清空</value></data>
+  <data name="Post schedule cancelled" xml:space="preserve"><value>文章定時發佈已取消</value></data>
+  <data name="Post schedule postponed" xml:space="preserve"><value>文章定時發佈已延遲</value></data>
+  <data name="Post status" xml:space="preserve"><value>文章狀態</value></data>
+  <data name="Post updated" xml:space="preserve"><value>文章已更新</value></data>
+  <data name="Previous file name" xml:space="preserve"><value>原檔案名稱</value></data>
+  <data name="Require comment review" xml:space="preserve"><value>留言須經審核</value></data>
+  <data name="Site assets" xml:space="preserve"><value>網站資源</value></data>
+  <data name="Site icon updated" xml:space="preserve"><value>網站圖示已更新</value></data>
+  <data name="Site title" xml:space="preserve"><value>網站標題</value></data>
+  <data name="Skip watermark" xml:space="preserve"><value>略過水印</value></data>
+  <data name="Subscription settings updated" xml:space="preserve"><value>訂閱設定已更新</value></data>
+  <data name="Tag created" xml:space="preserve"><value>標籤已建立</value></data>
+  <data name="Tag ID" xml:space="preserve"><value>標籤 ID</value></data>
+  <data name="Target ID" xml:space="preserve"><value>目標 ID</value></data>
+  <data name="Theme created" xml:space="preserve"><value>主題已建立</value></data>
+  <data name="Theme deleted" xml:space="preserve"><value>主題已刪除</value></data>
+  <data name="Theme ID" xml:space="preserve"><value>主題 ID</value></data>
+  <data name="Themes" xml:space="preserve"><value>主題</value></data>
+  <data name="User Agent" xml:space="preserve"><value>用戶代理程式</value></data>
+  <data name="Verification file toggled" xml:space="preserve"><value>驗證檔案狀態已切換</value></data>
+  <data name="Widget ID" xml:space="preserve"><value>小工具 ID</value></data>
+  <data name="Draft" xml:space="preserve"><value>草稿</value></data>
+  <data name="Enable JSON-LD BlogPosting" xml:space="preserve"><value>啟用 JSON-LD BlogPosting</value></data>
+  <data name="Enable Post Scheduler" xml:space="preserve"><value>啟用文章定時發佈</value></data>
+  <data name="Enable view count" xml:space="preserve"><value>啟用瀏覽次數統計</value></data>
+  <data name="Maximum page numbers to display in pagination" xml:space="preserve"><value>分頁最多顯示的頁碼數</value></data>
+  <data name="New value" xml:space="preserve"><value>新值</value></data>
+  <data name="No change values are available for this update." xml:space="preserve"><value>此更新沒有可顯示的變更值。</value></data>
+  <data name="Previous value" xml:space="preserve"><value>舊值</value></data>
+  <data name="Setting" xml:space="preserve"><value>設定項目</value></data>
+  <data name="Settings changes" xml:space="preserve"><value>設定變更</value></data>
+  <data name="Show comment section on mobile screens" xml:space="preserve"><value>在流動裝置上顯示留言區</value></data>
+  <data name="Watermark opacity" xml:space="preserve"><value>水印不透明度</value></data>
+  <data name="Move up" xml:space="preserve">
+    <value>上移</value>
+  </data>
+  <data name="Move down" xml:space="preserve">
+    <value>下移</value>
+  </data>
+  <data name="Set up Account" xml:space="preserve">
+    <value>設定帳戶</value>
+  </data>
+  <data name="Create Account" xml:space="preserve">
+    <value>建立帳戶</value>
+  </data>
+  <data name="Update your password for administrator sign-in." xml:space="preserve"><value>更新用於管理員登入的密碼。</value></data>
+  <data name="Owner email updated." xml:space="preserve"><value>擁有人電郵已更新。</value></data>
+  <data name="This public address is used for feeds, Gravatar and blog notifications." xml:space="preserve"><value>此公開地址用於訂閱來源、Gravatar 及網誌通知。</value></data>
+  <data name="Changing this address signs you out. Sign in again with the new email." xml:space="preserve"><value>更改此地址後將登出，請使用新電郵重新登入。</value></data>
+  <data name="Third-party sign-in" xml:space="preserve"><value>第三方登入</value></data>
+  <data name="Configure an OpenID Connect provider and link an external account." xml:space="preserve"><value>設定 OpenID Connect 供應商並連結外部帳戶。</value></data>
+  <data name="Manage" xml:space="preserve"><value>管理</value></data>
+  <data name="External sign-in could not be completed. Check the provider settings and try again." xml:space="preserve"><value>未能完成外部登入。請檢查供應商設定後再試。</value></data>
+  <data name="Confirm the external account" xml:space="preserve"><value>確認外部帳戶</value></data>
+  <data name="Bind account" xml:space="preserve"><value>連結帳戶</value></data>
+  <data name="Unbind account" xml:space="preserve"><value>解除帳戶連結</value></data>
+  <data name="Bound account" xml:space="preserve"><value>已連結帳戶</value></data>
+  <data name="Waiting for account binding" xml:space="preserve"><value>等待連結帳戶</value></data>
+  <data name="Provider display name" xml:space="preserve"><value>供應商顯示名稱</value></data>
+  <data name="Public HTTPS authority" xml:space="preserve"><value>公網 HTTPS Authority</value></data>
+  <data name="Client ID" xml:space="preserve"><value>用戶端 ID</value></data>
+  <data name="Client secret" xml:space="preserve"><value>用戶端密鑰</value></data>
+  <data name="Leave blank to keep the saved secret." xml:space="preserve"><value>留空以保留已儲存的密鑰。</value></data>
+  <data name="Redirect URI" xml:space="preserve"><value>重新導向 URI</value></data>
+  <data name="Delete provider" xml:space="preserve"><value>刪除供應商</value></data>
+  <data name="Delete the provider configuration and its account binding." xml:space="preserve"><value>刪除供應商設定及其帳戶連結。</value></data>
+  <data name="Confirm deletion before deleting the provider." xml:space="preserve"><value>請確認刪除供應商。</value></data>
+  <data name="Enter valid provider settings." xml:space="preserve"><value>請輸入有效的供應商設定。</value></data>
+  <data name="The binding request expired. Try again." xml:space="preserve"><value>連結要求已逾時，請再試。</value></data>
+  <data name="The provider settings changed. Reload the page and try again." xml:space="preserve"><value>供應商設定已變更。請重新載入頁面後再試。</value></data>
+  <data name="The provider settings could not be saved. Reload the page and try again." xml:space="preserve"><value>未能儲存供應商設定。請重新載入頁面後再試。</value></data>
+  <data name="Verify your local password and applicable authenticator code." xml:space="preserve"><value>請驗證本機密碼及所需的驗證碼。</value></data>
+  <data name="Enter a client secret for this provider." xml:space="preserve"><value>請輸入此供應商的用戶端密鑰。</value></data>
+  <data name="Enter a valid name, public HTTPS authority, client ID and client secret." xml:space="preserve"><value>請輸入有效的名稱、公網 HTTPS Authority、用戶端 ID 及用戶端密鑰。</value></data>
+  <data name="The provider returned an invalid external account." xml:space="preserve"><value>供應商傳回無效的外部帳戶。</value></data>
+  <data name="Unbind the external account before changing the authority or client ID." xml:space="preserve"><value>更改 Authority 或用戶端 ID 前，請先解除外部帳戶的連結。</value></data>
+  <data name="Step {0} of {1}" xml:space="preserve"><value>第 {0} 步，共 {1} 步</value></data>
+  <data name="Verify your identity" xml:space="preserve"><value>驗證身分</value></data>
+  <data name="Sign in with {0}" xml:space="preserve"><value>使用 {0} 登入</value></data>
+  <data name="Third-party sign-in failed. Try again or sign in with your local account." xml:space="preserve"><value>第三方登入失敗。請再試一次，或使用本機帳戶登入。</value></data>
+  <data name="Choose a valid PNG or JPEG image." xml:space="preserve">
+    <value>請選擇有效的 PNG 或 JPEG 圖片。</value>
+  </data>
+  <data name="Drag or use the arrow keys to position the image. Scroll to zoom." xml:space="preserve">
+    <value>拖曳圖片或使用方向鍵調整位置。使用滑鼠滾輪縮放。</value>
+  </data>
+  <data name="Zoom" xml:space="preserve">
+    <value>縮放</value>
   </data>
 </root>

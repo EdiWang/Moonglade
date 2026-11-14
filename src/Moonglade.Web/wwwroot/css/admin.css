@@ -18,6 +18,11 @@
 }
 
 .admin-body {
+    --admin-sidebar-width: 190px;
+    /* Keep dropdown colors tied to the page theme, not the dark navbar. */
+    --admin-user-menu-bg: var(--bs-body-bg);
+    --admin-user-menu-color: var(--bs-body-color);
+    --admin-user-menu-hover-bg: var(--bs-tertiary-bg);
     display: flex;
     flex-direction: column;
     height: 100dvh;
@@ -70,6 +75,136 @@
     box-shadow: inherit !important;
 }
 
+.admin-navbar-has-navigation {
+    display: grid;
+    grid-template-columns: calc(var(--admin-sidebar-width) - 1rem) minmax(0, 1fr) max-content;
+    height: 52px;
+    padding: 0 1rem;
+}
+
+.admin-navbar > .navbar-brand {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.admin-navbar-has-navigation > .navbar-collapse {
+    justify-self: end;
+    width: auto;
+}
+
+@media (max-width: 575.98px) {
+    .admin-navbar-has-navigation {
+        grid-template-columns: minmax(0, 1fr) max-content;
+        grid-template-rows: 52px 40px;
+        height: auto;
+    }
+
+    .admin-navbar-has-navigation > .admin-secondary-nav {
+        grid-area: 2 / 1 / 3 / -1;
+    }
+}
+
+.admin-user-toggle {
+    max-width: min(32rem, 40vw);
+}
+
+.admin-user-toggle:focus-visible {
+    outline: 2px solid currentColor;
+    outline-offset: 2px;
+    box-shadow: none;
+}
+
+.admin-user-name {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+#admin-user-menu {
+    max-width: min(32rem, calc(100vw - 2rem));
+    --bs-dropdown-bg: var(--admin-user-menu-bg);
+    --bs-dropdown-color: var(--admin-user-menu-color);
+    --bs-dropdown-link-color: var(--admin-user-menu-color);
+    --bs-dropdown-link-hover-color: var(--admin-user-menu-color);
+    --bs-dropdown-link-hover-bg: var(--admin-user-menu-hover-bg);
+    background-color: var(--bs-dropdown-bg);
+    color: var(--bs-dropdown-color);
+}
+
+#admin-user-menu .dropdown-header {
+    white-space: normal;
+    overflow-wrap: anywhere;
+}
+
+#admin-user-menu .dropdown-header:has(.aspnet-tag-moonglade-userinfo:empty) {
+    display: none;
+}
+
+#admin-user-menu .dropdown-item {
+    color: var(--bs-dropdown-link-color);
+}
+
+#admin-user-menu .dropdown-item:is(:hover, :focus) {
+    background-color: var(--bs-dropdown-link-hover-bg);
+    color: var(--bs-dropdown-link-hover-color);
+}
+
+#admin-user-menu .dropdown-item:is(.active, :active) {
+    background-color: var(--bs-dropdown-link-active-bg);
+    color: var(--bs-dropdown-link-active-color);
+}
+
+.admin-secondary-nav {
+    display: flex;
+    align-self: stretch;
+    min-width: 0;
+    overflow-x: auto;
+    overflow-y: hidden;
+    scroll-behavior: auto;
+    scrollbar-width: thin;
+    scrollbar-color: rgb(255 255 255 / 45%) transparent;
+}
+
+.admin-secondary-nav > .nav {
+    flex-wrap: nowrap;
+    padding: 0 8px;
+}
+
+.admin-secondary-nav .nav-item {
+    flex: none;
+    margin: 0;
+}
+
+.admin-secondary-nav .nav-link {
+    display: flex;
+    align-items: center;
+    height: 100%;
+    padding: 0 16px;
+    border-bottom: 3px solid transparent;
+    color: rgb(255 255 255 / 85%);
+    white-space: nowrap;
+}
+
+.admin-secondary-nav .nav-link:hover {
+    background-color: rgb(255 255 255 / 8%);
+    color: var(--bs-white);
+}
+
+.admin-secondary-nav .nav-link.active {
+    border-bottom-color: var(--bs-white);
+    background-color: rgb(255 255 255 / 12%);
+    color: var(--bs-white);
+    font-weight: 600;
+}
+
+.admin-secondary-nav .nav-link:focus-visible {
+    outline: 2px solid var(--bs-white);
+    outline-offset: -4px;
+}
+
 .admin-nav-head-pic {
     border: 1px solid var(--transparent-light-50);
     height: 24px;
@@ -77,9 +212,10 @@
 }
 
 .admin-nav {
-    flex: 0 0 190px;
+    flex: 0 0 var(--admin-sidebar-width);
+    min-width: 0;
     min-height: 0;
-    margin-left: 5px;
+    background-color: var(--bs-body-bg);
     border-right: 1px solid var(--bs-border-color);
     display: flex;
     flex-direction: column;
@@ -107,18 +243,369 @@
 }
 
 .admin-main {
+    display: flex;
+    flex-direction: column;
     flex: 1;
     min-width: 0;
     min-height: 0;
+    padding: 24px;
+    overflow: hidden;
+}
+
+/* Keep Bootstrap grid gutters inside the scrollport instead of clipping them. */
+.admin-main-body {
+    flex: 1;
+    min-height: 0;
+    margin: 0 -24px -24px;
+    padding: 0 24px 24px;
     overflow: auto;
 }
 
-.admin-toolbar {
-    margin-bottom: 25px !important;
+.admin-main-body:focus-visible {
+    outline-offset: -2px;
+}
 
-    .nav-pills .nav-link.active, .nav-pills .show > .nav-link {
-        background-color: var(--accent-color1);
+.admin-toolbar {
+    flex-shrink: 0;
+    margin-bottom: 16px;
+}
+
+.admin-toolbar-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 16px;
+}
+
+.admin-toolbar-group {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+}
+
+.admin-offcanvas-actions {
+    grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
+}
+
+.admin-panel {
+    padding: 24px;
+    background-color: var(--bs-body-bg);
+    border: 1px solid var(--bs-border-color);
+    border-radius: 8px;
+}
+
+.admin-data-table > thead {
+    --bs-table-bg: var(--bs-body-bg);
+}
+
+.admin-data-table td {
+    padding-top: 6px;
+    padding-bottom: 6px;
+    overflow-wrap: anywhere;
+}
+
+.admin-data-table > tbody > tr:last-child > td {
+    border-bottom: 0;
+}
+
+.admin-pagination .pagination {
+    --bs-pagination-padding-x: .75rem;
+    --bs-pagination-padding-y: .375rem;
+}
+
+.admin-pagination .form-select-sm {
+    padding-top: .375rem;
+    padding-bottom: .375rem;
+}
+
+.admin-list-item {
+    margin: 0;
+    padding-bottom: 16px;
+}
+
+.admin-list-item ~ .admin-list-item {
+    padding-top: 16px;
+    border-top: 1px solid var(--bs-border-color);
+}
+
+.admin-list-item:last-child {
+    padding-bottom: 0;
+}
+
+.admin-list-content {
+    min-width: 0;
+    overflow-wrap: anywhere;
+}
+
+.admin-list-content img {
+    max-width: 100%;
+    height: auto;
+}
+
+.admin-list-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    gap: 8px;
+    max-width: 100%;
+}
+
+.admin-card-grid {
+    --bs-gutter-x: 16px;
+    --bs-gutter-y: 16px;
+}
+
+.admin-card {
+    --bs-card-spacer-x: 24px;
+    --bs-card-spacer-y: 24px;
+    --bs-card-border-radius: 8px;
+    --bs-card-border-color: var(--bs-border-color);
+    --bs-card-bg: var(--bs-body-bg);
+    min-width: 0;
+    height: 100%;
+    overflow-wrap: anywhere;
+}
+
+.admin-card .card-title {
+    min-width: 0;
+}
+
+.admin-category-card {
+    --bs-card-spacer-x: 19px;
+    --bs-card-spacer-y: 19px;
+}
+
+.admin-card-actions > .btn {
+    --bs-btn-hover-bg: var(--bs-tertiary-bg);
+    --bs-btn-active-bg: var(--bs-tertiary-bg);
+    border-top-right-radius: calc(var(--bs-card-border-radius) - var(--bs-card-border-width));
+}
+
+.admin-card-actions > .dropdown-menu {
+    --bs-dropdown-min-width: 8rem;
+    --bs-dropdown-font-size: .875rem;
+    --bs-dropdown-item-padding-x: .75rem;
+    --bs-dropdown-item-padding-y: .25rem;
+}
+
+.admin-widget-preview img {
+    max-width: 100%;
+    height: auto;
+}
+
+.admin-widget-preview .btn-group {
+    max-width: 100%;
+}
+
+.admin-settings-page {
+    max-width: 1120px;
+    min-width: 0;
+}
+
+.admin-settings-section + .admin-settings-section {
+    margin-top: 24px;
+}
+
+.admin-settings-page .admin-subtitle {
+    margin-bottom: 16px;
+}
+
+.admin-settings-section > .admin-subtitle:not(:first-child) {
+    margin-top: 24px;
+}
+
+.admin-settings-page .settings-entry {
+    display: grid;
+    grid-template-columns: 32px minmax(0, 1fr) minmax(160px, 320px);
+    align-items: center;
+    gap: 8px 16px;
+    min-height: 72px;
+    margin: 0 0 5px;
+    padding: 16px 24px;
+    border: 1px solid var(--bs-border-color);
+    border-radius: 8px;
+    background-color: var(--bs-body-bg);
+    overflow-wrap: anywhere;
+}
+
+.admin-settings-page .settings-entry > .col,
+.admin-settings-page .settings-entry > [class*="col-"] {
+    width: auto;
+    min-width: 0;
+    padding: 0;
+}
+
+.admin-settings-page .settings-entry > .col-12 {
+    grid-column: 1 / -1;
+}
+
+:is(.admin-settings-expander, .admin-settings-group) {
+    margin-bottom: 5px;
+    border: 1px solid var(--bs-border-color);
+    border-radius: 8px;
+    background-color: var(--bs-body-bg);
+}
+
+.admin-settings-page :is(.admin-settings-expander, .admin-settings-group) .settings-entry {
+    margin: 0;
+    border: 0;
+    border-radius: 0;
+    background-color: transparent;
+}
+
+.admin-settings-page .settings-entry:hover {
+    background-color: var(--bs-tertiary-bg);
+}
+
+.admin-settings-page .admin-settings-expander-header {
+    position: relative;
+    grid-template-columns: 32px minmax(0, 1fr) minmax(160px, 320px) 40px;
+}
+
+.admin-settings-page .admin-settings-expander-header.admin-settings-heading-only {
+    grid-template-columns: 32px minmax(0, 1fr) 40px;
+}
+
+.admin-settings-expander-toggle {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    width: 100%;
+    height: 100%;
+    padding: 16px 36px;
+    border: 0;
+    border-radius: 8px;
+    background: transparent;
+    color: inherit;
+    cursor: pointer;
+}
+
+/* Keep setting controls above the full-row disclosure button. */
+.admin-settings-expander-header > .col-5 :is(a, button, input, label, select, textarea),
+.admin-settings-expander-header > .col > label.form-check-label {
+    position: relative;
+    z-index: 2;
+}
+
+.admin-settings-expander-toggle:focus-visible {
+    outline: 2px solid var(--bs-primary);
+    outline-offset: 2px;
+}
+
+.admin-settings-expander-toggle[aria-expanded="true"] > .bi {
+    transform: rotate(180deg);
+}
+
+.admin-settings-expander-body {
+    border-top: 1px solid var(--bs-border-color);
+}
+
+.admin-settings-page :is(.admin-settings-expander-body, .admin-settings-group) .settings-entry + .settings-entry {
+    border-top: 1px solid var(--bs-border-color);
+}
+
+.admin-settings-page .admin-settings-detail {
+    padding: 16px 24px;
+}
+
+.admin-settings-page .settings-entry.admin-profile-entry {
+    grid-template-columns: 80px minmax(0, 1fr) auto;
+}
+
+@media (max-width: 575.98px) {
+    .admin-settings-page .settings-entry.admin-profile-entry > :last-child {
+        grid-column: 2;
     }
+}
+
+.admin-profile-avatar {
+    position: relative;
+    width: 80px;
+    height: 80px;
+    padding: 0;
+    border: 0;
+    border-radius: 50%;
+    background: transparent;
+}
+
+.admin-profile-avatar > img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    border-radius: inherit;
+    object-fit: cover;
+}
+
+.admin-profile-avatar-overlay {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    border-radius: inherit;
+    background-color: rgb(0 0 0 / 50%);
+    color: #fff;
+    font-size: 1.5rem;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.admin-profile-avatar:is(:hover, :focus-visible) .admin-profile-avatar-overlay {
+    opacity: 1;
+}
+
+.admin-profile-avatar:focus-visible {
+    outline: 2px solid var(--bs-primary);
+    outline-offset: 2px;
+}
+
+.admin-settings-gallery .theme-selector-footer {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+    overflow-wrap: anywhere;
+}
+
+.admin-settings-panel {
+    min-width: 0;
+    overflow-wrap: anywhere;
+}
+
+.admin-settings-panel .settings-entry {
+    margin: 0;
+    padding: 16px 0;
+    border-bottom: 1px solid var(--bs-border-color);
+    background-color: transparent;
+}
+
+.admin-settings-panel .settings-entry:last-child {
+    border-bottom: 0;
+}
+
+.admin-settings-panel .settings-entry > .col,
+.admin-settings-panel .settings-entry > [class*="col-"] {
+    min-width: 0;
+}
+
+.admin-settings-panel .settings-entry > :first-child {
+    padding-left: 0;
+}
+
+.admin-settings-panel .settings-entry > :last-child {
+    padding-right: 0;
+}
+
+.admin-panel .empty-recycle {
+    height: auto;
+    padding-top: 0;
+}
+
+.admin-panel .empty-recycle p:last-child {
+    margin-bottom: 0;
 }
 
 .admin-toolbar-text {
@@ -131,10 +618,6 @@
     flex: 1;
     min-height: 0;
     overflow: hidden;
-}
-
-.admin-body-wrapper.toggled .admin-nav {
-    margin-left: -15rem;
 }
 
 .textarea-code {
@@ -253,19 +736,7 @@
         margin-inline-start: 6px;
     }
 
-    .admin-nav-section .list-group-item.active .positioning-region::before,
-    .admin-nav-section .list-group-item:hover .positioning-region::before {
-        content: "";
-        display: block;
-        position: absolute;
-        right: unset;
-        width: 3px;
-        height: 18px;
-        background: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), var(--accent-color1);
-        border-radius: 3px;
-        z-index: 5;
-    }
-
+    .admin-nav-section .list-group-item.active,
     .admin-nav-section .list-group-item:hover {
         background-color: var(--bs-gray-200);
     }
@@ -405,116 +876,6 @@
     background-color: var(--bs-white);
 }
 
-.local-account-actions {
-    align-content: center;
-    display: grid;
-    gap: 32px;
-    grid-template-columns: repeat(2, minmax(240px, 320px));
-    justify-content: center;
-    min-height: calc(100vh - 170px);
-    padding: 48px 16px;
-}
-
-.local-account-action {
-    appearance: none;
-    background-color: var(--bs-white);
-    border: 1px solid var(--bs-border-color);
-    border-radius: 8px;
-    box-shadow: 0 10px 28px rgba(0, 0, 0, 0.04);
-    color: var(--accent-color1);
-    cursor: pointer;
-    display: flex;
-    flex-direction: column;
-    font-family: inherit;
-    gap: 26px;
-    justify-content: center;
-    min-height: 300px;
-    padding: 28px;
-    text-align: center;
-    transition: border-color .18s ease, box-shadow .18s ease;
-}
-
-    .local-account-action:hover,
-    .local-account-action:focus {
-        border-color: var(--accent-color1);
-        box-shadow: 0 16px 36px rgba(0, 0, 0, 0.09);
-        color: var(--accent-color1);
-    }
-
-    .local-account-action:focus-visible {
-        outline: 3px solid rgba(13, 110, 253, 0.25);
-        outline-offset: 3px;
-    }
-
-.local-account-action-danger {
-    color: var(--bs-danger);
-}
-
-    .local-account-action-danger:hover,
-    .local-account-action-danger:focus {
-        border-color: var(--bs-danger);
-        color: var(--bs-danger);
-    }
-
-.local-account-action-icon {
-    align-items: center;
-    border-radius: 8px;
-    display: inline-flex;
-    font-size: 1.85rem;
-    height: 64px;
-    justify-content: center;
-    margin: 0 auto;
-    width: 64px;
-    background-color: color-mix(in srgb, currentColor 10%, transparent);
-}
-
-.local-account-action-body {
-    align-self: center;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    margin: 0;
-    max-width: 220px;
-}
-
-.local-account-action-title {
-    font-size: 1.2rem;
-    font-weight: 700;
-    line-height: 1.25;
-    text-align: center;
-}
-
-.local-account-action-description {
-    color: var(--bs-secondary-color);
-    font-size: 0.86rem;
-    font-weight: 400;
-    line-height: 1.55;
-    text-align: center;
-}
-
-@media (max-width: 767.98px) {
-    .local-account-actions {
-        grid-template-columns: minmax(0, 1fr);
-        min-height: auto;
-        padding: 24px 0;
-    }
-
-    .local-account-action {
-        min-height: 220px;
-        padding: 24px;
-    }
-
-    .local-account-action-icon {
-        font-size: 1.6rem;
-        height: 56px;
-        width: 56px;
-    }
-
-    .local-account-action-title {
-        font-size: 1.12rem;
-    }
-}
-
 .tags-dropdown .tagify__dropdown__item {
     display: inline-block;
     border-radius: 3px;
@@ -566,6 +927,42 @@
     align-items: center;
 }
 
+#avatarDropPrompt[hidden] {
+    display: none;
+}
+
+.avatar-crop-frame {
+    position: relative;
+    width: min(100%, 300px);
+    overflow: hidden;
+    border-radius: var(--bs-border-radius);
+}
+
+.avatar-crop-frame::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border: 1px solid rgba(255, 255, 255, .8);
+    border-radius: 50%;
+    box-shadow: 0 0 0 100vw rgba(0, 0, 0, .6);
+    pointer-events: none;
+}
+
+.avatar-crop-preview {
+    height: auto;
+    cursor: grab;
+    touch-action: none;
+}
+
+.avatar-crop-preview:active {
+    cursor: grabbing;
+}
+
+.avatar-crop-frame:focus-within {
+    outline: 2px solid var(--bs-body-color);
+    outline-offset: 2px;
+}
+
 .admin-side-options-container,
 .admin-taginput-container {
     background-color: var(--bs-white);
@@ -589,22 +986,13 @@
     background-color: var(--bs-body-bg);
 }
 
+[data-bs-theme="dark"] .admin-nav-section .list-group-item.active,
 [data-bs-theme="dark"] .admin-nav-section .list-group-item:hover {
-    background-color: var(--bs-body-bg);
+    background-color: var(--bs-tertiary-bg);
 }
 
 [data-bs-theme="dark"] .settings-entry {
     background-color: var(--bs-body-bg);
-}
-
-[data-bs-theme="dark"] .local-account-action {
-    background-color: var(--bs-body-bg);
-    box-shadow: none;
-}
-
-[data-bs-theme="dark"] .local-account-action:hover,
-[data-bs-theme="dark"] .local-account-action:focus {
-    box-shadow: 0 16px 36px rgba(0, 0, 0, 0.24);
 }
 
 [data-bs-theme="dark"] .image-drop-target {

@@ -1,243 +1,99 @@
 # Moonglade Engineering Reference
 
-Task-specific guidance supplements [AGENTS.md](../AGENTS.md); read only the applicable sections. Paths in backticks are repository-relative. [README.md](../README.md) covers deployment/configuration. Confirm details in the owning code and tests; ask the user if implementation conflicts with a project constraint.
+This reference describes implementation contracts by task. Follow [AGENTS.md](../AGENTS.md) for repository-wide rules and [README.md](../README.md) for operator instructions. Paths are relative to the repository root.
 
-## Technology Stack
+## Layers and Project Responsibilities
 
-| Area | Confirmed stack |
+| Project under `src/` | Responsibility |
 | --- | --- |
-| Language/runtime | C# on .NET 10.0 / ASP.NET Core 10.0; projects target `net10.0` with implicit usings enabled. |
-| Web app model | ASP.NET Core Razor Pages for public/admin pages, controller-based APIs for admin JSON and public endpoints, endpoint routing for handlers such as health, robots, manifest, sitemap, FOAF, OpenSearch, and virtual site verification files. |
-| Architecture style | Multi-project modular solution with LiteBus command/query/event handlers and feature-oriented folders. |
-| Data access | EF Core with `BlogDbContext`; PostgreSQL by default via `Moonglade.Data.PostgreSql`, with optional SQL Server via `Moonglade.Data.SqlServer`. |
-| Cache | `Edi.CacheAside.InMemory` with `BlogCachePartition` values `General`, `Post`, `Page`, `RssCategory`, and `AtomCategory`; widgets, sitemap, and uncategorized feeds use keys in the `General` partition. |
-| Background work | ASP.NET Core hosted services, `ScheduledPublishService`, `EmailOutboxWorker`, and `CannonService` for queued fire-and-forget work. |
-| Authentication | Cookie-based local account authentication and one configurable OpenID Connect provider through the ASP.NET Core OIDC handler. |
-| Frontend | Server-rendered Razor, Bootstrap, Bootstrap Icons, Alpine.js, unified Moonglade.Editor for rich HTML post editing plus Markdown/CSS/HTML code-like modes, Tagify, Mermaid.js for Markdown diagrams on post reading pages, and project-local JavaScript modules under `src/Moonglade.Web/wwwroot/js/app`. |
-| Image storage | `IBlogImageStorage` with one filesystem implementation and separate public primary and private original-image roots. External storage mounts and CDN origins are operator-owned. |
-| External integrations | Webmention, IndexNow, site ownership verification files, email outbox delivery through SMTP, local content moderation, and Gravatar. |
-| Package management | NuGet references in project files. |
-| Build tools | .NET SDK CLI, Visual Studio, VS Code task `dotnet build ${workspaceFolder}/src/Moonglade.Web/Moonglade.Web.csproj`, Docker multi-stage build, and Docker Compose. |
-| Tests | See the [test guide](../src/Tests/README.md); Web tests also use ASP.NET Core TestHost. |
-| Formatting | Follow `.editorconfig` and [development conventions](../AGENTS.md#development-and-verification). |
-
-## Configuration And Environment
-
-Host configuration uses `src/Moonglade.Web/appsettings.json`, local Development overrides, and standard environment variables (`:` becomes `__`). See [README](../README.md) for configuration examples. Keep local overrides secret-safe as required by AGENTS.md.
-
-Additional keys and implementation constraints:
-
-| Key or section | Purpose | Required? | Notes |
-| --- | --- | --- | --- |
-| `ConnectionStrings:MoongladeDatabase` | Database connection string. | Yes | Do not document or commit production values. |
-| `ConnectionStrings:DatabaseProvider` | Selects `PostgreSql` (default) or `SqlServer`. | Yes | Keep provider names aligned with `AddMoongladeDatabase`. |
-| `Authentication:Provider` | Selects `Local` or `OpenIdConnect` authentication. | Yes | Exactly one provider is active for a deployment. |
-| `Authentication:OpenIdConnect` | Single external OIDC provider. | Required for OIDC | See [configuration and bootstrap](upgrade-generic-oidc-authentication.md); preserve validation and exact subject authorization. |
-| `Authentication:Totp:Issuer` | Display issuer for local-account authenticator app QR codes. | Optional | Defaults to `Moonglade`; the TOTP secret is stored in `LocalAccountSettings`. |
-| `Authentication:Totp:Required` | Requires local-account authenticator verification after password sign-in. | Optional | Defaults to `true`; `false` is honored only in the `Development` environment. |
-| `Authentication:LocalAccountRateLimit` | Fixed-window rate limiting for local password sign-in and TOTP verification attempts. | Optional | Defaults to enabled, 10 attempts per 1 minute, partitioned by client IP and account context. |
-| `CommentRateLimit` | Built-in comment submission rate limiting by client IP and post ID. | Optional | Uses a fixed window policy. |
-| `CommentSubmissionGuard` | Built-in comment honeypot and elapsed-time checks. | Optional | Rejects filled honeypot fields, too-fast submissions, and stale form timestamps. |
-| `Webmention` | Webmention options, including source rate limiting. | Optional | Preserve protocol endpoint behavior. |
-| `Email` | SMTP and database outbox options. | Optional | See [SMTP configuration, sender fallback, and availability](../README.md#email-notifications). Worker tuning remains under `Email:OutboxWorker`. |
-| `IndexNow` | API key, ping targets, and cooldown interval. | Optional | API key also maps the IndexNow verification file endpoint. |
-| `ForwardedHeaders` | Reverse proxy/client IP configuration. | Deployment-dependent | Required behind some proxies/load balancers. Only explicitly configured `KnownProxies` are trusted; an empty or invalid list retains ASP.NET Core's loopback-only defaults. |
-| `EnableCSP`, `CSPValue` | Optional Content Security Policy response header. | Optional | `X-Content-Type-Options: nosniff` is always emitted; CSP is emitted only when enabled and non-empty. |
-| `ImageStorage` | Filesystem roots and metadata cache. | Yes | See [storage configuration and isolation](../README.md#image-storage). |
-| `PostCacheMinutes`, `PagesCacheMinutes`, `WidgetCacheMinutes` | Cache durations. | Optional | Revisit when changing rendering or invalidation paths. |
-| `CannonService:QueueCapacity` | Capacity for the in-process fire-and-forget background queue. | Optional | Defaults to `1000`; when full, new work is rejected and logged instead of running inline on the request path. |
-| `ViewCount` | Crawler user-agent filtering and deduplication window. | Optional | Affects analytics/view-count behavior. |
-| `.env.example` / `POSTGRES_PASSWORD` | Docker Compose PostgreSQL password override. | Local/deployment-dependent | Use a strong secret value outside committed files. |
-
-SMTP delivery uses `Edi.TemplateEmail.Smtp` with explicit `FromAddress` and `SenderAddress` set to the effective SMTP sender address. Map `Email:EnableSsl` and the port to `SmtpSettings.SocketOptions`: port 465 uses `SslOnConnect`; other ports use `StartTls` when enabled and `Auto` otherwise. The test email template displays this effective security mode.
-
-`Edi.TemplateEmail` and `Edi.TemplateEmail.Smtp` use version `2026.8.0`. The singleton `IEmailHelper` validates and holds template configuration; each `ForType` call returns an independent `IEmailBuilder` that owns the mappings and builds one message. Keep builders local to each notification and mock `IEmailBuilder` separately from `IEmailHelper` in tests.
-
-HTML email bodies encode ordinary mapped values. Only wrap the already-rendered new-comment body and administrator reply HTML in `TrustedHtml` to preserve the output of `ContentProcessor.MarkdownToCommentHtml`. Keep original comment text, names, titles, and URLs as ordinary mappings; do not pre-encode them. `TrustedHtml` does not sanitize its input.
-
-## Main Business Logic
-
-### Blog Content
-
-- Posts are the core entity, defined by `Moonglade.Data.Entities.PostEntity`. Their lifecycle is represented by `PostStatus`, including draft, published, and scheduled states.
-- Post creation and updates are handled by commands such as `Moonglade.Features.Post.CreatePostCommand` and `UpdatePostCommand`. The Web-layer save workflow lives in `Moonglade.Web/Commands/PostManagementCommands.cs` and coordinates create/update, activity logs, scheduled publishing wake-up, Webmention, and IndexNow. Cache invalidation is triggered by feature-level `PostChangedEvent` publication after database commit.
-- Recycle, publish, and unpublish endpoints dispatch their feature commands directly from `PostController`, then use the inherited `LogActivityAsync` method. Keep the save workflow for its scheduling and notification coordination; do not add forwarding workflow commands for simple state operations.
-- Published posts generate a `RouteLink` based on publish date and slug. Do not casually change the published URL shape because old links, RSS/Atom, sitemap, search engines, and caches depend on it.
-- Article state writes use `PostEntityHelper.SetStatus` to assign `PostStatus`, `PubDateUtc`, `ScheduledPublishTimeUtc`, and `RouteLink` together. Only draft, scheduled, and published are valid write states; deletion remains an independent `IsDeleted` flag. Published writes clear scheduled time; draft and scheduled writes clear publication time and route. Callers choose timestamps: editing a published post preserves its publication date, manual publishing uses the current time, and scheduled publishing uses its actual execution time without changing `LastModifiedUtc`. Resolve creation slug conflicts and apply edited slugs before generating the route.
-- Scheduled publishing converts client local time to UTC and is handled by `ScheduledPublishWakeUp` / `ScheduledPublishService`. The next-time query includes overdue schedules and ignores deleted posts or missing schedule times, so enabling the worker dispatches already-due work without a five-minute polling delay. Persisted and cross-boundary timestamps should use UTC.
-- Pages, categories, tags, assets, recycle bin behavior, and related blog features live under the relevant feature folders in `Moonglade.Features`.
-
-### Comments And Moderation
-
-- The public comment entry point is `Moonglade.Web.Controllers.CommentController`; comment creation is handled by `Moonglade.Features.Comment.CreateCommentCommand`.
-- Whether comments are enabled, require review, close after a number of days, or use word filtering comes from `IBlogConfig.CommentSettings`.
-- `CommentSettings.EnableMarkdownLinks` controls comment/reply rendering across public/admin views and newly generated email. Preserve the [documented behavior](../README.md#comment-markdown-links), including default-off links and protocol/rel validation.
-- Built-in comment creation is also protected by host-level `CommentRateLimit` settings that partition requests by client IP and post ID.
-- Built-in comment creation checks `CommentSubmissionGuard` honeypot and elapsed-time fields before dispatching the create command.
-- Content moderation is abstracted in `Moonglade.Moderation` and supports local keyword filtering. Do not put moderation behavior directly in controllers.
-- Comments, replies, and Webmentions can trigger activity logs and email notifications. Email notification handlers should enqueue to the database outbox; external delivery belongs in `EmailOutboxWorker` instead of request handlers.
-
-### Configuration
-
-- Ordinary runtime preferences are managed by `Moonglade.Configuration.BlogConfig` and persisted in the `BlogConfiguration` table. When adding an ordinary group, follow `IBlogSettings<T>`, provide `DefaultValue`, and add its property to `BlogSettingsSnapshot` and its typed load to `BlogConfig.Parse`. This pure parser is the single ordinary-default list: it returns a snapshot and the exact default JSON for `ConfigInitializer` to persist, without changing runtime state. The nine-group ordinary reader excludes credentials and installation history. Auth owns `LocalAccountSettings`, `ILocalAccountReader`, and `UpdateLocalAccountCommand`; Setup owns `SystemManifestSettings` and may reference Auth. Keep the legacy table, keys, and JSON field names unchanged.
-- The nine ordinary groups and nested menu values are sealed, non-positional init-only records; menus/submenus use `ImmutableList`, retaining disabled null menus and legacy JSON arrays. Reuse the current types for HTTP inputs; keep the existing mutable menu JSON envelope. Do not add a parallel DTO/model hierarchy without a demonstrated binding incompatibility. Use `with` to prepare replacements rather than JSON round-trip copying or property mutation.
-- Pronouns are no longer a setting or profile display feature. Legacy `pronouns` JSON is ignored during parsing and is not rewritten at startup; the next ordinary General save omits it. Do not retain an inactive model property or add automatic data cleanup for this removed feature.
-- `IBlogConfig` is a read-only consumer boundary with `Capture()`; loading and publication belong to the concrete singleton `BlogConfig`. Register that owner and alias the reader to the same instance. A capture retains one immutable nine-group root. Publication exchanges its reference once; old roots/children remain valid. The reader and concrete owner expose no per-group forwarding properties: capture once at the start of a logical operation, before awaits, and pass the captured root or its relevant immutable group through related calls. Comment/reply domain commands, email events, and feed queries can carry a JSON-ignored snapshot for their initiating operation; independent calls capture fresh state. Keep these in-process contexts out of HTTP and durable email payloads. Uploaded avatars always render the local asset route through the existing URL helper, preserving PathBase without mutating settings. `GeneralSettings.AvatarUrl` remains inert legacy JSON data and is preserved on general saves for compatibility; never use it for avatar delivery or create a replacement CDN writer.
-- Razor handlers and views use `ViewData.CaptureSettings(SettingsReader)`. The global `BlogSettingsFilter` seeds native Page/PageModel ViewData before page handlers and View/Partial result data before rendering, preserving an existing handler capture. Layouts, partials, and menu/tag components reuse that ViewData entry, including copied child dictionaries. Explicitly seed standalone render data before preparing related state. Do not cache settings in HttpContext.Items or a request-scoped frozen reader: a separate operation or new render can capture newly published state in the same HTTP context.
-- Ordinary persisted JSON uses `DefaultValue` for completely absent fields as well as missing groups. `FromJsonWithDefaults` adds only absent top-level properties in memory, using the existing serializer's case-insensitive names and preserving the order of duplicate saved properties. Explicit false/zero/null/empty arrays remain saved values, not missing fields. Valid partial JSON and its timestamp are not rewritten. Keep this behavior at the persisted-loading boundary rather than changing request-model constructors or the shared `FromJson` behavior. Account and manifest parsing is excluded so missing credential/history fields cannot acquire bootstrap defaults.
-- The loader and update handler use DataAnnotations and model-owned `IValidatableObject` rules without mutating inputs. Validate every replacement before querying/changing settings rows. `SettingsValidationAttribute` translates command validation failures on settings endpoints to HTTP validation problems; HTTP model validation alone does not protect parsed menu graphs or non-HTTP callers. Keep nested menu validation in its settings model and script/CSS conditions out of controller-only checks.
-- Startup restores malformed, incompatible, null, or semantically invalid ordinary settings to whole-group defaults in their existing rows, including otherwise valid sibling fields; valid settings and timestamps are preserved. Explicit saved values are retained only when valid. `AddDefaultConfigurationCommand` serves this startup initialization/repair path only. Invalid persisted `LocalAccountSettings` and `SystemManifestSettings` must stop initialization before repair writes with an actionable key-only error, preserving credentials and migration history. Do not recover these protected settings with shipped defaults or log stored JSON.
-- Preserve approved validation compatibility: legacy inactive avatar URL data has no 64-character cap; blank notification names retain deployment fallback; unknown theme IDs retain fallback; feed count allows 0 through `int.MaxValue`; CSS is capped at 10240 UTF-8 bytes; disabled menu arrays may be null. Existing watermark font/text rules apply even when disabled. Account username/hash/salt must be nonblank without imposing new-credential form syntax on saved values; reuse Otp.NET parsing and Auth normalization for populated TOTP secrets, permitting generated-but-disabled setup state. Manifests require a non-minimum UTC time while preserving arbitrary/empty version strings.
-- First-install seeding requires all mapped application tables to be empty, not only `BlogConfiguration`. Maintain the emptiness checks and their coverage when adding application tables. An existing empty schema may be initialized. Seed data and default settings share one provider execution-strategy transaction; retries clear tracked inserts and verify a potentially committed installation before reseeding. Never clear existing or ambiguous older partial-install data. Schema creation and noncritical site-icon generation are outside this data transaction.
-- `ConfigInitializer.InitializeStoreAsync` validates the account and manifest before preparing any ordinary repairs, then persists detached settings without publishing them. It returns the settings dictionary, parsed snapshot, and validated account; `Initialize` publishes those prepared values after repairs complete, without parsing them again. It explicitly stages the two protected defaults after the nine ordinary defaults, keeping all eleven rows in the first-install transaction. Startup still reloads committed preferences after that transaction before publication, including when verifying a lost commit acknowledgment. Manifest history has no runtime singleton or ordinary settings writer. A nonempty database with a missing account row fails before any default/repair writes. A missing manifest with a valid account is reconstructed with unknown version and current reconstruction time, with a Warning; valid saved installation metadata remains unchanged. Do not replace a failed new-install transaction with a permanent manual-recovery requirement: after rollback, an empty schema must remain retryable.
-- `Moonglade.Setup.WebApplicationExtensions.InitStartUp` runs before the Web pipeline/endpoints and host start. An initialization failure logs Critical and throws, so the process exits nonzero without starting HTTP or hosted business services. Never call `RunAsync` to serve an error-only page on the application host: that also starts scheduled publication and other workers against uninitialized settings. Administrators correct the reported cause and restart; failure does not permanently disable retry.
-- Ordinary runtime settings writes use `UpdateConfigurationCommand.Create(settings)` for one group per command. The command retains the immutable settings value without JSON copying. Inside the shared write gate, validate the submitted value, apply it to the latest captured root, serialize it once for persistence, and save the required row before publishing the complete root. Preserve unrelated concurrent group saves. Same-group saves still replace the entire group; do not introduce field merging or conflict UI. Ordinary and account writers share the singleton `ConfigurationWriteGate` to preserve in-process commit/publication ordering. Missing rows and failed writes throw instead of returning an ignored success code. Callers prepare replacements with `with` rather than mutating objects from `IBlogConfig`. Auth readers return detached account copies; `UpdateLocalAccountCommand` captures JSON, validates and saves the legacy row, publishes a detached account, then sends the existing change event with a noncancelable token. Invalid/missing rows and failed saves never publish credentials; no-op saves preserve timestamps. Keep account models/commands as plain classes so generated diagnostic strings cannot include secrets. Unchanged persisted values retain their timestamps while still refreshing the runtime snapshot. Startup initialization remains separate.
-- Settings-controller saves and avatar uploads opt in to `BlogControllerBase.LogActivityAfterSaveAsync` only after their save operations complete. This helper isolates activity dispatch failures (including cancellation), preserves the existing success response, and emits Error with the exception, event, operation, and trace identifier, without adding targets, metadata, or credential fields to its diagnostic message. Do not put validation, settings persistence, cache events, asset/file operations, or authentication actions inside its catch. Authenticator reset must still sign out all three local schemes after an audit-only failure; password changes retain their current session behavior. The original `LogActivityAsync`, site-icon auditing, and other controllers keep their existing contracts. Asset/file/settings writes remain separate operations, not a new transaction.
-- Changed settings publish one `ConfigurationChangedEvent` after persistence and runtime replacement, while still inside the process write lock, without request cancellation. The Web handler invalidates feeds for General/Feed/Image changes, sitemap for General changes, and theme CSS for Appearance changes; Advanced changes wake the scheduler. No-op, validation, missing-row, failed-save, and pre-commit cancellation paths do not publish. Keep this boundary shared by internal writers rather than adding controller-only cache removals.
-- FOAF/sitemap endpoint enable/disable and the singleton email sender display name require a restart; keep settings-page hints accurate in both directions. Scheduled publishing captures its wake token and one ordinary root per wait iteration, wakes even while disabled, and rechecks cancellation plus a fresh enable snapshot immediately before dispatch. This post-wait decision is a new operation phase, preserving the disable/wake guarantee rather than pinning the switch across a long wait. Do not cancel already dispatched publication when toggling the flag. Notification decisions within an already captured operation use its switches; independent subsequent operations capture new switches. Previously queued mail retains its persisted payload. The email sender display name intentionally captures once when singleton EmailSettings is created and still requires restart.
-- `/admin/settings` is the main UI for blog settings. Do not hard-code administrator-configurable blog behavior in the Web layer.
-- `ContentSettings.DefaultEditor` owns the [default post editor](../README.md#default-post-editor). Do not restore the removed host configuration key or historical content-type backfill.
-
-### Authentication And Security
-
-- Authentication logic lives in `Moonglade.Auth` and supports local accounts with TOTP or one standards-based OpenID Connect provider.
-- OIDC admin authorization uses the provider-validated issuer boundary plus an exact allowlist of stable `sub` claims. Do not authorize by email, display name, or preferred username.
-- `/auth/identity` is available only to an authenticated OIDC user and returns that user's own `iss`, `sub`, and display name for allowlist bootstrap; it does not grant admin access. It returns 404 when local authentication is configured.
-- Local-account password sign-in and TOTP setup/verification are protected by `LocalAccountRateLimitPolicy`; keep the default 10 attempts per 1 minute unless there is a deployment-specific reason to adjust `Authentication:LocalAccountRateLimit`.
-- Admin Razor Pages are authorized by Razor Pages conventions; API controllers inherit `[Authorize]` from `BlogControllerBase`.
-- Controllers use antiforgery validation by default. Use `[IgnoreAntiforgeryToken]` only for deliberate endpoints such as keep-alive or protocol callbacks.
-
-### Images, Themes, Feeds, And Protocols
-
-- Uploaded avatars are database assets served by `/avatar`, with the bundled default used when no asset exists. Only `SaveAssetEventHandler` persists uploaded avatar data; image CDN toggles save `ImageSettings` only. Keep upload validation, avatar cache clearing, and post-save audit isolation. Do not upload/delete avatar copies through `IBlogImageStorage`, rewrite general settings on avatar saves, or reintroduce CDN URL/cache-buster orchestration. Existing legacy CDN files are not automatically removed.
-
-- Image storage is abstracted in `Moonglade.ImageStorage` and has one filesystem implementation. New image behavior should depend on `IBlogImageStorage`, not on `FileSystemImageStorage`, but the interface is an internal application boundary rather than a supported provider extension model.
-- `ImageStorage:FileSystemPath` stores public processed images; `ImageStorage:OriginalFileSystemPath` stores private original uploads. The resolved roots must be absolute, distinct, and non-overlapping. Public reads and deletes must never resolve the original root.
-- Cloud object storage, network filesystems, mount drivers, sidecars, CSI manifests, Docker volume plugins, credentials, object metadata, and vendor-specific operational behavior remain outside application code and packages. Do not add Azure, S3, or other vendor image-storage providers or optional extensions.
-- CDN delivery stays browser-direct and settings-driven. Persisted content and upload responses use `/image/{filename}`; rendered posts/feeds and the image endpoint use `ImageSettings.CDNEndpoint` when redirects are enabled. A CDN origin may expose only the primary root, must preserve filename-to-key mapping and correct media types, and must never expose original images.
-- Image uploads are validated by content before storage. SVG upload is supported, but SVG content must pass through the Web-layer sanitizer before primary or original image bytes are saved.
-- Themes and custom CSS are handled by `Moonglade.Theme` and `Moonglade.Web.Middleware.StyleSheetEndpoints`.
-- RSS, Atom, and OPML generation lives in `Moonglade.Syndication`; OpenSearch, FOAF, manifest, robots, sitemap, and site verification file handlers live under `Moonglade.Web/Handlers`. RSS/Atom query handlers pass their captured settings explicitly to `SyndicationDataSource`, which has no live settings reader.
-- Site verification files are managed from `/admin/settings/verification-files`, persisted in the database, and served as virtual root-level files. They are text-only (`.txt`, `.html`, `.htm`, `.xml`, `.json`), limited to 64 KB, and must use a single safe ASCII file name. Do not write these files into container `wwwroot`.
-- Preserve the public protocol endpoints listed in the README, including `/rss`, `/atom`, `/opml`, `/opensearch`, `/foaf.xml`, `/webmention`, `/health`, and `/health/ready`. Keep `/health` liveness-only; use `/health/ready` for database readiness.
-- Incoming and outgoing Webmention requests must stay restricted to public HTTP/HTTPS URLs through Edi.AspNetCore.Utils public-HTTP safety services. Reject private, loopback, link-local, documentation, reserved, and other special-use source, target, redirect, or endpoint addresses. Keep socket connections bound to validated DNS results and do not enable automatic redirects, cookies, proxies, or ambient credentials on these clients.
-
-## Code Architecture
-
-### Layers And Project Responsibilities
-
-| Area | Path | Responsibility |
-| --- | --- | --- |
-| Web host | `src/Moonglade.Web` | ASP.NET Core composition root, Razor Pages, API controllers, view components, filters, handlers, endpoint mapping, and static assets. |
-| Blog features | `src/Moonglade.Features` | Post, page, category, tag, comment, asset, recycle bin, and view-count commands/queries. |
-| Activity logging | `src/Moonglade.ActivityLog` | Activity log commands, queries, metadata helpers, and event type definitions. |
-| Data model | `src/Moonglade.Data` | EF Core `BlogDbContext`, entities, DTO/read models, provider-neutral mappings, and import/export primitives. |
-| Database providers | `src/Moonglade.Data.PostgreSql`, `src/Moonglade.Data.SqlServer` | PostgreSQL / SQL Server EF Core registration and provider-specific behavior. |
-| Configuration | `src/Moonglade.Configuration` | Blog setting models, defaults, loading, updates, and initialization-related logic. |
-| Authentication | `src/Moonglade.Auth` | Local account, TOTP verification, generic OIDC configuration and validation, admin authorization, login validation, password updates, and authentication registration. |
-| Image storage | `src/Moonglade.ImageStorage` | Blog image storage abstraction, file naming, filesystem storage, primary/original path isolation, and storage-related options. |
-| Integrations | `src/Moonglade.Email`, `src/Moonglade.IndexNow.Client`, `src/Moonglade.Moderation`, `src/Moonglade.Webmention` | Email outbox delivery, external service clients, protocol send/receive logic, notifications, and moderation. |
-| Startup and background work | `src/Moonglade.Setup`, `src/Moonglade.BackgroundServices`, `src/Moonglade.Email` | Startup initialization, fresh database creation, seed data, scheduled publishing, email outbox delivery, and fire-and-forget background queueing. |
-| Presentation helpers | `src/Moonglade.Theme`, `src/Moonglade.Widgets`, `src/Moonglade.Syndication` | Themes, widgets, feeds, and presentation-oriented read models. |
-| Shared utilities | `src/Moonglade.Utils`, `src/Moonglade.Web.Middleware` | Cross-cutting utilities, TagHelpers, and reusable middleware. |
-| Tests | `src/Tests/Moonglade.*.Tests` | Tests that match the production project or feature area being changed. |
+| `Moonglade.Web` | Host composition, Razor Pages, controllers, middleware wiring, endpoint handlers, and assets |
+| `Moonglade.Features` | Post, page, category, tag, comment, asset, recycle bin, and view-count commands and queries |
+| `Moonglade.Data` | `BlogDbContext`, entities, mappings, read models, and import/export |
+| `Moonglade.Data.PostgreSql`, `Moonglade.Data.SqlServer` | Provider registration and mappings |
+| `Moonglade.Configuration`, `Moonglade.Setup` | Ordinary settings and writes, database creation, installation metadata, and initialization |
+| `Moonglade.Auth` | Owner profile, avatar, credentials, TOTP, and optional OIDC binding |
+| `Moonglade.ActivityLog` | Canonical event catalog, activity persistence, and safe detail validation |
+| `Moonglade.BackgroundServices`, `Moonglade.Email` | Scheduled publishing, bounded background work, and SMTP outbox delivery |
+| `Moonglade.ImageStorage`, `Moonglade.Theme`, `Moonglade.Widgets`, `Moonglade.Syndication` | Filesystem images, themes, widgets, and feeds |
+| `Moonglade.Moderation`, `Moonglade.Webmention`, `Moonglade.IndexNow.Client` | Moderation and protocol integrations |
+| `Moonglade.Utils`, `Moonglade.Web.Middleware` | Shared utilities and middleware |
 
 ### Web Entry Point
 
-- `src/Moonglade.Web/Program.cs` should stay as startup orchestration: load business assemblies, create the builder, register services, build the app, run startup initialization, attach the request pipeline, and map endpoints.
-- Reusable service registration belongs in `IServiceCollection` extension methods in the owning project. Compose Web-host services in `src/Moonglade.Web/Extensions/ServiceCollectionExtensions.cs`, and avoid adding feature-specific registration details directly to `Program.cs` unless the Web host is genuinely the owner.
-- Request pipeline and endpoint mapping are centralized in `src/Moonglade.Web/Extensions/WebApplicationExtensions.cs`.
-- If a new project contains LiteBus handlers, confirm `Program.LoadAssemblies()` loads that assembly; otherwise command/query/event handlers may not be discovered at runtime.
+- Put reusable DI registrations in the owning project's extensions. Web composes them in `Extensions/ServiceCollectionExtensions.cs` and sets up the pipeline and endpoints in `Extensions/WebApplicationExtensions.cs`.
+- LiteBus commands mutate state, queries read it, and events notify subscribers. Keep handlers near their commands, queries, or events. Check `Program.LoadAssemblies()` when adding a handler assembly.
 
-### CQRS And LiteBus
+## EF Core
 
-- The repository uses LiteBus 7.0.0 with a command/query/event style.
-- Commands mutate state and are usually named `CreateXCommand`, `UpdateXCommand`, or `DeleteXCommand`, with matching `*Handler` classes in the same or nearby files.
-- Queries read state and are usually named `GetXQuery`, `ListXQuery`, or `CountXQuery`.
-- Events trigger side effects such as email, Webmention, IndexNow, or background notifications.
+- Keep shared mappings in `Moonglade.Data.Configurations`. PostgreSQL uses snake_case table and column names, and SQL Server uses PascalCase. Keep C# names provider-neutral and preserve constraint/index behavior in both providers.
+- Use async queries and `AsNoTracking()` for read-only work. Review keys, cascades, and set-based writes against both providers.
+- Category IDs are database-generated integers starting at 100 and increasing by 1. Leave allocation to the database on create and seed. Admin APIs and editor payloads use integer category IDs, article IDs remain GUIDs, and public category and feed URLs use slugs.
+- Persist `*Utc` timestamps as PostgreSQL `timestamp with time zone` and SQL Server `datetime2(7)`. The shared mapping materializes UTC and rejects tracked local/unspecified writes. `PostViewDaily.ViewDateUtc` is a `DateOnly` stored as `date`. Convert browser wall-clock values using the supplied IANA zone in Web before dispatch. Keep legacy Npgsql timestamp behavior disabled.
 
-### EF Core
+### Migration Verification
 
-- Use `BlogDbContext` for data access. Add entities under `Moonglade.Data.Entities` and DTO/read models under `Moonglade.Data.DTO`.
-- Prefer provider-neutral configuration in `Moonglade.Data.Configurations`; SQL Server/PostgreSQL-specific behavior belongs in the provider projects.
-- PostgreSQL converts table and column names to snake_case in `PostgreSqlBlogDbContext`; SQL Server retains PascalCase mappings. Keep C# names unchanged. Existing PostgreSQL databases require the [manual naming upgrade](upgrade-postgresql-snake-case.md) after any required category integer ID upgrade. Constraint, index, and sequence names are retained during this upgrade.
-- Keep queries compatible with both SQL Server and PostgreSQL. Avoid scattered provider-specific SQL; isolate it in provider projects if it is truly necessary.
-- Prefer `AsNoTracking()` for read-only queries. Use async EF Core APIs and pass `CancellationToken` through write operations and handlers where available.
-- Use EF Core set-based operations such as `ExecuteDeleteAsync` when they fit the existing pattern.
-- Be careful with many-to-many relationships, cascade behavior, slug/route link generation, publish timestamps, and soft-delete fields because posts, lists, archives, tags, feeds, sitemap, and cache invalidation depend on them.
-- `Category.Id` and `PostCategory.CategoryId` are `int`; both supported provider contexts configure category identity generation from 100 with increment 1. Category creation and fresh seeding must leave the ID to the database. Administrative category APIs and post-editor DTOs use integers; public category and subscription URLs retain slugs. Existing GUID category databases require the [manual category upgrade](upgrade-category-int-identity.md).
-- Persisted `DateTime` properties whose names end in `Utc` use the shared UTC contract: SQL Server `datetime2(7)`, PostgreSQL `timestamp with time zone`, UTC materialization, and rejection of local or unspecified tracked writes. `PostViewDaily.ViewDateUtc` is a `DateOnly` stored as `date`.
-- Browser wall-clock values are accepted only by Web request DTOs. Convert them with the supplied IANA time zone before dispatching feature commands; feature models and persisted values must contain UTC timestamps only.
-- Follow the [manual migration rules](../database/README.md) for schema/data changes. Preserve fresh creation/seeding; do not restore automatic upgrades or enable `Npgsql.EnableLegacyTimestampBehavior`.
+Follow the [database authoring and execution guide](../database/README.md) for script order, transactions, and repeat execution. Check both providers on representative disposable databases. Verify dependent schema and data after the first run and preservation after the second. Use temporary fixtures and remove them after verification. Run `Moonglade.Setup.Tests` for mapping or initialization changes and report any provider left unverified. Startup creates fresh databases and relies on the operator to complete required upgrades before launch.
 
-## Caching And Side Effects
+## Configuration
 
-- Configuration-dependent output cache keys retain their existing post/theme invalidation generations and also include captured input identity: a SHA-256 fingerprint of General/Feed/Image JSON for feeds, General JSON for sitemap, and configured theme ID for theme CSS. This isolates old operations during the settings-publication/change-event interval. Cached tag HTML varies by captured hot-tag count. Do not substitute an ambient live read inside a cache factory or flush unrelated article partitions; inactive entries expire under their normal cache lifetime.
+- `IBlogConfig.Capture()` returns one immutable `BlogSettingsSnapshot`. Capture once per operation or render and pass that root or its relevant group through related calls. Razor uses `ViewData.CaptureSettings` and `BlogSettingsFilter` to share the capture with layouts and components. Keep in-process settings context out of HTTP and durable email payloads.
+- Ordinary groups implement `IBlogSettings<T>` and declare `DefaultValue`. Add groups to the snapshot and `BlogConfig.Parse`. Groups and nested menu values are immutable. Auth owns the account, avatar, and OIDC stores. Setup owns `SystemManifestSettings`.
+- `UpdateConfigurationCommand` replaces one group. `PatchConfigurationCommand` applies explicitly allowed fields to the latest group inside the same `ConfigurationWriteGate`. Build replacements with `with`, validate with the model's shared rules, save before publishing the complete snapshot, then publish `ConfigurationChangedEvent` for changed persisted JSON without request cancellation. Missing rows and failed writes surface to callers. Unchanged JSON preserves its timestamp and can still refresh the runtime snapshot.
+- The write gate also compares effective values for audit. Preserve structural menu equality and keep that comparison independent of persisted JSON equality. `ConfigurationSaveResult` returns only the group, effective change flag, and approved scalar projections. Web uses this result for activity logging. Keep editable-field and audit-field allowlists separate.
+- Keep validation shared by startup, HTTP, and internal writes. Preserve the 10,240 UTF-8 byte CSS limit, unlimited feed count at zero, disabled menus with null arrays, watermark constraints, blank SMTP sender-name fallback, and unknown-theme fallback.
+- At persisted load, absent fields use current defaults. Preserve explicit valid false, zero, null, and empty arrays, and leave valid partial JSON and timestamps intact. Invalid ordinary JSON or model values trigger whole-group repair. Validate the manifest before repairs. A missing manifest with ordinary configuration is reconstructed with unknown version and current UTC time. Invalid manifests or nonempty databases without recognized installation configuration fail startup.
+- `StartUpInitializer` seeds only when every application table is empty. Include new tables in that check. Seed data and settings share one execution-strategy transaction with commit verification. Preserve retry after rollback and existing data. Publish the prepared settings after persistence. Schema creation and noncritical icon generation are separate. Initialization failure exits before serving HTTP or starting business workers.
 
-- Write operations must consider cache impact. Changes to posts, pages, categories, tags, widgets, configuration, themes, comments, and assets can affect page caches, post caches, sitemap, feeds, archives, tag/category lists, and widget caches.
-- Existing caching uses `Edi.CacheAside.InMemory` and `BlogCachePartition`. Successful post content, metadata, and lifecycle writes, plus category/tag updates and deletes, publish `PostChangedEvent` once after database commit. The Web event handler uses the singleton `PostCacheInvalidator` to clear the entire `Post`, `RssCategory`, and `AtomCategory` partitions and advance post/feed/sitemap generations. Old RSS, Atom, and sitemap entries in `General` expire normally. Publish without request cancellation so a disconnected client cannot skip invalidation after a successful commit. Failed writes, missing objects, empty batches, and view/request count updates do not invalidate these caches.
-- Post readers use `PostCacheInvalidator.GetCacheKey`, feed readers use `GetFeedCacheKey(key, settings)`, and sitemap readers use `GetSiteMapCacheKey(settings)`. Separate versions prevent older in-flight queries from repopulating active caches and let settings refresh feeds or sitemap without flushing article caches. Successful post changes still invalidate all three. Sitemap and feeds expire after one hour. Other controller caches retain their existing rules and `ClearBlogCache` filter. All invalidation is local to the current process.
-- Public/admin/auth layouts share `ThemeCacheInvalidator.GetCacheKey(themeId)`; appearance saves and successful theme create/delete operations advance its generation. Old theme entries expire normally. Theme conflict/not-found/failure paths do not invalidate. Preserve unknown-theme fallback. Custom CSS continues to use its HTTP ETag/cache policy; server generations cannot purge downstream caches. Full-feed content comes from `PostContent`, formatted by content type and CDN settings; summary mode uses `ContentAbstract`.
-- Prefer centralized invalidation through filters or event handlers over scattered controller-level `cache.Remove(...)` calls when adding new write paths.
-- For post and page writes, review sitemap, feed/subscription, per-post/page, archive, tag/category, and widget cache impact.
-- For settings and theme changes, review site-wide rendering, custom CSS, manifest, robots, FOAF, and sitemap impact.
-- Publishing posts can trigger Webmention and IndexNow. Comments, replies, and Webmentions can trigger email notifications. New side effects should usually be events or background work through existing services such as `CannonService`, LiteBus events, `IWebmentionSender`, `IIndexNowClient`, and the email outbox instead of slow inline request work.
-- `CannonService` is an in-process bounded queue controlled by `CannonService:QueueCapacity`; do not run overflow work inline on request paths.
-- Preserve hosted service patterns for scheduled publishing. Configuration-driven background behavior should remain controlled by `appsettings` values.
+## Activity History
 
-## Frontend And Localization
+- `ActivityEvents` owns stable keys, groups, label keys, and safe detail policies. Persist UTC occurrence time and detached actor/target snapshots. Keep `eventKeys` filters string-based and order the catalog by canonical group and key. Clear all is the only admin deletion action, and public comment submissions stay outside it.
+- Ordinary settings events store `Changes` with approved `Key`, `OldValue`, and `NewValue` scalar members. An unchanged effective value produces no event. A restricted-only change stores an empty array. Configuration owns the projection and `SettingsAuditFields`. ActivityLog validates the per-event envelope for both writes and reads. Keep supported stored keys readable and render values as text with localized labels.
+- Use Web's `ActivityLogDispatcher` after the business operation. Audit failures preserve the business result and use payload-free diagnostics with event key, failure type, and available trace ID. The writer detaches a failed insert without disturbing unrelated tracked changes. Validation, persistence, cache, file, and sign-out failures retain their normal behavior.
 
-- Public and admin pages are primarily Razor Pages and partials under `src/Moonglade.Web/Pages`.
-- Admin JSON operations are primarily API controllers under `src/Moonglade.Web/Controllers`.
-- Prefer JavaScript modules (`.mjs`) for application scripts. Keep third-party or bundled library files under the existing `wwwroot/lib` or `wwwroot/js/3rd` conventions.
-- Frontend code is built around the existing Razor layouts, Bootstrap, Alpine.js, unified Moonglade.Editor modes, and Tagify. Do not add a new frontend framework unless explicitly requested.
-- Mermaid code blocks in Markdown posts are rendered on the reading and post-preview pages by `src/Moonglade.Web/wwwroot/js/app/post.mermaid.mjs`, using the local Mermaid.js asset in `src/Moonglade.Web/wwwroot/js/3rd`. Keep Mermaid blocks out of highlight.js processing.
-- Code block language support has two UI surfaces: the public post renderer and the admin Moonglade.Editor code sample dialog. When adding a highlight.js language, register the language before `hljs.highlightElement` in `src/Moonglade.Web/wwwroot/js/app/post.highlight.mjs` and also add the language to `codeSampleLanguages` in `src/Moonglade.Web/wwwroot/js/app/admin.editor.module.mjs`, otherwise authors cannot select it from the editor.
-- Server-rendered UI text should consider resource files. Supported cultures are currently `en-US`, `zh-Hans`, `zh-Hant`, `de-DE`, and `ja-JP`.
-- Non-English shared resources live under `src/Moonglade.Web/Resources/Program.*.resx`; neutral English strings are used as resource keys in Razor/C# code. Razor pages inject `IStringLocalizer<Program>` as `SharedLocalizer`, and DataAnnotations display names are configured to use the same `Program` resource. When adding or renaming any `SharedLocalizer["..."]` key or `[Display(Name = "...")]` text, update all non-English resource files: `Program.zh-Hans.resx`, `Program.zh-Hant.resx`, `Program.de-DE.resx`, and `Program.ja-JP.resx`.
+## Blog Content
 
-Moonglade consumes Moonglade.Editor through the `Moonglade.Editor.StaticAssets` NuGet package, served from `/_content/Moonglade.Editor.StaticAssets/moonglade-editor/`. Do not copy editor build output into `src/Moonglade.Web/wwwroot/lib/moonglade-editor/` or other `wwwroot` paths.
+- `PostEntityHelper.SetStatus` assigns status, publication UTC time, scheduled UTC time, and route together. Deletion is an independent flag. Published posts keep date-and-slug routes. Editing a published post preserves its publication date. Manual publication uses the current time and scheduled publication uses the actual execution time while preserving `LastModifiedUtc`.
+- Web's `PostManagementCommands` coordinates saves, activity, scheduler wake-up, Webmention, and IndexNow. Simple recycle, publish, and unpublish endpoints dispatch feature commands directly.
+- `ScheduledPublishService` includes overdue posts, excludes deleted posts and missing schedule times, and rechecks the enable switch immediately before dispatch. Settings writes wake it even while disabled. Work already dispatched runs to completion.
+- Post writes use status, deletion, schedule and modification time as optimistic concurrency tokens. When a scheduled publication batch loses a race, it reloads the eligible rows and retries. Only the worker that commits a publication hands it off.
+- `PublishScheduledPostCommand` returns the affected count. After commit it attempts cache notification and independently hands off read-only ID/title/publication UTC snapshots in `ScheduledPostsPublishedEvent`, even if cache notification fails. Preserve the cache exception. Web records one best-effort `post.automatically-published` System event per snapshot and continues after individual failures. The handoff is in-process. Keep Features independent of Web and ActivityLog.
 
-## Local Runtime
+## Comments and Moderation
 
-Use [Build & Run](../README.md#build--run) for commands, launch URLs, and the default local account; URLs come from `src/Moonglade.Web/Properties/launchSettings.json`. The TOTP bypass applies only in Development when `Authentication:Totp:Required=false`.
+- `CommentController` applies host rate limiting and the form guard before `CreateCommentCommand`. Feature rules use the captured comment settings and delegate keyword moderation to `Moonglade.Moderation`.
+- Share the comment/reply Markdown policy across public views, admin views, and email. Retain URL validation and output encoding.
+- Notification handlers capture the recipient and settings before enqueueing. The worker owns SMTP delivery. Keep template builders local to one message. Use `TrustedHtml` only for already-rendered comment/reply bodies and leave names, titles, and URLs in the normal encoded mappings. Keep the explicit patched `System.Security.Cryptography.Pkcs` reference in Email and SQL Server until their transitive dependencies resolve a patched version.
 
-The current host and client URLs assume deployment at the URL root. Forwarding `X-Forwarded-Prefix` alone does not mount a subpath. PathBase-aware URL-helper tests do not establish end-to-end subpath hosting support; that requires separate pipeline and client-URL work.
+## Authentication and Security
 
-## Migration Verification
+- Auth stores one owner with a stable ID, normalized email, independent Local initialization marker, and revision concurrency. `IOwnerProfileReader` exposes credential-free data used by public rendering, Atom, FOAF, and notifications. Atom retains the author name when the email is absent. Owner writes commit within Auth, and failed writes detach the attempted entity.
+- `LocalAccountSetupGateMiddleware` enforces the pending-setup boundary. Keep health and setup reachable and preserve manifest-mapped static assets via `MapStaticAssets().ShortCircuit()`. Setup and later TOTP enrollment keep credentials or secrets in protected, expiring tickets until proof succeeds. Intermediate cookies never grant administrator access.
+- Application cookies validate the owner ID and revision. Password changes refresh the current session while retaining sign-in origin and TOTP. Email changes require current-password proof and revoke account sessions. Authenticator reset signs out Local schemes without reopening setup. Preserve the shared client-IP quota for all setup POSTs and the account/IP partitions for sign-in and subsequent TOTP.
+- Remembered-device trust uses a separate, non-administrator cookie scheme, issued only after successful login TOTP with explicit opt-in. Validate it only after password authentication, against the owner ID and revision with TOTP still enrolled. Keep the 30-day persistent lifetime absolute, retain trust on ordinary sign-out, and never bind it to IP or User-Agent. Account revision changes revoke trust. Do not apply it to enrollment, management proof, or OIDC.
+- Auth registers application Data Protection with `PersistKeysToDbContext<BlogDbContext>()` and the stable `Moonglade` application name. It shares the existing key table with OIDC credentials, whose separate `Moonglade.OidcCredentials` application name and `OidcClientSecret.v1` purpose must remain unchanged. Preserve both namespaces and stored keys across deployments. Database initialization runs before the host starts and protection keys are generated.
+- OIDC management uses owner password and applicable TOTP proof. Bind through the framework authorization code flow with PKCE, validated provider identity and correlation, and explicit antiforgery-protected confirmation. Bind proof to the initiating session and configuration revision. Sign-in matches validated issuer and subject against the enabled binding and issues the local principal. OIDC sessions validate the binding revision. Unbinding, disabling, or deleting revokes them, while secret rotation retains their session revision. Protect the client secret with the dedicated database-backed Data Protection key ring.
+- Keep admin page authorization conventions and `BlogControllerBase` API authorization. Preserve default controller antiforgery validation and restrict exemptions to intentional protocol or keep-alive endpoints. Keep reverse-proxy trust limited to configured proxies and framework defaults.
 
-No automatic migration implementation, embedded migration SQL, or migration version-check tests remain. Startup tests cover existing databases with missing or older installation manifests and preserve stored content and manifest values. Startup does not check database version compatibility; administrators must complete required SQL upgrades before launching the new version.
+## Images, Themes, Feeds, and Protocols
 
-Run `Moonglade.Setup.Tests` when changing database mappings, initialization, or upgrade documentation. Follow [database verification and execution](../database/README.md#verification-and-execution), including representative pre-upgrade and repeat runs on both target providers. Review UTC conversion, transactions, dependent keys/indexes, and backup rollback. In-memory tests and source review do not prove relational correctness or idempotency; report unavailable database verification explicitly.
+- Depend on `IBlogImageStorage` for article images. Keep public and private roots isolated for reads, writes, and deletes. Validate file content and sanitize SVG before either copy is saved. Keep persisted article image URLs on `/image/{filename}` and apply CDN settings at delivery/render time.
+- `OwnerAvatarStore` owns the uploaded avatar and Gravatar preference in `OwnerAvatar`, independently of credentials, ordinary settings, and `BlogAsset` site icons. Concurrent writes preserve the other avatar field. Successful uploads advance the process-local avatar cache generation after commit so in-flight reads cannot populate the active generation with old bytes. Avatar entries expire after one hour. The local avatar route requires HTTP cache revalidation and uses a content ETag for uploaded images. It serves the bundled fallback when no image is uploaded, and public Gravatar needs an owner profile.
+- `Moonglade.Theme` and `StyleSheetEndpoints` own themes and custom CSS. `Moonglade.Syndication` owns RSS, Atom, and OPML. Pass captured settings and owner identity to feed generation. Full feeds format the post body by content type and CDN settings, while summary feeds use the abstract.
+- Root-level verification files are virtual database-backed responses. Use safe ASCII basenames of up to 128 characters and the text formats `.txt`, `.html`, `.htm`, `.xml`, and `.json`, up to 64 KB. Keep application files and `wwwroot` separate from verification storage.
+- Keep Webmention requests on the public-HTTP safety client for source, target, discovery, redirects, and delivery. Connect to validated DNS results. Keep automatic redirects, cookies, proxies, and ambient credentials disabled.
 
-Category identity and snake_case migration tests use opt-in disposable PostgreSQL and SQL Server containers. See the [category upgrade guide](upgrade-category-int-identity.md#automated-verification) for the Docker prerequisites and `MOONGLADE_TEST_CATEGORY_DATABASES` command; a normal test run skips these relational groups explicitly.
+## Caching and Side Effects
 
-The filesystem-only image-storage cutover is documented in [upgrade-filesystem-image-storage.md](upgrade-filesystem-image-storage.md).
+- Post, category, and tag mutations publish `PostChangedEvent` after commit without request cancellation when they affect article output. `PostCacheInvalidator` clears the post and category feed partitions and advances post, feed, and sitemap generations. Failed or empty writes and view counters leave those generations alone. Page changes can invalidate sitemap independently.
+- Preserve generation-based cache keys so in-flight readers cannot refill active keys with stale content. Feed keys vary by captured General/Feed/Image settings and owner description, with owner email also included for Atom. Sitemap keys vary by the captured SEO canonical prefix. Cache factories use the same captured inputs as their keys. FOAF and sitemap check the current capture's enable switch before reading cache or generating output.
+- Configuration events refresh feeds for General/SEO/Feed/Image, sitemap for General/SEO, and theme CSS for Appearance. Advanced changes wake scheduled publishing. Profile changes advance feed generations without evicting articles. Theme creation/deletion advances the theme generation on success. Feed and sitemap entries expire after one hour. Custom CSS retains HTTP ETag behavior.
+- Use the existing LiteBus events, `CannonService`, or email outbox for side effects. Keep overflow from the bounded in-process queue off the request path.
 
-## Change Impact Checklist
+## Frontend and Localization
 
-1. Which business module owns this change? Prefer the owning class library over putting business rules in `Moonglade.Web`.
-2. Does it affect database queries, entities, configuration, or database-provider behavior? Check SQL Server and PostgreSQL compatibility.
-3. Does it change post URLs, publish timestamps, status transitions, caches, feeds, sitemap, Webmention, IndexNow, or email notifications?
-4. Does it require updating `Program.LoadAssemblies()`, a DI extension, default configuration, resource files, or tests?
-5. Does it add an external call? Make it configurable, testable, logged, and avoid blocking the main request.
-6. Does it touch a security boundary? Check authentication, authorization, antiforgery, moderation, secret configuration, and forwarded headers.
-7. Does it affect image storage or CDN behavior? Check primary/original path isolation, filename-to-key mapping, direct browser delivery, mount persistence and permissions, multiple replicas, and the filesystem-only vendor boundary.
-8. Does documentation need to change? The README, root AGENTS.md, and this reference should reflect important developer-facing behavior.
-
-## Troubleshooting Note Format
-
-The confirmation requirement and placement rules are in [AGENTS.md](../AGENTS.md#troubleshooting--lessons-learned).
-
-```markdown
-## Troubleshooting / Lessons Learned
-
-### Issue title
-
-- Symptom:
-- Trigger:
-- Root cause:
-- Fix:
-- Verification:
-- Prevention:
-```
+- Build on Razor, Bootstrap, Alpine.js, and existing JavaScript modules under `wwwroot/js/app`. Use shared admin classes and Bootstrap components before adding page-local styles. Third-party assets belong under `wwwroot/lib` or `wwwroot/js/3rd`. Load Moonglade.Editor from the `Moonglade.Editor.StaticAssets` package's `/_content/` assets.
+- Keep secondary navigation as links with `aria-current="page"` and action toolbars outside the `.admin-main-body` scroller. Preserve the separate full-screen editor layout. Use shared admin panels, list separators, pagination, tables, and card grids. Keep page-size focus during refresh and return offcanvas focus to the visible opener.
+- Settings and Account share the `.admin-settings-page` row layout. Keep disclosure controls keyboard-operable and independent of setting inputs and writes. The profile and Gravatar rows share one group with one divider, and Gravatar saves independently. Preserve the `.blogadmin-avatar` refresh hook. Menu expansion is transient and the toolbar Save submits the menu draft. Advanced script guidance belongs in the field's Change dialog.
+- The Account avatar editor previews a circular crop and posts only the selected 300 × 300 JPEG to the existing upload endpoint. The slider and mouse wheel over the preview share the same zoom level. Closing the editor discards the selection.
+- Use local Mermaid rendering in reading and preview pages and exclude Mermaid blocks from highlight.js. Register new code sample languages in both `post.highlight.mjs` and `admin.editor.module.mjs`.
+- Use neutral English resource keys with `IStringLocalizer<Program>` for shared text and DataAnnotations. Update all five `Program.*.resx` translations for changed keys. Keep `zh-Hant` terminology from Hong Kong and `fr-FR` terminology from France. Preserve format placeholders and pass translated strings as text or data attributes.

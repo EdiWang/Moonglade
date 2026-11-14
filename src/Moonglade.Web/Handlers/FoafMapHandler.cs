@@ -19,13 +19,20 @@ public class FoafMapHandler
         IBlogConfig blogConfig,
         ICommandMediator commandMediator,
         IQueryMediator queryMediator,
-        LinkGenerator linkGenerator)
+        LinkGenerator linkGenerator,
+        IOwnerProfileReader ownerProfiles)
     {
         var settings = blogConfig.Capture();
-        var general = settings.GeneralSettings ?? throw new InvalidOperationException("GeneralSettings is null.");
+        if (!settings.AdvancedSettings.EnableFoaf)
+        {
+            httpContext.Response.StatusCode = StatusCodes.Status404NotFound;
+            return;
+        }
 
         try
         {
+            var owner = await ownerProfiles.ReadProfileAsync(httpContext.RequestAborted);
+            var presentation = await ownerProfiles.ReadPresentationAsync(httpContext.RequestAborted);
             var widgets = await queryMediator.QueryAsync(new ListWidgetsQuery());
             var linksJson = widgets.Where(p => p.WidgetType == WidgetType.LinkList && !string.IsNullOrWhiteSpace(p.ContentCode)).Select(p => p.ContentCode).ToList();
 
@@ -44,10 +51,10 @@ public class FoafMapHandler
             }
 
             var foafDoc = new FoafDoc(
-                Name: general.OwnerName,
-                BlogUrl: UrlHelper.ResolveRootUrl(httpContext, general.CanonicalPrefix, preferCanonical: true),
-                Email: general.OwnerEmail,
-                PhotoUrl: linkGenerator.GetUriByAction(httpContext, "Avatar", "Assets") ?? string.Empty
+                Name: presentation.Name,
+                BlogUrl: UrlHelper.ResolveRootUrl(httpContext, settings.SEOSettings.CanonicalPrefix, preferCanonical: true),
+                Email: owner?.Email,
+                PhotoUrl: linkGenerator.GetUriByAction(httpContext, "Avatar", "OwnerAvatar") ?? string.Empty
             );
 
             // Use DisplayUrl for more robust URL representation

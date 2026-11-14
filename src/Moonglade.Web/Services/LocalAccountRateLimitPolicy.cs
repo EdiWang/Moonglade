@@ -18,7 +18,7 @@ public class LocalAccountRateLimitPolicy(IOptionsMonitor<LocalAccountRateLimitOp
 
         if (!settings.Enabled || !HttpMethods.IsPost(httpContext.Request.Method))
         {
-            return RateLimitPartition.GetNoLimiter(partitionKey);
+            return RateLimitPartition.GetNoLimiter($"unlimited|{partitionKey}");
         }
 
         return RateLimitPartition.GetFixedWindowLimiter(
@@ -37,8 +37,9 @@ public class LocalAccountRateLimitPolicy(IOptionsMonitor<LocalAccountRateLimitOp
     {
         var clientIp = NormalizeKeyPart(ClientIPHelper.GetClientIP(httpContext), "unknown-ip");
         var authStep = GetAuthStep(httpContext);
+        if (authStep == "setup") return $"setup|{clientIp}";
         var account = authStep == "signin"
-            ? GetFormValue(httpContext, "Username")
+            ? GetFormValue(httpContext, "Email")
             : httpContext.User.Identity?.Name;
 
         return $"{authStep}|{clientIp}|{NormalizeKeyPart(account, "unknown-account")}";
@@ -47,6 +48,7 @@ public class LocalAccountRateLimitPolicy(IOptionsMonitor<LocalAccountRateLimitOp
     private static string GetAuthStep(HttpContext httpContext)
     {
         var path = httpContext.Request.Path.Value;
+        if (path?.Equals("/auth/setup-account", StringComparison.OrdinalIgnoreCase) == true) return "setup";
         return path?.Contains("signin", StringComparison.OrdinalIgnoreCase) == true
             ? "signin"
             : "totp";

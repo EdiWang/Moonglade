@@ -23,79 +23,91 @@
      data-file-content-required="@SharedLocalizer["File content is required"]">
 </div>
 
+@section adminnavigation {
+    <partial name="_SettingsNavigation" />
+}
+
 @section admintoolbar {
     <partial name="_SettingsHeader" />
 }
 
 @Html.AntiForgeryToken()
 
-<div class="d-flex justify-content-between align-items-center mb-3">
-    <h4 class="admin-subtitle fw-bold mb-0">@SharedLocalizer["Verification Files"]</h4>
-    <button type="button" class="btn btn-outline-accent" x-on:click="initCreateFile()">
-        <i class="bi-plus-lg"></i>
-        @SharedLocalizer["New"]
-    </button>
-</div>
+<div class="admin-settings-page">
+    <h4 class="admin-subtitle fw-bold mb-3">@SharedLocalizer["Verification Files"]</h4>
 
-<div x-show="isLoading"
-     class="text-muted mb-3"
-     :class="{ 'd-flex align-items-center': isLoading }">
-    <div class="spinner-border spinner-border-sm me-2" role="status"></div>
-    <span>@SharedLocalizer["Loading verification files..."]</span>
-</div>
+    <div class="admin-panel p-0 overflow-hidden">
+        <div x-show="isLoading"
+             class="text-muted p-4"
+             :class="{ 'd-flex align-items-center': isLoading }">
+            <div class="spinner-border spinner-border-sm me-2" role="status"></div>
+            <span>@SharedLocalizer["Loading verification files..."]</span>
+        </div>
 
-<div x-show="!isLoading && !hasFiles" class="alert alert-info">
-    @SharedLocalizer["No verification files yet."]
-</div>
+        <div x-show="!isLoading && !hasFiles" class="p-4">
+            <div class="alert alert-info mb-0">
+                @SharedLocalizer["No verification files yet."]
+            </div>
+        </div>
 
-<div x-show="!isLoading && hasFiles" class="table-responsive">
-    <table class="table align-middle">
-        <thead>
-        <tr>
-            <th>@SharedLocalizer["File Name"]</th>
-            <th>@SharedLocalizer["Content Type"]</th>
-            <th>@SharedLocalizer["Size"]</th>
-            <th>@SharedLocalizer["Status"]</th>
-            <th>@SharedLocalizer["Last Modified"]</th>
-            <th class="text-end">@SharedLocalizer["Actions"]</th>
-        </tr>
-        </thead>
-        <tbody>
-        <template x-for="file in files" :key="file.id">
-            <tr>
-                <td>
-                    <div class="fw-semibold" x-text="file.fileName"></div>
-                    <a class="small" :href="getFileUrl(file.fileName)" target="_blank" rel="noopener noreferrer" x-text="getFileUrl(file.fileName)"></a>
-                </td>
-                <td><code x-text="file.contentType"></code></td>
-                <td x-text="formatBytes(file.contentBytes)"></td>
-                <td>
-                    <span x-show="file.isEnabled" class="badge bg-success">@SharedLocalizer["Enabled"]</span>
-                    <span x-show="!file.isEnabled" class="badge bg-secondary">@SharedLocalizer["Disabled"]</span>
-                </td>
-                <td>
-                    <time :data-utc-label="file.lastModifiedTimeUtc" x-text="formatDate(file.lastModifiedTimeUtc)"></time>
-                </td>
-                <td class="text-end">
-                    <div class="btn-group btn-group-sm" role="group">
-                        <button type="button" class="btn btn-outline-secondary" x-on:click="copyUrl(file.fileName)" title="@SharedLocalizer["Copy URL"]">
-                            <i class="bi-copy"></i>
-                        </button>
-                        <button type="button" class="btn btn-outline-accent" x-on:click="editFile(file.id)" title="@SharedLocalizer["Edit"]">
-                            <i class="bi-pen"></i>
-                        </button>
-                        <button type="button" class="btn btn-outline-secondary" x-on:click="toggleFile(file)" :title="file.isEnabled ? '@SharedLocalizer["Disable"]' : '@SharedLocalizer["Enable"]'">
-                            <i :class="file.isEnabled ? 'bi-pause-fill' : 'bi-play-fill'"></i>
-                        </button>
-                        <button type="button" class="btn btn-outline-danger" x-on:click="deleteFile(file)" title="@SharedLocalizer["Delete"]">
-                            <i class="bi-trash"></i>
-                        </button>
-                    </div>
-                </td>
-            </tr>
-        </template>
-        </tbody>
-    </table>
+        <div x-show="!isLoading && hasFiles" class="table-responsive">
+            <table class="table table-sm table-hover admin-data-table admin-verification-table align-middle mb-0">
+                <colgroup>
+                    <col />
+                    <col class="verification-column-type" />
+                    <col class="verification-column-size" />
+                    <col class="verification-column-status" />
+                    <col class="verification-column-modified" />
+                    <col class="verification-column-actions" />
+                </colgroup>
+                <thead>
+                <tr>
+                    <th scope="col" class="px-3 py-2 fw-semibold text-body-secondary">@SharedLocalizer["File Name"]</th>
+                    <th scope="col" class="px-3 py-2 fw-semibold text-body-secondary">@SharedLocalizer["Content Type"]</th>
+                    <th scope="col" class="px-3 py-2 fw-semibold text-body-secondary">@SharedLocalizer["Size"]</th>
+                    <th scope="col" class="px-3 py-2 fw-semibold text-body-secondary">@SharedLocalizer["Status"]</th>
+                    <th scope="col" class="px-3 py-2 fw-semibold text-body-secondary">@SharedLocalizer["Last Modified"]</th>
+                    <th scope="col" class="px-3 py-2 fw-semibold text-body-secondary text-end">@SharedLocalizer["Actions"]</th>
+                </tr>
+                </thead>
+                <tbody>
+                <template x-for="file in files" :key="file.id">
+                    <tr>
+                        <td class="admin-list-content px-3">
+                            <div class="fw-semibold" x-text="file.fileName"></div>
+                            <a class="small" :href="getFileUrl(file.fileName)" target="_blank" rel="noopener noreferrer" x-text="getFileUrl(file.fileName)"></a>
+                        </td>
+                        <td class="px-3"><code x-text="file.contentType"></code></td>
+                        <td class="px-3" x-text="formatBytes(file.contentBytes)"></td>
+                        <td class="px-3">
+                            <span x-show="file.isEnabled" class="badge bg-success">@SharedLocalizer["Enabled"]</span>
+                            <span x-show="!file.isEnabled" class="badge bg-secondary">@SharedLocalizer["Disabled"]</span>
+                        </td>
+                        <td class="px-3 text-body-secondary">
+                            <time :data-utc-label="file.lastModifiedTimeUtc" x-text="formatDate(file.lastModifiedTimeUtc)"></time>
+                        </td>
+                        <td class="px-3 text-end">
+                            <div class="btn-group btn-group-sm" role="group">
+                                <button type="button" class="btn btn-outline-secondary" x-on:click="copyUrl(file.fileName)" title="@SharedLocalizer["Copy URL"]">
+                                    <i class="bi-copy"></i>
+                                </button>
+                                <button type="button" class="btn btn-outline-accent" x-on:click="editFile(file.id)" title="@SharedLocalizer["Edit"]">
+                                    <i class="bi-pen"></i>
+                                </button>
+                                <button type="button" class="btn btn-outline-secondary" x-on:click="toggleFile(file)" :title="file.isEnabled ? '@SharedLocalizer["Disable"]' : '@SharedLocalizer["Enable"]'">
+                                    <i :class="file.isEnabled ? 'bi-pause-fill' : 'bi-play-fill'"></i>
+                                </button>
+                                <button type="button" class="btn btn-outline-danger" x-on:click="deleteFile(file)" title="@SharedLocalizer["Delete"]">
+                                    <i class="bi-trash"></i>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                </template>
+                </tbody>
+            </table>
+        </div>
+    </div>
 </div>
 
 <div class="offcanvas offcanvas-end overflow-hidden" tabindex="-1" x-ref="editFileCanvas" aria-labelledby="editFileCanvasLabel" style="width: 560px;">
@@ -148,7 +160,7 @@
             </div>
 
             <div class="border-top p-3 bg-light">
-                <div class="d-grid gap-2">
+                <div class="d-grid gap-2 admin-offcanvas-actions">
                     <button type="submit" class="btn btn-accent">@SharedLocalizer["Save"]</button>
                     <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="offcanvas">@SharedLocalizer["Cancel"]</button>
                 </div>

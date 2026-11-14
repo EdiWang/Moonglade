@@ -2,26 +2,26 @@ import { Alpine } from './alpine-init.mjs';
 import { fetch2 } from './httpService.mjs?v=1500';
 import { formatUtcTime, getLocalizedString, localDateBoundaryToUtcIso } from './utils.module.mjs';
 import { success, error } from './toastService.mjs';
-import { showDeleteConfirmModal, hideConfirmModal } from './adminModal.mjs';
+import { showConfirmModal, hideConfirmModal } from './adminModal.mjs';
 import { withPagination } from './admin.pagination.mjs';
+import { createOffcanvas } from './admin.offcanvas.mjs';
 
 Alpine.data('activityLogManager', () => withPagination(10, {
     logs: [],
     eventTypeGroups: [],
     isLoading: true,
-    selectedEventTypes: [],
+    selectedEventKeys: [],
     startDate: '',
     endDate: '',
-    detailModal: null,
+    detailCanvas: null,
     filterCanvas: null,
-    currentMetadata: null,
-    currentLogOperation: '',
+    currentDetail: null,
 
     async init() {
         this.initPageFromUrl();
 
-        this.detailModal = new bootstrap.Modal(document.getElementById('detailModal'));
-        this.filterCanvas = new bootstrap.Offcanvas(this.$refs.filterCanvas);
+        this.detailCanvas = new bootstrap.Offcanvas(this.$refs.detailCanvas);
+        this.filterCanvas = createOffcanvas(this.$refs.filterCanvas);
 
         await this.loadEventTypes();
         await this.loadData();
@@ -43,8 +43,8 @@ Alpine.data('activityLogManager', () => withPagination(10, {
                 pageSize: this.pageSize
             });
 
-            if (this.selectedEventTypes.length > 0) {
-                this.selectedEventTypes.forEach(et => params.append('eventTypes', et));
+            if (this.selectedEventKeys.length > 0) {
+                this.selectedEventKeys.forEach(key => params.append('eventKeys', key));
             }
 
             if (this.startDate) {
@@ -79,7 +79,7 @@ Alpine.data('activityLogManager', () => withPagination(10, {
     },
 
     async clearFilter() {
-        this.selectedEventTypes = [];
+        this.selectedEventKeys = [];
         this.startDate = '';
         this.endDate = '';
         this.currentPage = 1;
@@ -88,40 +88,38 @@ Alpine.data('activityLogManager', () => withPagination(10, {
         this.filterCanvas.hide();
     },
 
-    deleteLog(logId) {
-        showDeleteConfirmModal(getLocalizedString('confirmDeleteLog'), async () => {
-            try {
-                await fetch2(`/api/activitylog/${logId}`, 'DELETE');
-                await this.loadData();
-                success(getLocalizedString('logDeleted'));
-            } catch (err) {
-                error(err);
-            } finally {
-                hideConfirmModal();
-            }
-        });
-    },
-
     clearAllLogs() {
-        showDeleteConfirmModal(getLocalizedString('confirmClearAllLogs'), async () => {
-            try {
-                await fetch2('/api/activitylog/clear', 'DELETE');
-                this.currentPage = 1;
-                await this.loadData();
-                success(getLocalizedString('logsCleared'));
-            } catch (err) {
-                error(err);
-            } finally {
-                hideConfirmModal();
+        const clearAll = getLocalizedString('clearAll');
+        showConfirmModal({
+            title: clearAll,
+            body: getLocalizedString('confirmClearAllLogs'),
+            confirmText: clearAll,
+            confirmClass: 'btn-outline-danger',
+            confirmIcon: 'bi-trash',
+            onConfirm: async () => {
+                try {
+                    await fetch2('/api/activitylog/clear', 'DELETE');
+                    this.currentPage = 1;
+                    await this.loadData();
+                    success(getLocalizedString('logsCleared'));
+                } catch (err) {
+                    error(err);
+                } finally {
+                    hideConfirmModal();
+                }
             }
         });
     },
 
-    async showDetail(logId, operation) {
-        this.currentLogOperation = operation;
+    async showDetail(logId, trigger) {
+        this.currentDetail = null;
         try {
-            this.currentMetadata = await fetch2(`/api/activitylog/${logId}/metadata`, 'GET');
-            this.detailModal.show();
+            this.currentDetail = await fetch2(`/api/activitylog/${logId}/metadata`, 'GET');
+            if (trigger) {
+                this.$refs.detailCanvas.addEventListener('hidden.bs.offcanvas', () => trigger.focus(), { once: true });
+            }
+            this.detailCanvas.show();
+            this.$nextTick(() => formatUtcTime());
         } catch (err) {
             error(err);
         }
@@ -135,33 +133,48 @@ Alpine.data('activityLogManager', () => withPagination(10, {
         this.filterCanvas.show();
     },
 
-    toggleEventType(value) {
-        const index = this.selectedEventTypes.indexOf(value);
+    toggleEventKey(value) {
+        const index = this.selectedEventKeys.indexOf(value);
         if (index === -1) {
-            this.selectedEventTypes.push(value);
+            this.selectedEventKeys.push(value);
         } else {
-            this.selectedEventTypes.splice(index, 1);
+            this.selectedEventKeys.splice(index, 1);
         }
     },
 
     get activeFilterCount() {
-        let count = this.selectedEventTypes.length;
+        let count = this.selectedEventKeys.length;
         if (this.startDate) count++;
         if (this.endDate) count++;
         return count;
     },
 
-    getEventTypeName(eventType) {
-        // eventType from API is a string (enum name like "PostCreated")
-        // We need to match it with the item.name after converting from camelCase
-        for (const group of this.eventTypeGroups) {
-            const item = group.items.find(i => {
-                // Convert "Post Created" back to "PostCreated" and compare
-                const enumName = i.name.replace(/\s+/g, '');
-                return enumName === eventType;
-            });
-            if (item) return item.name;
+    get hasDetailContext() {
+        const detail = this.currentDetail;
+        return !!(detail?.targetId || detail?.targetDisplayName || detail?.ipAddress || detail?.userAgent);
+    },
+
+    get hasSettingsChanges() {
+        return Array.isArray(this.currentDetail?.changes);
+    },
+
+    formatDetailValue(value, key) {
+        if (value === null || value === undefined) return '\u2014';
+        if (typeof value === 'boolean') return getLocalizedString(value ? 'yes' : 'no');
+        if (Array.isArray(value)) return value.map(item => this.formatDetailValue(item, key)).join(', ');
+        if (key === 'PostStatus' && ['Draft', 'Published', 'Scheduled'].includes(value)) {
+            return getLocalizedString(value.toLowerCase());
         }
-        return 'Unknown';
+        const choices = {
+            SideBarOption: { Right: 'right', Left: 'left', Disabled: 'disabled' },
+            DefaultEditor: { Html: 'html', Markdown: 'markdown' },
+            PostTitleAlignment: { Left: 'left', Center: 'center' },
+            CommentProvider: { BuiltIn: 'builtIn', ThirdParty: 'thirdParty' },
+            CommentOrder: { OldToNew: 'oldToNew', NewToOld: 'newToOld' },
+            WordFilterMode: { Mask: 'maskWord', Block: 'blockComment' }
+        };
+        const label = choices[key]?.[value];
+        if (label) return getLocalizedString(label);
+        return String(value);
     }
 }, [10, 20, 30, 40, 50]));

@@ -1,5 +1,10 @@
 ﻿@page "/admin/account"
+@inject Moonglade.Auth.IOwnerProfileReader OwnerProfiles
+@inject Moonglade.Auth.OwnerAvatarStore OwnerAvatars
 @{
+    var presentation = await OwnerProfiles.ReadPresentationAsync(HttpContext.RequestAborted);
+    var useGravatar = await OwnerAvatars.UsesGravatarAsync(HttpContext.RequestAborted);
+    var avatarUrl = Url.Action("Avatar", "OwnerAvatar");
     ViewBag.Title = SharedLocalizer["Account"];
     ViewBag.XData = "accountManager";
 }
@@ -7,37 +12,176 @@
 @Html.AntiForgeryToken()
 
 @section scripts {
-    <script type="module" src="~/js/app/admin.localaccount.mjs"></script>
+    <script type="module" src="~/js/app/admin.localaccount.mjs" asp-append-version="true"></script>
 }
 
 <div id="localizedStrings" style="display:none"
-     data-password-updated="@SharedLocalizer["Password updated."]">
+     data-image-updated="@SharedLocalizer["Updated"]"
+     data-avatar-invalid-image="@SharedLocalizer["Choose a valid PNG or JPEG image."]"
+     data-password-updated="@SharedLocalizer["Password updated."]"
+     data-email-updated="@SharedLocalizer["Owner email updated."]">
 </div>
 
-<div class="local-account-actions">
-    <button type="button"
-            class="local-account-action"
-            x-on:click="openResetPasswordModal()">
-        <span class="local-account-action-icon">
-            <i class="bi-key"></i>
-        </span>
-        <span class="local-account-action-body">
-            <span class="local-account-action-title">@SharedLocalizer["Change Password"]</span>
-            <span class="local-account-action-description">@SharedLocalizer["Update your local username and password for administrator sign-in."]</span>
-        </span>
-    </button>
+<div id="account-settings" class="admin-settings-page"
+     data-avatar-upload-url="@Url.Content("~/api/account/avatar")"
+     data-email-url="@Url.Content("~/api/account/email")" data-signin-url="@Url.Page("/SignIn")">
+    <div class="admin-settings-group overflow-hidden">
+        <div class="settings-entry admin-profile-entry">
+            <div class="col-auto">
+                <button type="button" class="admin-profile-avatar" data-bs-toggle="modal" data-bs-target="#avatarmodal"
+                        aria-label="@SharedLocalizer["Change Avatar"]">
+                    <img src="@avatarUrl" class="img-thumbnail blogadmin-avatar" alt="" />
+                    <span class="admin-profile-avatar-overlay" aria-hidden="true">
+                        <i class="bi bi-camera"></i>
+                    </span>
+                </button>
+            </div>
+            <div class="col">
+                <div class="fw-semibold">@presentation.Name</div>
+                <div class="form-text">@presentation.Description</div>
+            </div>
+            <div class="col-auto text-end">
+                <button type="button" class="btn btn-sm btn-outline-accent" data-bs-toggle="modal"
+                        data-bs-target="#ownerProfileModal" aria-haspopup="dialog"
+                        aria-controls="ownerProfileModal">@SharedLocalizer["Change"]</button>
+            </div>
+        </div>
+        <div class="settings-entry row align-items-center">
+            <div class="col-auto">
+                <i class="bi-person-circle settings-entry-icon" aria-hidden="true"></i>
+            </div>
+            <div class="col">
+                <label for="account-gravatar">@SharedLocalizer["Use my Gravatar as profile picture"]</label>
+                <div class="form-text" id="account-gravatar-description">@SharedLocalizer["Please make sure you have setup Gravatar with your email address"]</div>
+            </div>
+            <div class="col-5 text-end">
+                <div class="form-check form-switch form-control-lg">
+                    <input type="checkbox" id="account-gravatar" class="form-check-input"
+                           checked="@useGravatar" aria-describedby="account-gravatar-description"
+                           data-save-url="@Url.Content("~/api/account/avatar/gravatar")" />
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="settings-entry row align-items-center">
+        <div class="col-auto">
+            <i class="bi-envelope settings-entry-icon" aria-hidden="true"></i>
+        </div>
+        <div class="col">
+            <div id="account-email-title">@SharedLocalizer["Owner email"]</div>
+            <div class="form-text text-break" x-text="email"></div>
+            <div class="form-text" id="account-email-description">@SharedLocalizer["This public address is used for feeds, Gravatar and blog notifications."]</div>
+        </div>
+        <div class="col-5 text-end">
+            <button type="button" class="btn btn-sm btn-outline-accent" x-bind:disabled="!emailLoaded"
+                    aria-haspopup="dialog" aria-controls="ownerEmailModal"
+                    aria-describedby="account-email-title account-email-description"
+                    x-on:click="openEmailModal()">@SharedLocalizer["Change"]</button>
+        </div>
+    </div>
+    <div class="settings-entry row align-items-center">
+        <div class="col-auto">
+            <i class="bi-key settings-entry-icon" aria-hidden="true"></i>
+        </div>
+        <div class="col">
+            <div id="account-password-title">@SharedLocalizer["Change Password"]</div>
+            <div class="form-text" id="account-password-description">@SharedLocalizer["Update your password for administrator sign-in."]</div>
+        </div>
+        <div class="col-5 text-end">
+            <button type="button" class="btn btn-sm btn-outline-accent"
+                    aria-haspopup="dialog" aria-controls="resetPasswordModal"
+                    aria-describedby="account-password-title account-password-description"
+                    x-on:click="openResetPasswordModal()">@SharedLocalizer["Change"]</button>
+        </div>
+    </div>
+    <div class="settings-entry row align-items-center">
+        <div class="col-auto">
+            <i class="bi-shield-lock settings-entry-icon" aria-hidden="true"></i>
+        </div>
+        <div class="col">
+            <div id="account-authenticator-title">@SharedLocalizer["Reset Authenticator"]</div>
+            <div class="form-text" id="account-authenticator-description">@SharedLocalizer["Clear the current authenticator setup and enroll a new app on next sign-in."]</div>
+        </div>
+        <div class="col-5 text-end">
+            <button type="button" class="btn btn-sm btn-outline-danger"
+                    aria-haspopup="dialog" aria-controls="resetAuthenticatorModal"
+                    aria-describedby="account-authenticator-title account-authenticator-description"
+                    x-on:click="openResetAuthenticatorModal()">@SharedLocalizer["Reset Authenticator"]</button>
+        </div>
+    </div>
+    <div class="settings-entry row align-items-center">
+        <div class="col-auto">
+            <i class="bi-box-arrow-in-right settings-entry-icon" aria-hidden="true"></i>
+        </div>
+        <div class="col">
+            <div id="account-oidc-title">@SharedLocalizer["Third-party sign-in"]</div>
+            <div class="form-text">@SharedLocalizer["Configure an OpenID Connect provider and link an external account."]</div>
+        </div>
+        <div class="col-5 text-end">
+            <a asp-page="/Admin/OwnerOidc" class="btn btn-sm btn-outline-accent"
+               aria-describedby="account-oidc-title">@SharedLocalizer["Manage"]</a>
+        </div>
+    </div>
+</div>
 
-    <button type="button"
-            class="local-account-action local-account-action-danger"
-            x-on:click="openResetAuthenticatorModal()">
-        <span class="local-account-action-icon">
-            <i class="bi-shield-lock"></i>
-        </span>
-        <span class="local-account-action-body">
-            <span class="local-account-action-title">@SharedLocalizer["Reset Authenticator"]</span>
-            <span class="local-account-action-description">@SharedLocalizer["Clear the current authenticator setup and enroll a new app on next sign-in."]</span>
-        </span>
-    </button>
+<div class="modal fade" id="ownerProfileModal" tabindex="-1" aria-labelledby="ownerProfileModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="ownerProfileModalLabel">@SharedLocalizer["Profile"]</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="@SharedLocalizer["Close"]"></button>
+            </div>
+            <form action="@Url.Content("~/api/account/profile")" x-on:submit.prevent="updateProfile($event.currentTarget)">
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="ownerProfileName" class="form-label">@SharedLocalizer["Your name"]</label>
+                        <input id="ownerProfileName" name="name" class="form-control" value="@presentation.Name" maxlength="32" required />
+                    </div>
+                    <div>
+                        <label for="ownerProfileDescription" class="form-label">@SharedLocalizer["Your description"]</label>
+                        <textarea id="ownerProfileDescription" name="description" class="form-control" rows="3" maxlength="256" required>@presentation.Description</textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-outline-accent" x-bind:disabled="savingProfile">@SharedLocalizer["Submit"]</button>
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">@SharedLocalizer["Cancel"]</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<partial name="_AvatarModal" />
+
+<div class="modal fade" id="ownerEmailModal" tabindex="-1" aria-labelledby="ownerEmailModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="ownerEmailModalLabel">@SharedLocalizer["Owner email"]</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="@SharedLocalizer["Close"]"></button>
+            </div>
+            <form x-on:submit.prevent="updateEmail">
+                <div class="modal-body">
+                    <p class="form-text">@SharedLocalizer["This public address is used for feeds, Gravatar and blog notifications."]</p>
+                    <div class="mb-3">
+                        <label for="OwnerEmail">@SharedLocalizer["Owner email"]</label>
+                        <input class="form-control" type="email" id="OwnerEmail" x-model="formData.email"
+                               autocomplete="email" maxlength="254" required />
+                    </div>
+                    <p class="form-text">@SharedLocalizer["Changing this address signs you out. Sign in again with the new email."]</p>
+                    <div class="mb-3">
+                        <label for="OwnerEmailPassword">@SharedLocalizer["Current password"]</label>
+                        <input class="form-control" type="password" id="OwnerEmailPassword"
+                               x-model="formData.emailPassword" autocomplete="current-password" required />
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-outline-accent" x-bind:disabled="savingEmail || !emailLoaded">@SharedLocalizer["Submit"]</button>
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">@SharedLocalizer["Cancel"]</button>
+                </div>
+            </form>
+        </div>
+    </div>
 </div>
 
 <div class="modal fade" id="resetAuthenticatorModal" tabindex="-1" role="dialog" aria-labelledby="resetAuthenticatorModalLabel" aria-hidden="true">
@@ -48,7 +192,6 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="@SharedLocalizer["Close"]">
                 </button>
             </div>
-
             <form x-on:submit.prevent="resetAuthenticator">
                 <div class="modal-body">
                     <div class="alert alert-warning">
@@ -60,7 +203,6 @@
                                id="ResetAuthenticatorPassword"
                                x-model="formData.currentPassword"
                                minlength="8"
-                               maxlength="32"
                                pattern="^(?=.*[a-zA-Z])(?=.*[0-9])[A-Za-z0-9._~!@@#$^&*]{8,}$"
                                required>
                     </div>
@@ -86,23 +228,11 @@
             <form x-on:submit.prevent="resetPassword">
                 <div class="modal-body">
                     <div class="mb-2">
-                        <label for="NewUsername">@SharedLocalizer["New username"]</label>
-                        <input class="form-control" type="text"
-                               id="NewUsername"
-                               x-model="formData.newUsername"
-                               minlength="3"
-                               maxlength="16"
-                               pattern="^[A-Za-z0-9]{3,16}$"
-                               required>
-                        <div class="text-muted">@SharedLocalizer["English letters and numbers only."]</div>
-                    </div>
-                    <div class="mb-2">
                         <label for="OldPassword">@SharedLocalizer["Old password"]</label>
                         <input class="form-control" type="password"
                                id="OldPassword"
                                x-model="formData.oldPassword"
                                minlength="8"
-                               maxlength="32"
                                pattern="^(?=.*[a-zA-Z])(?=.*[0-9])[A-Za-z0-9._~!@@#$^&*]{8,}$"
                                required>
                     </div>
@@ -112,7 +242,6 @@
                                id="NewPassword"
                                x-model="formData.newPassword"
                                minlength="8"
-                               maxlength="32"
                                pattern="^(?=.*[a-zA-Z])(?=.*[0-9])[A-Za-z0-9._~!@@#$^&*]{8,}$"
                                required>
                     </div>
@@ -127,7 +256,7 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="submit" class="btn btn-outline-accent">@SharedLocalizer["Submit"]</button>
+                    <button type="submit" class="btn btn-outline-accent" x-bind:disabled="savingPassword">@SharedLocalizer["Submit"]</button>
                     <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">@SharedLocalizer["Cancel"]</button>
                 </div>
             </form>

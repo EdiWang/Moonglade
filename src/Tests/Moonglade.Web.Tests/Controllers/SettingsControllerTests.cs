@@ -12,14 +12,15 @@ using Microsoft.Extensions.Logging;
 using Moonglade.ActivityLog;
 using Moonglade.Auth;
 using Moonglade.Configuration;
+using Moonglade.Data.Entities;
 using Moonglade.Email;
 using Moonglade.Email.Core;
 using Moonglade.Web.Controllers;
+using Moonglade.Web.Tests.TestSupport;
 using Moq;
 using System.Net;
 using System.Security.Claims;
 using System.Text.Json;
-using Moonglade.Web.Tests.TestSupport;
 
 namespace Moonglade.Web.Tests.Controllers;
 
@@ -47,7 +48,7 @@ public partial class SettingsControllerTests
         Assert.Equal(enableLinks, blogConfig.Capture().CommentSettings.EnableMarkdownLinks);
         var update = commandMediator.Single<UpdateConfigurationCommand>();
         Assert.Equal(enableLinks, Assert.IsType<CommentSettings>(update.Settings).EnableMarkdownLinks);
-        Assert.Equal(EventType.SettingsCommentUpdated, commandMediator.Single<CreateActivityLogCommand>().EventType);
+        Assert.Equal(ActivityEvents.SettingsCommentUpdated, commandMediator.Single<CreateActivityLogCommand>().EventKey);
     }
 
     [Theory]
@@ -55,7 +56,10 @@ public partial class SettingsControllerTests
     [InlineData(EditorChoice.Markdown)]
     public async Task Content_PersistsDefaultEditorAndUpdatesRuntimeSettings(EditorChoice editor)
     {
-        var blogConfig = new BlogConfig();
+        var blogConfig = new BlogConfig(new BlogSettingsSnapshot
+        {
+            ContentSettings = new ContentSettings { DefaultEditor = editor == EditorChoice.Html ? EditorChoice.Markdown : EditorChoice.Html }
+        });
         using var commandMediator = new ConfigurationCommandRecorder();
         var controller = CreateController(
             blogConfig,
@@ -69,7 +73,7 @@ public partial class SettingsControllerTests
         Assert.Equal(editor, blogConfig.Capture().ContentSettings.DefaultEditor);
         var update = commandMediator.Single<UpdateConfigurationCommand>();
         Assert.Equal(editor, Assert.IsType<ContentSettings>(update.Settings).DefaultEditor);
-        Assert.Equal(EventType.SettingsContentUpdated, commandMediator.Single<CreateActivityLogCommand>().EventType);
+        Assert.Equal(ActivityEvents.SettingsContentUpdated, commandMediator.Single<CreateActivityLogCommand>().EventKey);
     }
 
     private static readonly JsonSerializerOptions JsonOptions = new()
@@ -223,18 +227,17 @@ public partial class SettingsControllerTests
 
         Assert.IsType<NoContentResult>(result);
 
-        var settings = JsonSerializer.Deserialize<LocalAccountSettings>(
-            commandMediator.Single<UpdateLocalAccountCommand>().Json,
-            JsonOptions)!;
-        Assert.Equal(account.Username, settings.Username);
+        var settings = await commandMediator.Db.OwnerAccount.AsNoTracking().SingleAsync(TestContext.Current.CancellationToken);
+        Assert.Equal(account.Email, settings.Email);
         Assert.Equal(account.PasswordHash, settings.PasswordHash);
         Assert.Equal(account.PasswordSalt, settings.PasswordSalt);
-        Assert.Empty(settings.TotpSecret);
-        Assert.False(settings.IsTotpEnabled);
+        Assert.Null(settings.TotpSecret);
+        Assert.NotNull(settings.LocalInitializedUtc);
 
         var activityLog = commandMediator.Single<CreateActivityLogCommand>();
-        Assert.Equal(EventType.SettingsAuthenticatorReset, activityLog.EventType);
-        Assert.Equal(account.Username, activityLog.TargetName);
+        Assert.Equal(ActivityEvents.SettingsAuthenticatorReset, activityLog.EventKey);
+        Assert.Equal(account.Email, activityLog.TargetDisplayName);
+        Assert.Null(activityLog.Details);
 
         authenticationService.Verify(
             x => x.SignOutAsync(controller.HttpContext, CookieAuthenticationDefaults.AuthenticationScheme, null),
@@ -344,35 +347,36 @@ public partial class SettingsControllerTests
     }
 
     [Fact]
-    public async Task ResetLocalAccountTotp_WhenConfigurationIsMissing_DoesNotSignOutOrChangeAccount()
+    public async Task ResetLocalAccountTotp_WhenAccountIsMissing_DoesNotSignOutOrAudit()
     {
         var account = CreateLocalAccount();
         using var mediator = new ConfigurationCommandRecorder();
         var authentication = new Mock<IAuthenticationService>();
         var controller = CreateController(account, mediator, authentication);
-        await mediator.Db.BlogConfiguration.Where(p => p.CfgKey == nameof(LocalAccountSettings))
-            .ExecuteDeleteAsync(TestContext.Current.CancellationToken);
+        await mediator.Db.OwnerAccount.ExecuteDeleteAsync(TestContext.Current.CancellationToken);
 
-        await Assert.ThrowsAsync<InvalidOperationException>(() => controller.ResetLocalAccountTotp(
+        Assert.IsType<UnauthorizedResult>(await controller.ResetLocalAccountTotp(
             new ResetLocalAccountTotpRequest { CurrentPassword = "Password1" }));
 
-        Assert.Equal(account.ToJson(), mediator.Accounts.Read().ToJson());
-        Assert.True(account.IsTotpEnabled);
+        Assert.Null(await mediator.Accounts.ReadAsync(TestContext.Current.CancellationToken));
         Assert.Empty(mediator.Commands.OfType<CreateActivityLogCommand>());
         authentication.Verify(p => p.SignOutAsync(It.IsAny<HttpContext>(), It.IsAny<string>(), It.IsAny<AuthenticationProperties>()), Times.Never);
     }
 
-    private static LocalAccountSettings CreateLocalAccount()
+    private static OwnerAccountEntity CreateLocalAccount()
     {
         var salt = SecurityHelper.GenerateSalt();
 
         return new()
         {
-            Username = "admin",
+            Id = Guid.NewGuid(),
+            Email = "owner@example.test",
+            NormalizedEmail = "OWNER@EXAMPLE.TEST",
+            Revision = Guid.NewGuid(),
+            LocalInitializedUtc = DateTime.UtcNow.AddDays(-1),
             PasswordSalt = salt,
             PasswordHash = SecurityHelper.HashPassword("Password1", salt),
-            TotpSecret = "JBSWY3DPEHPK3PXP",
-            IsTotpEnabled = true
+            TotpSecret = "JBSWY3DPEHPK3PXP"
         };
     }
 
@@ -419,16 +423,32 @@ public partial class SettingsControllerTests
         return status;
     }
 
-    private static SettingsController CreateController(
-        LocalAccountSettings account,
+    private static AccountController CreateController(
+        OwnerAccountEntity account,
         ConfigurationCommandRecorder commandMediator,
-        Mock<IAuthenticationService> authenticationService)
+        Mock<IAuthenticationService> authenticationService,
+        ILogger<AccountController>? logger = null)
     {
-        return CreateController(
-            new BlogConfig(),
-            commandMediator,
-            authenticationService,
-            account.Username, account: account);
+        commandMediator.Db.OwnerAccount.Add(account);
+        commandMediator.Db.SaveChanges();
+        commandMediator.Db.Entry(account).State = EntityState.Detached;
+        var services = new ServiceCollection().AddSingleton(authenticationService.Object).BuildServiceProvider();
+        var snapshot = new OwnerAccountSnapshot(account.Id, account.Email, account.Revision, true, account.TotpSecret is not null);
+        var controller = new AccountController(commandMediator.Accounts,
+            commandMediator, logger ?? Mock.Of<ILogger<AccountController>>())
+        {
+            ControllerContext = new ControllerContext
+            {
+                HttpContext = new DefaultHttpContext
+                {
+                    RequestServices = services,
+                    User = LocalAccountPrincipal.Create(snapshot, CookieAuthenticationDefaults.AuthenticationScheme)
+                }
+            }
+        };
+        controller.HttpContext.Connection.RemoteIpAddress = IPAddress.Parse("127.0.0.1");
+        controller.Request.Headers.UserAgent = "unit-test-agent";
+        return controller;
     }
 
     private static SettingsController CreateController(
@@ -438,10 +458,9 @@ public partial class SettingsControllerTests
         string username = "admin",
         IEventMediator? eventMediator = null,
         EmailCapabilityStatus? emailCapabilityStatus = null,
-        ILogger<SettingsController>? logger = null,
-        LocalAccountSettings? account = null)
+        ILogger<SettingsController>? logger = null)
     {
-        commandMediator.Initialize(blogConfig, account);
+        commandMediator.Initialize(blogConfig);
         var serviceCollection = new ServiceCollection();
         serviceCollection.AddSingleton(authenticationService.Object);
         serviceCollection.AddLogging();
@@ -462,8 +481,8 @@ public partial class SettingsControllerTests
             logger ?? Mock.Of<ILogger<SettingsController>>(),
             eventMediator ?? Mock.Of<IEventMediator>(),
             emailCapabilityStatus ?? CreateEmailCapabilityStatus(EmailCapabilityState.Available),
-            commandMediator.Accounts,
-            commandMediator);
+            commandMediator,
+            new TestOwnerProfileReader());
 
         controller.ControllerContext = new ControllerContext
         {

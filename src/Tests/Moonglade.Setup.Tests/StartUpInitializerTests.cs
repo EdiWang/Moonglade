@@ -1,4 +1,3 @@
-using Moonglade.Auth;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Moonglade.Configuration;
@@ -21,7 +20,7 @@ public class StartUpInitializerTests
         var originalTime = DateTime.UtcNow.AddDays(-1);
         db.BlogConfiguration.AddRange(
             new BlogConfigurationEntity { CfgKey = nameof(ContentSettings), CfgValue = "{}", LastModifiedTimeUtc = originalTime },
-            new BlogConfigurationEntity { CfgKey = nameof(LocalAccountSettings), CfgValue = LocalAccountSettings.DefaultValue.ToJson(), LastModifiedTimeUtc = originalTime });
+            new BlogConfigurationEntity { CfgKey = "LocalAccountSettings", CfgValue = "inert-legacy-json", LastModifiedTimeUtc = originalTime });
         var manifest = new SystemManifestSettings
         {
             VersionString = manifestVersion,
@@ -30,7 +29,9 @@ public class StartUpInitializerTests
         if (manifestVersion is not null)
             db.BlogConfiguration.Add(new BlogConfigurationEntity
             {
-                CfgKey = nameof(SystemManifestSettings), CfgValue = manifest.ToJson(), LastModifiedTimeUtc = originalTime
+                CfgKey = nameof(SystemManifestSettings),
+                CfgValue = manifest.ToJson(),
+                LastModifiedTimeUtc = originalTime
             });
         var post = new PostEntity { Id = Guid.NewGuid(), Title = "Historical post", ContentType = "", CreateTimeUtc = originalTime };
         db.Post.Add(post);
@@ -47,9 +48,11 @@ public class StartUpInitializerTests
         Assert.Empty(savedPost.ContentType);
         Assert.Equal(originalTime, savedPost.CreateTimeUtc);
         var settings = await db.BlogConfiguration.OrderBy(row => row.CfgKey).ToListAsync(ct);
-        Assert.Equal(11, settings.Count);
+        Assert.Equal(12, settings.Count);
         Assert.Equal(originalTime, settings.Single(row => row.CfgKey == nameof(ContentSettings)).LastModifiedTimeUtc);
-        Assert.Equal(originalTime, settings.Single(row => row.CfgKey == nameof(LocalAccountSettings)).LastModifiedTimeUtc);
+        Assert.Equal(originalTime, settings.Single(row => row.CfgKey == "LocalAccountSettings").LastModifiedTimeUtc);
+        Assert.Equal("inert-legacy-json", settings.Single(row => row.CfgKey == "LocalAccountSettings").CfgValue);
+        Assert.False(await db.OwnerAccount.AnyAsync(ct));
         if (manifestVersion is not null)
         {
             Assert.Equal(manifest.ToJson(), harness.Manifest.ToJson());
@@ -77,7 +80,7 @@ public class StartUpInitializerTests
 
     [Theory]
     [MemberData(nameof(ApplicationEntityTypes))]
-    public async Task InitStartUpAsync_AnyExistingApplicationRowWithoutAccount_IsPreserved(Type entityType)
+    public async Task InitStartUpAsync_AnyExistingApplicationRowWithoutConfiguration_IsPreserved(Type entityType)
     {
         var ct = TestContext.Current.CancellationToken;
         await using var db = CreateContext();
@@ -89,6 +92,15 @@ public class StartUpInitializerTests
             if (property.PropertyType == typeof(int)) property.SetValue(entity, 100);
             if (property.PropertyType == typeof(DateTime) || property.PropertyType == typeof(DateTime?))
                 property.SetValue(entity, DateTime.UtcNow.AddDays(-1));
+        }
+        if (entity is OwnerAvatarEntity)
+            entity = new OwnerAvatarEntity { UseGravatar = true };
+        if (entity is ActivityLogEntity activity)
+        {
+            activity.EventKey = "post.created";
+            activity.ActorKind = ActivityActorKind.Administrator;
+            activity.ActorDisplayName = "Preserved administrator";
+            activity.Details = "{}";
         }
         db.Add(entity);
         await db.SaveChangesAsync(ct);
@@ -106,19 +118,18 @@ public class StartUpInitializerTests
         Assert.NotNull(retained);
         Assert.Equal(snapshot, db.Entry(retained).Properties.ToDictionary(property => property.Metadata.Name, property => property.CurrentValue));
         Assert.Same(originalRuntime, harness.Config.Capture().GeneralSettings);
-        Assert.False(await db.BlogConfiguration.AnyAsync(row => row.CfgKey == nameof(LocalAccountSettings), ct));
+        Assert.False(await db.BlogConfiguration.AnyAsync(row => row.CfgKey == "LocalAccountSettings", ct));
         Assert.Contains(harness.ConfigLogger.Entries, log => log.Level == LogLevel.Error);
     }
 
     [Theory]
-    [InlineData(nameof(LocalAccountSettings))]
     [InlineData(nameof(SystemManifestSettings))]
-    public async Task InitStartUpAsync_InvalidProtectedSettings_PreventAllRepairsAndPublication(string key)
+    public async Task InitStartUpAsync_InvalidManifest_PreventsAllRepairsAndPublication(string key)
     {
         var ct = TestContext.Current.CancellationToken;
         await using var db = CreateContext();
         db.BlogConfiguration.AddRange(
-            new BlogConfigurationEntity { CfgKey = nameof(LocalAccountSettings), CfgValue = LocalAccountSettings.DefaultValue.ToJson() },
+            new BlogConfigurationEntity { CfgKey = "LocalAccountSettings", CfgValue = "inert-legacy-json" },
             new BlogConfigurationEntity { CfgKey = nameof(SystemManifestSettings), CfgValue = SystemManifestSettings.DefaultValue.ToJson() },
             new BlogConfigurationEntity { CfgKey = nameof(FeedSettings), CfgValue = "not-json" });
         db.BlogConfiguration.Local.Single(row => row.CfgKey == key).CfgValue = "null";
@@ -132,6 +143,74 @@ public class StartUpInitializerTests
         db.ChangeTracker.Clear();
         Assert.Equal(3, await db.BlogConfiguration.CountAsync(ct));
         Assert.Equal("not-json", (await db.BlogConfiguration.SingleAsync(row => row.CfgKey == nameof(FeedSettings), ct)).CfgValue);
+    }
+
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public async Task InitStartUpAsync_AccountAbsentOrProfileOnly_PreservesExistingInstallationAcrossRestart(bool profileOnly)
+    {
+        var ct = TestContext.Current.CancellationToken;
+        await using var db = CreateContext();
+        var timestamp = new DateTime(2026, 1, 2, 0, 0, 0, DateTimeKind.Utc);
+        var settings = StartupSettings.Defaults();
+        db.BlogConfiguration.AddRange(settings.Select(pair => new BlogConfigurationEntity
+        {
+            CfgKey = pair.Key,
+            CfgValue = pair.Value,
+            LastModifiedTimeUtc = timestamp
+        }));
+        var post = new PostEntity { Id = Guid.NewGuid(), Title = "Existing title", PostContent = "Existing content", CreateTimeUtc = timestamp };
+        db.Post.Add(post);
+        db.Comment.Add(new CommentEntity
+        {
+            Id = Guid.NewGuid(),
+            PostId = post.Id,
+            Username = "Visitor",
+            Email = "visitor@example.test",
+            CommentContent = "Existing comment",
+            CreateTimeUtc = timestamp
+        });
+        var profileId = Guid.NewGuid();
+        if (profileOnly)
+            db.OwnerAccount.Add(new OwnerAccountEntity
+            {
+                Id = profileId,
+                Email = "profile@example.test",
+                NormalizedEmail = "PROFILE@EXAMPLE.TEST",
+                Revision = Guid.NewGuid()
+            });
+        await db.SaveChangesAsync(ct);
+
+        for (var restart = 0; restart < 2; restart++)
+        {
+            using var harness = new StartupTestHarness(db);
+            Assert.Equal(InitStartUpResult.Success, await harness.Initializer.InitStartUpAsync(ct));
+            db.ChangeTracker.Clear();
+            var saved = await db.Post.SingleAsync(ct);
+            Assert.Equal(post.Id, saved.Id);
+            Assert.Equal("Existing content", saved.PostContent);
+            Assert.Equal("Existing comment", (await db.Comment.SingleAsync(ct)).CommentContent);
+            Assert.Empty(await db.Category.ToListAsync(ct));
+            Assert.Empty(await db.Widget.ToListAsync(ct));
+            foreach (var row in await db.BlogConfiguration.ToListAsync(ct))
+            {
+                Assert.Equal(settings[row.CfgKey], row.CfgValue);
+                Assert.Equal(timestamp, row.LastModifiedTimeUtc);
+            }
+            Assert.Equal(settings.Count, await db.BlogConfiguration.CountAsync(ct));
+            var owner = await db.OwnerAccount.SingleOrDefaultAsync(ct);
+            if (profileOnly)
+            {
+                Assert.Equal(profileId, owner!.Id);
+                Assert.Equal("profile@example.test", owner.Email);
+                Assert.Null(owner.LocalInitializedUtc);
+                Assert.Null(owner.PasswordHash);
+                Assert.Null(owner.PasswordSalt);
+                Assert.Null(owner.TotpSecret);
+            }
+            else Assert.Null(owner);
+        }
     }
 
     private static BlogDbContext CreateContext() => new(new DbContextOptionsBuilder<BlogDbContext>()

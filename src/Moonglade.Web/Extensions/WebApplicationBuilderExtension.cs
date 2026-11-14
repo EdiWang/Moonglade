@@ -1,4 +1,4 @@
-﻿namespace Moonglade.Web.Extensions;
+namespace Moonglade.Web.Extensions;
 
 public static class WebApplicationBuilderExtension
 {
@@ -42,8 +42,6 @@ public static class WebApplicationBuilderExtension
             { "Host", Environment.MachineName },
             { "URLs", configuration["Urls"] ?? "N/A" },
             { "Database", GetConnectionStringProvider(configuration) },
-            { "Image storage", "File system" },
-            { "Authentication", configuration["Authentication:Provider"] ?? "N/A" },
             { "Environment", envName }
         };
     }

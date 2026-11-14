@@ -1,25 +1,25 @@
 using LiteBus.Commands.Abstractions;
 using LiteBus.Messaging.Abstractions;
 using LiteBus.Queries.Abstractions;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ApplicationParts;
+using Microsoft.AspNetCore.Mvc.Controllers;
+using Microsoft.AspNetCore.TestHost;
+using Microsoft.Extensions.DependencyInjection;
 using Moonglade.ActivityLog;
+using Moonglade.Auth;
 using Moonglade.Data;
 using Moonglade.Data.Entities;
 using Moonglade.Features.Category;
 using Moonglade.Web.Controllers;
+using Moonglade.Web.Tests.TestSupport;
 using Moq;
 using System.Net;
-using System.Security.Claims;
-using Moonglade.Web.Tests.TestSupport;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.TestHost;
-using Microsoft.Extensions.DependencyInjection;
-using Moonglade.Auth;
 using System.Net.Http.Json;
+using System.Security.Claims;
 using System.Text.Json;
-using Microsoft.AspNetCore.Mvc.ApplicationParts;
-using Microsoft.AspNetCore.Mvc.Controllers;
 
 namespace Moonglade.Web.Tests.Controllers;
 
@@ -124,7 +124,9 @@ public class CategoryControllerTests
         {
             Content = method == "PUT" ? JsonContent.Create(new UpdateCategoryCommand
             {
-                DisplayName = "Cloud", Slug = "cloud", Note = "Cloud"
+                DisplayName = "Cloud",
+                Slug = "cloud",
+                Note = "Cloud"
             }) : null
         };
 
@@ -227,15 +229,15 @@ public class CategoryControllerTests
         Assert.Same(command, _commandMediator.Single<CreateCategoryCommand>());
 
         var activityCommand = _commandMediator.Single<CreateActivityLogCommand>();
-        Assert.Equal(EventType.CategoryCreated, activityCommand.EventType);
-        Assert.Equal("admin", activityCommand.ActorId);
-        Assert.Equal("Create Category", activityCommand.Operation);
-        Assert.Equal(command.DisplayName, activityCommand.TargetName);
+        Assert.Equal(ActivityEvents.CategoryCreated, activityCommand.EventKey);
+        Assert.Equal("admin", activityCommand.ActorDisplayName);
+        Assert.Equal(command.DisplayName, activityCommand.TargetDisplayName);
         Assert.Equal("127.0.0.1", activityCommand.IpAddress);
         Assert.Equal("unit-test-agent", activityCommand.UserAgent);
-        Assert.NotNull(activityCommand.MetaData);
+        Assert.NotNull(activityCommand.Details);
         Assert.Equal(command.Slug, ActivityLogMetaDataAssert.Value<string>(activityCommand, nameof(command.Slug)));
-        Assert.Equal(command.Note, ActivityLogMetaDataAssert.Value<string>(activityCommand, nameof(command.Note)));
+        Assert.Null(activityCommand.TargetId);
+        Assert.Equal(["Slug"], activityCommand.Details.Keys.ToArray());
     }
 
     [Fact]
@@ -279,16 +281,16 @@ public class CategoryControllerTests
         Assert.Same(command, _commandMediator.Single<UpdateCategoryCommand>());
 
         var activityCommand = _commandMediator.Single<CreateActivityLogCommand>();
-        Assert.Equal(EventType.CategoryUpdated, activityCommand.EventType);
-        Assert.Equal("admin", activityCommand.ActorId);
-        Assert.Equal("Update Category", activityCommand.Operation);
-        Assert.Equal(command.DisplayName, activityCommand.TargetName);
+        Assert.Equal(ActivityEvents.CategoryUpdated, activityCommand.EventKey);
+        Assert.Equal("admin", activityCommand.ActorDisplayName);
+        Assert.Equal(command.DisplayName, activityCommand.TargetDisplayName);
         Assert.Equal("127.0.0.1", activityCommand.IpAddress);
         Assert.Equal("unit-test-agent", activityCommand.UserAgent);
-        Assert.NotNull(activityCommand.MetaData);
+        Assert.NotNull(activityCommand.Details);
         Assert.Equal(id, ActivityLogMetaDataAssert.Value<int>(activityCommand, nameof(command.Id)));
         Assert.Equal(command.Slug, ActivityLogMetaDataAssert.Value<string>(activityCommand, nameof(command.Slug)));
-        Assert.Equal(command.Note, ActivityLogMetaDataAssert.Value<string>(activityCommand, nameof(command.Note)));
+        Assert.Equal(id.ToString(), activityCommand.TargetId);
+        Assert.Equal(["Id", "Slug"], activityCommand.Details.Keys.Order().ToArray());
     }
 
     [Fact]
@@ -318,13 +320,13 @@ public class CategoryControllerTests
         Assert.Equal(id, _commandMediator.Single<DeleteCategoryCommand>().Id);
 
         var activityCommand = _commandMediator.Single<CreateActivityLogCommand>();
-        Assert.Equal(EventType.CategoryDeleted, activityCommand.EventType);
-        Assert.Equal("admin", activityCommand.ActorId);
-        Assert.Equal("Delete Category", activityCommand.Operation);
-        Assert.Equal(id.ToString(), activityCommand.TargetName);
+        Assert.Equal(ActivityEvents.CategoryDeleted, activityCommand.EventKey);
+        Assert.Equal("admin", activityCommand.ActorDisplayName);
+        Assert.Equal(id.ToString(), activityCommand.TargetId);
+        Assert.Equal(id.ToString(), activityCommand.TargetDisplayName);
         Assert.Equal("127.0.0.1", activityCommand.IpAddress);
         Assert.Equal("unit-test-agent", activityCommand.UserAgent);
-        Assert.NotNull(activityCommand.MetaData);
+        Assert.NotNull(activityCommand.Details);
         Assert.Equal(id, ActivityLogMetaDataAssert.Value<int>(activityCommand, "CategoryId"));
     }
 
@@ -333,7 +335,8 @@ public class CategoryControllerTests
         IPAddress? remoteIpAddress = null,
         string? userAgent = null)
     {
-        var controller = new CategoryController(_queryMediator.Object, _commandMediator);
+        var controller = new CategoryController(_queryMediator.Object, _commandMediator,
+            Moq.Mock.Of<Microsoft.Extensions.Logging.ILogger<CategoryController>>());
         var httpContext = new DefaultHttpContext();
 
         if (!string.IsNullOrWhiteSpace(username))

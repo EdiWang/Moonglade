@@ -1,13 +1,12 @@
-using Microsoft.EntityFrameworkCore;
 using Edi.CacheAside.InMemory;
 using LiteBus.Commands.Abstractions;
 using LiteBus.Events.Abstractions;
 using LiteBus.Queries.Abstractions;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.ApplicationParts;
 using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.AspNetCore.TestHost;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Moonglade.Auth;
@@ -23,7 +22,7 @@ using System.Text.Json;
 
 namespace Moonglade.Web.Tests.Controllers;
 
-public class SettingsValidationHttpTests
+public partial class SettingsValidationHttpTests
 {
     [Theory]
     [InlineData("content", """{"postListPageSize":0}""", "PostListPageSize")]
@@ -51,6 +50,58 @@ public class SettingsValidationHttpTests
         Assert.DoesNotContain("private-marker", body);
         Assert.Same(original, config.Capture().CustomMenuSettings);
         Assert.Empty(store.Commands.OfType<Moonglade.ActivityLog.CreateActivityLogCommand>());
+    }
+
+    [Theory]
+    [InlineData("general", """{"avatarUrl":"https://example.com"}""", "avatarUrl")]
+    [InlineData("general", """{"canonicalPrefix":"https://example.com"}""", "canonicalPrefix")]
+    [InlineData("advanced", """{"enableSiteMap":false}""", "enableSiteMap")]
+    [InlineData("advanced", """{"robotsTxtContent":"User-agent: *"}""", "robotsTxtContent")]
+    [InlineData("seo", """{"metaKeyword":""}""", "MetaKeyword")]
+    [InlineData("seo", """{"indexNow":true}""", "indexNow")]
+    [InlineData("subscription", """{"feedItemCount":null}""", "FeedItemCount")]
+    [InlineData("subscription", """{"FeedItemCount":1,"feedItemCount":2}""", "FeedItemCount")]
+    [InlineData("appearance", """{"enableCustomCss":true}""", "CssCode")]
+    public async Task InvalidPatch_DoesNotPersistOrAudit(string route, string json, string field)
+    {
+        using var store = new ConfigurationCommandRecorder();
+        var config = Defaults();
+        var original = config.Capture();
+        await using var app = await CreateApp(store, config);
+        using var client = app.GetTestClient();
+        var ct = TestContext.Current.CancellationToken;
+
+        using var response = await client.PatchAsync($"/api/settings/{route}", new StringContent(json, Encoding.UTF8, "application/json"), ct);
+
+        Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+        using var problem = JsonDocument.Parse(await response.Content.ReadAsStringAsync(ct));
+        Assert.True(problem.RootElement.GetProperty("errors").TryGetProperty(field, out _));
+        Assert.Same(original, config.Capture());
+        Assert.Empty(store.Commands.OfType<Moonglade.ActivityLog.CreateActivityLogCommand>());
+    }
+
+    [Fact]
+    public async Task Patch_EnablesCssWithContentAndPreservesTheme()
+    {
+        using var store = new ConfigurationCommandRecorder();
+        var config = Defaults();
+        var original = config.Capture().AppearanceSettings;
+        await using var app = await CreateApp(store, config);
+        using var client = app.GetTestClient();
+        var ct = TestContext.Current.CancellationToken;
+        const string css = "body { color: red; }";
+        const string json = """{"enableCustomCss":true,"cssCode":"body { color: red; }"}""";
+
+        using var response = await client.PatchAsync("/api/settings/appearance", new StringContent(json, Encoding.UTF8, "application/json"), ct);
+
+        Assert.Equal(HttpStatusCode.NoContent, response.StatusCode);
+        var updated = config.Capture().AppearanceSettings;
+        Assert.Equal(original.ThemeId, updated.ThemeId);
+        Assert.True(updated.EnableCustomCss);
+        Assert.Equal(css, updated.CssCode);
+        Assert.Equal(updated.ToJson(), (await store.Db.BlogConfiguration.AsNoTracking().SingleAsync(
+            row => row.CfgKey == nameof(AppearanceSettings), ct)).CfgValue);
+        Assert.Single(store.Commands.OfType<Moonglade.ActivityLog.CreateActivityLogCommand>());
     }
 
     [Theory]
@@ -175,14 +226,14 @@ public class SettingsValidationHttpTests
         using var client = app.GetTestClient();
         object model = route switch
         {
-            "general" => GeneralSettings.DefaultValue,
-            "content" => ContentSettings.DefaultValue,
-            "comment" => CommentSettings.DefaultValue,
-            "notification" => NotificationSettings.DefaultValue,
-            "subscription" => FeedSettings.DefaultValue,
-            "watermark" => ImageSettings.DefaultValue,
-            "advanced" => AdvancedSettings.DefaultValue,
-            "appearance" => AppearanceSettings.DefaultValue,
+            "general" => config.Capture().GeneralSettings with { SiteTitle = "Changed title" },
+            "content" => config.Capture().ContentSettings with { PostListPageSize = 30 },
+            "comment" => config.Capture().CommentSettings with { EnableComments = false },
+            "notification" => config.Capture().NotificationSettings with { EnableEmailSending = true },
+            "subscription" => config.Capture().FeedSettings with { FeedItemCount = 7 },
+            "watermark" => config.Capture().ImageSettings with { KeepOriginImage = true },
+            "advanced" => config.Capture().AdvancedSettings with { EnableOpml = false },
+            "appearance" => config.Capture().AppearanceSettings with { ThemeId = 777 },
             "custom-menu" => new CustomMenuSettingsJsonModel { IsEnabled = false },
             _ => throw new ArgumentOutOfRangeException(nameof(route))
         };
@@ -194,19 +245,24 @@ public class SettingsValidationHttpTests
         Assert.Single(store.Commands.OfType<Moonglade.ActivityLog.CreateActivityLogCommand>());
     }
 
-    private static async Task<WebApplication> CreateApp(ConfigurationCommandRecorder store, BlogConfig config)
+    private static async Task<WebApplication> CreateApp(ConfigurationCommandRecorder store, BlogConfig config, bool emailAvailable = false)
     {
         store.Initialize(config);
         var builder = WebApplication.CreateBuilder(new WebApplicationOptions { EnvironmentName = "Testing" });
         builder.WebHost.UseTestServer();
         builder.Logging.ClearProviders();
         builder.Services.AddSingleton<IBlogConfig>(config);
-        builder.Services.AddSingleton<ILocalAccountReader>(store.Accounts);
+        builder.Services.AddSingleton<IOwnerProfileReader>(store.Accounts);
         builder.Services.AddSingleton<ICommandMediator>(store);
         builder.Services.AddSingleton(Mock.Of<IQueryMediator>());
         builder.Services.AddSingleton(Mock.Of<IEventMediator>());
         builder.Services.AddSingleton(new EmailCapabilityStatusEvaluator(new EmailServiceOptionsValidator(), new EmailOutboxWorkerOptionsValidator())
-            .Evaluate(new EmailServiceOptions(), new EmailOutboxWorkerOptions()));
+            .Evaluate(emailAvailable ? new EmailServiceOptions
+            {
+                SmtpServer = "smtp.example.test",
+                SmtpUserName = "sender@example.test",
+                SmtpPassword = "synthetic-test-value"
+            } : new EmailServiceOptions(), new EmailOutboxWorkerOptions()));
         builder.Services.AddInMemoryCacheAside();
         builder.Services.AddSingleton<PostCacheInvalidator>();
         builder.Services.AddControllers().AddApplicationPart(typeof(SettingsController).Assembly)

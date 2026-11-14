@@ -89,7 +89,9 @@ public class CommitBoundaryProbeTests
         await db.Database.EnsureCreatedAsync(ct);
         db.BlogConfiguration.Add(new BlogConfigurationEntity
         {
-            CfgKey = nameof(FeedSettings), CfgValue = FeedSettings.DefaultValue.ToJson(), LastModifiedTimeUtc = DateTime.UtcNow.AddDays(-1)
+            CfgKey = nameof(FeedSettings),
+            CfgValue = FeedSettings.DefaultValue.ToJson(),
+            LastModifiedTimeUtc = DateTime.UtcNow.AddDays(-1)
         });
         await db.SaveChangesAsync(ct);
     }

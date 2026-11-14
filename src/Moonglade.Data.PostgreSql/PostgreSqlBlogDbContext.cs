@@ -37,5 +37,9 @@ public class PostgreSqlBlogDbContext : BlogDbContext
                 property.SetColumnName(translator.TranslateMemberName(property.GetColumnName()));
             }
         }
+
+        Data.Configurations.OwnerAccountConfiguration.ConfigureConstraints(modelBuilder);
+        ConfigureOwnerAvatarConstraint(modelBuilder);
+        ConfigureOwnerOidcConstraint(modelBuilder);
     }
 }

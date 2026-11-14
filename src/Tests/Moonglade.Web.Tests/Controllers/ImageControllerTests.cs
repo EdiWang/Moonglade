@@ -13,11 +13,11 @@ using Moonglade.ImageStorage;
 using Moonglade.ImageStorage.Providers;
 using Moonglade.Web.Controllers;
 using Moonglade.Web.Services;
+using Moonglade.Web.Tests.TestSupport;
 using Moq;
 using System.Net;
 using System.Security.Claims;
 using System.Text;
-using Moonglade.Web.Tests.TestSupport;
 
 namespace Moonglade.Web.Tests.Controllers;
 
@@ -296,13 +296,13 @@ public class ImageControllerTests
         _imageStorage.Verify(x => x.InsertOriginalAsync(It.IsAny<string>(), It.IsAny<byte[]>()), Times.Never);
 
         var activityCommand = _commandMediator.Single<CreateActivityLogCommand>();
-        Assert.Equal(EventType.ImageUploaded, activityCommand.EventType);
-        Assert.Equal("admin", activityCommand.ActorId);
-        Assert.Equal("Upload Image", activityCommand.Operation);
-        Assert.Equal("photo-cdn.png", activityCommand.TargetName);
+        Assert.Equal(ActivityEvents.ImageUploaded, activityCommand.EventKey);
+        Assert.Equal("admin", activityCommand.ActorDisplayName);
+        Assert.Equal("photo-cdn.png", activityCommand.TargetDisplayName);
+        Assert.Equal("photo-cdn.png", activityCommand.TargetId);
         Assert.Equal("127.0.0.1", activityCommand.IpAddress);
         Assert.Equal("unit-test-agent", activityCommand.UserAgent);
-        Assert.NotNull(activityCommand.MetaData);
+        Assert.NotNull(activityCommand.Details);
         Assert.Equal("photo-cdn.png", ActivityLogMetaDataAssert.Value<string>(activityCommand, "FileName"));
         Assert.Equal(file.Length, ActivityLogMetaDataAssert.Value<long>(activityCommand, "FileSize"));
         Assert.False(ActivityLogMetaDataAssert.Value<bool>(activityCommand, "SkipWatermark"));

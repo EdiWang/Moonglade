@@ -1,14 +1,13 @@
-using Moonglade.Auth;
 using LiteBus.Commands.Abstractions;
 using LiteBus.Queries.Abstractions;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 using Moonglade.Configuration;
 using Moonglade.Data;
 using Moonglade.Features.Asset;
 using Moq;
-using Microsoft.EntityFrameworkCore;
 
 namespace Moonglade.Setup.Tests.TestSupport;
 
@@ -20,7 +19,6 @@ internal sealed class StartupTestHarness : IDisposable
         .ToDictionary(name => name, Environment.GetEnvironmentVariable);
 
     public BlogConfig Config { get; } = new();
-    public LocalAccountState Accounts { get; } = new();
     public SystemManifestSettings Manifest => SystemManifestSettings.ParseStored(
         _db.BlogConfiguration.AsNoTracking().Single(row => row.CfgKey == nameof(SystemManifestSettings)).CfgValue);
     public RecordingLogger<ConfigInitializer> ConfigLogger { get; } = new();
@@ -45,7 +43,7 @@ internal sealed class StartupTestHarness : IDisposable
         commands.Setup(m => m.SendAsync(It.IsAny<AddDefaultConfigurationCommand>(), It.IsAny<CommandMediationSettings>(), It.IsAny<CancellationToken>()))
             .Returns((ICommand<OperationCode> command, CommandMediationSettings _, CancellationToken ct) =>
                 defaultHandler.HandleAsync((AddDefaultConfigurationCommand)command, ct));
-        var initializer = new ConfigInitializer(queries.Object, commands.Object, Config, ConfigLogger, Accounts);
+        var initializer = new ConfigInitializer(queries.Object, commands.Object, Config, ConfigLogger);
         var environment = new Mock<IWebHostEnvironment>();
         environment.SetupGet(e => e.WebRootPath).Returns(_directory);
         var icons = new SiteIconBuilder(NullLogger<SiteIconBuilder>.Instance, queries.Object, environment.Object);

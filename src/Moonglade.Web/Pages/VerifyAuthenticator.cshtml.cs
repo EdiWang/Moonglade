@@ -2,10 +2,10 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.RateLimiting;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Moonglade.Web.Services;
 using System.ComponentModel.DataAnnotations;
-using System.Security.Claims;
 
 namespace Moonglade.Web.Pages;
 
@@ -13,80 +13,61 @@ namespace Moonglade.Web.Pages;
 [EnableRateLimiting(LocalAccountRateLimitPolicy.PolicyName)]
 public class VerifyAuthenticatorModel(
     IOptions<AuthenticationSettings> authSettings,
-    ILocalAccountReader accounts,
-    ILocalAccountTotpService totpService,
+    OwnerAccountStore accounts,
     ILogger<VerifyAuthenticatorModel> logger) : PageModel
 {
-    private readonly AuthenticationSettings _authenticationSettings = authSettings.Value;
-
-    [BindProperty]
-    [Required]
+    [BindProperty, Required, StringLength(6, MinimumLength = 6), RegularExpression("[0-9]{6}")]
     [Display(Name = "Authenticator code")]
-    [StringLength(6, MinimumLength = 6)]
-    [RegularExpression("[0-9]{6}")]
     public string AuthenticatorCode { get; set; }
 
-    public IActionResult OnGet()
-    {
-        if (_authenticationSettings.Provider != AuthenticationProvider.Local)
-        {
-            return RedirectToPage("/Index");
-        }
+    [BindProperty]
+    [Display(Name = "Remember this device")]
+    public bool RememberDevice { get; set; }
 
-        if (!IsTotpConfigured(accounts.Read()))
-        {
-            return RedirectToPage("/SignIn");
-        }
-
-        return Page();
-    }
+    public async Task<IActionResult> OnGetAsync() =>
+        await CurrentAccountAsync() is null ? RedirectToPage("/SignIn") : Page();
 
     public async Task<IActionResult> OnPostAsync()
     {
-        if (_authenticationSettings.Provider != AuthenticationProvider.Local)
-        {
-            return RedirectToPage("/Index");
-        }
-
-        var account = accounts.Read();
-        if (!IsTotpConfigured(account))
-        {
-            return RedirectToPage("/SignIn");
-        }
-
+        var account = await CurrentAccountAsync();
+        if (account is null) return RedirectToPage("/SignIn");
         if (!ModelState.IsValid)
         {
             Response.StatusCode = StatusCodes.Status400BadRequest;
             return Page();
         }
-
-        if (!totpService.VerifyCode(account.TotpSecret, AuthenticatorCode))
+        OwnerAccountSnapshot verified;
+        try
+        {
+            verified = await accounts.VerifyTotpAsync(account.Id, account.Revision, AuthenticatorCode, HttpContext.RequestAborted);
+        }
+        catch (DbUpdateConcurrencyException)
+        {
+            await HttpContext.SignOutAsync(BlogAuthSchemas.LocalAccountTwoFactor);
+            return RedirectToPage("/SignIn");
+        }
+        if (verified is null)
         {
             ModelState.AddModelError(nameof(AuthenticatorCode), "Invalid authenticator code.");
             return Page();
         }
-
         await HttpContext.SignOutAsync(BlogAuthSchemas.LocalAccountTwoFactor);
-        await SignInAdminAsync(account.Username);
-
-        logger.LogInformation("Authentication success for local account '{Username}'", account.Username);
-
+        await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme,
+            LocalAccountPrincipal.Create(verified, CookieAuthenticationDefaults.AuthenticationScheme));
+        if (RememberDevice)
+        {
+            await HttpContext.SignInAsync(BlogAuthSchemas.LocalAccountRememberedDevice,
+                LocalAccountPrincipal.Create(verified, BlogAuthSchemas.LocalAccountRememberedDevice),
+                new AuthenticationProperties { IsPersistent = true, AllowRefresh = false });
+        }
+        logger.LogInformation("Local account authentication completed");
         return RedirectToPage("/Admin/Dashboard");
     }
 
-    private async Task SignInAdminAsync(string username)
+    private async Task<OwnerAccountSnapshot> CurrentAccountAsync()
     {
-        var claims = new List<Claim>
-        {
-            new(ClaimTypes.Name, username),
-            new(ClaimTypes.Role, "Administrator")
-        };
-        var ci = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
-        var principal = new ClaimsPrincipal(ci);
-
-        await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
+        if (!authSettings.Value.Totp.Required) return null;
+        var account = await accounts.ReadAsync(HttpContext.RequestAborted);
+        return LocalAccountPrincipal.Matches(User, account) && account.IsTotpEnabled ? account : null;
     }
-
-    private static bool IsTotpConfigured(LocalAccountSettings account) =>
-        account.IsTotpEnabled && !string.IsNullOrWhiteSpace(account.TotpSecret);
 }

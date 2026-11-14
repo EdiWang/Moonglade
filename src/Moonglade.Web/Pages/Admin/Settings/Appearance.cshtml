@@ -10,17 +10,12 @@
 }
 
 <div id="localizedStrings" style="display:none"
-     data-settings-updated="@SharedLocalizer["Settings Updated"]"
      data-theme-deleted="@SharedLocalizer["Theme deleted."]">
 </div>
 
 @section head {
     <link href="~/_content/Moonglade.Editor.StaticAssets/moonglade-editor/moonglade-editor.css" rel="stylesheet" asp-append-version="true" />
     <style>
-        .settings-code-editor {
-            min-height: calc(100vh - 450px);
-        }
-
         .theme-selector-container.active {
             border: 2px solid black !important;
         }
@@ -39,15 +34,22 @@
     </style>
 }
 
+@section adminnavigation {
+    <partial name="_SettingsNavigation" />
+}
+
 @section admintoolbar {
+    @{
+        ViewData["CanCreateTheme"] = UserThemes.Count < 10;
+    }
     <partial name="_SettingsHeader" />
 }
 
-<form id="form-settings" asp-controller="Settings" asp-action="Appearance">
+<form id="form-settings" class="admin-settings-page" asp-controller="Settings" asp-action="Appearance">
     <div class="admin-settings-entry-container">
-        <div class="row">
-            <div class="col-md-6">
-                <h4 class="admin-subtitle fw-bold mb-2">
+        <div>
+            <div class="admin-panel admin-settings-gallery">
+                <h4 class="admin-subtitle fw-bold">
                     @SharedLocalizer["Theme"]
                 </h4>
 
@@ -56,7 +58,7 @@
                     <div class="row g-3">
                         @foreach (var theme in Themes.Where(p => p.ThemeType == ThemeType.System))
                         {
-                            <div class="col-md-4">
+                            <div class="col-4">
                                 <div class="theme-selector-container card @(ViewModel.ThemeId == theme.Id ? "active" : null)"
                                      style="border-color: @theme.CssRulesDictionary["--accent-color1"]"
                                      id="theme-selector-container-@theme.Id"
@@ -74,7 +76,7 @@
 
                                     <div class="card-footer text-light theme-selector-footer @(ViewModel.ThemeId == theme.Id ? "active" : null)"
                                          style="background-color: @theme.CssRulesDictionary["--accent-color1"]">
-                                        <input class="form-check-input" type="radio" asp-for="@ViewModel.ThemeId" id="ThemeId_@theme.Id" value="@theme.Id" />
+                                        <input class="form-check-input" type="radio" asp-for="@ViewModel.ThemeId" data-setting-number="" id="ThemeId_@theme.Id" value="@theme.Id" />
                                         <label class="form-check-label" for="ThemeId_@theme.Id">@theme.ThemeName</label>
                                     </div>
                                 </div>
@@ -96,7 +98,7 @@
                     <div class="row g-3 mb-2">
                         @foreach (var theme in UserThemes)
                         {
-                            <div class="col-md-4" id="user-theme-col-@theme.Id">
+                            <div class="col-4" id="user-theme-col-@theme.Id">
                                 <div class="theme-selector-container card @(ViewModel.ThemeId == theme.Id ? "active" : null)"
                                      style="border-color: @theme.CssRulesDictionary["--accent-color1"]"
                                      id="theme-selector-container-@theme.Id"
@@ -116,7 +118,7 @@
                                          style="background-color: @theme.CssRulesDictionary["--accent-color1"]">
 
                                         <div>
-                                            <input class="form-check-input" type="radio" asp-for="@ViewModel.ThemeId" id="ThemeId_@theme.Id" value="@theme.Id" />
+                                            <input class="form-check-input" type="radio" asp-for="@ViewModel.ThemeId" data-setting-number="" id="ThemeId_@theme.Id" value="@theme.Id" />
                                             <label class="form-check-label" for="ThemeId_@theme.Id">@theme.ThemeName</label>
                                         </div>
 
@@ -129,16 +131,7 @@
                         }
                     </div>
 
-                    @if (UserThemes.Count < 10)
-                    {
-                        <div>
-                            <a class="btn btn-outline-accent" href="#" data-bs-toggle="modal" data-bs-target="#thememodal">
-                                <i class="bi-plus-lg"></i>
-                                @SharedLocalizer["New"]
-                            </a>
-                        </div>
-                    }
-                    else
+                    @if (UserThemes.Count >= 10)
                     {
                         <div class="text-muted mt-2" role="alert">
                             @SharedLocalizer["You have reached the maximum number of user themes."]
@@ -146,39 +139,45 @@
                     }
                 </section>
             </div>
-            <div class="col-md-6">
-                <h4 class="admin-subtitle fw-bold mb-2">
+            <div class="admin-settings-section mt-4">
+                <h4 class="admin-subtitle fw-bold">
                     @SharedLocalizer["Custom CSS"]
                 </h4>
 
-                <div class="settings-entry row align-items-center py-3 px-2 rounded-3 border mb-1">
-                    <div class="col-auto">
-                        <i class="bi-palette settings-entry-icon"></i>
+                <div class="admin-settings-expander">
+                    <div class="settings-entry admin-settings-expander-header">
+                        <div class="col-auto">
+                            <i class="bi-palette settings-entry-icon"></i>
+                        </div>
+                        <div class="col">
+                            <label asp-for="@ViewModel.EnableCustomCss" class="form-check-label"></label>
+                        </div>
+                        <div class="col-5 text-end">
+                            <div class="form-check form-switch form-control-lg">
+                                <input type="hidden" name="EnableCustomCss" value="false">
+                                <input type="checkbox" id="@Html.IdFor(m => ViewModel.EnableCustomCss)" name="EnableCustomCss" value="true" data-setting-requires="CssCode" class="form-check-input" @(@ViewModel.EnableCustomCss ? "checked" : null) />
+                            </div>
+                        </div>
+                        <button type="button" class="admin-settings-expander-toggle" data-bs-toggle="collapse" data-bs-target="#settings-custom-css" aria-controls="settings-custom-css" aria-expanded="@(ViewModel.EnableCustomCss ? "true" : "false")" aria-label="@SharedLocalizer["Custom CSS"]">
+                            <i class="bi bi-chevron-down" aria-hidden="true"></i>
+                        </button>
                     </div>
-                    <div class="col">
-                        <label asp-for="@ViewModel.EnableCustomCss" class="form-check-label"></label>
-                    </div>
-                    <div class="col-md-5 text-end">
-                        <div class="form-check form-switch form-control-lg">
-                            <input type="hidden" name="EnableCustomCss" value="false">
-                            <input type="checkbox" name="EnableCustomCss" value="true" class="form-check-input" @(@ViewModel.EnableCustomCss ? "checked" : null) />
+
+                    <div id="settings-custom-css" class="collapse @(ViewModel.EnableCustomCss ? "show" : null)">
+                        <div class="admin-settings-expander-body">
+                            <div class="admin-settings-detail">
+                                <textarea asp-for="@ViewModel.CssCode" data-setting-edit='@SharedLocalizer["Custom CSS"]' class="form-control" rows="14" spellcheck="false"></textarea>
+                            </div>
                         </div>
                     </div>
                 </div>
-
-                <div id="CssContentEditor" class="settings-code-editor">
-                </div>
-                <textarea asp-for="@ViewModel.CssCode" class="settings-csscontent-textarea d-none"></textarea>
             </div>
         </div>
     </div>
 
-    <div class="admin-settings-action-container border-top pt-2 mt-2">
-        <button type="submit" class="btn btn-outline-accent" id="btn-save-settings">
-            @SharedLocalizer["Save"]
-        </button>
-    </div>
 </form>
+
+<partial name="_SettingEditModal" />
 
 <partial name="_ThemeModal" model="ThemeRequest" />
 

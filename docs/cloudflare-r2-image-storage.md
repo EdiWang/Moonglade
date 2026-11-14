@@ -7,7 +7,7 @@ R2 processed-image bucket -> /app/images
 R2 original-image bucket  -> /app/images-origin
 ```
 
-This guide uses the official rclone Docker volume plugin on a Linux Docker host. The plugin and all R2-specific behavior are deployment infrastructure owned by the operator, not part of Moonglade's application compatibility contract. Review [Upgrade to Filesystem-Only Image Storage](upgrade-filesystem-image-storage.md) before migrating an existing installation.
+This guide uses the official rclone Docker volume plugin on a Linux Docker host. The plugin and all R2-specific behavior are deployment infrastructure owned by the operator, not part of Moonglade's application compatibility contract. For existing installations, follow [Migrate Existing Images](#6-migrate-existing-images).
 
 ## Requirements
 
@@ -236,8 +236,11 @@ For the final cutover:
 
 ## 7. Application Verification
 
-Complete the shared [image-storage verification checklist](upgrade-filesystem-image-storage.md#verification-checklist), including raster/SVG uploads, original-image privacy, permissions, persistence, byte ranges, and CDN behavior. For R2, also:
+Verify uploads and delivery against the mounted storage.
 
+- Upload a raster image and an SVG. Confirm the application can write both roots with original retention enabled and that only the processed images are publicly accessible.
+- Request a byte range from `/image/{filename}` with CDN delivery disabled and confirm a `206 Partial Content` response. If CDN delivery is enabled, run the [CDN checks](#optional-cdn-delivery).
+- Recreate the web container and confirm that the uploaded images are still available.
 - Confirm the container mounts the expected rclone volumes at `/app/images` and `/app/images-origin`, backed by separate buckets.
 - Delete a test image and confirm removal from the intended bucket.
 - Restart Docker and reboot the host during a planned maintenance window to confirm plugin and volume recovery.

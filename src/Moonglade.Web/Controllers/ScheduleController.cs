@@ -9,8 +9,8 @@ namespace Moonglade.Web.Controllers;
 [Route("api/[controller]")]
 public class ScheduleController(
     IQueryMediator queryMediator,
-    ICommandMediator commandMediator
-    ) : BlogControllerBase(commandMediator)
+    ICommandMediator commandMediator,
+    ILogger<ScheduleController> logger) : BlogControllerBase(commandMediator, logger)
 {
     [HttpGet("list")]
     public async Task<IActionResult> List()
@@ -25,10 +25,10 @@ public class ScheduleController(
         await CommandMediator.SendAsync(new CancelScheduleCommand(postId));
 
         await LogActivityAsync(
-            EventType.PostScheduleCancelled,
-            "Cancel Post Schedule",
+            ActivityEvents.PostScheduleCancelled,
             $"Post #{postId}",
-            ActivityLogMetaData.Create(("PostId", postId)));
+            ActivityLogDetails.Create(("PostId", postId)),
+            targetId: postId.ToString());
 
         return NoContent();
     }
@@ -39,12 +39,12 @@ public class ScheduleController(
         await CommandMediator.SendAsync(new PostponePostCommand(postId, hours));
 
         await LogActivityAsync(
-            EventType.PostSchedulePostponed,
-            "Postpone Post Schedule",
+            ActivityEvents.PostSchedulePostponed,
             $"Post #{postId}",
-            ActivityLogMetaData.Create(
+            ActivityLogDetails.Create(
                 ("PostId", postId),
-                ("Hours", hours)));
+                ("Hours", hours)),
+            targetId: postId.ToString());
 
         return NoContent();
     }

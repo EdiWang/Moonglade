@@ -4,58 +4,45 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 using Moonglade.Auth;
-using Moonglade.Configuration;
 using Moonglade.Web.Pages;
+using Moonglade.Web.Tests.TestSupport;
 using Moq;
 using System.Security.Claims;
-using System.Text.Json;
-using Moonglade.Web.Tests.TestSupport;
 
 namespace Moonglade.Web.Tests.Pages.Auth;
 
 public class SetupAuthenticatorModelTests
 {
-    private static readonly JsonSerializerOptions JsonOptions = new()
-    {
-        PropertyNameCaseInsensitive = true
-    };
-
     [Fact]
-    public async Task OnGetAsync_GeneratesSecretAndBuildsAuthenticatorDisplay()
+    public async Task OnGetAsync_GeneratesProtectedSecretWithoutDatabaseWriteOrExtendingTicket()
     {
-        using var commandMediator = new ConfigurationCommandRecorder();
-        var model = CreateModel(
-            LocalAccountSettings.DefaultValue,
-            commandMediator,
-            new FakeTotpService { GeneratedSecret = "JBSWY3DPEHPK3PXP" });
+        await using var fixture = new LocalAccountPageFixture();
+        var account = await fixture.InitializeAsync();
+        var expires = DateTimeOffset.FromUnixTimeSeconds(DateTimeOffset.UtcNow.AddMinutes(3).ToUnixTimeSeconds());
+        fixture.SetTicket(account, BlogAuthSchemas.LocalAccountSetup, properties: new AuthenticationProperties { ExpiresUtc = expires });
+        var model = CreateModel(fixture);
 
         var result = await model.OnGetAsync();
 
         Assert.IsType<PageResult>(result);
-        Assert.Equal("JBSWY3DPEHPK3PXP", model.SetupKey);
-        Assert.StartsWith("data:image/png;base64,", model.QrCodeImageUri);
-
-        var settings = JsonSerializer.Deserialize<LocalAccountSettings>(
-            commandMediator.Single<UpdateLocalAccountCommand>().Json,
-            JsonOptions)!;
-        Assert.Equal("JBSWY3DPEHPK3PXP", settings.TotpSecret);
-        Assert.False(settings.IsTotpEnabled);
+        var ticket = Assert.Single(fixture.SignIns);
+        var secret = ticket.Principal.FindFirstValue("moonglade:totp-secret");
+        Assert.Equal(secret, model.SetupKey);
+        Assert.True(fixture.Totp.VerifyCode(secret!, LocalAccountPageFixture.Code(secret!)));
+        Assert.Equal(expires, ticket.Properties.ExpiresUtc);
+        Assert.Null((await fixture.Db.OwnerAccount.AsNoTracking().SingleAsync(TestContext.Current.CancellationToken)).TotpSecret);
+        Assert.Equal(account, await fixture.Accounts.ReadAsync(TestContext.Current.CancellationToken));
     }
 
     [Fact]
     public async Task OnPostAsync_InvalidModelState_ReturnsBadRequestAndKeepsSetupDisplay()
     {
-        using var commandMediator = new ConfigurationCommandRecorder();
-        var authenticationService = new Mock<IAuthenticationService>();
-        var model = CreateModel(
-            LocalAccountSettings.DefaultValue,
-            commandMediator,
-            new FakeTotpService { GeneratedSecret = "JBSWY3DPEHPK3PXP" },
-            authenticationService);
+        await using var fixture = new LocalAccountPageFixture();
+        var account = await fixture.InitializeAsync();
+        fixture.SetTicket(account, BlogAuthSchemas.LocalAccountSetup, "JBSWY3DPEHPK3PXP");
+        var model = CreateModel(fixture);
         model.ModelState.AddModelError(nameof(SetupAuthenticatorModel.AuthenticatorCode), "Required");
 
         var result = await model.OnPostAsync();
@@ -63,158 +50,87 @@ public class SetupAuthenticatorModelTests
         Assert.IsType<PageResult>(result);
         Assert.Equal(StatusCodes.Status400BadRequest, model.Response.StatusCode);
         Assert.Equal("JBSWY3DPEHPK3PXP", model.SetupKey);
-        Assert.StartsWith("data:image/png;base64,", model.QrCodeImageUri);
-        authenticationService.Verify(
-            x => x.SignInAsync(
-                It.IsAny<HttpContext>(),
-                It.IsAny<string>(),
-                It.IsAny<ClaimsPrincipal>(),
-                It.IsAny<AuthenticationProperties>()),
-            Times.Never);
+        Assert.Empty(fixture.SignIns);
+        Assert.Null((await fixture.Db.OwnerAccount.AsNoTracking().SingleAsync(TestContext.Current.CancellationToken)).TotpSecret);
     }
 
     [Fact]
     public async Task OnPostAsync_InvalidCode_ReturnsPageWithoutSigningIn()
     {
-        using var commandMediator = new ConfigurationCommandRecorder();
-        var authenticationService = new Mock<IAuthenticationService>();
-        var account = LocalAccountSettings.DefaultValue;
-        account.TotpSecret = "JBSWY3DPEHPK3PXP";
-        var model = CreateModel(
-            account,
-            commandMediator,
-            new FakeTotpService { VerifyResult = false },
-            authenticationService);
-        model.AuthenticatorCode = "123456";
+        await using var fixture = new LocalAccountPageFixture();
+        var account = await fixture.InitializeAsync();
+        fixture.SetTicket(account, BlogAuthSchemas.LocalAccountSetup, "JBSWY3DPEHPK3PXP");
+        var model = CreateModel(fixture);
+        model.AuthenticatorCode = "invalid-code";
 
         var result = await model.OnPostAsync();
 
         Assert.IsType<PageResult>(result);
         Assert.False(model.ModelState.IsValid);
         Assert.Equal("JBSWY3DPEHPK3PXP", model.SetupKey);
-        Assert.Empty(commandMediator.Commands);
-        authenticationService.Verify(
-            x => x.SignInAsync(
-                It.IsAny<HttpContext>(),
-                It.IsAny<string>(),
-                It.IsAny<ClaimsPrincipal>(),
-                It.IsAny<AuthenticationProperties>()),
-            Times.Never);
+        Assert.Empty(fixture.SignIns);
+        Assert.Equal(account, await fixture.Accounts.ReadAsync(TestContext.Current.CancellationToken));
     }
 
     [Fact]
     public async Task OnPostAsync_ValidCode_EnablesTotpAndSignsInAdmin()
     {
-        using var commandMediator = new ConfigurationCommandRecorder();
-        var authenticationService = new Mock<IAuthenticationService>();
-        var account = LocalAccountSettings.DefaultValue;
-        account.TotpSecret = "JBSWY3DPEHPK3PXP";
-        var model = CreateModel(
-            account,
-            commandMediator,
-            new FakeTotpService { VerifyResult = true },
-            authenticationService);
-        model.AuthenticatorCode = "123456";
+        await using var fixture = new LocalAccountPageFixture();
+        var account = await fixture.InitializeAsync();
+        var secret = fixture.Totp.GenerateSecret();
+        fixture.SetTicket(account, BlogAuthSchemas.LocalAccountSetup, secret);
+        var model = CreateModel(fixture);
+        model.AuthenticatorCode = LocalAccountPageFixture.Code(secret);
 
         var result = await model.OnPostAsync();
 
         var redirect = Assert.IsType<RedirectToPageResult>(result);
         Assert.Equal("/Admin/Dashboard", redirect.PageName);
 
-        var settings = JsonSerializer.Deserialize<LocalAccountSettings>(
-            commandMediator.Single<UpdateLocalAccountCommand>().Json,
-            JsonOptions)!;
-        Assert.True(settings.IsTotpEnabled);
-        Assert.Equal("JBSWY3DPEHPK3PXP", settings.TotpSecret);
-
-        authenticationService.Verify(
-            x => x.SignOutAsync(model.HttpContext, BlogAuthSchemas.LocalAccountSetup, null),
-            Times.Once);
-        authenticationService.Verify(
-            x => x.SignInAsync(
-                model.HttpContext,
-                CookieAuthenticationDefaults.AuthenticationScheme,
-                It.Is<ClaimsPrincipal>(p => p.Identity!.Name == account.Username),
-                It.IsAny<AuthenticationProperties>()),
-            Times.Once);
+        var saved = await fixture.Accounts.ReadAsync(TestContext.Current.CancellationToken);
+        Assert.True(saved!.IsTotpEnabled);
+        Assert.NotEqual(account.Revision, saved.Revision);
+        Assert.Equal(secret, (await fixture.Db.OwnerAccount.AsNoTracking().SingleAsync(TestContext.Current.CancellationToken)).TotpSecret);
+        Assert.Contains(BlogAuthSchemas.LocalAccountSetup, fixture.SignOuts);
+        var ticket = Assert.Single(fixture.SignIns);
+        Assert.Equal(CookieAuthenticationDefaults.AuthenticationScheme, ticket.AuthenticationScheme);
+        Assert.True(LocalAccountPrincipal.Matches(ticket.Principal, saved));
+        Assert.True(ticket.Principal.IsInRole("Administrator"));
     }
 
     [Theory]
     [InlineData(false)]
     [InlineData(true)]
-    public async Task SaveFailure_DoesNotChangeSecretOrEnableTotpOrSignIn(bool hasSecret)
+    public async Task SaveFailureOrStaleTicket_DoesNotEnableTotpOrSignIn(bool staleTicket)
     {
-        using var mediator = new ConfigurationCommandRecorder();
-        var account = LocalAccountSettings.DefaultValue;
-        account.TotpSecret = hasSecret ? "JBSWY3DPEHPK3PXP" : string.Empty;
-        var originalJson = account.ToJson();
-        var authentication = new Mock<IAuthenticationService>();
-        var model = CreateModel(account, mediator, new FakeTotpService { VerifyResult = true }, authentication);
-        model.AuthenticatorCode = "123456";
-        await mediator.Db.Database.ExecuteSqlRawAsync(
-            "CREATE TRIGGER reject_account_settings BEFORE UPDATE ON BlogConfiguration BEGIN SELECT RAISE(ABORT, 'Save rejected'); END;",
-            TestContext.Current.CancellationToken);
-
-        await Assert.ThrowsAsync<DbUpdateException>(() => hasSecret ? model.OnPostAsync() : model.OnGetAsync());
-
-        Assert.Equal(account.ToJson(), mediator.Accounts.Read().ToJson());
-        Assert.Equal(originalJson, account.ToJson());
-        authentication.Verify(p => p.SignInAsync(It.IsAny<HttpContext>(), It.IsAny<string>(),
-            It.IsAny<ClaimsPrincipal>(), It.IsAny<AuthenticationProperties>()), Times.Never);
-        authentication.Verify(p => p.SignOutAsync(It.IsAny<HttpContext>(), It.IsAny<string>(),
-            It.IsAny<AuthenticationProperties>()), Times.Never);
-        mediator.Db.ChangeTracker.Clear();
-        Assert.Equal(originalJson, (await mediator.Db.BlogConfiguration.SingleAsync(
-            p => p.CfgKey == nameof(LocalAccountSettings), TestContext.Current.CancellationToken)).CfgValue);
-    }
-
-    private static SetupAuthenticatorModel CreateModel(
-        LocalAccountSettings account,
-        ConfigurationCommandRecorder commandMediator,
-        ILocalAccountTotpService totpService,
-        Mock<IAuthenticationService>? authenticationService = null)
-    {
-        authenticationService ??= new Mock<IAuthenticationService>();
-        var services = new ServiceCollection()
-            .AddSingleton(authenticationService.Object)
-            .BuildServiceProvider();
-
-        var httpContext = new DefaultHttpContext
+        var ct = TestContext.Current.CancellationToken;
+        await using var fixture = new LocalAccountPageFixture();
+        var account = await fixture.InitializeAsync();
+        var secret = fixture.Totp.GenerateSecret();
+        fixture.SetTicket(account, BlogAuthSchemas.LocalAccountSetup, secret);
+        var model = CreateModel(fixture);
+        model.AuthenticatorCode = LocalAccountPageFixture.Code(secret);
+        if (staleTicket)
         {
-            RequestServices = services
-        };
-
-        commandMediator.Initialize(new BlogConfig(), account);
-        var model = new SetupAuthenticatorModel(
-            Options.Create(new AuthenticationSettings
-            {
-                Provider = AuthenticationProvider.Local,
-                Totp = new TotpAuthenticationSettings { Issuer = "Moonglade Test" }
-            }),
-            commandMediator.Accounts,
-            commandMediator,
-            totpService,
-            Mock.Of<ILogger<SetupAuthenticatorModel>>());
-
-        model.PageContext = new PageContext
+            await fixture.Accounts.ResetTotpAsync(account.Id, account.Revision, LocalAccountPageFixture.Password, ct);
+            var redirect = Assert.IsType<RedirectToPageResult>(await model.OnPostAsync());
+            Assert.Equal("/SignIn", redirect.PageName);
+        }
+        else
         {
-            HttpContext = httpContext
-        };
-
-        return model;
+            await fixture.Db.Database.ExecuteSqlRawAsync(
+                "CREATE TRIGGER reject_account BEFORE UPDATE ON OwnerAccount BEGIN SELECT RAISE(ABORT, 'Save rejected'); END;", ct);
+            await Assert.ThrowsAsync<DbUpdateException>(() => model.OnPostAsync());
+        }
+        Assert.Empty(fixture.SignIns);
+        var saved = await fixture.Db.OwnerAccount.AsNoTracking().SingleAsync(ct);
+        Assert.Null(saved.TotpSecret);
+        Assert.True(saved.LocalInitializedUtc.HasValue);
+        Assert.Equal(account.Id, saved.Id);
     }
 
-    private sealed class FakeTotpService : ILocalAccountTotpService
-    {
-        public string GeneratedSecret { get; init; } = "JBSWY3DPEHPK3PXP";
-        public bool VerifyResult { get; init; }
-
-        public string GenerateSecret() => GeneratedSecret;
-
-        public bool VerifyCode(string secret, string code) => VerifyResult;
-
-        public string BuildAuthenticatorUri(string issuer, string accountName, string secret) =>
-            $"otpauth://totp/{Uri.EscapeDataString(issuer)}:{Uri.EscapeDataString(accountName)}?secret={secret}&issuer={Uri.EscapeDataString(issuer)}";
-    }
+    private static SetupAuthenticatorModel CreateModel(LocalAccountPageFixture fixture) =>
+        fixture.Attach(new SetupAuthenticatorModel(fixture.Options, fixture.Accounts, fixture.Totp,
+            Mock.Of<ILogger<SetupAuthenticatorModel>>()), BlogAuthSchemas.LocalAccountSetup);
 
 }

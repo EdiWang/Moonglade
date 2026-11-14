@@ -1,4 +1,3 @@
-using Moonglade.Auth;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -18,8 +17,8 @@ public class StartupApplicationTests
 {
     [Theory]
     [InlineData("empty-settings")]
-    [InlineData("missing-account")]
-    [InlineData("invalid-account")]
+    [InlineData("invalid-manifest")]
+    [InlineData("invalid-manifest-time")]
     public async Task InitStartUp_WhenInitializationFails_ThrowsWithoutStartingHostedServicesOrChangingData(string scenario)
     {
         var ct = TestContext.Current.CancellationToken;
@@ -41,11 +40,11 @@ public class StartupApplicationTests
                 CfgValue = "not-json",
                 LastModifiedTimeUtc = scheduledTime
             });
-        if (scenario == "invalid-account")
+        if (scenario.StartsWith("invalid-manifest", StringComparison.Ordinal))
             db.BlogConfiguration.Add(new BlogConfigurationEntity
             {
-                CfgKey = nameof(LocalAccountSettings),
-                CfgValue = "null",
+                CfgKey = nameof(SystemManifestSettings),
+                CfgValue = scenario == "invalid-manifest" ? "null" : """{"installTimeUtc":"0001-01-01T00:00:00Z"}""",
                 LastModifiedTimeUtc = scheduledTime
             });
         await db.SaveChangesAsync(ct);
@@ -107,7 +106,7 @@ public class StartupApplicationTests
 
         hosted.Verify(service => service.StartAsync(It.IsAny<CancellationToken>()), Times.Never);
         Assert.Equal(settings[nameof(GeneralSettings)], harness.Config.Capture().GeneralSettings.ToJson());
-        Assert.Equal(LocalAccountSettings.DefaultValue.ToJson(), harness.Accounts.Read().ToJson());
+        Assert.False(await db.OwnerAccount.AnyAsync(ct));
         Assert.DoesNotContain(logger.Entries, entry => entry.Level == LogLevel.Critical);
         db.ChangeTracker.Clear();
         var rows = await db.BlogConfiguration.ToDictionaryAsync(row => row.CfgKey, ct);

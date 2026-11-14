@@ -1,0 +1,38 @@
+@{
+    var currentPage = ViewContext.RouteData.Values["Page"]?.ToString();
+}
+
+<nav class="admin-secondary-nav" aria-label="@SharedLocalizer["Settings"]">
+    <ul class="nav">
+        <li class="nav-item">
+            <a class="nav-link @(currentPage == "/Admin/Settings/General" ? "active" : null)" aria-current="@(currentPage == "/Admin/Settings/General" ? "page" : null)" asp-page="/Admin/Settings/General">@SharedLocalizer["General"]</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link @(currentPage == "/Admin/Settings/Content" ? "active" : null)" aria-current="@(currentPage == "/Admin/Settings/Content" ? "page" : null)" asp-page="/Admin/Settings/Content">@SharedLocalizer["Content"]</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link @(currentPage == "/Admin/Settings/Comment" ? "active" : null)" aria-current="@(currentPage == "/Admin/Settings/Comment" ? "page" : null)" asp-page="/Admin/Settings/Comment">@SharedLocalizer["Comments"]</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link @(currentPage == "/Admin/Settings/Image" ? "active" : null)" aria-current="@(currentPage == "/Admin/Settings/Image" ? "page" : null)" asp-page="/Admin/Settings/Image">@SharedLocalizer["Image"]</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link @(currentPage == "/Admin/Settings/Subscription" ? "active" : null)" aria-current="@(currentPage == "/Admin/Settings/Subscription" ? "page" : null)" asp-page="/Admin/Settings/Subscription">@SharedLocalizer["Subscription"]</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link @(currentPage == "/Admin/Settings/Appearance" ? "active" : null)" aria-current="@(currentPage == "/Admin/Settings/Appearance" ? "page" : null)" asp-page="/Admin/Settings/Appearance">@SharedLocalizer["Appearance"]</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link @(currentPage == "/Admin/Settings/Notification" ? "active" : null)" aria-current="@(currentPage == "/Admin/Settings/Notification" ? "page" : null)" asp-page="/Admin/Settings/Notification">@SharedLocalizer["Notification"]</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link @(currentPage == "/Admin/Settings/Seo" ? "active" : null)" aria-current="@(currentPage == "/Admin/Settings/Seo" ? "page" : null)" asp-page="/Admin/Settings/Seo">@SharedLocalizer["SEO"]</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link @(currentPage == "/Admin/Settings/Advanced" ? "active" : null)" aria-current="@(currentPage == "/Admin/Settings/Advanced" ? "page" : null)" asp-page="/Admin/Settings/Advanced">@SharedLocalizer["Advanced"]</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link @(currentPage == "/Admin/Settings/VerificationFiles" ? "active" : null)" aria-current="@(currentPage == "/Admin/Settings/VerificationFiles" ? "page" : null)" asp-page="/Admin/Settings/VerificationFiles">@SharedLocalizer["Verification Files"]</a>
+        </li>
+    </ul>
+</nav>

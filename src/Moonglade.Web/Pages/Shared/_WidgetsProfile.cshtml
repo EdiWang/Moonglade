@@ -1,15 +1,17 @@
-﻿@{
-    var snapshot = ViewData.CaptureSettings(SettingsReader);
+@inject Moonglade.Auth.IOwnerProfileReader OwnerProfiles
+@{
+    var presentation = await ViewData.CaptureOwnerPresentationAsync(OwnerProfiles, Context.RequestAborted);
 }
 @{
-    var avatarUrl = Url.Action("Avatar", "Assets");
+    var avatarUrl = Url.Action("Avatar", "OwnerAvatar");
+    var owner = await ViewData.CaptureOwnerAsync(OwnerProfiles, Context.RequestAborted);
 }
 
 <section class="blog-info-desktop-lg text-light d-none d-lg-block h-card">
     <div class="card-background-container">
-        @if (snapshot.GeneralSettings.UseGravatarAsProfilePicture)
+        @if (owner?.UseGravatar == true)
         {
-            <gravatar class="card-bkimg" email="@snapshot.GeneralSettings.OwnerEmail" size="256" />
+            <gravatar class="card-bkimg" email="@owner.Email" size="256" />
         }
         else
         {
@@ -17,27 +19,27 @@
         }
     </div>
     <div class="blog-info-photo-text text-center">
-        @if (snapshot.GeneralSettings.UseGravatarAsProfilePicture)
+        @if (owner?.UseGravatar == true)
         {
             <gravatar class="rounded-circle blogger-head-pic u-photo"
                       size="256"
-                      alt="@snapshot.GeneralSettings.OwnerName"
-                      email="@snapshot.GeneralSettings.OwnerEmail" />
+                      alt="@presentation.Name"
+                      email="@owner.Email" />
         }
         else
         {
             <img src="@avatarUrl"
-                 alt="@snapshot.GeneralSettings.OwnerName"
+                 alt="@presentation.Name"
                  class="rounded-circle blogger-head-pic u-photo"/>
         }
 
         <div>
             <h3 class="mt-3 text-white font-sairas heading-ownername">
-                <a class="p-name u-url text-white text-decoration-none" rel="me" href="~/">@snapshot.GeneralSettings.OwnerName</a>
+                <a class="p-name u-url text-white text-decoration-none" rel="me" href="~/">@presentation.Name</a>
             </h3>
 
             <p class="me-3 ms-3 profile-description p-note">
-                @snapshot.GeneralSettings.Description
+                @presentation.Description
             </p>
         </div>
     </div>

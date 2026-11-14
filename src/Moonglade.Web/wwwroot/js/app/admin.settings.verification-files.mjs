@@ -3,6 +3,7 @@ import { fetch2 } from './httpService.mjs?v=1500';
 import { success, error } from './toastService.mjs';
 import { getLocalizedString, parseUtcDate } from './utils.module.mjs';
 import { showDeleteConfirmModal, hideConfirmModal } from './adminModal.mjs';
+import { createOffcanvas } from './admin.offcanvas.mjs';
 
 const emptyFormData = () => ({
     fileName: '',
@@ -20,7 +21,7 @@ Alpine.data('siteVerificationFileManager', () => ({
     formData: emptyFormData(),
 
     async init() {
-        this.editCanvas = new bootstrap.Offcanvas(this.$refs.editFileCanvas);
+        this.editCanvas = createOffcanvas(this.$refs.editFileCanvas);
         await this.loadFiles();
     },
 
@@ -53,7 +54,7 @@ Alpine.data('siteVerificationFileManager', () => ({
         this.editCanvas.show();
     },
 
-    async editFile(id) {
+    async editFile(id, trigger = document.activeElement) {
         try {
             const file = await fetch2(`/api/site-verification-files/${id}`, 'GET');
             this.currentFileId = file.id;
@@ -62,7 +63,7 @@ Alpine.data('siteVerificationFileManager', () => ({
                 content: file.content,
                 isEnabled: file.isEnabled
             };
-            this.editCanvas.show();
+            this.editCanvas.show(trigger);
         } catch (err) {
             error(err);
         }

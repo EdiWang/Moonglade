@@ -1,11 +1,10 @@
-using LiteBus.Commands.Abstractions;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.RateLimiting;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Moonglade.Web.Services;
-using QRCoder;
 using System.ComponentModel.DataAnnotations;
 using System.Security.Claims;
 
@@ -15,129 +14,79 @@ namespace Moonglade.Web.Pages;
 [EnableRateLimiting(LocalAccountRateLimitPolicy.PolicyName)]
 public class SetupAuthenticatorModel(
     IOptions<AuthenticationSettings> authSettings,
-    ILocalAccountReader accounts,
-    ICommandMediator commandMediator,
+    OwnerAccountStore accounts,
     ILocalAccountTotpService totpService,
     ILogger<SetupAuthenticatorModel> logger) : PageModel
 {
-    private readonly AuthenticationSettings _authenticationSettings = authSettings.Value;
-
+    private const string SecretClaim = "moonglade:totp-secret";
     public string SetupKey { get; private set; }
     public string QrCodeImageUri { get; private set; }
 
-    [BindProperty]
-    [Required]
+    [BindProperty, Required, StringLength(6, MinimumLength = 6), RegularExpression("[0-9]{6}")]
     [Display(Name = "Authenticator code")]
-    [StringLength(6, MinimumLength = 6)]
-    [RegularExpression("[0-9]{6}")]
     public string AuthenticatorCode { get; set; }
 
     public async Task<IActionResult> OnGetAsync()
     {
-        if (_authenticationSettings.Provider != AuthenticationProvider.Local)
+        var account = await CurrentAccountAsync();
+        if (account is null) return RedirectToPage("/SignIn");
+        var ticket = await HttpContext.AuthenticateAsync(BlogAuthSchemas.LocalAccountSetup);
+        var secret = ticket.Principal?.FindFirstValue(SecretClaim);
+        if (string.IsNullOrWhiteSpace(secret))
         {
-            return RedirectToPage("/Index");
+            secret = totpService.GenerateSecret();
+            var principal = LocalAccountPrincipal.Create(account, BlogAuthSchemas.LocalAccountSetup);
+            ((ClaimsIdentity)principal.Identity!).AddClaim(new Claim(SecretClaim, secret));
+            await HttpContext.SignInAsync(BlogAuthSchemas.LocalAccountSetup, principal, ticket.Properties);
         }
-
-        var account = accounts.Read();
-        if (IsTotpConfigured(account))
-        {
-            return RedirectToPage("/SignIn");
-        }
-
-        await EnsureTotpSecretAsync(account);
-        BuildAuthenticatorDisplay(account);
-
+        Display(account.Email, secret);
         return Page();
     }
 
     public async Task<IActionResult> OnPostAsync()
     {
-        if (_authenticationSettings.Provider != AuthenticationProvider.Local)
-        {
-            return RedirectToPage("/Index");
-        }
-
-        var account = accounts.Read();
-        if (IsTotpConfigured(account))
-        {
-            return RedirectToPage("/SignIn");
-        }
-
-        await EnsureTotpSecretAsync(account);
-
+        var account = await CurrentAccountAsync();
+        var secret = User.FindFirstValue(SecretClaim);
+        if (account is null || string.IsNullOrWhiteSpace(secret)) return RedirectToPage("/SignIn");
         if (!ModelState.IsValid)
         {
-            BuildAuthenticatorDisplay(account);
+            Display(account.Email, secret);
             Response.StatusCode = StatusCodes.Status400BadRequest;
             return Page();
         }
-
-        if (!totpService.VerifyCode(account.TotpSecret, AuthenticatorCode))
+        OwnerAccountSnapshot saved;
+        try
+        {
+            saved = await accounts.EnrollTotpAsync(account.Id, account.Revision, secret, AuthenticatorCode, HttpContext.RequestAborted);
+        }
+        catch (DbUpdateConcurrencyException)
+        {
+            await HttpContext.SignOutAsync(BlogAuthSchemas.LocalAccountSetup);
+            return RedirectToPage("/SignIn");
+        }
+        if (saved is null)
         {
             ModelState.AddModelError(nameof(AuthenticatorCode), "Invalid authenticator code.");
-            BuildAuthenticatorDisplay(account);
+            Display(account.Email, secret);
             return Page();
         }
-
-        account.IsTotpEnabled = true;
-        await SaveLocalAccountSettingsAsync(account);
         await HttpContext.SignOutAsync(BlogAuthSchemas.LocalAccountSetup);
-        await SignInAdminAsync(account.Username);
-
-        logger.LogInformation("TOTP authenticator setup completed for local account '{Username}'", account.Username);
-
+        await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme,
+            LocalAccountPrincipal.Create(saved, CookieAuthenticationDefaults.AuthenticationScheme));
+        logger.LogInformation("Local account authenticator enrollment completed");
         return RedirectToPage("/Admin/Dashboard");
     }
 
-    private async Task EnsureTotpSecretAsync(LocalAccountSettings account)
+    private async Task<OwnerAccountSnapshot> CurrentAccountAsync()
     {
-        if (!string.IsNullOrWhiteSpace(account.TotpSecret))
-        {
-            return;
-        }
-
-        account.TotpSecret = totpService.GenerateSecret();
-        account.IsTotpEnabled = false;
-        await SaveLocalAccountSettingsAsync(account);
+        if (!authSettings.Value.Totp.Required) return null;
+        var account = await accounts.ReadAsync(HttpContext.RequestAborted);
+        return LocalAccountPrincipal.Matches(User, account) && !account.IsTotpEnabled ? account : null;
     }
 
-    private void BuildAuthenticatorDisplay(LocalAccountSettings account)
+    private void Display(string email, string secret)
     {
-        SetupKey = account.TotpSecret;
-        var issuer = _authenticationSettings.Totp.Issuer;
-        var authenticatorUri = totpService.BuildAuthenticatorUri(issuer, account.Username, account.TotpSecret);
-        QrCodeImageUri = CreateQrCodeImageUri(authenticatorUri);
-    }
-
-    private async Task SaveLocalAccountSettingsAsync(LocalAccountSettings account)
-    {
-        await commandMediator.SendAsync(new UpdateLocalAccountCommand(account), HttpContext.RequestAborted);
-    }
-
-    private async Task SignInAdminAsync(string username)
-    {
-        var claims = new List<Claim>
-        {
-            new(ClaimTypes.Name, username),
-            new(ClaimTypes.Role, "Administrator")
-        };
-        var ci = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
-        var principal = new ClaimsPrincipal(ci);
-
-        await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
-    }
-
-    private static bool IsTotpConfigured(LocalAccountSettings account) =>
-        account.IsTotpEnabled && !string.IsNullOrWhiteSpace(account.TotpSecret);
-
-    private static string CreateQrCodeImageUri(string authenticatorUri)
-    {
-        using var qrGenerator = new QRCodeGenerator();
-        using var qrCodeData = qrGenerator.CreateQrCode(authenticatorUri, QRCodeGenerator.ECCLevel.Q);
-        var qrCode = new PngByteQRCode(qrCodeData);
-        var qrCodeBytes = qrCode.GetGraphic(8);
-
-        return $"data:image/png;base64,{Convert.ToBase64String(qrCodeBytes)}";
+        SetupKey = secret;
+        QrCodeImageUri = AuthenticatorQrCode.Create(totpService.BuildAuthenticatorUri(authSettings.Value.Totp.Issuer, email, secret));
     }
 }

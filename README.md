@@ -1,83 +1,53 @@
-# 🌙 Moonglade Blog
+# Moonglade Blog
 
-**Moonglade** is a self-hosted personal blogging platform for developers, built with ASP.NET Core / .NET 10 and Razor Pages.
+Moonglade is a self-hosted personal blogging platform built with ASP.NET Core on .NET 10 and Razor Pages. It runs on-premises or in the cloud and supports PostgreSQL (default) and SQL Server.
 
-## What Moonglade Does
+- Publish HTML or Markdown posts, including Mermaid diagrams, with drafts, scheduling, categories, tags, and standalone pages.
+- Manage comments, replies, Webmentions, themes, widgets, menus, images, site verification files, and administrator activity from the admin portal. The admin portal supports desktop browsers at 1440 CSS pixels or wider.
+- Serve feeds, discovery metadata, and localized pages. Available languages are English, Simplified Chinese, Traditional Chinese (Hong Kong terminology), German, Japanese, and French (France). Visitors choose their display language in the footer. The blog's default language controls blog and post metadata.
 
-A public blog and authenticated admin portal provide:
-
-- **Content publishing:** posts, drafts, scheduled posts, Markdown Mermaid diagrams, pages, featured/outdated flags, archives, recycle bin behavior, and route links for published posts.
-- **Reader interaction:** comments, replies, Webmentions, comment moderation, view counts, and optional email notifications.
-- **Site management:** runtime blog settings, widgets, themes, custom CSS, menus, image storage, site verification files, account settings, and data import/export.
-- **Discovery and interoperability:** RSS, Atom, OPML, OpenSearch, FOAF, sitemap, robots.txt, IndexNow, root-level site ownership verification files, reader-friendly markup, and health checks.
-
-## Repository Layout
-
-The solution is `src/Moonglade.slnx`. See the [engineering reference](docs/agent-reference.md#layers-and-project-responsibilities) for module responsibilities.
-
-| Path | Purpose |
-| --- | --- |
-| `src/Moonglade.Web` | ASP.NET Core web host, Razor Pages, API controllers, endpoint mapping, filters, middleware wiring, and static assets. |
-| `src/Moonglade.*` | Feature, data, configuration, authentication, storage, integration, and background-service libraries. |
-| `src/Tests/Moonglade.*.Tests` | xUnit test projects aligned with the production projects. See the [test layout and maintenance guide](src/Tests/README.md). |
-| `Dockerfile`, `compose.yaml` | Docker deployment assets. |
-| `database/` | Manual, idempotent database migration SQL scripts and their conventions. |
-
-## 🚀 Deployment
+## Deployment
 
 > This blogging system must not be used to serve users in mainland China or to publish content prohibited by Chinese law or any applicable regulations.
 
-- **Stable Code:** Always use the [Release](https://github.com/EdiWang/Moonglade/releases) branch. Avoid deploying from `master`.
-- **Security:** Enable **HTTPS** and **HTTP/2** on your web server for optimal security and performance.
-- **Deployment Options:** Moonglade can run on any cloud provider or on-premises.
+Deploy a published [release](https://github.com/EdiWang/Moonglade/releases) at the URL root. Enable HTTPS and HTTP/2 on the public web server. Behind a reverse proxy, configure trusted addresses under `ForwardedHeaders:KnownProxies` so the application receives the correct public scheme and client IP. Subpath hosting is unsupported.
 
 ### Database Upgrades
 
-Database upgrades are manual. Before starting a newer release against an existing database, back up the database and have an administrator run any required release-specific SQL scripts for PostgreSQL or SQL Server. Validate the upgrade on a restored backup first; restore the backup if rollback is needed.
+Fresh installations create the schema and seed initial data automatically. Existing installations require manual upgrades before the new application starts.
 
-See [`database/README.md`](database/README.md) for the script catalog, authoring rules, and repeat-execution verification.
+Stop all Moonglade hosts, back up the database, and test the required SQL scripts against a restored copy. Follow the [database execution guide](database/README.md#verification-and-execution).
 
-Moonglade does not automatically migrate existing databases or check their version compatibility at startup. The former `AutoDatabaseMigration` setting is no longer supported, and the previous cumulative SQL migration scripts have been removed. Fresh installations still create the current database schema and seed initial data automatically.
+To upgrade a database already at 16.9.0 to 16.10.0, run these scripts in order from the [PostgreSQL](database/PostgreSql) or [SQL Server](database/SqlServer) directory for your provider:
 
-Apply upgrades in order when required:
+1. `3.activity-log-events.sql` replaces legacy activity history and discards its existing entries.
+2. `4.seo-settings.sql` copies legacy SEO settings.
+3. `5.seo-robots-txt.sql` copies the existing robots.txt content.
+4. `6.owner-account.sql` creates owner account storage.
+5. `7.owner-account-cutover.sql` transfers the public owner email and removes legacy local credentials.
+6. `8.owner-avatar.sql` transfers the owner avatar and Gravatar preference.
+7. `9.owner-presentation.sql` transfers the owner name and description.
+8. `10.owner-oidc.sql` creates OIDC storage and the Data Protection key table required for local sign-in and antiforgery tokens. Run it even if you use only local sign-in.
 
-1. [Category integer IDs](docs/upgrade-category-int-identity.md): converts GUID keys; public category/feed URLs retain their slugs, while admin APIs use integers.
-2. [PostgreSQL snake_case names](docs/upgrade-postgresql-snake-case.md): requires integer category IDs first. SQL Server retains PascalCase names.
+For databases older than 16.9.0, complete the applicable category ID and PostgreSQL naming upgrades (`1` and `2`) first. Keep access restricted when starting the upgraded app. Complete [owner setup](#first-run) if local credentials are uninitialized, then reopen access.
 
 ### Quick Local Deployment (Docker)
 
-For local testing or small-scale use, deploy Moonglade using Docker:
+Set `POSTGRES_PASSWORD` in a local `.env` file using [.env.example](.env.example) as a template, then run:
 
 ```bash
 docker compose up -d
 ```
 
-The supplied Compose file maps separate writable named volumes to `/app/images` and `/app/images-origin` and configures both `ImageStorage` paths. Keep both volumes when recreating or upgrading the container so public and retained original images remain durable and isolated.
+Open `http://localhost:8080` and [complete owner setup](#first-run). Compose starts PostgreSQL and supplies the database connection string to the web container. Keep the database volume and both image volumes when replacing containers.
 
-Compose starts PostgreSQL and supplies the database connection string to the web container. For a direct `dotnet run`, the default connection string in `appsettings.json` points to PostgreSQL on `localhost:5432`; override it with `ConnectionStrings__MoongladeDatabase` for your environment.
+## Development
 
-Email is optional and inactive until SMTP is configured. See [Email Notifications](#email-notifications) and `/admin/settings/notification` for setup.
-
-## 🛠️ Development
-
-| Tools                      | Alternatives                                                                                       |
-|----------------------------|----------------------------------------------------------------------------------------------------|
-| [Visual Studio 2026](https://visualstudio.microsoft.com/) | [VS Code](https://code.visualstudio.com/) + [.NET 10.0 SDK](http://dot.net)           |
-| [PostgreSQL](https://www.postgresql.org/) | [SQL Server 2025](https://www.microsoft.com/en-us/sql-server/) or [LocalDB](https://learn.microsoft.com/en-us/sql/database-engine/configure-windows/sql-server-express-localdb?view=sql-server-ver16) |
+Install the .NET 10 SDK and start a PostgreSQL or SQL Server instance. The solution is `src/Moonglade.slnx`, and the web project is `src/Moonglade.Web`.
 
 ### Database Setup
 
-PostgreSQL is the default database. SQL Server remains supported when configured explicitly.
-
-| Database         | Example Connection String (`appsettings.json > ConnectionStrings > MoongladeDatabase`)         |
-|------------------|----------------------------------------------------------------------------------------------|
-| PostgreSQL       | `User ID=***;Password=***;Host=localhost;Port=5432;Database=moonglade;Pooling=true;`          |
-| SQL Server       | `Server=(local);Database=moonglade;Trusted_Connection=True;`                                  |
-
-Set `ConnectionStrings:DatabaseProvider` to match your database type (`PostgreSql` by default):
-
-- PostgreSQL: `PostgreSql`
-- SQL Server: `SqlServer`
+Set `ConnectionStrings:DatabaseProvider` to `PostgreSql` or `SqlServer` and supply `ConnectionStrings:MoongladeDatabase`. The default host configuration targets PostgreSQL on `localhost:5432`. Use `ConnectionStrings__MoongladeDatabase` to override the connection string in the environment.
 
 ### Build & Run
 
@@ -87,263 +57,108 @@ dotnet build src/Moonglade.Web/Moonglade.Web.csproj
 dotnet run --project src/Moonglade.Web/Moonglade.Web.csproj
 ```
 
-Open `https://localhost:10210` or `https://localhost:10210/admin`. The default local account is `admin` / `admin123`; first sign-in requires scanning the authenticator QR code and entering its 6-digit TOTP code. For test commands and coverage guidance, see [Tests](src/Tests/README.md).
+In PowerShell, `./start.ps1` runs the same project with the Development launch profile. Open `https://localhost:10210`. See the [test guide](src/Tests/README.md#run-tests) for test commands and the [engineering reference](docs/agent-reference.md) for module ownership and implementation contracts.
 
-Deploy the current application at the URL root. Hosting under a prefix such as `/blog` is not supported by forwarding `X-Forwarded-Prefix` alone; it requires additional host-pipeline and client-URL work.
+### First Run
 
-## ⚙️ Configuration
+Restrict access to the site until the owner completes setup. Any visitor who can reach an uninitialized installation can claim it at `/auth/setup-account`. Create the owner with an email and password, then verify the authenticator code when TOTP is required. Successful setup signs in and opens the public homepage.
 
-> Host settings use `src/Moonglade.Web/appsettings.json` and standard environment overrides (`:` becomes `__`). Persisted blog settings use `/admin/settings`.
+Until setup completes, browser page reads redirect to setup and business APIs, feeds, and protocol endpoints return HTTP 503. Setup assets and health endpoints remain available.
 
-### Default Post Editor
+## Configuration
 
-Choose HTML or Markdown under **Settings > Content > Default editor** (`/admin/settings/content`). The default is HTML. Changes are stored in the database and apply immediately when creating a new post; existing posts retain their own content type. The former `DefaultEditor` application configuration key is no longer used or imported. Startup no longer fills empty content types on historical posts.
-
-### Content Cache Invalidation
-
-Article saves, publication changes (including scheduled publishing), recycle-bin operations, and category/tag updates or deletions invalidate article caches, feeds, and the sitemap. Counters do not trigger invalidation; page-specific sitemap invalidation preserves article/feed caches. Feeds and the sitemap expire after one hour; articles use `PostCacheMinutes`. Invalidation is process-local, so multiple instances require separate coordination. See [Caching and Side Effects](docs/agent-reference.md#caching-and-side-effects) for implementation details.
+Host options use [appsettings.json](src/Moonglade.Web/appsettings.json) and standard environment overrides (`:` becomes `__`). Manage persisted blog preferences at `/admin/settings` and the owner profile and credentials at `/admin/account`.
 
 ### Saving Blog Settings
 
-Settings become active only after a successful database save and publication of one immutable ordinary-settings snapshot; groups submitted together are persisted together. Each operation or page render uses one immutable settings capture, including its related layouts/components or feed data/formatting; a subsequent operation can capture newer values. Updates are serialized within one process; other instances must reload or synchronize separately. See the [configuration write contract](docs/agent-reference.md#configuration).
+Switches and selections save when changed. For text, code, or numeric values, open **Change** and use **Save** or **Cancel**. Menu changes use the page's **Save** button.
 
-If settings or an avatar have been saved but activity-log recording fails, the request retains its successful response and the failure is recorded at Error level. Authenticator reset still signs out the local-account sessions. Validation, settings persistence, cache invalidation, image storage, and sign-out failures are not treated as audit-only failures; they remain visible to the caller. Uploaded avatars are saved as database assets separately from ordinary settings.
-
-Successful changes invalidate affected server caches in the current process, including settings saved through the shared write command. Avatar uploads invalidate the local avatar cache without rewriting ordinary settings. Feed and theme caches use separate generations so an older request cannot refill the active cache after a change; settings changes do not flush unrelated article caches. Full-content RSS/Atom feeds use the article body, including Markdown formatting and configured CDN image URLs; summary feeds use the abstract.
-
-| Setting | When the change takes effect |
+| Setting | When it takes effect |
 | --- | --- |
-| Site information, feed count/full content, image CDN | Subsequent requests; affected RSS/Atom/category feeds and canonical sitemap outputs are refreshed after saving. |
-| Theme selection | Subsequent public, admin, and sign-in page renders. |
-| Custom CSS | The server reads the saved value; existing browser caching and ETag revalidation still apply. |
-| Watermarks and original-image retention | Future uploads; existing image files are not reprocessed. |
-| Notification switches | Future enqueue decisions; already queued email is retained. |
-| Notification sender display name | Application restart required, including when changing to/from the deployment fallback. |
-| FOAF and sitemap enable/disable | Application restart required in both directions. |
-| Scheduled publishing enable/disable | Saving wakes the worker and it rechecks before dispatching publication; publication already dispatched is not canceled. |
+| Rendering, theme, and feed options | On subsequent requests. Browser, CDN, proxy, and feed-reader caches retain their own lifetimes. |
+| FOAF and sitemap switches | On subsequent requests. Disabled endpoints return HTTP 404. |
+| Watermark and original-image retention | On future uploads. |
+| Notification switches | On future enqueue decisions. Queued email retains its recipient and content. |
+| Notification sender display name | After an application restart. |
+| Scheduled publishing | Saving wakes the worker. Publication already dispatched runs to completion. |
 
-Other rendering and operation settings apply to subsequent requests or operations. Server invalidation does not purge browser, CDN, proxy, or feed-reader caches; these can retain older responses under their existing cache rules.
+Runtime settings and cache invalidation are local to each process. Coordinate separately across replicas.
 
-At startup, malformed ordinary settings JSON, incompatible JSON values, null settings, and semantically invalid settings are restored to that group's default in the existing database row. Recovery replaces the entire group, including its other valid fields. Missing settings are initialized, and valid settings retain their values and modification timestamps. Recovery warnings identify the configuration key without logging its JSON. Invalid `LocalAccountSettings` or `SystemManifestSettings` stop initialization before repair writes with a restoration message to protect administrator credentials and installation/upgrade history; restore those values from a trusted database backup before restarting.
+### Default Post Editor
 
-For ordinary settings, a field completely absent from saved JSON uses the group's current default when loaded. Explicitly saved `false`, `0`, `null`, and empty arrays are retained when they satisfy validation. Loading these defaults does not rewrite valid JSON or change its modification timestamp. Older partial settings can therefore acquire default comment review/Gravatar, watermarking, the About menu, or a 20-item feed limit when those fields were absent; an explicitly saved unlimited feed count of `0` stays unlimited. This rule does not fill missing credential or installation-history fields.
-
-Settings use the same model validation during loading and saving, including non-HTTP writes. Invalid submissions return validation errors without changing saved or runtime settings. Undefined enum values, negative feed counts, invalid nested menus, and invalid script/CSS conditions are rejected. Custom CSS is limited to 10,240 UTF-8 bytes. Disabled menus may have a null menu array; watermark font/text constraints still apply when watermarking is disabled. A blank notification display name uses the deployment-configured sender name, and unknown theme IDs retain the default-theme fallback.
-
-Protected account settings require nonblank username, password hash, and salt. A populated TOTP secret must be parseable; enabling TOTP requires a secret, while a generated secret awaiting activation is valid. Installation manifests require a non-minimum UTC installation timestamp; historical or empty version strings are preserved.
-
-First-install seeding is allowed only when every application table is empty, including when the current schema already exists. Seed data and all default settings are committed in one database transaction. If installation fails before commit, its data writes are rolled back; fix the dependency failure and restart to retry. A completed installation is not seeded again, including after a lost commit acknowledgment. Schema creation precedes this data transaction, and site-icon generation remains a separate, noncritical operation.
-
-An existing or partially populated database with no settings or a missing local-account row is preserved and cannot automatically receive a replacement default account. Startup reports the failure; restore from a trusted backup or resolve the incomplete installation manually before restarting. Moonglade does not automatically clear ambiguous data left by older installations. A missing installation manifest alone, with valid account settings, is reconstructed with a Warning: its version is unknown and its timestamp records reconstruction, not the original installation time.
-
-If initialization fails, Moonglade logs the error and exits with a nonzero process code before starting HTTP endpoints or business background services. It does not run a diagnostic-only 500 site with active workers. Correct the reported problem and restart; a rolled-back first installation can still be retried.
+Choose HTML or Markdown under **Settings > Content > Default editor**. The default is HTML. The setting applies to new posts, and existing posts retain their content type.
 
 ### Authentication
 
-- By default: Local accounts with TOTP authenticator app verification (manage via `/admin/account`)
-- Local development can disable the TOTP step with `Authentication:Totp:Required=false`; this bypass is ignored outside the `Development` environment.
-- To replace a configured authenticator app, use `/admin/account` to reset it; the reset signs out the administrator and starts TOTP setup on the next sign-in.
-- TOTP options:
+The owner signs in by email and password. TOTP is required by default. Set `Authentication:Totp:Required` to `false` to skip it in all environments. The Local fixed-window rate limiter defaults to 10 attempts per minute. Initial setup and its TOTP proof share a client-IP quota. Sign-in and later TOTP attempts use account/IP partitions. Tune the policy under `Authentication:LocalAccountRateLimit`.
 
-```json
-"Authentication": {
-  "Totp": {
-    "Issuer": "Moonglade",
-    "Required": true
-  },
-  "LocalAccountRateLimit": {
-    "Enabled": true,
-    "PermitLimit": 10,
-    "WindowMinutes": 1
-  }
-}
-```
+Select **Remember this device** when verifying an authenticator code to skip TOTP on that browser for 30 days. The password is still required. Trust expires without automatic renewal, survives ordinary sign-out, and is revoked by password or email changes and authenticator reset. It uses a protected, HTTPS-only, host-only persistent cookie, not an IP address or browser fingerprint. Clearing cookies or switching browsers requires verification again. Use this only on a trusted device: a stolen usable cookie and the password can bypass TOTP until trust expires or is revoked.
 
-`Authentication:LocalAccountRateLimit` uses a fixed window. `PermitLimit` is the number of attempts allowed for the same partition during each window. Set `Enabled` to `false` only when another authentication-layer throttle is in place.
+Manage the public email, name, description, avatar, and Gravatar preference at **Account Settings**. Changing the email requires the current local password and signs out account sessions while retaining TOTP. Changing the password refreshes the current session. Resetting the authenticator requires the current password and signs out the owner so the next local sign-in can enroll an authenticator when required.
 
-- A single standards-based **OpenID Connect** provider is supported as an alternative to the local account. Configure a confidential web client with authorization code flow and PKCE:
+Application Data Protection keys are stored in the database with the fixed application name `Moonglade`. This preserves authentication cookies, antiforgery tokens, and temporary authentication proofs across container replacements and lets replicas using the same database read them. Existing expiry and account-revocation checks still apply. The first upgrade from container-local keys requires signing in again; old file-based keys are not imported.
 
-```json
-"Authentication": {
-  "Provider": "OpenIdConnect",
-  "OpenIdConnect": {
-    "Authority": "https://identity.example.com/",
-    "ClientId": "moonglade",
-    "CallbackPath": "/signin-oidc",
-    "SignedOutCallbackPath": "/signout-callback-oidc",
-    "NameClaimType": "name",
-    "Scopes": [ "openid", "profile", "email" ],
-    "AllowedSubjects": [ "the-administrator-sub-claim" ]
-  }
-}
-```
+To enable third-party sign-in, configure one public HTTPS OpenID Connect provider under **Account Settings > Third-party sign-in**, register the site's `/signin-oidc` callback URL, and confirm the external account binding. The enabled, bound identity signs in as the owner using the provider's authentication. Disabling the provider, unbinding it, or deleting it revokes its Moonglade sessions. Database backups contain both the encrypted client secret and the Data Protection keys required to decrypt it.
 
-Supply `Authentication:OpenIdConnect:ClientSecret` from a secure external configuration source, such as the `Authentication__OpenIdConnect__ClientSecret` environment override; never commit the secret. `AllowedSubjects` contains the exact stable OIDC `sub` value for every administrator. An empty list safely denies all admin access while still allowing an authenticated OIDC user to retrieve their own `iss`, `sub`, and display name from `/auth/identity` for initial setup. Do not use email addresses or display names for authorization.
+Application and OIDC credential protection share the existing `DataProtectionKeys` table (`data_protection_keys` on PostgreSQL), while OIDC retains its separate `Moonglade.OidcCredentials` application name and protection purpose. Preserve and restore the keys together with the encrypted client secret. Do not clear the key table: a running process may continue using a cached key that becomes unavailable after restart. If the required OIDC key is lost, save the client secret again through the authenticated management page to encrypt it with a persisted key. Database persistence does not itself encrypt the stored keys; restrict database and backup access and provide deployment-appropriate encryption at rest.
 
-For Microsoft Entra ID, use the tenant-specific authority `https://login.microsoftonline.com/{tenant-id}/v2.0`. Register both callback URLs shown above in the provider. Existing Entra-specific deployments must follow [the generic OIDC migration guide](docs/upgrade-generic-oidc-authentication.md).
+### Comments
 
-### Comment Markdown Links
+Configure review, local keyword moderation, and Markdown links at `/admin/settings/comment`. Markdown links are disabled by default. When disabled, links remain visible as Markdown text. The option affects comments and replies on public and admin pages and in newly generated emails. Enabled links retain URL validation and `rel="nofollow ugc noopener noreferrer"`.
 
-Comment Markdown links are disabled by default. Enable **Settings > Comments > Enable Markdown links in comments and replies** (`/admin/settings/comment`) to allow hyperlinks. The setting is stored in the database and takes effect without a restart. The former `CommentMarkdown:EnableLinks` application configuration key is no longer used or imported. When disabled, links retain their original Markdown syntax and URL as plain text; other Markdown formatting still renders. This setting applies to comments and replies in public pages, the admin portal, and newly generated email notifications; emails already queued retain their generated content. Stored comments and post Markdown are unchanged. Enabled links retain protocol validation and `rel="nofollow ugc noopener noreferrer"`.
+| Host option | Default behavior |
+| --- | --- |
+| `CommentRateLimit` | Allows five submissions per client IP and post in a ten-minute fixed window. |
+| `CommentSubmissionGuard` | Checks a honeypot and rejects forms submitted before three seconds or after 240 minutes. Set `MaxFormAgeMinutes` to `0` to disable the age limit. |
 
-### Comment Rate Limiting
-
-Built-in comment submissions are rate limited by the combination of client IP address and post ID. Configure the `CommentRateLimit` section in `appsettings.json`:
-
-```json
-"CommentRateLimit": {
-  "Enabled": true,
-  "PermitLimit": 5,
-  "WindowMinutes": 10
-}
-```
-
-`PermitLimit` is the number of comment submissions allowed for the same IP and post during each fixed window. `WindowMinutes` controls the fixed window length. Set `Enabled` to `false` to disable this host-level safeguard.
-
-### Comment Submission Guard
-
-Built-in comment submissions also use a hidden honeypot field and form elapsed-time checks. Configure the `CommentSubmissionGuard` section in `appsettings.json`:
-
-```json
-"CommentSubmissionGuard": {
-  "Enabled": true,
-  "HoneypotEnabled": true,
-  "MinimumElapsedSeconds": 3,
-  "MaxFormAgeMinutes": 240
-}
-```
-
-`MinimumElapsedSeconds` rejects submissions that arrive too quickly after the comment form is rendered. `MaxFormAgeMinutes` rejects stale form timestamps; set it to `0` to disable the max-age check. Set `Enabled` to `false` to disable this guard.
+Each section has an `Enabled` switch.
 
 ### Image Storage
 
-Moonglade stores images through the filesystem only. Local disks, Docker volumes, network filesystems, and object-storage mounts are deployment concerns; the application contains no Azure Blob or S3-compatible storage provider or SDK.
+Configure two writable, durable, absolute filesystem roots that do not overlap. Use shared storage for replicas.
 
-Uploaded image files are validated against their file content before storage. SVG uploads are supported, but active content and unsafe URL references are sanitized before the image is saved.
+| Option | Purpose |
+| --- | --- |
+| `ImageStorage:FileSystemPath` | Public processed images served at `/image/{filename}`. Compose mounts `/app/images`. |
+| `ImageStorage:OriginalFileSystemPath` | Private originals when retention is enabled. Compose mounts `/app/images-origin`. |
 
-Configure two absolute, non-overlapping roots:
+Empty paths fall back to `moonglade/images` and `moonglade/images-origin` under the user profile. Set explicit persistent paths for deployment. Uploads are validated by content and SVG files are sanitized before saving.
 
-```json
-"ImageStorage": {
-  "CacheMinutes": 60,
-  "FileSystemPath": "/app/images",
-  "OriginalFileSystemPath": "/app/images-origin"
-}
-```
-
-`FileSystemPath` contains public, processed images and is the only root read by `/image/{filename}`. `OriginalFileSystemPath` contains private original uploads when original-image retention is enabled. Never nest either root inside the other, and never expose the original root through static files or a CDN origin.
-
-Both paths must be writable by the application identity and persistent across process or container replacement. Replicated deployments require shared storage with a coherent view across all replicas. Moonglade attempts to create missing directories, but it does not configure mount drivers, cloud credentials, network filesystems, or volume plugins.
-
-Leave both paths empty only for development. The defaults are `<user-profile>/moonglade/images` and `<user-profile>/moonglade/images-origin`; an unmounted container user profile is not durable storage.
-
-#### CDN Delivery
-
-CDN delivery remains configured in the admin image settings. When enabled, rendered posts and feeds use the configured CDN endpoint directly, and `/image/{filename}` redirects the browser to the CDN URL instead of proxying image bytes through Moonglade.
-
-Uploaded profile avatars always use `/avatar`, backed by the database asset or the bundled default image. Image CDN settings do not copy avatars to image storage or change their display URL. Legacy `AvatarUrl` settings are retained as inactive compatibility data; previously copied avatar files are not automatically deleted.
-
-The CDN origin must map a primary-root filename to the same root object key, serve the correct image `Content-Type`, and make a file visible only after its write is closed. CDN caching, invalidation, TLS, origin access, and any storage mount adapter are operator responsibilities. The private original root must not be attached to the CDN origin.
-
-Upgrading from a previous filesystem, Azure Blob, or S3-compatible provider requires manual storage preparation and data migration before the new version starts. See [Upgrade to Filesystem-Only Image Storage](docs/upgrade-filesystem-image-storage.md).
-
-For an optional deployment example using mounted object storage, see [Cloudflare R2 with rclone](docs/cloudflare-r2-image-storage.md).
-
-### Comment Moderation
-
-Moonglade comment moderation runs locally and does not call a remote moderation API. Configure the word filter and keyword list from `/admin/settings/comment`.
+When CDN delivery is enabled in the image settings, posts and feeds use CDN URLs directly and `/image/{filename}` redirects to the CDN. Expose only the public root at the CDN origin. Preserve filename-to-key mapping and media types, and make files visible only after writing completes. The owner avatar is served separately at `/avatar` from account storage. See the optional [Cloudflare R2 mount example](docs/cloudflare-r2-image-storage.md).
 
 ### Security HTTP Headers
 
-Moonglade always emits `X-Content-Type-Options: nosniff`. To enable a custom Content Security Policy response header, set `EnableCSP` to `true` and provide the policy in `CSPValue`:
+Moonglade emits `X-Content-Type-Options: nosniff`. Set `EnableCSP` to `true` and supply `CSPValue` to add a Content Security Policy.
 
-```json
-{
-  "EnableCSP": true,
-  "CSPValue": "default-src 'self'; img-src 'self' https: data:"
-}
-```
+When using OIDC with a CSP `form-action` directive, allow the provider's authorization endpoint origin alongside `'self'`. Browsers can apply this restriction to the external redirect after the account-binding form is submitted; `form-action 'self'` alone can block binding. Keep the allowlist limited to the required provider origins rather than disabling CSP.
 
 ### Email Notifications
 
-Email notifications for new comments, replies, and Webmentions are optional. When available, notifications are queued in the Moonglade database and delivered by the in-process email outbox worker. Configure the `Email` section through deployment configuration or secrets, restart the application, then enable notifications in the admin portal.
+Configure SMTP through the `Email` section, restart, then enable notifications and send a test email at `/admin/settings/notification`.
 
-```json
-"Email": {
-  "Enabled": true,
-  "SmtpServer": "",
-  "SmtpUserName": "",
-  "SmtpSenderAddress": "",
-  "SmtpPassword": "",
-  "SmtpPort": 25,
-  "EnableSsl": false
-}
-```
+| Option | Purpose |
+| --- | --- |
+| `Enabled` | Enables email capability by default. Set to `false` to disable it explicitly. |
+| `SmtpServer`, `SmtpPort` | SMTP endpoint. Port 465 uses implicit TLS. On other ports, `EnableSsl=true` requires STARTTLS and `false` uses STARTTLS when offered and otherwise allows an unencrypted connection. |
+| `SmtpUserName`, `SmtpPassword` | SMTP credentials. Supply the password through deployment secrets, for example `Email__SmtpPassword`. |
+| `SmtpSenderAddress` | Bare email address used in the sender headers and SMTP envelope. Blank values use `SmtpUserName`. |
+| `SenderDisplayName` | Deployment fallback for a blank sender name in Notification settings. |
 
-Email delivery supports SMTP only; no provider selection is required. Adjust the SMTP port and TLS setting for your service, and use the `Email__SmtpPassword` environment variable for real secrets.
+When email is disabled, incomplete, or invalid, Moonglade continues serving the site. New notifications and test sends are unavailable, and pending mail remains in the database outbox. Delivery resumes after valid configuration and a restart. Delivery is at least once and can duplicate a notification after interruption.
 
-Port `465` uses implicit TLS. On other ports, `EnableSsl=true` requires STARTTLS; `EnableSsl=false` uses STARTTLS when the server offers it and otherwise permits an unencrypted connection.
+## Protocols & Standards
 
-For SMTP, `SmtpUserName` is the authentication username. Set `SmtpSenderAddress` to a bare email address when the sender differs from the authentication username. It controls the `From` and `Sender` headers and the SMTP envelope sender; `SenderDisplayName` controls the display name unless overridden by the blog's Notification settings. When `SmtpSenderAddress` is omitted, empty, or whitespace, Moonglade continues to use `SmtpUserName` as the sender for compatibility. Override it with `Email__SmtpSenderAddress` in deployment configuration. The SMTP service must permit the selected sender address.
+| Endpoint | Purpose |
+| --- | --- |
+| `/rss`, `/atom`, `/opml` | Feeds and subscriptions |
+| `/opensearch` | OpenSearch discovery |
+| `/foaf.xml` | FOAF profile |
+| `/webmention` | Webmention reception |
+| `/sitemap.xml`, `/robots.txt` | Crawler discovery and directives |
 
-Email configuration never controls application liveness or database readiness:
-
-- Missing required SMTP values leave email inactive, produce one startup warning, and show setup guidance in `/admin/settings/notification`. The application continues to start normally.
-- Malformed, out-of-range, or inconsistent values leave email inactive, produce a startup error log, and show secret-safe validation details on the Notification settings page. They do not stop application startup.
-- Setting `Email:Enabled` to `false` deliberately disables email notification and is shown as a separate non-error state in the admin portal. It defaults to `true`; delivery always uses the outbox.
-
-Replace the former `Email:OutboxWorker:Enabled` deployment override with `Email:Enabled` (or `Email__Enabled` for environment variables), then restart the application. The old key is no longer read.
-
-While email is unavailable, the worker does not poll or send and notification handlers do not enqueue new messages. Existing pending outbox messages are retained and can be processed after valid configuration is supplied and the application is restarted. The test-email action is disabled while delivery is unavailable.
-
-Delivery is at least once: a shutdown during sending can cause a duplicate notification on retry.
-
-#### Resend via SMTP
-
-Resend uses SMTP and requires no additional SDK. Use a sender address on a domain verified in your Resend account, and configure:
-
-```json
-"Email": {
-  "SmtpServer": "smtp.resend.com",
-  "SmtpUserName": "resend",
-  "SmtpSenderAddress": "notifications@example.com",
-  "SmtpPort": 587,
-  "EnableSsl": true
-}
-```
-
-Replace `notifications@example.com` with your verified sender address. Supply the Resend API key through `Email__SmtpPassword` or your deployment's secret configuration; do not commit it to `appsettings.json`. Port `587` with `EnableSsl=true` requires STARTTLS. Restart Moonglade, enable email sending in `/admin/settings/notification`, and use **Send Test Email** to check delivery. See [Resend's SMTP documentation](https://resend.com/docs/send-with-smtp) for service requirements and supported ports.
-
-### More Settings
-
-- [System Settings](https://github.com/EdiWang/Moonglade/wiki/System-Settings)
-- [Security HTTP Headers](https://github.com/EdiWang/Moonglade/wiki/Security-Headers)
-
-## 📡 Protocols & Standards
-
-| Name         | Feature       | Status      | Endpoint        |
-|--------------|---------------|-------------|-----------------|
-| RSS          | Subscription  | Supported   | `/rss`          |
-| Atom         | Subscription  | Supported   | `/atom`         |
-| OPML         | Subscription  | Supported   | `/opml`         |
-| Open Search  | Search        | Supported   | `/opensearch`   |
-| FOAF         | Social        | Supported   | `/foaf.xml`     |
-| Webmention   | Social        | Supported   | `/webmention`   |
-| Reader View  | Reader Mode   | Supported   | N/A             |
-| u-card	   | SEO           | Supported   | N/A             |
-| IndexNow     | SEO           | Supported   | N/A             |
-| Dublin Core  | SEO           | Basic       | N/A             |
-| RSD          | Discovery     | Deprecated  | N/A             |
-| MetaWeblog   | Blogging      | Deprecated  | N/A             |
-| Pingback     | Social        | Deprecated  | N/A             |
-
-Incoming and outgoing Webmention URLs must use public HTTP/HTTPS addresses. Moonglade rejects private, loopback, link-local, documentation, reserved, and other special-use IPv4 and IPv6 ranges before fetching a source, following a redirect, discovering an endpoint, or submitting a Webmention. Connections are bound to a validated DNS result, and automatic proxy and redirect handling is disabled to prevent address-check bypasses.
+Incoming and outgoing Webmentions require public HTTP or HTTPS addresses. Site verification files are served at the URL root. SEO settings also control metadata and IndexNow.
 
 ## Health Checks
 
-| Endpoint | Checks |
-| --- | --- |
-| `GET /health` | Process liveness only; no database check. |
-| `GET /health/ready` | Readiness including database connectivity. |
-
-The supplied Compose file checks the web container's `/health` endpoint and PostgreSQL with `pg_isready`. It waits for PostgreSQL to report healthy before starting the web container.
+- `GET /health` checks application liveness. Compose uses this endpoint for the web container.
+- `GET /health/ready` checks readiness, including database connectivity.

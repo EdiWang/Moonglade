@@ -1,15 +1,16 @@
-using Microsoft.EntityFrameworkCore;
 using LiteBus.Events.Abstractions;
-using Moq;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.Logging.Abstractions;
 using Moonglade.Data;
 using Moonglade.Data.Entities;
+using Moq;
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json;
 
 namespace Moonglade.Configuration.Tests;
 
-public class UpdateConfigurationCommandTests
+public partial class UpdateConfigurationCommandTests
 {
     private readonly ConfigurationWriteGate _gate = new();
     [Fact]
@@ -20,21 +21,22 @@ public class UpdateConfigurationCommandTests
         await SeedAsync(db, config.Capture().GeneralSettings);
         var original = config.Capture().GeneralSettings;
         var model = General("New");
-        model = model with { Description = "Description" };
+        model = model with { Copyright = "Copyright" };
         var submitted = model;
         var command = UpdateConfigurationCommand.Create(model);
         model = model with { SiteTitle = "Changed after dispatch" };
 
-        await Handler(db, config).HandleAsync(command, TestContext.Current.CancellationToken);
+        var result = await Handler(db, config).HandleAsync(command, TestContext.Current.CancellationToken);
 
+        Assert.Equal(new SettingValueChange("SiteTitle", "Old", "New"), Assert.Single(result.Changes));
         Assert.Equal("New", config.Capture().GeneralSettings.SiteTitle);
         Assert.Equal("Old", original.SiteTitle);
         Assert.Same(submitted, command.Settings);
         Assert.Same(submitted, config.Capture().GeneralSettings);
         Assert.NotSame(model, config.Capture().GeneralSettings);
         Assert.Equal(config.Capture().GeneralSettings.ToJson(), (await db.BlogConfiguration.SingleAsync(TestContext.Current.CancellationToken)).CfgValue);
-        model = model with { Description = "Changed after save" };
-        Assert.Equal("Description", config.Capture().GeneralSettings.Description);
+        model = model with { Copyright = "Changed after save" };
+        Assert.Equal("Copyright", config.Capture().GeneralSettings.Copyright);
     }
 
     [Fact]
@@ -131,10 +133,48 @@ public class UpdateConfigurationCommandTests
 
         await Task.WhenAll(first, second);
 
+        Assert.Equal(new SettingValueChange("SiteTitle", null, "First"),
+            Assert.Single(first.Result.Changes, change => change.Key == "SiteTitle"));
+        Assert.Equal(new SettingValueChange("SiteTitle", "First", "Second"), Assert.Single(second.Result.Changes));
         Assert.True(secondWasBlocked);
         Assert.Equal("Second", config.Capture().GeneralSettings.SiteTitle);
         secondDb.ChangeTracker.Clear();
         Assert.Equal(config.Capture().GeneralSettings.ToJson(), (await secondDb.BlogConfiguration.SingleAsync(TestContext.Current.CancellationToken)).CfgValue);
+    }
+
+    [Fact]
+    public async Task QueuedPatchesToSameGroup_PreserveBothFieldChanges()
+    {
+        var ct = TestContext.Current.CancellationToken;
+        var interceptor = new BlockingSaveInterceptor();
+        var options = new DbContextOptionsBuilder<BlogDbContext>().UseInMemoryDatabase(Guid.NewGuid().ToString())
+            .AddInterceptors(interceptor).Options;
+        using var firstDb = new BlogDbContext(options);
+        using var secondDb = new BlogDbContext(options);
+        var config = new BlogConfig(new BlogSettingsSnapshot { GeneralSettings = General("Old") });
+        var original = config.Capture().GeneralSettings;
+        await SeedAsync(firstDb, original);
+        var title = Patch(nameof(GeneralSettings.SiteTitle), "New title");
+        var logo = Patch(nameof(GeneralSettings.LogoText), "New logo");
+        interceptor.Enabled = true;
+
+        var firstSave = Handler(firstDb, config).HandleAsync(title, ct);
+        await interceptor.Committed.Task.WaitAsync(TimeSpan.FromSeconds(10), ct);
+        var secondSave = Handler(secondDb, config).HandleAsync(logo, ct);
+        var secondWasBlocked = !secondSave.IsCompleted;
+        interceptor.Resume.SetResult();
+        await Task.WhenAll(firstSave, secondSave);
+
+        Assert.Equal(new SettingValueChange("SiteTitle", "Old", "New title"), Assert.Single(firstSave.Result.Changes));
+        Assert.Equal(new SettingValueChange("LogoText", "moonglade", "New logo"), Assert.Single(secondSave.Result.Changes));
+        Assert.True(secondWasBlocked);
+        var saved = config.Capture().GeneralSettings;
+        Assert.Equal(original with { SiteTitle = "New title", LogoText = "New logo" }, saved);
+        Assert.Equal(saved.ToJson(), (await secondDb.BlogConfiguration.AsNoTracking().SingleAsync(ct)).CfgValue);
+
+        static PatchConfigurationCommand Patch(string name, string value) =>
+            PatchConfigurationCommand.Create<GeneralSettings>(static current => current with { },
+                JsonSerializer.SerializeToElement(new Dictionary<string, string> { [name] = value }), name);
     }
 
     [Fact]
@@ -156,9 +196,11 @@ public class UpdateConfigurationCommandTests
                 Assert.Equal([nameof(GeneralSettings)], ((ConfigurationChangedEvent)message).Names);
             }).Returns(Task.CompletedTask);
 
-        await new UpdateConfigurationCommandHandler(db, config, events.Object, _gate, NullLogger<UpdateConfigurationCommandHandler>.Instance)
+        var result = await new UpdateConfigurationCommandHandler(db, config, events.Object, _gate, NullLogger<UpdateConfigurationCommandHandler>.Instance)
             .HandleAsync(UpdateConfigurationCommand.Create(General("Committed")), cancellation.Token);
 
+        Assert.Equal(new SettingValueChange("SiteTitle", null, "Committed"),
+            Assert.Single(result.Changes, change => change.Key == "SiteTitle"));
         Assert.True(cancellation.IsCancellationRequested);
         events.Verify(m => m.PublishAsync(It.IsAny<IEvent>(), It.IsAny<EventMediationSettings>(), CancellationToken.None), Times.Once);
         Assert.Equal("Committed", config.Capture().GeneralSettings.SiteTitle);
@@ -265,6 +307,8 @@ public class UpdateConfigurationCommandTests
         interceptor.Resume.SetResult();
         await Task.WhenAll(firstSave, secondSave);
 
+        Assert.Equal(new SettingValueChange("SiteTitle", "Old", "New"), Assert.Single(firstSave.Result.Changes));
+        Assert.Equal(new SettingValueChange("FeedItemCount", 20, 7), Assert.Single(secondSave.Result.Changes));
         Assert.True(secondWasBlocked);
         Assert.Single(events.Invocations);
         var current = config.Capture();

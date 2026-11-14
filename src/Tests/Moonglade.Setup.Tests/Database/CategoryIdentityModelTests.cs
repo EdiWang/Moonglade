@@ -1,10 +1,10 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Moonglade.Data;
 using Moonglade.Data.Entities;
 using Moonglade.Data.PostgreSql;
 using Moonglade.Data.SqlServer;
-using Microsoft.EntityFrameworkCore.Infrastructure;
 
 namespace Moonglade.Setup.Tests.Database;
 

@@ -1,6 +1,6 @@
 using LiteBus.Commands.Abstractions;
-using LiteBus.Messaging.Abstractions;
 using LiteBus.Events.Abstractions;
+using LiteBus.Messaging.Abstractions;
 using LiteBus.Queries.Abstractions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;

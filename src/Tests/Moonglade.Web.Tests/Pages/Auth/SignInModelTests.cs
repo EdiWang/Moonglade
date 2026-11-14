@@ -1,18 +1,10 @@
-using LiteBus.Commands.Abstractions;
-using LiteBus.Messaging.Abstractions;
-using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 using Moonglade.Auth;
-using Moonglade.Configuration;
 using Moonglade.Web.Pages;
+using Moonglade.Web.Tests.TestSupport;
 using Moq;
 using System.Security.Claims;
 
@@ -23,224 +15,105 @@ public class SignInModelTests
     [Fact]
     public async Task OnPostAsync_ValidPasswordWithoutTotp_RedirectsToSetup()
     {
-        var authenticationService = new Mock<IAuthenticationService>();
-        var model = CreateModel(
-            LocalAccountSettings.DefaultValue,
-            loginValid: true,
-            authenticationService);
-        model.Username = "admin";
-        model.Password = "admin123";
+        await using var fixture = new LocalAccountPageFixture();
+        var account = await fixture.InitializeAsync();
+        var model = CreateModel(fixture);
 
         var result = await model.OnPostAsync();
 
         var redirect = Assert.IsType<RedirectToPageResult>(result);
         Assert.Equal("/SetupAuthenticator", redirect.PageName);
-        authenticationService.Verify(
-            x => x.SignInAsync(
-                model.HttpContext,
-                BlogAuthSchemas.LocalAccountSetup,
-                It.IsAny<ClaimsPrincipal>(),
-                It.IsAny<AuthenticationProperties>()),
-            Times.Once);
-        authenticationService.Verify(
-            x => x.SignOutAsync(model.HttpContext, BlogAuthSchemas.LocalAccountTwoFactor, null),
-            Times.Once);
+        AssertPartialTicket(fixture, account, BlogAuthSchemas.LocalAccountSetup);
+        Assert.Contains(BlogAuthSchemas.LocalAccountTwoFactor, fixture.SignOuts);
     }
 
     [Fact]
     public async Task OnPostAsync_EnabledTotp_RedirectsToVerifyAuthenticator()
     {
-        var authenticationService = new Mock<IAuthenticationService>();
-        var account = LocalAccountSettings.DefaultValue;
-        account.TotpSecret = "ABCDEF234567";
-        account.IsTotpEnabled = true;
-        var model = CreateModel(account, loginValid: true, authenticationService);
-        model.Username = "admin";
-        model.Password = "admin123";
+        await using var fixture = new LocalAccountPageFixture();
+        var account = await fixture.InitializeAsync(withTotp: true);
+        var model = CreateModel(fixture);
 
         var result = await model.OnPostAsync();
 
         var redirect = Assert.IsType<RedirectToPageResult>(result);
         Assert.Equal("/VerifyAuthenticator", redirect.PageName);
-        authenticationService.Verify(
-            x => x.SignInAsync(
-                model.HttpContext,
-                BlogAuthSchemas.LocalAccountTwoFactor,
-                It.IsAny<ClaimsPrincipal>(),
-                It.IsAny<AuthenticationProperties>()),
-            Times.Once);
-        authenticationService.Verify(
-            x => x.SignOutAsync(model.HttpContext, BlogAuthSchemas.LocalAccountSetup, null),
-            Times.Once);
+        AssertPartialTicket(fixture, account, BlogAuthSchemas.LocalAccountTwoFactor);
+        Assert.Contains(BlogAuthSchemas.LocalAccountSetup, fixture.SignOuts);
     }
 
-    [Fact]
-    public async Task OnPostAsync_WhenTotpIsNotRequiredInDevelopment_SignsInAdmin()
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public async Task OnPostAsync_WhenTotpIsNotRequired_SignsInAdminWithOrWithoutBoundAuthenticator(bool bound)
     {
-        var authenticationService = new Mock<IAuthenticationService>();
-        var model = CreateModel(
-            LocalAccountSettings.DefaultValue,
-            authenticationService,
-            new StubCommandMediator(loginValid: true),
-            AuthenticationProvider.Local,
-            totpRequired: false,
-            environmentName: Environments.Development);
-        model.Username = "admin";
-        model.Password = "admin123";
+        await using var fixture = new LocalAccountPageFixture(required: false);
+        var account = await fixture.InitializeAsync(bound);
+        var model = CreateModel(fixture);
 
         var result = await model.OnPostAsync();
 
         var redirect = Assert.IsType<RedirectToPageResult>(result);
         Assert.Equal("/Admin/Dashboard", redirect.PageName);
-        authenticationService.Verify(
-            x => x.SignInAsync(
-                model.HttpContext,
-                CookieAuthenticationDefaults.AuthenticationScheme,
-                It.Is<ClaimsPrincipal>(p => p.Identity!.Name == "admin"),
-                It.IsAny<AuthenticationProperties>()),
-            Times.Once);
-        authenticationService.Verify(
-            x => x.SignInAsync(
-                model.HttpContext,
-                BlogAuthSchemas.LocalAccountSetup,
-                It.IsAny<ClaimsPrincipal>(),
-                It.IsAny<AuthenticationProperties>()),
-            Times.Never);
-        authenticationService.Verify(
-            x => x.SignInAsync(
-                model.HttpContext,
-                BlogAuthSchemas.LocalAccountTwoFactor,
-                It.IsAny<ClaimsPrincipal>(),
-                It.IsAny<AuthenticationProperties>()),
-            Times.Never);
+        var ticket = Assert.Single(fixture.SignIns);
+        Assert.Equal(CookieAuthenticationDefaults.AuthenticationScheme, ticket.AuthenticationScheme);
+        Assert.True(LocalAccountPrincipal.Matches(ticket.Principal, account));
+        Assert.True(ticket.Principal.IsInRole("Administrator"));
+        Assert.Equal(account.Email, ticket.Principal.Identity!.Name);
     }
 
     [Fact]
-    public async Task OnPostAsync_WhenTotpIsNotRequiredOutsideDevelopment_RedirectsToSetup()
+    public async Task OnPostAsync_WhenPasswordIsInvalid_DoesNotSignInEvenWithTotpDisabled()
     {
-        var authenticationService = new Mock<IAuthenticationService>();
-        var model = CreateModel(
-            LocalAccountSettings.DefaultValue,
-            authenticationService,
-            new StubCommandMediator(loginValid: true),
-            AuthenticationProvider.Local,
-            totpRequired: false,
-            environmentName: Environments.Production);
-        model.Username = "admin";
-        model.Password = "admin123";
+        await using var fixture = new LocalAccountPageFixture(required: false);
+        var account = await fixture.InitializeAsync();
+        var model = CreateModel(fixture);
+        model.Password = "WrongPassword456!";
 
         var result = await model.OnPostAsync();
 
-        var redirect = Assert.IsType<RedirectToPageResult>(result);
-        Assert.Equal("/SetupAuthenticator", redirect.PageName);
-        authenticationService.Verify(
-            x => x.SignInAsync(
-                model.HttpContext,
-                BlogAuthSchemas.LocalAccountSetup,
-                It.IsAny<ClaimsPrincipal>(),
-                It.IsAny<AuthenticationProperties>()),
-            Times.Once);
+        Assert.IsType<PageResult>(result);
+        Assert.False(model.ModelState.IsValid);
+        Assert.Empty(fixture.SignIns);
+        Assert.Equal(account, await fixture.Accounts.ReadAsync(TestContext.Current.CancellationToken));
     }
 
-    [Fact]
-    public async Task OnPostAsync_WhenProviderIsOpenIdConnect_ChallengesWithoutLocalLogin()
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public async Task OnPostAsync_InvalidModelOrMissingUserAgent_DoesNotAuthenticate(bool invalidModel)
     {
-        var authenticationService = new Mock<IAuthenticationService>();
-        var commandMediator = new StubCommandMediator(loginValid: true);
-        var model = CreateModel(
-            LocalAccountSettings.DefaultValue,
-            authenticationService,
-            commandMediator,
-            AuthenticationProvider.OpenIdConnect);
-        model.Username = "admin";
-        model.Password = "admin123";
+        await using var fixture = new LocalAccountPageFixture(required: false);
+        await fixture.InitializeAsync();
+        var model = CreateModel(fixture);
+        if (invalidModel) model.ModelState.AddModelError(nameof(model.Email), "Invalid");
+        else model.Request.Headers.UserAgent = string.Empty;
 
         var result = await model.OnPostAsync();
 
-        var challenge = Assert.IsType<ChallengeResult>(result);
-        Assert.Contains(BlogAuthSchemas.OpenIdConnect, challenge.AuthenticationSchemes);
-        Assert.Equal(0, commandMediator.SendResultCallCount);
+        if (invalidModel)
+        {
+            Assert.IsType<PageResult>(result);
+            Assert.Equal(400, model.Response.StatusCode);
+        }
+        else Assert.IsType<UnauthorizedResult>(result);
+        Assert.Empty(fixture.SignIns);
     }
 
-    private static SignInModel CreateModel(
-        LocalAccountSettings account,
-        bool loginValid,
-        Mock<IAuthenticationService> authenticationService) =>
-        CreateModel(
-            account,
-            authenticationService,
-            new StubCommandMediator(loginValid),
-            AuthenticationProvider.Local);
-
-    private static SignInModel CreateModel(
-        LocalAccountSettings account,
-        Mock<IAuthenticationService> authenticationService,
-        StubCommandMediator commandMediator,
-        AuthenticationProvider provider,
-        bool totpRequired = true,
-        string environmentName = "Production")
+    private static SignInModel CreateModel(LocalAccountPageFixture fixture)
     {
-        var services = new ServiceCollection()
-            .AddSingleton(authenticationService.Object)
-            .BuildServiceProvider();
-
-        var httpContext = new DefaultHttpContext
-        {
-            RequestServices = services
-        };
-        httpContext.Request.Headers.UserAgent = "UnitTest";
-
-        var accounts = new LocalAccountState();
-        accounts.Publish(account);
-
-        var model = new SignInModel(
-            Options.Create(new AuthenticationSettings
-            {
-                Provider = provider,
-                Totp = new TotpAuthenticationSettings { Required = totpRequired }
-            }),
-            commandMediator,
-            Mock.Of<ILogger<SignInModel>>(),
-            accounts,
-            Mock.Of<IWebHostEnvironment>(x => x.EnvironmentName == environmentName));
-
-        model.PageContext = new PageContext
-        {
-            HttpContext = httpContext
-        };
-
+        var model = fixture.Attach(new SignInModel(fixture.Options, fixture.Accounts, Mock.Of<ILogger<SignInModel>>()));
+        model.Email = LocalAccountPageFixture.Email;
+        model.Password = LocalAccountPageFixture.Password;
         return model;
     }
 
-    private sealed class StubCommandMediator(bool loginValid) : ICommandMediator
+    private static void AssertPartialTicket(LocalAccountPageFixture fixture, OwnerAccountSnapshot account, string scheme)
     {
-        public int SendResultCallCount { get; private set; }
-
-        public Task<MediationResult> TrySendAsync(ICommand command, CommandMediationSettings? settings, CancellationToken cancellationToken) =>
-            throw new NotSupportedException();
-
-        public Task<MediationResult<TCommandResult>> TrySendAsync<TCommandResult>(ICommand<TCommandResult> command, CommandMediationSettings? settings, CancellationToken cancellationToken) =>
-            throw new NotSupportedException();
-
-        public Task<MediationDecision> EvaluateAsync(ICommand command, CommandMediationSettings? settings, CancellationToken cancellationToken) =>
-            throw new NotSupportedException();
-
-        public Task SendAsync(ICommand command, CommandMediationSettings? settings, CancellationToken cancellationToken) =>
-            Task.CompletedTask;
-
-        public Task<TCommandResult> SendAsync<TCommandResult>(
-            ICommand<TCommandResult> command,
-            CommandMediationSettings? settings,
-            CancellationToken cancellationToken)
-        {
-            SendResultCallCount++;
-
-            if (command is ValidateLoginCommand && typeof(TCommandResult) == typeof(bool))
-            {
-                return Task.FromResult((TCommandResult)(object)loginValid);
-            }
-
-            return Task.FromException<TCommandResult>(new NotSupportedException("No command results configured for this test."));
-        }
+        var ticket = Assert.Single(fixture.SignIns);
+        Assert.Equal(scheme, ticket.AuthenticationScheme);
+        Assert.True(LocalAccountPrincipal.Matches(ticket.Principal, account));
+        Assert.False(ticket.Principal.IsInRole("Administrator"));
+        Assert.Equal(account.Id.ToString(), ticket.Principal.FindFirstValue(ClaimTypes.NameIdentifier));
     }
 }

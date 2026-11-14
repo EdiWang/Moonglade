@@ -22,7 +22,7 @@ public class ImageController(
         IOptions<ImageStorageSettings> imageStorageSettings,
         CannonService cannonService,
         ICommandMediator commandMediator)
-    : BlogControllerBase(commandMediator)
+    : BlogControllerBase(commandMediator, logger)
 {
     private const long MaxUploadBytes = 5 * 1024 * 1024;
     private const string ImageCacheKeyPrefix = "image-meta:";
@@ -119,13 +119,13 @@ public class ImageController(
         logger.LogInformation("Image '{FileName}' uploaded.", primaryFileName);
 
         await LogActivityAsync(
-            EventType.ImageUploaded,
-            "Upload Image",
+            ActivityEvents.ImageUploaded,
             finalName,
-            ActivityLogMetaData.Create(
+            ActivityLogDetails.Create(
                 ("FileName", finalName),
                 ("FileSize", file.Length),
-                ("SkipWatermark", skipWatermark)));
+                ("SkipWatermark", skipWatermark)),
+            targetId: finalName);
 
         var imageUrl = $"/image/{finalName}";
         return Ok(new ImageUploadResponse(imageUrl, imageUrl));

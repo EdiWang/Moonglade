@@ -18,15 +18,16 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Moonglade.Configuration;
+using Moonglade.ActivityLog;
 using Moonglade.BackgroundServices;
-using Moonglade.Theme;
+using Moonglade.Configuration;
 using Moonglade.Data;
 using Moonglade.Data.Entities;
 using Moonglade.Features.Category;
 using Moonglade.Features.Post;
 using Moonglade.Features.Tag;
 using Moonglade.Syndication;
+using Moonglade.Theme;
 using Moonglade.Utils;
 using Moonglade.Web.Controllers;
 using Moonglade.Web.Filters;
@@ -315,6 +316,10 @@ public partial class PostCacheInvalidationTests
             services.AddLogging();
             services.AddDbContext<BlogDbContext>(options => options.UseSqlite(connection).AddInterceptors(interceptors));
             services.AddSingleton(TimeProvider.System);
+            services.Configure<Moonglade.Auth.AuthenticationSettings>(options => options.Totp.Required = false);
+            services.AddSingleton<Moonglade.Auth.ILocalAccountTotpService, Moonglade.Auth.LocalAccountTotpService>();
+            services.AddScoped<Moonglade.Auth.OwnerAccountStore>();
+            services.AddScoped<Moonglade.Auth.IOwnerProfileReader>(provider => provider.GetRequiredService<Moonglade.Auth.OwnerAccountStore>());
             services.AddInMemoryCacheAside();
             services.AddSingleton<IBlogConfig>(sp => sp.GetRequiredService<BlogConfig>());
             services.AddSingleton<PostCacheInvalidator>();
@@ -324,6 +329,7 @@ public partial class PostCacheInvalidationTests
             services.AddSingleton(new BlogConfig(new BlogSettingsSnapshot
             {
                 GeneralSettings = GeneralSettings.DefaultValue,
+                SEOSettings = SEOSettings.DefaultValue,
                 ContentSettings = new ContentSettings { EnableViewCount = false },
                 FeedSettings = new FeedSettings { FeedItemCount = 20 }
             }));
@@ -338,6 +344,7 @@ public partial class PostCacheInvalidationTests
                 {
                     module.RegisterFromAssembly(typeof(CreatePostCommand).Assembly);
                     module.RegisterFromAssembly(typeof(UpdateConfigurationCommand).Assembly);
+                    module.RegisterFromAssembly(typeof(CreateActivityLogCommand).Assembly);
                 });
                 bus.AddQueries(module =>
                 {
@@ -351,6 +358,13 @@ public partial class PostCacheInvalidationTests
             using var scope = environment.Services.CreateScope();
             var db = scope.ServiceProvider.GetRequiredService<BlogDbContext>();
             await db.Database.EnsureCreatedAsync(TestContext.Current.CancellationToken);
+            db.OwnerAccount.Add(new Moonglade.Data.Entities.OwnerAccountEntity
+            {
+                Id = Guid.NewGuid(),
+                Email = "owner@example.test",
+                NormalizedEmail = "OWNER@EXAMPLE.TEST",
+                Revision = Guid.NewGuid()
+            });
             var config = environment.Services.GetRequiredService<IBlogConfig>();
             foreach (var property in typeof(BlogSettingsSnapshot).GetProperties())
                 db.BlogConfiguration.Add(new BlogConfigurationEntity
@@ -414,6 +428,7 @@ public partial class PostCacheInvalidationTests
             context.Request.Host = new HostString("blog.example.com");
             Services.GetRequiredService<IHttpContextAccessor>().HttpContext = context;
             var controller = ActivatorUtilities.CreateInstance<SubscriptionController>(scope.ServiceProvider);
+            controller.ControllerContext = new ControllerContext { HttpContext = context };
             var result = atom ? await controller.Atom(category) : await controller.Rss(category);
             return Assert.IsType<ContentResult>(result).Content!;
         }

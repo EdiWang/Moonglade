@@ -26,7 +26,8 @@ public class PersistedSettingsDefaultsTests
     {
         var saved = new Dictionary<string, string>
         {
-            [nameof(GeneralSettings)] = """{"SITEtitle":"Saved title","canonicalPrefix":null,"hotTagAmount":0,"widgetsProfile":false}""",
+            [nameof(GeneralSettings)] = """{"SITEtitle":"Saved title","hotTagAmount":0,"widgetsProfile":false}""",
+            [nameof(SEOSettings)] = """{"CANONICALprefix":null,"enableSiteMap":false,"dcLicenseUrl":""}""",
             [nameof(ContentSettings)] = """{"calloutSectionHtmlPitch":null,"postListPageSize":20}""",
             [nameof(CommentSettings)] = """{"requireCommentReview":false,"enableGravatar":false}""",
             [nameof(NotificationSettings)] = """{"emailDisplayName":null}""",
@@ -39,10 +40,13 @@ public class PersistedSettingsDefaultsTests
         var (snapshot, repairs) = BlogConfig.Parse(saved);
 
         Assert.Equal("Saved title", snapshot.GeneralSettings.SiteTitle);
-        Assert.Null(snapshot.GeneralSettings.CanonicalPrefix);
+        Assert.Null(snapshot.SEOSettings.CanonicalPrefix);
+        Assert.False(snapshot.SEOSettings.EnableSiteMap);
+        Assert.Equal("", snapshot.SEOSettings.DcLicenseUrl);
+        Assert.Equal(SEOSettings.DefaultValue.MetaKeyword, snapshot.SEOSettings.MetaKeyword);
         Assert.Equal(0, snapshot.GeneralSettings.HotTagAmount);
         Assert.False(snapshot.GeneralSettings.WidgetsProfile);
-        Assert.Equal(GeneralSettings.DefaultValue.OwnerName, snapshot.GeneralSettings.OwnerName);
+        Assert.Equal(GeneralSettings.DefaultValue.Copyright, snapshot.GeneralSettings.Copyright);
         Assert.Null(snapshot.ContentSettings.CalloutSectionHtmlPitch);
         Assert.Equal(20, snapshot.ContentSettings.PostListPageSize);
         Assert.False(snapshot.CommentSettings.RequireCommentReview);

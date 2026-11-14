@@ -1,13 +1,15 @@
-﻿using System.Text.Json.Serialization;
 using Edi.AspNetCore.Utils;
 using LiteBus.Queries.Abstractions;
 using Microsoft.AspNetCore.Http;
+using Moonglade.Auth;
 using Moonglade.Configuration;
 using Moonglade.Utils;
+using System.Text.Json.Serialization;
 
 namespace Moonglade.Syndication;
 
-public record GetRssStringQuery(string CategoryName = null, [property: JsonIgnore] BlogSettingsSnapshot Snapshot = null) : IQuery<string>;
+public record GetRssStringQuery(string CategoryName = null, [property: JsonIgnore] BlogSettingsSnapshot Snapshot = null,
+    [property: JsonIgnore] OwnerPresentation Presentation = null) : IQuery<string>;
 
 public class GetRssStringQueryHandler(IBlogConfig blogConfig, SyndicationDataSource sdds, IHttpContextAccessor httpContextAccessor)
     : IQueryHandler<GetRssStringQuery, string>
@@ -19,7 +21,7 @@ public class GetRssStringQueryHandler(IBlogConfig blogConfig, SyndicationDataSou
         var generator = new FeedGenerator(
             baseUrl,
             settings.GeneralSettings.SiteTitle,
-            settings.GeneralSettings.Description,
+            (request.Presentation ?? OwnerPresentation.Default).Description,
             Helper.FormatCopyright2Html(settings.GeneralSettings.Copyright).Replace("&copy;", "©"),
             $"Moonglade v{VersionHelper.AppVersion}",
             baseUrl,
