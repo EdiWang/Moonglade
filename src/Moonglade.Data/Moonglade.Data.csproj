@@ -14,7 +14,7 @@
 	<ItemGroup>
 		<FrameworkReference Include="Microsoft.AspNetCore.App" />
 		<PackageReference Include="Microsoft.AspNetCore.DataProtection.EntityFrameworkCore" Version="10.0.14" />
-		<PackageReference Include="LiteBus" Version="7.1.0" />
+		<PackageReference Include="LiteBus" Version="7.1.1" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="10.0.14" />
 	</ItemGroup>
     <ItemGroup>
