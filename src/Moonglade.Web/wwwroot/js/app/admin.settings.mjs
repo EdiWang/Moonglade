@@ -27,6 +27,7 @@ export function initializeSettings({ createEditor, onSaved } = {}) {
     const dialogError = document.getElementById('setting-edit-error');
     const helpHost = document.getElementById('setting-edit-help');
     const fieldHost = document.getElementById('setting-edit-field');
+    const clearButton = dialogForm.querySelector('[data-setting-clear]');
     const saveButton = dialogForm.querySelector('[type=submit]');
     const cancelButton = dialogForm.querySelector('[data-bs-dismiss]');
     const saveText = saveButton.textContent;
@@ -75,6 +76,7 @@ export function initializeSettings({ createEditor, onSaved } = {}) {
         const { control, help } = edits[0];
         currentEdit = { edits, trigger, dependency, required: control.required };
         dialogTitle.textContent = label;
+        clearButton.hidden = edits.length !== 1 || !control.hasAttribute('data-setting-clear');
         dialog.querySelector('.modal-dialog').classList.toggle('modal-lg', control.tagName === 'TEXTAREA');
         control.required ||= Boolean(dependency);
         helpHost.replaceChildren(...(help ? [help.content.cloneNode(true)] : []));
@@ -217,6 +219,15 @@ export function initializeSettings({ createEditor, onSaved } = {}) {
         trigger.focus();
     });
 
+    clearButton.addEventListener('click', () => {
+        if (saving) return;
+
+        const { control } = currentEdit.edits[0];
+        control.value = '';
+        showError(dialogError, '');
+        control.focus();
+    });
+
     dialogForm.addEventListener('submit', async event => {
         event.preventDefault();
         if (saving) return;
@@ -232,7 +243,7 @@ export function initializeSettings({ createEditor, onSaved } = {}) {
 
         if (dependency) fields[dependency] = true;
         showError(dialogError, '');
-        saving = saveButton.disabled = cancelButton.disabled = fieldHost.inert = true;
+        saving = clearButton.disabled = saveButton.disabled = cancelButton.disabled = fieldHost.inert = true;
         saveButton.textContent = dialog.dataset.saving;
         try {
             await save(fields);
@@ -240,7 +251,7 @@ export function initializeSettings({ createEditor, onSaved } = {}) {
             showError(dialogError, err);
             return;
         } finally {
-            saving = saveButton.disabled = cancelButton.disabled = fieldHost.inert = false;
+            saving = clearButton.disabled = saveButton.disabled = cancelButton.disabled = fieldHost.inert = false;
             saveButton.textContent = saveText;
         }
         modal.hide();

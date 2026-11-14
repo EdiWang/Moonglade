@@ -73,6 +73,8 @@ Host options use [appsettings.json](src/Moonglade.Web/appsettings.json) and stan
 
 Switches and selections save when changed. For text, code, or numeric values, open **Change** and use **Save** or **Cancel**. Menu changes use the page's **Save** button.
 
+The **Head JavaScript** and **Foot JavaScript** dialogs include **Clear** to empty the editor. Click **Save** to apply the empty value, or **Cancel** to keep the saved script.
+
 | Setting | When it takes effect |
 | --- | --- |
 | Rendering, theme, and feed options | On subsequent requests. Browser, CDN, proxy, and feed-reader caches retain their own lifetimes. |
