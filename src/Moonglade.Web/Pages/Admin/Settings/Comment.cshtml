@@ -3,7 +3,7 @@
     var snapshot = ViewData.CaptureSettings(SettingsReader);
 }
 @section scripts {
-    <script type="module" src="~/js/app/admin.settings.comment.mjs"></script>
+    <script type="module" src="~/js/app/admin.settings.comment.mjs" asp-append-version="true"></script>
 }
 
 @{
@@ -45,25 +45,13 @@
                             <i class="bi-diagram-2 settings-entry-icon"></i>
                         </div>
                         <div class="col">
-                            <label asp-for="@settings.CommentProvider" class="me-4"></label>
+                            <label asp-for="@settings.CommentProvider"></label>
                         </div>
-                        <div class="col-5 text-end">
-                            <div class="form-check form-check-inline">
-                                @Html.RadioButtonFor(model => settings.CommentProvider, CommentProvider.BuiltIn, new
-                                {
-                                    id = CommentProvider.BuiltIn.ToString(),
-                                                            @class = "form-check-input comment-provider-checkbox"
-                                                            })
-                                <label class="form-check-label" for="@CommentProvider.BuiltIn">@SharedLocalizer["Built in"]</label>
-                            </div>
-                            <div class="form-check form-check-inline">
-                                @Html.RadioButtonFor(model => settings.CommentProvider, CommentProvider.ThirdParty, new
-                                                            {
-                                    id = CommentProvider.ThirdParty.ToString(),
-                                                            @class = "form-check-input comment-provider-checkbox"
-                                                            })
-                                <label class="form-check-label" for="@CommentProvider.ThirdParty">@SharedLocalizer["Third party"]</label>
-                            </div>
+                        <div class="col-5">
+                            <select asp-for="@settings.CommentProvider" class="form-select">
+                                <option value="@CommentProvider.BuiltIn">@SharedLocalizer["Built in"]</option>
+                                <option value="@CommentProvider.ThirdParty">@SharedLocalizer["Third party"]</option>
+                            </select>
                         </div>
                         <button type="button" class="admin-settings-expander-toggle" data-bs-toggle="collapse" data-bs-target="#settings-comment-provider" aria-controls="settings-comment-provider" aria-expanded="@(settings.EnableComments ? "true" : "false")" aria-label="@Html.DisplayNameFor(m => settings.CommentProvider)">
                             <i class="bi bi-chevron-down" aria-hidden="true"></i>
@@ -94,17 +82,13 @@
                                         <i class="bi-sort-numeric-down settings-entry-icon"></i>
                                     </div>
                                     <div class="col">
-                                        <label asp-for="@settings.CommentOrder" class="me-4"></label>
+                                        <label asp-for="@settings.CommentOrder"></label>
                                     </div>
-                                    <div class="col-5 text-end">
-                                        <div class="form-check form-check-inline">
-                                            @Html.RadioButtonFor(model => settings.CommentOrder, CommentOrder.OldToNew, new { id = CommentOrder.OldToNew.ToString(), @class = "form-check-input" })
-                                            <label class="form-check-label" for="@CommentOrder.OldToNew">@SharedLocalizer["Old to new"]</label>
-                                        </div>
-                                        <div class="form-check form-check-inline">
-                                            @Html.RadioButtonFor(model => settings.CommentOrder, CommentOrder.NewToOld, new { id = CommentOrder.NewToOld.ToString(), @class = "form-check-input" })
-                                            <label class="form-check-label" for="@CommentOrder.NewToOld">@SharedLocalizer["New to old"]</label>
-                                        </div>
+                                    <div class="col-5">
+                                        <select asp-for="@settings.CommentOrder" class="form-select">
+                                            <option value="@CommentOrder.OldToNew">@SharedLocalizer["Old to new"]</option>
+                                            <option value="@CommentOrder.NewToOld">@SharedLocalizer["New to old"]</option>
+                                        </select>
                                     </div>
                                 </div>
 
@@ -212,18 +196,14 @@
                                     <i class="bi-check2-circle settings-entry-icon"></i>
                                 </div>
                                 <div class="col">
-                                    <label asp-for="@settings.WordFilterMode" class="me-4"></label>
+                                    <label asp-for="@settings.WordFilterMode"></label>
                                     <div class="form-text">@SharedLocalizer["Blocked words will be masked as * in content."]</div>
                                 </div>
-                                <div class="col-5 text-end">
-                                    <div class="form-check form-check-inline">
-                                        @Html.RadioButtonFor(model => settings.WordFilterMode, WordFilterMode.Mask, new { id = WordFilterMode.Mask.ToString(), @class = "form-check-input" })
-                                        <label class="form-check-label" for="@WordFilterMode.Mask">@SharedLocalizer["Mask Word"]</label>
-                                    </div>
-                                    <div class="form-check form-check-inline">
-                                        @Html.RadioButtonFor(model => settings.WordFilterMode, WordFilterMode.Block, new { id = WordFilterMode.Block.ToString(), @class = "form-check-input" })
-                                        <label class="form-check-label" for="@WordFilterMode.Block">@SharedLocalizer["Block Comment"]</label>
-                                    </div>
+                                <div class="col-5">
+                                    <select asp-for="@settings.WordFilterMode" class="form-select">
+                                        <option value="@WordFilterMode.Mask">@SharedLocalizer["Mask Word"]</option>
+                                        <option value="@WordFilterMode.Block">@SharedLocalizer["Block Comment"]</option>
+                                    </select>
                                 </div>
                             </div>
 

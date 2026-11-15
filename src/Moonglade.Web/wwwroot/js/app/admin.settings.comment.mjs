@@ -1,11 +1,11 @@
 import { initializeSettings } from './admin.settings.mjs';
 
-const builtInRadio = document.getElementById('BuiltIn');
+const commentProvider = document.getElementById('settings_CommentProvider');
 const builtInSettings = document.querySelector('.comment-settings-built-in');
 const thirdPartySettings = document.querySelector('.comment-settings-3rd');
 
 const toggleCommentSettingsUI = () => {
-    if (builtInRadio?.checked) {
+    if (commentProvider.value === 'BuiltIn') {
         builtInSettings && (builtInSettings.style.display = 'block');
         thirdPartySettings && (thirdPartySettings.style.display = 'none');
     } else {
