@@ -1,27 +1,40 @@
-﻿<div class="modal modal-lg fade" id="subscriptionmodal" tabindex="-1" role="dialog" aria-labelledby="subscriptionmodalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h6 class="modal-title" id="subscriptionmodalLabel">@SharedLocalizer["RSS / Atom Feed"]</h6>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <div class="row mb-4">
-                    <div class="col-6">
-                        <a asp-controller="Subscription" asp-action="rss" class="btn w-100 btn-outline-accent">
-                            @SharedLocalizer["Latest Posts"] (RSS)
-                        </a>
-                    </div>
-                    <div class="col-6">
-                        <a asp-controller="Subscription" asp-action="Atom" class="btn w-100 btn-outline-accent">
-                            @SharedLocalizer["Latest Posts"] (Atom)
-                        </a>
-                    </div>
+﻿@{
+    var settings = ViewData.CaptureSettings(SettingsReader).FeedSettings;
+    var feedLabel = settings.FeedType switch { FeedType.Rss => "RSS", FeedType.Atom => "Atom", _ => "RSS / Atom" };
+}
+@if (settings.EnableSubscription)
+{
+    <div class="modal modal-lg fade" id="subscriptionmodal" tabindex="-1" role="dialog" aria-labelledby="subscriptionmodalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h6 class="modal-title" id="subscriptionmodalLabel">@SharedLocalizer["{0} Feed", feedLabel]</h6>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <div class="row">
-                    @await Component.InvokeAsync("SubList")
+                <div class="modal-body">
+                    <div class="row mb-4">
+                        @if (settings.IsFeedEnabled(FeedType.Rss))
+                        {
+                            <div class="@(settings.FeedType == FeedType.Both ? "col-6" : "col-12")">
+                                <a asp-controller="Subscription" asp-action="Rss" class="btn w-100 btn-outline-accent">
+                                    @SharedLocalizer["Latest Posts"] (RSS)
+                                </a>
+                            </div>
+                        }
+                        @if (settings.IsFeedEnabled(FeedType.Atom))
+                        {
+                            <div class="@(settings.FeedType == FeedType.Both ? "col-6" : "col-12")">
+                                <a asp-controller="Subscription" asp-action="Atom" class="btn w-100 btn-outline-accent">
+                                    @SharedLocalizer["Latest Posts"] (Atom)
+                                </a>
+                            </div>
+                        }
+                    </div>
+                    <div class="row">
+                        @await Component.InvokeAsync("SubList")
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
+}

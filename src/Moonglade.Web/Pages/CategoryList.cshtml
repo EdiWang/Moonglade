@@ -15,13 +15,16 @@
 }
 
 <h2 class="page-heading mb-4">
-    <a class="float-end d-none d-md-block"
-       asp-controller="Subscription"
-       asp-action="Rss"
-       asp-route-slug="@Cat.Slug.ToLower()" target="_blank"
-       title="Subscribe @(Cat.DisplayName)">
-        <i class="bi-rss font-125rem"></i>
-    </a>
+    @if (snapshot.FeedSettings.EnableSubscription)
+    {
+        <a class="float-end d-none d-md-block"
+           asp-controller="Subscription"
+           asp-action="@(snapshot.FeedSettings.IsFeedEnabled(FeedType.Rss) ? "Rss" : "Atom")"
+           asp-route-slug="@Cat.Slug.ToLower()" target="_blank"
+           title="Subscribe @(Cat.DisplayName)">
+            <i class="bi-rss font-125rem"></i>
+        </a>
+    }
     <span>@Cat.DisplayName</span>
     <small class="d-none d-md-inline text-muted">@Cat.Note</small>
 </h2>

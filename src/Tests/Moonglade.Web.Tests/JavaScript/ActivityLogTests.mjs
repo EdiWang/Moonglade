@@ -344,7 +344,7 @@ test('activityLogManager clear confirmation flow', async t => {
         }
     });
 
-    await t.test('all six settings enum discriminators localize every approved choice without rewriting ordinary strings', () => {
+    await t.test('settings enum discriminators localize every approved choice without rewriting ordinary strings', () => {
         const { manager } = createManager();
         const cases = [
             ['SideBarOption', 'Right', 'right'], ['SideBarOption', 'Left', 'left'], ['SideBarOption', 'Disabled', 'disabled'],
@@ -352,7 +352,8 @@ test('activityLogManager clear confirmation flow', async t => {
             ['PostTitleAlignment', 'Left', 'left'], ['PostTitleAlignment', 'Center', 'center'],
             ['CommentProvider', 'BuiltIn', 'builtIn'], ['CommentProvider', 'ThirdParty', 'thirdParty'],
             ['CommentOrder', 'OldToNew', 'oldToNew'], ['CommentOrder', 'NewToOld', 'newToOld'],
-            ['WordFilterMode', 'Mask', 'maskWord'], ['WordFilterMode', 'Block', 'blockComment']
+            ['WordFilterMode', 'Mask', 'maskWord'], ['WordFilterMode', 'Block', 'blockComment'],
+            ['FeedType', 'Rss', 'rss'], ['FeedType', 'Atom', 'atom'], ['FeedType', 'Both', 'both']
         ];
         for (const [key, value, label] of cases) {
             assert.equal(manager.formatDetailValue(value, key), label, `${key} approved choice`);

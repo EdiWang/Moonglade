@@ -19,6 +19,7 @@ using System.Net;
 using System.Net.Http.Json;
 using System.Text;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace Moonglade.Web.Tests.Controllers;
 
@@ -27,6 +28,8 @@ public partial class SettingsValidationHttpTests
     [Theory]
     [InlineData("content", """{"postListPageSize":0}""", "PostListPageSize")]
     [InlineData("subscription", """{"feedItemCount":-1}""", "FeedItemCount")]
+    [InlineData("subscription", """{"feedType":3}""", "FeedType")]
+    [InlineData("subscription", """{"feedType":"Unknown"}""", "$.feedType")]
     [InlineData("advanced", """{"headScripts":"<p>private-marker</p>"}""", "HeadScripts")]
     [InlineData("appearance", """{"enableCustomCss":true,"cssCode":""}""", "CssCode")]
     [InlineData("custom-menu", """{"isEnabled":true,"menuJson":"[null]"}""", "Menus[0]")]
@@ -60,6 +63,9 @@ public partial class SettingsValidationHttpTests
     [InlineData("seo", """{"metaKeyword":""}""", "MetaKeyword")]
     [InlineData("seo", """{"indexNow":true}""", "indexNow")]
     [InlineData("subscription", """{"feedItemCount":null}""", "FeedItemCount")]
+    [InlineData("subscription", """{"feedType":3}""", "FeedType")]
+    [InlineData("subscription", """{"feedType":"Unknown"}""", "FeedType")]
+    [InlineData("subscription", """{"enableSubscription":null}""", "EnableSubscription")]
     [InlineData("subscription", """{"FeedItemCount":1,"feedItemCount":2}""", "FeedItemCount")]
     [InlineData("appearance", """{"enableCustomCss":true}""", "CssCode")]
     public async Task InvalidPatch_DoesNotPersistOrAudit(string route, string json, string field)
@@ -127,10 +133,11 @@ public partial class SettingsValidationHttpTests
     }
 
     [Theory]
-    [InlineData("{}", 0, false)]
-    [InlineData("""{"feedItemCount":0,"useFullContent":false}""", 0, false)]
-    [InlineData("""{"feedItemCount":5,"useFullContent":true}""", 5, true)]
-    public async Task FeedRequest_BindsImmutableSettingsWithoutApplyingPersistedDefaults(string json, int count, bool full)
+    [InlineData("{}", 0, false, true, FeedType.Both)]
+    [InlineData("""{"feedItemCount":0,"useFullContent":false}""", 0, false, true, FeedType.Both)]
+    [InlineData("""{"feedItemCount":5,"useFullContent":true}""", 5, true, true, FeedType.Both)]
+    [InlineData("""{"feedItemCount":5,"useFullContent":true,"enableSubscription":false,"feedType":"Atom"}""", 5, true, false, FeedType.Atom)]
+    public async Task FeedRequest_BindsImmutableSettingsWithoutApplyingPersistedDefaults(string json, int count, bool full, bool enabled, FeedType type)
     {
         using var store = new ConfigurationCommandRecorder();
         var config = Defaults();
@@ -144,9 +151,45 @@ public partial class SettingsValidationHttpTests
         Assert.Equal(HttpStatusCode.NoContent, response.StatusCode);
         Assert.Equal(count, config.Capture().FeedSettings.FeedItemCount);
         Assert.Equal(full, config.Capture().FeedSettings.UseFullContent);
+        Assert.Equal(enabled, config.Capture().FeedSettings.EnableSubscription);
+        Assert.Equal(type, config.Capture().FeedSettings.FeedType);
         Assert.Equal(20, retained.FeedSettings.FeedItemCount);
         Assert.Equal(config.Capture().FeedSettings.ToJson(), (await store.Db.BlogConfiguration.AsNoTracking().SingleAsync(
             row => row.CfgKey == nameof(FeedSettings), TestContext.Current.CancellationToken)).CfgValue);
+    }
+
+    [Theory]
+    [InlineData(FeedType.Rss)]
+    [InlineData(FeedType.Atom)]
+    [InlineData(FeedType.Both)]
+    public async Task SubscriptionPatch_PersistsTypeAndRetainsItAcrossDisableEnable(FeedType type)
+    {
+        var ct = TestContext.Current.CancellationToken;
+        using var store = new ConfigurationCommandRecorder();
+        var config = Defaults();
+        await using var app = await CreateApp(store, config);
+        using var client = app.GetTestClient();
+        using var content = await client.PatchAsJsonAsync("/api/settings/subscription",
+            new Dictionary<string, object> { ["FeedItemCount"] = 7, ["UseFullContent"] = true }, ct);
+        Assert.Equal(HttpStatusCode.NoContent, content.StatusCode);
+
+        using var selection = await client.PatchAsJsonAsync("/api/settings/subscription",
+            new Dictionary<string, string> { ["FeedType"] = type.ToString() }, ct);
+        Assert.Equal(HttpStatusCode.NoContent, selection.StatusCode);
+
+        foreach (var enabled in new[] { false, true })
+        {
+            using var response = await client.PatchAsJsonAsync("/api/settings/subscription",
+                new Dictionary<string, bool> { ["EnableSubscription"] = enabled }, ct);
+            Assert.Equal(HttpStatusCode.NoContent, response.StatusCode);
+            var updated = config.Capture().FeedSettings;
+            Assert.Equal(enabled, updated.EnableSubscription);
+            Assert.Equal(type, updated.FeedType);
+            Assert.Equal(7, updated.FeedItemCount);
+            Assert.True(updated.UseFullContent);
+            Assert.Equal(updated.ToJson(), (await store.Db.BlogConfiguration.AsNoTracking().SingleAsync(
+                row => row.CfgKey == nameof(FeedSettings), ct)).CfgValue);
+        }
     }
 
     [Fact]
@@ -266,6 +309,7 @@ public partial class SettingsValidationHttpTests
         builder.Services.AddInMemoryCacheAside();
         builder.Services.AddSingleton<PostCacheInvalidator>();
         builder.Services.AddControllers().AddApplicationPart(typeof(SettingsController).Assembly)
+            .AddJsonOptions(options => options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()))
             .ConfigureApplicationPartManager(manager => manager.FeatureProviders.Add(new SettingsOnlyFeatureProvider()));
         builder.Services.AddAuthorization(options => options.AddPolicy(BlogAuthSchemas.AdministratorPolicy,
             policy => policy.RequireAssertion(_ => true)));

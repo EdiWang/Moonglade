@@ -125,7 +125,7 @@ public partial class ActivityLogHttpTests
     [InlineData("de-DE")]
     [InlineData("ja-JP")]
     [InlineData("fr-FR")]
-    public async Task SettingDetails_All51LabelsAreLocalizedAndOldNewValuesRemainTypedPlainText(string culture)
+    public async Task SettingDetails_AllLabelsAreLocalizedAndOldNewValuesRemainTypedPlainText(string culture)
     {
         var ct = TestContext.Current.CancellationToken;
         await using var fixture = await ActivityLogHttpFixture.CreateAsync(0, ct);
@@ -164,7 +164,7 @@ public partial class ActivityLogHttpTests
                 labelCount++;
             }
         }
-        Assert.Equal(51, labelCount);
+        Assert.Equal(53, labelCount);
         using var page = await client.GetAsync("/admin/activitylogs", ct);
         var html = await page.Content.ReadAsStringAsync(ct);
         // Old/new values can contain markup; only text bindings are a security contract here.

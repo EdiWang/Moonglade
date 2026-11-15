@@ -171,7 +171,8 @@ Alpine.data('activityLogManager', () => withPagination(10, {
             PostTitleAlignment: { Left: 'left', Center: 'center' },
             CommentProvider: { BuiltIn: 'builtIn', ThirdParty: 'thirdParty' },
             CommentOrder: { OldToNew: 'oldToNew', NewToOld: 'newToOld' },
-            WordFilterMode: { Mask: 'maskWord', Block: 'blockComment' }
+            WordFilterMode: { Mask: 'maskWord', Block: 'blockComment' },
+            FeedType: { Rss: 'rss', Atom: 'atom', Both: 'both' }
         };
         const label = choices[key]?.[value];
         if (label) return getLocalizedString(label);

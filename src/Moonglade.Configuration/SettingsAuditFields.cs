@@ -41,7 +41,11 @@ public static class SettingsAuditFields
             nameof(SEOSettings.EnableSiteMap), nameof(SEOSettings.EnableJsonLdBlogPosting),
             nameof(SEOSettings.UseDublinCoreMetaData)
         ],
-        nameof(FeedSettings) => [nameof(FeedSettings.FeedItemCount), nameof(FeedSettings.UseFullContent)],
+        nameof(FeedSettings) =>
+        [
+            nameof(FeedSettings.EnableSubscription), nameof(FeedSettings.FeedType),
+            nameof(FeedSettings.FeedItemCount), nameof(FeedSettings.UseFullContent)
+        ],
         nameof(ImageSettings) =>
         [
             nameof(ImageSettings.IsWatermarkEnabled), nameof(ImageSettings.KeepOriginImage),

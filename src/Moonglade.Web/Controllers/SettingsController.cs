@@ -138,6 +138,7 @@ public class SettingsController(
                 nameof(NotificationSettings.EnableEmailSending), nameof(NotificationSettings.SendEmailOnCommentReply),
                 nameof(NotificationSettings.SendEmailOnNewComment), nameof(NotificationSettings.EmailDisplayName)),
             "subscription" => PatchConfigurationCommand.Create<FeedSettings>(static value => value with { }, fields,
+                nameof(FeedSettings.EnableSubscription), nameof(FeedSettings.FeedType),
                 nameof(FeedSettings.FeedItemCount), nameof(FeedSettings.UseFullContent)),
             "watermark" => PatchConfigurationCommand.Create<ImageSettings>(static value => value with { }, fields,
                 nameof(ImageSettings.IsWatermarkEnabled), nameof(ImageSettings.KeepOriginImage),

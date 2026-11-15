@@ -169,6 +169,8 @@ public class ActivityLogController(
         "SendEmailOnNewComment" => "Send email on new comment",
         "FeedItemCount" => "Feed items",
         "UseFullContent" => "Use full blog post content instead of abstract",
+        "EnableSubscription" => "Enable subscription",
+        "FeedType" => "Feed type",
         "EnableCDNRedirect" => "Enable CDN redirect",
         "IsWatermarkEnabled" => "Enable watermark",
         "KeepOriginImage" => "Keep origin image",

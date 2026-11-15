@@ -25,6 +25,7 @@ public class SettingsValidationTests
         { nameof(CommentSettings), """{"wordFilterMode":999}""" },
         { nameof(NotificationSettings), "{\"emailDisplayName\":\"" + new string('x', 65) + "\"}" },
         { nameof(FeedSettings), """{"feedItemCount":-1}""" },
+        { nameof(FeedSettings), """{"feedType":3}""" },
         { nameof(ImageSettings), """{"isWatermarkEnabled":false,"watermarkFontSize":0}""" },
         { nameof(AppearanceSettings), """{"enableCustomCss":true,"cssCode":""}""" },
         { nameof(AdvancedSettings), """{"headScripts":"<p>invalid-marker</p>"}""" },

@@ -795,6 +795,18 @@
   <data name="Feed items" xml:space="preserve">
     <value>Anzahl der Abonnementeinträge</value>
   </data>
+  <data name="Enable subscription" xml:space="preserve">
+    <value>Abonnements aktivieren</value>
+  </data>
+  <data name="Feed type" xml:space="preserve">
+    <value>Feed-Typ</value>
+  </data>
+  <data name="Both" xml:space="preserve">
+    <value>Beide</value>
+  </data>
+  <data name="{0} Feed" xml:space="preserve">
+    <value>{0}-Feed</value>
+  </data>
   <data name="The number of entries to include in RSS/ATOM feed." xml:space="preserve">
     <value>Die Anzahl der Einträge, die im RSS/ATOM enthalten sind</value>
   </data>

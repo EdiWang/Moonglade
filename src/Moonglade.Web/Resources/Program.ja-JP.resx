@@ -795,6 +795,18 @@
   <data name="Feed items" xml:space="preserve">
     <value>サブスクリプションエントリの数</value>
   </data>
+  <data name="Enable subscription" xml:space="preserve">
+    <value>購読を有効にする</value>
+  </data>
+  <data name="Feed type" xml:space="preserve">
+    <value>フィードの種類</value>
+  </data>
+  <data name="Both" xml:space="preserve">
+    <value>両方</value>
+  </data>
+  <data name="{0} Feed" xml:space="preserve">
+    <value>{0} フィード</value>
+  </data>
   <data name="The number of entries to include in RSS/ATOM feed." xml:space="preserve">
     <value>RSS/ATOM に含まれるエントリの数</value>
   </data>

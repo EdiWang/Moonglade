@@ -795,6 +795,18 @@
   <data name="Feed items" xml:space="preserve">
     <value>訂閱項目數量</value>
   </data>
+  <data name="Enable subscription" xml:space="preserve">
+    <value>啟用訂閱</value>
+  </data>
+  <data name="Feed type" xml:space="preserve">
+    <value>訂閱類型</value>
+  </data>
+  <data name="Both" xml:space="preserve">
+    <value>兩者</value>
+  </data>
+  <data name="{0} Feed" xml:space="preserve">
+    <value>{0} 訂閱</value>
+  </data>
   <data name="The number of entries to include in RSS/ATOM feed." xml:space="preserve">
     <value>RSS/Atom 訂閱中包含的項目數量。</value>
   </data>

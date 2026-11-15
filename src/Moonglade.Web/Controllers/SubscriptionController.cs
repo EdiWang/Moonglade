@@ -17,9 +17,10 @@ public class SubscriptionController(
     public async Task<IActionResult> Opml()
     {
         var settings = blogConfig.Capture();
-        if (!settings.AdvancedSettings.EnableOpml) return NotFound();
+        if (!settings.FeedSettings.EnableSubscription || !settings.AdvancedSettings.EnableOpml) return NotFound();
+        var feedRoute = settings.FeedSettings.IsFeedEnabled(FeedType.Rss) ? "rss" : "atom";
 
-        var cats = await queryMediator.QueryAsync(new ListCategoriesQuery());
+        var cats = await queryMediator.QueryAsync(new ListCategoriesQuery(), HttpContext.RequestAborted);
         var catInfos = cats.Select(c => new KeyValuePair<string, string>(c.DisplayName, c.Slug));
         var rootUrl = UrlHelper.ResolveRootUrl(HttpContext, settings.SEOSettings.CanonicalPrefix);
 
@@ -28,12 +29,12 @@ public class SubscriptionController(
             SiteTitle = $"{settings.GeneralSettings.SiteTitle} - OPML",
             ContentInfo = catInfos,
             HtmlUrl = $"{rootUrl}/post",
-            XmlUrl = $"{rootUrl}/rss",
-            XmlUrlTemplate = $"{rootUrl}/rss/[catTitle]",
+            XmlUrl = $"{rootUrl}/{feedRoute}",
+            XmlUrlTemplate = $"{rootUrl}/{feedRoute}/[catTitle]",
             HtmlUrlTemplate = $"{rootUrl}/category/[catTitle]"
         };
 
-        var xml = await queryMediator.QueryAsync(new GetOpmlQuery(oi));
+        var xml = await queryMediator.QueryAsync(new GetOpmlQuery(oi), HttpContext.RequestAborted);
         return Content(xml, "text/xml");
     }
 
@@ -65,6 +66,9 @@ public class SubscriptionController(
         where TQuery : IQuery<string>
     {
         var settings = blogConfig.Capture();
+        var feedType = defaultCacheKey == "atom" ? FeedType.Atom : FeedType.Rss;
+        if (!settings.FeedSettings.IsFeedEnabled(feedType)) return NotFound();
+
         var owner = defaultCacheKey == "atom"
             ? await ownerProfiles.ReadProfileAsync(HttpContext.RequestAborted) : null;
         var presentation = await ownerProfiles.ReadPresentationAsync(HttpContext.RequestAborted);

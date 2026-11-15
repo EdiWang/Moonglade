@@ -76,6 +76,21 @@ public class PersistedSettingsDefaultsTests
         Assert.Equal(repaired, repairs.ContainsKey(nameof(FeedSettings)));
     }
 
+    [Theory]
+    [InlineData("""{"feedItemCount":7,"useFullContent":true}""", true, FeedType.Both)]
+    [InlineData("""{"enableSubscription":false,"feedType":1,"feedItemCount":7,"useFullContent":true}""", false, FeedType.Atom)]
+    [InlineData("""{"enableSubscription":true,"feedType":0,"feedItemCount":7,"useFullContent":true}""", true, FeedType.Rss)]
+    public void Load_SubscriptionSettings_PreserveLegacyDefaultsAndExplicitChoices(string json, bool enabled, FeedType type)
+    {
+        var (snapshot, repairs) = BlogConfig.Parse(new Dictionary<string, string> { [nameof(FeedSettings)] = json });
+
+        Assert.Equal(enabled, snapshot.FeedSettings.EnableSubscription);
+        Assert.Equal(type, snapshot.FeedSettings.FeedType);
+        Assert.Equal(7, snapshot.FeedSettings.FeedItemCount);
+        Assert.True(snapshot.FeedSettings.UseFullContent);
+        Assert.DoesNotContain(nameof(FeedSettings), repairs.Keys);
+    }
+
     [Fact]
     public void Load_ExplicitNullMenuArray_IsPreserved()
     {

@@ -14,7 +14,7 @@ internal static class SettingChangeCases
         [nameof(CommentSettings)] = ["CommentProvider", "CommentOrder", "EnableComments", "EnableGravatar", "EnableMarkdownLinks",
             "RequireCommentReview", "CloseCommentAfterDays", "EnableWordFilter", "WordFilterMode", "EnableCommentSectionOnMobile"],
         [nameof(NotificationSettings)] = ["EnableEmailSending", "SendEmailOnCommentReply", "SendEmailOnNewComment"],
-        [nameof(FeedSettings)] = ["FeedItemCount", "UseFullContent"],
+        [nameof(FeedSettings)] = ["EnableSubscription", "FeedType", "FeedItemCount", "UseFullContent"],
         [nameof(ImageSettings)] = ["IsWatermarkEnabled", "KeepOriginImage", "WatermarkFontSize", "WatermarkColorA", "WatermarkSkipPixel", "EnableCDNRedirect"],
         [nameof(AdvancedSettings)] = ["EnableWebmention", "EnableOpenSearch", "EnableFoaf", "EnableOpml", "EnablePostScheduler",
             "WarnPostExternalLink", "WarnCommentExternalLink"],

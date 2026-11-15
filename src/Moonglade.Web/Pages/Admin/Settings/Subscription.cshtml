@@ -3,7 +3,7 @@
     var snapshot = ViewData.CaptureSettings(SettingsReader);
 }
 @section scripts{
-    <script type="module" src="~/js/app/admin.settings.content.mjs"></script>
+    <script type="module" src="~/js/app/admin.settings.subscription.mjs"></script>
 }
 
 @{
@@ -22,6 +22,46 @@
     <div class="admin-settings-entry-container">
         <div>
             <div class="admin-settings-section">
+                <div class="admin-settings-expander">
+                    <div class="settings-entry admin-settings-expander-header">
+                        <div class="col-auto">
+                            <i class="bi-rss settings-entry-icon"></i>
+                        </div>
+                        <div class="col">
+                            <label asp-for="@settings.EnableSubscription" class="form-check-label"></label>
+                        </div>
+                        <div class="col-5 text-end">
+                            <div class="form-check form-switch form-control-lg">
+                                <input type="hidden" name="EnableSubscription" value="false">
+                                <input type="checkbox" id="@Html.IdFor(m => settings.EnableSubscription)" name="EnableSubscription" value="true" class="form-check-input" @(settings.EnableSubscription ? "checked" : null)>
+                            </div>
+                        </div>
+                        <button type="button" class="admin-settings-expander-toggle" data-bs-toggle="collapse" data-bs-target="#settings-feed-type" aria-controls="settings-feed-type" aria-expanded="@(settings.EnableSubscription ? "true" : "false")" aria-label="@SharedLocalizer["Feed type"]">
+                            <i class="bi bi-chevron-down" aria-hidden="true"></i>
+                        </button>
+                    </div>
+
+                    <div id="settings-feed-type" class="collapse @(settings.EnableSubscription ? "show" : null)">
+                        <fieldset id="settings-feed-options" class="admin-settings-expander-body" disabled="@(!settings.EnableSubscription)">
+                            <div class="settings-entry row align-items-center">
+                                <div class="col-auto">
+                                    <i class="bi-list-ul settings-entry-icon"></i>
+                                </div>
+                                <div class="col">
+                                    <label asp-for="@settings.FeedType"></label>
+                                </div>
+                                <div class="col-5">
+                                    <select asp-for="@settings.FeedType" class="form-select">
+                                        <option value="@FeedType.Rss">RSS</option>
+                                        <option value="@FeedType.Atom">Atom</option>
+                                        <option value="@FeedType.Both">@SharedLocalizer["Both"]</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </fieldset>
+                    </div>
+                </div>
+
                 <div class="settings-entry row align-items-center">
                     <div class="col-auto">
                         <i class="bi-list-ol settings-entry-icon"></i>

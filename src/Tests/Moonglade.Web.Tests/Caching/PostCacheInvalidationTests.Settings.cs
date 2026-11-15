@@ -2,6 +2,7 @@ using LiteBus.Commands.Abstractions;
 using LiteBus.Queries.Abstractions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.DependencyInjection;
@@ -18,6 +19,72 @@ namespace Moonglade.Web.Tests.Caching;
 
 public partial class PostCacheInvalidationTests
 {
+    [Theory]
+    [InlineData(true, FeedType.Rss)]
+    [InlineData(true, FeedType.Atom)]
+    [InlineData(true, FeedType.Both)]
+    [InlineData(false, FeedType.Rss)]
+    [InlineData(false, FeedType.Atom)]
+    [InlineData(false, FeedType.Both)]
+    public async Task SubscriptionSettings_GateWarmFeedsBeforeInvalidationAndRestoreSelectedFormats(bool enabled, FeedType type)
+    {
+        using var environment = await TestEnvironment.CreateAsync();
+        foreach (var atom in new[] { false, true })
+            foreach (var category in new string?[] { null, "tech" })
+                await environment.ReadFeedAsync(atom, category);
+
+        var config = environment.Services.GetRequiredService<BlogConfig>();
+        var generation = environment.Invalidator.GetFeedCacheKey("rss");
+        config.Publish(config.Capture() with
+        {
+            FeedSettings = config.Capture().FeedSettings with { EnableSubscription = enabled, FeedType = type }
+        });
+
+        foreach (var format in new[] { "rss", "atom" })
+        {
+            var allowed = enabled && (type == FeedType.Both || (format == "rss" ? type == FeedType.Rss : type == FeedType.Atom));
+            foreach (var category in new string?[] { null, "tech" })
+            {
+                var result = await environment.ReadSubscriptionAsync(format, category);
+                if (allowed) Assert.Equal(format == "rss" ? "rss" : "feed", XDocument.Parse(Assert.IsType<ContentResult>(result).Content!).Root!.Name.LocalName);
+                else Assert.IsType<NotFoundResult>(result);
+            }
+        }
+        Assert.Equal(generation, environment.Invalidator.GetFeedCacheKey("rss"));
+
+        await SaveSetting(environment, config.Capture().FeedSettings with { EnableSubscription = true, FeedType = FeedType.Both });
+        foreach (var atom in new[] { false, true })
+            foreach (var category in new string?[] { null, "tech" })
+                Assert.Equal(atom ? "feed" : "rss", XDocument.Parse(await environment.ReadFeedAsync(atom, category)).Root!.Name.LocalName);
+    }
+
+    [Theory]
+    [InlineData(true, true, FeedType.Rss, "rss")]
+    [InlineData(true, true, FeedType.Atom, "atom")]
+    [InlineData(true, true, FeedType.Both, "rss")]
+    [InlineData(false, true, FeedType.Both, null)]
+    [InlineData(true, false, FeedType.Atom, null)]
+    public async Task Opml_FollowsSubscriptionSwitchAndSelectedFeed(bool enabled, bool opmlEnabled, FeedType type, string? route)
+    {
+        using var environment = await TestEnvironment.CreateAsync();
+        var config = environment.Services.GetRequiredService<BlogConfig>();
+        config.Publish(config.Capture() with
+        {
+            FeedSettings = config.Capture().FeedSettings with { EnableSubscription = enabled, FeedType = type },
+            AdvancedSettings = config.Capture().AdvancedSettings with { EnableOpml = opmlEnabled }
+        });
+
+        var result = await environment.ReadSubscriptionAsync("opml");
+        if (route is null)
+        {
+            Assert.IsType<NotFoundResult>(result);
+            return;
+        }
+        var document = XDocument.Parse(Assert.IsType<ContentResult>(result).Content!);
+        var urls = document.Descendants("outline").Select(outline => (string?)outline.Attribute("xmlUrl")).ToArray();
+        Assert.Equal([$"https://blog.example.com/{route}", $"https://blog.example.com/{route}/tech"], urls);
+    }
+
     [Fact]
     public async Task EnablingScheduler_WithRealQuery_PublishesOverduePostWithoutPollingDelay()
     {

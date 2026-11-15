@@ -690,6 +690,18 @@
   <data name="Feed items" xml:space="preserve">
     <value>Éléments du flux</value>
   </data>
+  <data name="Enable subscription" xml:space="preserve">
+    <value>Activer les abonnements</value>
+  </data>
+  <data name="Feed type" xml:space="preserve">
+    <value>Type de flux</value>
+  </data>
+  <data name="Both" xml:space="preserve">
+    <value>Les deux</value>
+  </data>
+  <data name="{0} Feed" xml:space="preserve">
+    <value>Flux {0}</value>
+  </data>
   <data name="The number of entries to include in RSS/ATOM feed." xml:space="preserve">
     <value>Nombre d'entrées à inclure dans le flux RSS/Atom.</value>
   </data>

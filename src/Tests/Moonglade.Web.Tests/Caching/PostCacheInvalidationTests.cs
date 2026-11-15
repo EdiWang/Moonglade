@@ -422,6 +422,12 @@ public partial class PostCacheInvalidationTests
 
         public async Task<string> ReadFeedAsync(bool atom, string? category)
         {
+            var result = await ReadSubscriptionAsync(atom ? "atom" : "rss", category);
+            return Assert.IsType<ContentResult>(result).Content!;
+        }
+
+        public async Task<IActionResult> ReadSubscriptionAsync(string format, string? category = null)
+        {
             using var scope = Services.CreateScope();
             var context = new DefaultHttpContext();
             context.Request.Scheme = "https";
@@ -429,8 +435,13 @@ public partial class PostCacheInvalidationTests
             Services.GetRequiredService<IHttpContextAccessor>().HttpContext = context;
             var controller = ActivatorUtilities.CreateInstance<SubscriptionController>(scope.ServiceProvider);
             controller.ControllerContext = new ControllerContext { HttpContext = context };
-            var result = atom ? await controller.Atom(category) : await controller.Rss(category);
-            return Assert.IsType<ContentResult>(result).Content!;
+            return format switch
+            {
+                "atom" => await controller.Atom(category),
+                "rss" => await controller.Rss(category),
+                "opml" => await controller.Opml(),
+                _ => throw new ArgumentOutOfRangeException(nameof(format))
+            };
         }
 
         public PostEditModel EditModel() => new()
