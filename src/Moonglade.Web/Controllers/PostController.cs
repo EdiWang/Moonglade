@@ -72,6 +72,7 @@ public class PostController(
     }
 
     [HttpDelete("{postId:guid}/recycle")]
+    [PostWriteConflict]
     public async Task<IActionResult> Delete([NotEmpty] Guid postId)
     {
         await CommandMediator.SendAsync(new DeletePostCommand(postId, SoftDelete: true));
@@ -86,6 +87,7 @@ public class PostController(
     }
 
     [HttpPut("{postId:guid}/publish")]
+    [PostWriteConflict]
     public async Task<IActionResult> Publish([NotEmpty] Guid postId)
     {
         await CommandMediator.SendAsync(new PublishPostCommand(postId));
@@ -100,6 +102,7 @@ public class PostController(
     }
 
     [HttpPut("{postId:guid}/unpublish")]
+    [PostWriteConflict]
     public async Task<IActionResult> Unpublish([NotEmpty] Guid postId)
     {
         await CommandMediator.SendAsync(new UnpublishPostCommand(postId));

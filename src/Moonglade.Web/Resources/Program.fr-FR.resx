@@ -2223,4 +2223,7 @@
   <data name="Zoom" xml:space="preserve">
     <value>Zoom</value>
   </data>
+  <data name="The post changed. Reload the page to see its current state." xml:space="preserve">
+    <value>L’article a été modifié. Rechargez la page pour voir son état actuel.</value>
+  </data>
 </root>

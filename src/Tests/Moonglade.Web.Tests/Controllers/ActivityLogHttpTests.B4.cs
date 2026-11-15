@@ -1,21 +1,97 @@
+using LiteBus.Commands.Abstractions;
 using LiteBus.Events.Abstractions;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Logging.Abstractions;
 using Moonglade.Data;
 using Moonglade.Data.Entities;
 using Moonglade.Features.Post;
+using Moonglade.Web.Controllers;
 using Moonglade.Web.Tests.TestSupport;
 using Moq;
 using System.Globalization;
+using System.Net;
 using System.Text.Json;
 
 namespace Moonglade.Web.Tests.Controllers;
 
 public partial class ActivityLogHttpTests
 {
+    [Theory]
+    [InlineData("PUT", "/api/schedule/cancel/{0}")]
+    [InlineData("PUT", "/api/schedule/postpone/{0}?hours=2")]
+    [InlineData("PUT", "/api/post/{0}/publish")]
+    [InlineData("PUT", "/api/post/{0}/unpublish")]
+    [InlineData("DELETE", "/api/post/{0}/recycle")]
+    [InlineData("POST", "/api/post/{0}/restore", true)]
+    [InlineData("DELETE", "/api/post/{0}/destroy", true)]
+    public async Task StalePostWrite_ReturnsConflictAndPreservesWinningWrite(string method, string route, bool recycled = false)
+    {
+        var ct = TestContext.Current.CancellationToken;
+        var intercept = new BeforePostWrite();
+        await using var fixture = await ActivityLogHttpFixture.CreateAsync(0, ct,
+            configureServices: services => services.ConfigureDbContext<BlogDbContext>(options => options.AddInterceptors(intercept)),
+            additionalControllers: [typeof(ScheduleController), typeof(PostController), typeof(RecycleBinController)]);
+        using var scope = fixture.App.Services.CreateScope();
+        var db = scope.ServiceProvider.GetRequiredService<BlogDbContext>();
+        var post = B4HttpPost("Scheduled article", "scheduled-article", DateTime.UtcNow.AddMinutes(-1));
+        post.IsDeleted = recycled;
+        db.Post.Add(post);
+        await db.SaveChangesAsync(ct);
+        intercept.CommitCompetingWrite = async token =>
+        {
+            if (recycled)
+            {
+                post.IsDeleted = false;
+                await db.SaveChangesAsync(token);
+            }
+            else
+            {
+                var commands = scope.ServiceProvider.GetRequiredService<ICommandMediator>();
+                Assert.Equal(1, await commands.SendAsync(new PublishScheduledPostCommand(), cancellationToken: token));
+            }
+        };
+
+        using var client = fixture.App.GetTestClient();
+        client.DefaultRequestHeaders.Add("X-B1-User", "admin");
+        await AddPageToken(client, ct);
+        using var request = new HttpRequestMessage(new HttpMethod(method), string.Format(CultureInfo.InvariantCulture, route, post.Id));
+        request.Headers.Accept.ParseAdd("application/json");
+        using var response = await client.SendAsync(request, ct);
+
+        Assert.Equal(HttpStatusCode.Conflict, response.StatusCode);
+        Assert.Equal("application/problem+json", response.Content.Headers.ContentType?.MediaType);
+        using var problem = JsonDocument.Parse(await response.Content.ReadAsStringAsync(ct));
+        Assert.Equal(409, problem.RootElement.GetProperty("status").GetInt32());
+        Assert.False(string.IsNullOrWhiteSpace(problem.RootElement.GetProperty("detail").GetString()));
+        var saved = await db.Post.AsNoTracking().SingleAsync(ct);
+        Assert.False(saved.IsDeleted);
+        Assert.Equal(recycled ? PostStatus.Scheduled : PostStatus.Published, saved.PostStatus);
+        var logs = await fixture.Store.ReadLogsAsync(ct);
+        if (recycled) Assert.Empty(logs);
+        else Assert.Equal("post.automatically-published", Assert.Single(logs).EventKey);
+    }
+
+    private sealed class BeforePostWrite : SaveChangesInterceptor
+    {
+        public Func<CancellationToken, Task>? CommitCompetingWrite { get; set; }
+
+        public override async ValueTask<InterceptionResult<int>> SavingChangesAsync(DbContextEventData eventData,
+            InterceptionResult<int> result, CancellationToken cancellationToken = default)
+        {
+            if (CommitCompetingWrite is { } commit && eventData.Context!.ChangeTracker.Entries<PostEntity>()
+                .Any(entry => entry.State is EntityState.Modified or EntityState.Deleted))
+            {
+                CommitCompetingWrite = null;
+                await commit(cancellationToken);
+            }
+            return result;
+        }
+    }
+
     [Theory]
     [InlineData("en-US")]
     [InlineData("zh-Hans")]

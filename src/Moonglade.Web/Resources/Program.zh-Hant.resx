@@ -2174,4 +2174,7 @@
   <data name="Zoom" xml:space="preserve">
     <value>縮放</value>
   </data>
+  <data name="The post changed. Reload the page to see its current state." xml:space="preserve">
+    <value>文章已變更。請重新載入頁面以查看目前狀態。</value>
+  </data>
 </root>

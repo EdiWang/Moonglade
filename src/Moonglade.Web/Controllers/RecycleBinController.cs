@@ -23,6 +23,7 @@ public class RecycleBinController(
     }
 
     [HttpPost("{postId:guid}/restore")]
+    [PostWriteConflict]
     public async Task<IActionResult> Restore([NotEmpty] Guid postId)
     {
         await CommandMediator.SendAsync(new RestorePostCommand(postId));
@@ -37,6 +38,7 @@ public class RecycleBinController(
     }
 
     [HttpDelete("{postId:guid}/destroy")]
+    [PostWriteConflict]
     public async Task<IActionResult> Delete([NotEmpty] Guid postId)
     {
         await CommandMediator.SendAsync(new DeletePostCommand(postId));

@@ -2174,4 +2174,7 @@
   <data name="Zoom" xml:space="preserve">
     <value>ズーム</value>
   </data>
+  <data name="The post changed. Reload the page to see its current state." xml:space="preserve">
+    <value>投稿が変更されました。ページを再読み込みして最新の状態を確認してください。</value>
+  </data>
 </root>

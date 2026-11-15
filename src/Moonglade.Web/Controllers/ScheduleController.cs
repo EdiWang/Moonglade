@@ -20,6 +20,7 @@ public class ScheduleController(
     }
 
     [HttpPut("cancel/{postId:guid}")]
+    [PostWriteConflict]
     public async Task<IActionResult> Cancel([NotEmpty] Guid postId)
     {
         await CommandMediator.SendAsync(new CancelScheduleCommand(postId));
@@ -34,6 +35,7 @@ public class ScheduleController(
     }
 
     [HttpPut("postpone/{postId:guid}")]
+    [PostWriteConflict]
     public async Task<IActionResult> Postpone([NotEmpty] Guid postId, [FromQuery][Range(1, 24)] int hours = 24)
     {
         await CommandMediator.SendAsync(new PostponePostCommand(postId, hours));
