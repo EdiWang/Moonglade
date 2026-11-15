@@ -93,17 +93,13 @@
                         <i class="bi-check2-circle settings-entry-icon"></i>
                     </div>
                     <div class="col">
-                        <label asp-for="@settings.PostTitleAlignment" class="me-4"></label>
+                        <label asp-for="@settings.PostTitleAlignment"></label>
                     </div>
-                    <div class="col-5 text-end">
-                        <div class="form-check form-check-inline">
-                            @Html.RadioButtonFor(model => settings.PostTitleAlignment, PostTitleAlignment.Left, new { id = PostTitleAlignment.Left.ToString(), @class = "form-check-input" })
-                            <label class="form-check-label" for="@PostTitleAlignment.Left">@SharedLocalizer["Left"]</label>
-                        </div>
-                        <div class="form-check form-check-inline">
-                            @Html.RadioButtonFor(model => settings.PostTitleAlignment, PostTitleAlignment.Center, new { id = PostTitleAlignment.Center.ToString(), @class = "form-check-input" })
-                            <label class="form-check-label" for="@PostTitleAlignment.Center">@SharedLocalizer["Center"]</label>
-                        </div>
+                    <div class="col-4">
+                        <select asp-for="@settings.PostTitleAlignment" class="form-select">
+                            <option value="@PostTitleAlignment.Left">@SharedLocalizer["Left"]</option>
+                            <option value="@PostTitleAlignment.Center">@SharedLocalizer["Center"]</option>
+                        </select>
                     </div>
                 </div>
 
