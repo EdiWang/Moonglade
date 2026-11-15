@@ -639,6 +639,12 @@
   <data name="Side bar display" xml:space="preserve">
     <value>侧边栏位置</value>
   </data>
+  <data name="Show sidebar" xml:space="preserve">
+    <value>显示侧边栏</value>
+  </data>
+  <data name="Sidebar position" xml:space="preserve">
+    <value>侧边栏位置</value>
+  </data>
   <data name="Side bar HTML code" xml:space="preserve">
     <value>侧边栏HTML区域</value>
   </data>

@@ -8,4 +8,17 @@ document.getElementById('btn-upload-siteicon').addEventListener('click', async f
     await siteiconUploader.uploadImage('/siteicon');
 });
 
-initializeSettings();
+const showSidebar = document.getElementById('settings-show-sidebar');
+const sidebarPosition = document.getElementById('ViewModel_SideBarOption');
+
+initializeSettings({
+    fieldBindings: {
+        SideBarOption: {
+            read: () => showSidebar.checked ? sidebarPosition.value : 'Disabled',
+            write: value => {
+                showSidebar.checked = value !== 'Disabled';
+                if (showSidebar.checked) sidebarPosition.value = value;
+            }
+        }
+    }
+});

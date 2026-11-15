@@ -18,7 +18,7 @@ function setFieldValue(controls, value) {
     }
 }
 
-export function initializeSettings({ createEditor, onSaved } = {}) {
+export function initializeSettings({ createEditor, onSaved, fieldBindings = {} } = {}) {
     const form = document.getElementById('form-settings');
     const dialog = document.getElementById('setting-edit-modal');
     const modal = new bootstrap.Modal(dialog);
@@ -40,6 +40,17 @@ export function initializeSettings({ createEditor, onSaved } = {}) {
     let currentEdit;
     let editor;
     let saving = false;
+
+    function readValue(control) {
+        const binding = fieldBindings[fieldName(control)];
+        return binding ? binding.read() : fieldValue(control);
+    }
+
+    function writeValue(controls, value) {
+        const binding = fieldBindings[fieldName(controls[0])];
+        if (binding) binding.write(value);
+        else setFieldValue(controls, value);
+    }
 
     form.addEventListener('submit', event => event.preventDefault());
 
@@ -66,7 +77,7 @@ export function initializeSettings({ createEditor, onSaved } = {}) {
             confirmed.set(name, value);
             const edit = editFields.get(name);
             if (edit) edit.preview.textContent = value === '' ? '—' : value;
-            else setFieldValue(controlsByField.get(name), value);
+            else writeValue(controlsByField.get(name), value);
         }
         success(dialog.dataset.updated);
         onSaved?.(fields);
@@ -141,7 +152,7 @@ export function initializeSettings({ createEditor, onSaved } = {}) {
         }
 
         editFields.set(name, edit);
-        confirmed.set(name, fieldValue(control));
+        confirmed.set(name, readValue(control));
     }
 
     for (const [group, edits] of editGroups) {
@@ -155,7 +166,7 @@ export function initializeSettings({ createEditor, onSaved } = {}) {
         const name = fieldName(control);
         if (!controlsByField.has(name)) controlsByField.set(name, []);
         controlsByField.get(name).push(control);
-        if (control.type !== 'radio' || control.checked) confirmed.set(name, fieldValue(control));
+        if (control.type !== 'radio' || control.checked) confirmed.set(name, readValue(control));
     }
 
     form.addEventListener('change', async event => {
@@ -164,7 +175,7 @@ export function initializeSettings({ createEditor, onSaved } = {}) {
         const controls = controlsByField.get(name);
         if (!controls?.includes(control)) return;
 
-        const value = fieldValue(control);
+        const value = readValue(control);
         const previous = confirmed.get(name);
         if (value === previous) return;
 
@@ -175,7 +186,7 @@ export function initializeSettings({ createEditor, onSaved } = {}) {
             const current = confirmed.get(dependency).trim();
             const needsHttps = editFields.get(dependency).control.type === 'url';
             if (!current || (needsHttps && (!/^https:\/\//i.test(current) || !URL.canParse(current)))) {
-                setFieldValue(controls, previous);
+                writeValue(controls, previous);
                 openEditor([editFields.get(dependency)], control, { dependency: name });
                 return;
             }
@@ -186,12 +197,12 @@ export function initializeSettings({ createEditor, onSaved } = {}) {
         try {
             await save({ [name]: value });
         } catch (err) {
-            setFieldValue(controls, previous);
+            writeValue(controls, previous);
             showError(message, err);
         } finally {
             for (const item of controls) item.disabled = false;
             if (hadFocus && document.activeElement === document.body) {
-                (controls.find(item => item.checked) ?? control).focus();
+                (controls.find(item => item.type === 'radio' && item.checked) ?? control).focus();
             }
         }
     });

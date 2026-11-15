@@ -110,41 +110,40 @@
                     <h4 class="admin-subtitle fw-bold">
                         @SharedLocalizer["Side Bar"]
                     </h4>
-                    <div class="settings-entry row align-items-center">
-                        <div class="col-auto">
-                            <i class="bi-layout-sidebar-inset settings-entry-icon"></i>
-                        </div>
-                        <div class="col">
-                            <label asp-for="@ViewModel.SideBarOption" class="me-4"></label>
+                    <div class="admin-settings-expander">
+                        <div class="settings-entry admin-settings-expander-header">
+                            <div class="col-auto">
+                                <i class="bi-layout-sidebar-inset settings-entry-icon"></i>
+                            </div>
+                            <div class="col">
+                                <label for="settings-show-sidebar" class="form-check-label">@SharedLocalizer["Show sidebar"]</label>
+                            </div>
+                            <div class="col-5 text-end">
+                                <div class="form-check form-switch form-control-lg">
+                                    <input type="checkbox" id="settings-show-sidebar" name="SideBarOption" class="form-check-input" @(ViewModel.SideBarOption != SideBarOption.Disabled ? "checked" : null)>
+                                </div>
+                            </div>
+                            <button type="button" class="admin-settings-expander-toggle" data-bs-toggle="collapse" data-bs-target="#settings-sidebar-position" aria-controls="settings-sidebar-position" aria-expanded="@(ViewModel.SideBarOption != SideBarOption.Disabled ? "true" : "false")" aria-label="@SharedLocalizer["Show sidebar"]">
+                                <i class="bi bi-chevron-down" aria-hidden="true"></i>
+                            </button>
                         </div>
 
-                        <div class="col-5 text-end">
-                            <div class="form-check form-check-inline">
-                                @Html.RadioButton(
-                                nameof(ViewModel.SideBarOption),
-                                                                SideBarOption.Right,
-                                                                ViewModel.SideBarOption == SideBarOption.Right,
-                                                                new { id = SideBarOption.Right.ToString(), @class = "form-check-input" }
-                                                                )
-                                <label class="form-check-label" for="@SideBarOption.Right">@SharedLocalizer["Right"]</label>
-                            </div>
-                            <div class="form-check form-check-inline">
-                                @Html.RadioButton(
-                                                                nameof(ViewModel.SideBarOption),
-                                                                SideBarOption.Left,
-                                                                ViewModel.SideBarOption == SideBarOption.Left,
-                                                                new { id = SideBarOption.Left.ToString(), @class = "form-check-input" }
-                                                                )
-                                <label class="form-check-label" for="@SideBarOption.Left">@SharedLocalizer["Left"]</label>
-                            </div>
-                            <div class="form-check form-check-inline">
-                                @Html.RadioButton(
-                                                                nameof(ViewModel.SideBarOption),
-                                                                SideBarOption.Disabled,
-                                                                ViewModel.SideBarOption == SideBarOption.Disabled,
-                                                                new { id = SideBarOption.Disabled.ToString(), @class = "form-check-input" }
-                                                                )
-                                <label class="form-check-label" for="@SideBarOption.Disabled">@SharedLocalizer["Disabled"]</label>
+                        <div id="settings-sidebar-position" class="collapse @(ViewModel.SideBarOption != SideBarOption.Disabled ? "show" : null)">
+                            <div class="admin-settings-expander-body">
+                                <div class="settings-entry row align-items-center">
+                                    <div class="col-auto">
+                                        <i class="bi-layout-sidebar-reverse settings-entry-icon"></i>
+                                    </div>
+                                    <div class="col">
+                                        <label for="@Html.IdFor(m => ViewModel.SideBarOption)">@SharedLocalizer["Sidebar position"]</label>
+                                    </div>
+                                    <div class="col-5">
+                                        <select asp-for="@ViewModel.SideBarOption" class="form-select">
+                                            <option value="@SideBarOption.Right">@SharedLocalizer["Right"]</option>
+                                            <option value="@SideBarOption.Left">@SharedLocalizer["Left"]</option>
+                                        </select>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>

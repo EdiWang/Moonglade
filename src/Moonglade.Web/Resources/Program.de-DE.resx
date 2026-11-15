@@ -639,6 +639,12 @@
   <data name="Side bar display" xml:space="preserve">
     <value>Seitenleiste anzeigen</value>
   </data>
+  <data name="Show sidebar" xml:space="preserve">
+    <value>Seitenleiste anzeigen</value>
+  </data>
+  <data name="Sidebar position" xml:space="preserve">
+    <value>Position der Seitenleiste</value>
+  </data>
   <data name="Side bar HTML code" xml:space="preserve">
     <value>HTML Code für Seitenleiste</value>
   </data>

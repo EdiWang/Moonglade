@@ -534,6 +534,12 @@
   <data name="Side bar display" xml:space="preserve">
     <value>Affichage de la barre latérale</value>
   </data>
+  <data name="Show sidebar" xml:space="preserve">
+    <value>Afficher la barre latérale</value>
+  </data>
+  <data name="Sidebar position" xml:space="preserve">
+    <value>Position de la barre latérale</value>
+  </data>
   <data name="Side bar HTML code" xml:space="preserve">
     <value>Code HTML de la barre latérale</value>
   </data>
