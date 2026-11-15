@@ -32,6 +32,7 @@ public partial class OwnerOidcHttpTests
 
         using var challenge = await PostAsync(fixture, "Bind", revision);
         Assert.Equal(HttpStatusCode.Redirect, challenge.StatusCode);
+        Assert.DoesNotContain("prompt", QueryHelpers.ParseQuery(challenge.Headers.Location!.Query).Keys);
         var callback = provider.CallbackFor(challenge.Headers.Location!);
         using var returned = await fixture.SendAsync(HttpMethod.Get, callback);
         Assert.Equal(HttpStatusCode.Redirect, returned.StatusCode);

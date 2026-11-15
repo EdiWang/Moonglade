@@ -1,6 +1,7 @@
 #nullable enable
 
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Moonglade.Auth;
@@ -15,7 +16,7 @@ namespace Moonglade.Web.Tests.Hosting;
 public partial class OwnerOidcHttpTests
 {
     [Fact]
-    public async Task OidcSignIn_SignsInAsOwnerWithoutTotp_AndSignOutIsLocal()
+    public async Task OidcSignIn_SignsInAsOwnerWithoutTotp_AndRequiresReauthenticationAfterSignOut()
     {
         using var provider = new SyntheticProvider();
         await using var fixture = await LocalAccountHttpFixture.CreateAsync(required: true, pathBase: "/blog", oidcBackchannel: provider);
@@ -39,6 +40,10 @@ public partial class OwnerOidcHttpTests
         using var after = await fixture.SendAsync(HttpMethod.Get, "/admin/probe");
         Assert.Equal(HttpStatusCode.Redirect, after.StatusCode);
         Assert.Equal(1, provider.Exchanges);
+
+        using var nextChallenge = await ChallengeSignInAsync(fixture);
+        Assert.Equal(HttpStatusCode.Redirect, nextChallenge.StatusCode);
+        Assert.Equal("login", QueryHelpers.ParseQuery(nextChallenge.Headers.Location!.Query)["prompt"].ToString());
     }
 
     [Theory]

@@ -1,8 +1,10 @@
 #nullable enable
 
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Http;
+using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text.Json;
@@ -71,7 +73,12 @@ public sealed class OidcBindingFlow(IDataProtectionProvider protection, TimeProv
 
     public ChallengeResult StartSignIn(Guid revision, string? redirectUri)
     {
-        var properties = new AuthenticationProperties { RedirectUri = redirectUri, ExpiresUtc = clock.GetUtcNow().Add(Lifetime) };
+        var properties = new OpenIdConnectChallengeProperties
+        {
+            RedirectUri = redirectUri,
+            ExpiresUtc = clock.GetUtcNow().Add(Lifetime),
+            Prompt = OpenIdConnectPrompt.Login
+        };
         properties.Items[SignInRevisionKey] = revision.ToString();
         return new ChallengeResult(Scheme, properties);
     }

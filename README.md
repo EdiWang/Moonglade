@@ -102,6 +102,8 @@ Application Data Protection keys are stored in the database with the fixed appli
 
 To enable third-party sign-in, configure one public HTTPS OpenID Connect provider under **Account Settings > Third-party sign-in**, register the site's `/signin-oidc` callback URL, and confirm the external account binding. The enabled, bound identity signs in as the owner using the provider's authentication. Disabling the provider, unbinding it, or deleting it revokes its Moonglade sessions. Database backups contain both the encrypted client secret and the Data Protection keys required to decrypt it.
 
+Signing out ends the Moonglade session. Each third-party sign-in sends `prompt=login` to require reauthentication at the provider, including after sign-out. Use a provider that honors this OpenID Connect parameter.
+
 Application and OIDC credential protection share the existing `DataProtectionKeys` table (`data_protection_keys` on PostgreSQL), while OIDC retains its separate `Moonglade.OidcCredentials` application name and protection purpose. Preserve and restore the keys together with the encrypted client secret. Do not clear the key table: a running process may continue using a cached key that becomes unavailable after restart. If the required OIDC key is lost, save the client secret again through the authenticated management page to encrypt it with a persisted key. Database persistence does not itself encrypt the stored keys; restrict database and backup access and provide deployment-appropriate encryption at rest.
 
 ### Comments
