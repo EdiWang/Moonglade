@@ -70,6 +70,15 @@ public partial class SettingsValidationHttpTests
         using var client = app.GetTestClient();
         var events = Mock.Get(app.Services.GetRequiredService<IEventMediator>());
 
+        using var missingSender = await client.PostAsync("/api/settings/email/test", null, ct);
+        Assert.Equal(HttpStatusCode.Conflict, missingSender.StatusCode);
+        using var problem = JsonDocument.Parse(await missingSender.Content.ReadAsStringAsync(ct));
+        Assert.Equal("Sender display name is not configured.", problem.RootElement.GetProperty("title").GetString());
+        Assert.Empty(events.Invocations);
+        using var saved = await client.PatchAsJsonAsync("/api/settings/notification",
+            new Dictionary<string, string> { [nameof(NotificationSettings.EmailDisplayName)] = "Blog Sender" }, ct);
+        Assert.Equal(HttpStatusCode.NoContent, saved.StatusCode);
+
         using var missing = await client.PostAsync("/api/settings/email/test", null, ct);
 
         Assert.Equal(HttpStatusCode.Conflict, missing.StatusCode);

@@ -3,6 +3,7 @@ using Edi.TemplateEmail.Smtp;
 using MailKit.Net.Smtp;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Moonglade.Configuration;
 using Moonglade.Email.Core;
 using Moq;
 using System.Text.Json;
@@ -11,6 +12,38 @@ namespace Moonglade.Email.Tests.Outbox;
 
 public class EmailOutboxMessageProcessorTests
 {
+    [Theory]
+    [InlineData(null)]
+    [InlineData("")]
+    [InlineData("   ")]
+    public async Task ProcessNextAsync_UsesCurrentSenderNameAndLeavesMailQueuedWhileNameIsMissing(string missingName)
+    {
+        var ct = TestContext.Current.CancellationToken;
+        var store = new FakeEmailOutboxStore
+        {
+            Message = new EmailOutboxMessage(Guid.NewGuid(), MessageTypes.TestMail, "reader@example.com", "{}", 1, FixedNow)
+        };
+        var dispatcher = new CapturingDispatcher();
+        var config = new BlogConfig(new BlogSettingsSnapshot { NotificationSettings = new NotificationSettings { EmailDisplayName = missingName } });
+        var emailHelper = new EmailHelper(Path.Join(AppContext.BaseDirectory, "mailConfiguration.xml"));
+        var processor = CreateProcessor(store, dispatcher, config, emailHelper);
+
+        Assert.False(await processor.ProcessNextAsync("worker-1", ct));
+        Assert.Equal(0, store.ClaimCount);
+        Assert.Empty(dispatcher.SentMessages);
+
+        foreach (var name in new[] { "First Sender", "Updated Sender" })
+        {
+            config.Publish(config.Capture() with { NotificationSettings = new NotificationSettings { EmailDisplayName = name } });
+
+            Assert.True(await processor.ProcessNextAsync("worker-1", ct));
+            Assert.Equal(name, dispatcher.SenderNames[^1]);
+            Assert.Contains(name, dispatcher.SentMessages[^1].Body);
+        }
+
+        Assert.Equal(2, store.ClaimCount);
+    }
+
     [Fact]
     public async Task ProcessNextAsync_WhenNoMessage_ReturnsFalse()
     {
@@ -182,7 +215,9 @@ public class EmailOutboxMessageProcessorTests
 
     private static EmailOutboxMessageProcessor CreateProcessor(
         FakeEmailOutboxStore store,
-        CapturingDispatcher dispatcher)
+        CapturingDispatcher dispatcher,
+        BlogConfig config = null,
+        IEmailHelper testEmailHelper = null)
     {
         var emailHelper = new Mock<IEmailHelper>();
         var emailBuilder = new Mock<IEmailBuilder>();
@@ -204,11 +239,15 @@ public class EmailOutboxMessageProcessorTests
 
         return new EmailOutboxMessageProcessor(
             store,
-            new MessageBuilder(emailHelper.Object),
+            new MessageBuilder(testEmailHelper ?? emailHelper.Object),
             new EmailSettings
             {
                 SmtpSettings = new SmtpSettings("localhost", string.Empty, string.Empty, 25)
             },
+            config ?? new BlogConfig(new BlogSettingsSnapshot
+            {
+                NotificationSettings = new NotificationSettings { EmailDisplayName = "Blog Sender" }
+            }),
             dispatcher,
             Options.Create(new EmailOutboxWorkerOptions
             {
@@ -248,6 +287,7 @@ public class EmailOutboxMessageProcessorTests
         public bool Completed { get; private set; }
         public bool Failed { get; private set; }
         public bool DeadLettered { get; private set; }
+        public int ClaimCount { get; private set; }
         public Guid CompletedMessageId { get; private set; }
         public EmailOutboxFailure Failure { get; private set; }
         public EmailOutboxFailure DeadLetterFailure { get; private set; }
@@ -258,8 +298,11 @@ public class EmailOutboxMessageProcessorTests
 
         public Task<EmailOutboxMessage> ClaimNextAsync(
             EmailOutboxClaimRequest request,
-            CancellationToken cancellationToken = default) =>
-            Task.FromResult(Message);
+            CancellationToken cancellationToken = default)
+        {
+            ClaimCount++;
+            return Task.FromResult(Message);
+        }
 
         public Task CompleteAsync(Guid messageId, DateTime completedTimeUtc, CancellationToken cancellationToken = default)
         {
@@ -290,11 +333,13 @@ public class EmailOutboxMessageProcessorTests
     private sealed class CapturingDispatcher : IEmailDispatcher
     {
         public List<CommonMailMessage> SentMessages { get; } = [];
+        public List<string> SenderNames { get; } = [];
         public Func<CommonMailMessage, Exception> ExceptionFactory { get; set; }
 
-        public Task SendAsync(CommonMailMessage message)
+        public Task SendAsync(CommonMailMessage message, EmailSettings settings)
         {
             SentMessages.Add(message);
+            SenderNames.Add(settings.EmailDisplayName);
             var exception = ExceptionFactory?.Invoke(message);
             if (exception != null)
             {

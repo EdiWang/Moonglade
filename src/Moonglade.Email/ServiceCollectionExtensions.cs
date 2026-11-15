@@ -5,7 +5,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
-using Moonglade.Configuration;
 using Moonglade.Email.Core;
 using System.Xml.Serialization;
 
@@ -41,30 +40,17 @@ public static class ServiceCollectionExtensions
         services.AddSingleton(sp =>
         {
             var opts = sp.GetRequiredService<IOptions<EmailServiceOptions>>().Value;
-            var snapshot = sp.GetRequiredService<IBlogConfig>().Capture();
             var smtpSettings = new SmtpSettings(opts.SmtpServer, opts.SmtpUserName, opts.SmtpPassword, opts.SmtpPort)
             {
                 SocketOptions = opts.SmtpPort == 465 ? SecureSocketOptions.SslOnConnect :
                     opts.EnableSsl ? SecureSocketOptions.StartTls : SecureSocketOptions.Auto
             };
-            var settings = new EmailSettings
+            return new EmailSettings
             {
                 FromAddress = opts.EffectiveSmtpSenderAddress,
                 SenderAddress = opts.EffectiveSmtpSenderAddress,
                 SmtpSettings = smtpSettings
             };
-            var senderDisplayName = snapshot.NotificationSettings.EmailDisplayName;
-            if (string.IsNullOrWhiteSpace(senderDisplayName))
-            {
-                senderDisplayName = opts.SenderDisplayName;
-            }
-
-            if (!string.IsNullOrWhiteSpace(senderDisplayName))
-            {
-                settings.EmailDisplayName = senderDisplayName;
-            }
-
-            return settings;
         });
 
         services.AddSingleton<MessageBuilder>();

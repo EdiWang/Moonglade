@@ -15,9 +15,6 @@
   <data name="* Image width and height must be equal" xml:space="preserve">
     <value>* La largeur et la hauteur de l'image doivent être identiques</value>
   </data>
-  <data name="* Requires restarting application" xml:space="preserve">
-    <value>* Nécessite le redémarrage de l'application</value>
-  </data>
   <data name="* Username: moonglade" xml:space="preserve">
     <value>* Nom d'utilisateur : moonglade</value>
   </data>

@@ -81,7 +81,7 @@ The **Head JavaScript** and **Foot JavaScript** dialogs include **Clear** to emp
 | FOAF and sitemap switches | On subsequent requests. Disabled endpoints return HTTP 404. |
 | Watermark and original-image retention | On future uploads. |
 | Notification switches | On future enqueue decisions. Queued email retains its recipient and content. |
-| Notification sender display name | After an application restart. |
+| Notification sender display name | On subsequent delivery attempts, including for queued email. |
 | Scheduled publishing | Saving wakes the worker. Publication already dispatched runs to completion. |
 
 Runtime settings and cache invalidation are local to each process. Coordinate separately across replicas.
@@ -136,7 +136,7 @@ When using OIDC with a CSP `form-action` directive, allow the provider's authori
 
 ### Email Notifications
 
-Configure SMTP through the `Email` section, restart, then enable notifications and send a test email at `/admin/settings/notification`.
+Configure SMTP through the `Email` section and restart. At `/admin/settings/notification`, set the sender display name, enable notifications, and send a test email. Saving the display name takes effect without a restart. If the display name is blank, test email returns an error and queued mail waits until a name is saved.
 
 | Option | Purpose |
 | --- | --- |
@@ -144,7 +144,6 @@ Configure SMTP through the `Email` section, restart, then enable notifications a
 | `SmtpServer`, `SmtpPort` | SMTP endpoint. Port 465 uses implicit TLS. On other ports, `EnableSsl=true` requires STARTTLS and `false` uses STARTTLS when offered and otherwise allows an unencrypted connection. |
 | `SmtpUserName`, `SmtpPassword` | SMTP credentials. Supply the password through deployment secrets, for example `Email__SmtpPassword`. |
 | `SmtpSenderAddress` | Bare email address used in the sender headers and SMTP envelope. Blank values use `SmtpUserName`. |
-| `SenderDisplayName` | Deployment fallback for a blank sender name in Notification settings. |
 
 When email is disabled, incomplete, or invalid, Moonglade continues serving the site. New notifications and test sends are unavailable, and pending mail remains in the database outbox. Delivery resumes after valid configuration and a restart. Delivery is at least once and can duplicate a notification after interruption.
 

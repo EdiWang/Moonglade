@@ -23,7 +23,6 @@ public sealed record NotificationSettings : IBlogSettings<NotificationSettings>
     {
         EnableEmailSending = false,
         SendEmailOnCommentReply = false,
-        SendEmailOnNewComment = false,
-        EmailDisplayName = "Moonglade"
+        SendEmailOnNewComment = false
     };
 }

@@ -60,6 +60,14 @@ public class SettingsController(
                 title: "Email notifications are disabled.");
         }
 
+        if (string.IsNullOrWhiteSpace(settings.NotificationSettings.EmailDisplayName))
+        {
+            return Problem(
+                detail: "Set a sender display name in Notification settings before sending a test email.",
+                statusCode: StatusCodes.Status409Conflict,
+                title: "Sender display name is not configured.");
+        }
+
         try
         {
             var owner = await ownerProfiles.ReadProfileAsync(HttpContext.RequestAborted);

@@ -1,8 +1,8 @@
 using Edi.TemplateEmail;
+using Edi.TemplateEmail.Smtp;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using MimeKit;
-using Moonglade.Configuration;
 using Moonglade.Email.Core;
 using System.Net;
 using System.Net.Sockets;
@@ -38,16 +38,11 @@ public class SmtpEmailSenderTests
         }).Build();
         var services = new ServiceCollection();
         services.AddLogging();
-        services.AddSingleton<IBlogConfig>(new BlogConfig(new BlogSettingsSnapshot
-        {
-            NotificationSettings = new NotificationSettings
-            {
-                EmailDisplayName = "Blog Sender"
-            }
-        }));
         services.AddMoongladeEmail(configuration);
         using var serviceProvider = services.BuildServiceProvider();
         var sender = serviceProvider.GetRequiredService<IEmailDispatcher>();
+        var settings = serviceProvider.GetRequiredService<EmailSettings>();
+        settings.EmailDisplayName = "Blog Sender";
         var message = new CommonMailMessage
         {
             Subject = "SMTP sender test",
@@ -58,7 +53,7 @@ public class SmtpEmailSenderTests
         };
 
         var serverTask = ReceiveMessageAsync(listener, timeout.Token);
-        await Task.WhenAll(sender.SendAsync(message).WaitAsync(timeout.Token), serverTask);
+        await Task.WhenAll(sender.SendAsync(message, settings).WaitAsync(timeout.Token), serverTask);
         var delivery = await serverTask;
         var effectiveAddress = string.IsNullOrWhiteSpace(senderAddress) ? userName : senderAddress;
         var from = Assert.Single(delivery.Message.From.Mailboxes);

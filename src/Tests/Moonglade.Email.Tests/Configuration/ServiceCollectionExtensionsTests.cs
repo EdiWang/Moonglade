@@ -52,30 +52,6 @@ public class ServiceCollectionExtensionsTests
                 descriptor.ImplementationType == typeof(EmailOutboxWorker));
     }
 
-    [Theory]
-    [InlineData("Blog Sender", "Blog Sender")]
-    [InlineData(null, "Deployment Sender")]
-    [InlineData("", "Deployment Sender")]
-    [InlineData("   ", "Deployment Sender")]
-    public void AddMoongladeEmail_EmailSettingsUsesBlogNameOrDeploymentFallback(string blogName, string expected)
-    {
-        var services = new ServiceCollection();
-        services.AddSingleton<IBlogConfig>(new BlogConfig(new BlogSettingsSnapshot
-        {
-            NotificationSettings = new NotificationSettings
-            {
-                EmailDisplayName = blogName
-            }
-        }));
-        services.AddLogging();
-        services.AddMoongladeEmail(CreateConfiguration(new KeyValuePair<string, string>("Email:SenderDisplayName", "Deployment Sender")));
-        using var serviceProvider = services.BuildServiceProvider();
-
-        var settings = serviceProvider.GetRequiredService<EmailSettings>();
-
-        Assert.Equal(expected, settings.EmailDisplayName);
-    }
-
     [Fact]
     public void AddMoongladeEmail_EmailHelperCanLoadReadOnlyMailConfiguration()
     {
@@ -102,30 +78,6 @@ public class ServiceCollectionExtensionsTests
         {
             fileInfo.Attributes = originalAttributes;
         }
-    }
-
-    [Fact]
-    public void SenderDisplayName_ChangesOnlyWhenEmailServicesAreRecreated()
-    {
-        var config = new BlogConfig(new BlogSettingsSnapshot { NotificationSettings = new NotificationSettings { EmailDisplayName = "Before" } });
-        ServiceProvider BuildProvider()
-        {
-            var services = new ServiceCollection();
-            services.AddSingleton<IBlogConfig>(config);
-            services.AddLogging();
-            services.AddMoongladeEmail(CreateConfiguration());
-            return services.BuildServiceProvider();
-        }
-        using var running = BuildProvider();
-        var original = running.GetRequiredService<EmailSettings>();
-        Assert.Equal("Before", original.EmailDisplayName);
-
-        config.Publish(config.Capture() with { NotificationSettings = new NotificationSettings { EmailDisplayName = "After" } });
-
-        Assert.Same(original, running.GetRequiredService<EmailSettings>());
-        Assert.Equal("Before", original.EmailDisplayName);
-        using var restarted = BuildProvider();
-        Assert.Equal("After", restarted.GetRequiredService<EmailSettings>().EmailDisplayName);
     }
 
     [Fact]

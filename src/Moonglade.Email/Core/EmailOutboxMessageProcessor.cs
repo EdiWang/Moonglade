@@ -2,6 +2,7 @@ using Edi.TemplateEmail;
 using Edi.TemplateEmail.Smtp;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Moonglade.Configuration;
 using System.Text.Json;
 
 namespace Moonglade.Email.Core;
@@ -9,7 +10,8 @@ namespace Moonglade.Email.Core;
 public class EmailOutboxMessageProcessor(
     IEmailOutboxStore outboxStore,
     MessageBuilder messageBuilder,
-    EmailSettings emailSettings,
+    EmailSettings smtpSettings,
+    IBlogConfig blogConfig,
     IEmailDispatcher dispatcher,
     IOptions<EmailOutboxWorkerOptions> options,
     TimeProvider timeProvider,
@@ -18,6 +20,12 @@ public class EmailOutboxMessageProcessor(
     public async Task<bool> ProcessNextAsync(string workerId, CancellationToken cancellationToken = default)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(workerId);
+
+        var senderDisplayName = blogConfig.Capture().NotificationSettings.EmailDisplayName;
+        if (string.IsNullOrWhiteSpace(senderDisplayName))
+        {
+            return false;
+        }
 
         var utcNow = timeProvider.GetUtcNow().UtcDateTime;
         var message = await outboxStore.ClaimNextAsync(
@@ -29,12 +37,20 @@ public class EmailOutboxMessageProcessor(
             return false;
         }
 
-        await ProcessClaimedMessageAsync(message, utcNow, cancellationToken);
+        var emailSettings = new EmailSettings
+        {
+            FromAddress = smtpSettings.FromAddress,
+            SenderAddress = smtpSettings.SenderAddress,
+            SmtpSettings = smtpSettings.SmtpSettings,
+            EmailDisplayName = senderDisplayName
+        };
+        await ProcessClaimedMessageAsync(message, emailSettings, utcNow, cancellationToken);
         return true;
     }
 
     private async Task ProcessClaimedMessageAsync(
         EmailOutboxMessage message,
+        EmailSettings emailSettings,
         DateTime utcNow,
         CancellationToken cancellationToken)
     {
@@ -48,7 +64,7 @@ public class EmailOutboxMessageProcessor(
         }
 
         var recipients = EmailNotificationContract.ParseDistributionList(message.DistributionList);
-        var failures = await SendToRecipientsAsync(message, recipients, cancellationToken);
+        var failures = await SendToRecipientsAsync(message, recipients, emailSettings, cancellationToken);
 
         if (failures.Count == 0)
         {
@@ -96,6 +112,7 @@ public class EmailOutboxMessageProcessor(
     private async Task<IReadOnlyList<EmailDeliveryFailure>> SendToRecipientsAsync(
         EmailOutboxMessage message,
         string[] recipients,
+        EmailSettings emailSettings,
         CancellationToken cancellationToken)
     {
         var failures = new List<EmailDeliveryFailure>();
@@ -106,8 +123,8 @@ public class EmailOutboxMessageProcessor(
 
             try
             {
-                var emailMessage = BuildMessage(message, [recipient]);
-                await dispatcher.SendAsync(emailMessage);
+                var emailMessage = BuildMessage(message, [recipient], emailSettings);
+                await dispatcher.SendAsync(emailMessage, emailSettings);
             }
             catch (Exception ex) when (ex is not OperationCanceledException)
             {
@@ -130,7 +147,7 @@ public class EmailOutboxMessageProcessor(
         return failures;
     }
 
-    private CommonMailMessage BuildMessage(EmailOutboxMessage message, string[] recipients)
+    private CommonMailMessage BuildMessage(EmailOutboxMessage message, string[] recipients, EmailSettings emailSettings)
     {
         return message.MessageType switch
         {

@@ -66,71 +66,47 @@
                         </div>
                     }
 
-                    <div class="admin-settings-expander">
-                        <div class="settings-entry admin-settings-expander-header admin-settings-heading-only">
+                    <h4 class="admin-subtitle fw-bold">@SharedLocalizer["Email Options"]</h4>
+
+                    <div class="admin-settings-group">
+                        <div class="settings-entry row align-items-center">
                             <div class="col-auto">
-                                <i class="bi-envelope settings-entry-icon" aria-hidden="true"></i>
+                                <i class="bi-send settings-entry-icon"></i>
                             </div>
-                            <div class="col fw-semibold">@SharedLocalizer["Email Options"]</div>
-                            <button type="button" class="admin-settings-expander-toggle" data-bs-toggle="collapse" data-bs-target="#settings-email-options" aria-controls="settings-email-options" aria-expanded="@(pageState.EmailEnabled ? "true" : "false")" aria-label="@SharedLocalizer["Email Options"]">
-                                <i class="bi bi-chevron-down" aria-hidden="true"></i>
-                            </button>
+                            <div class="col">
+                                @SharedLocalizer["Sender Address"]
+                            </div>
+                            <div class="col-6 text-body-secondary text-break">
+                                @(string.IsNullOrWhiteSpace(pageState.SenderAddress) ? SharedLocalizer["Not configured"] : pageState.SenderAddress)
+                            </div>
                         </div>
-                        <div id="settings-email-options" class="collapse @(pageState.EmailEnabled ? "show" : null)">
-                            <div class="admin-settings-expander-body">
-                                <div class="settings-entry row align-items-center">
-                                    <div class="col-auto">
-                                        <i class="bi-send settings-entry-icon"></i>
-                                    </div>
-                                    <div class="col">
-                                        @SharedLocalizer["Sender Address"]
-                                    </div>
-                                    <div class="col-6 text-body-secondary text-break">
-                                        @(string.IsNullOrWhiteSpace(pageState.SenderAddress) ? SharedLocalizer["Not configured"] : pageState.SenderAddress)
-                                    </div>
-                                </div>
 
-                                <div class="settings-entry row align-items-center">
-                                    <div class="col-auto">
-                                        <i class="bi-inboxes settings-entry-icon"></i>
-                                    </div>
-                                    <div class="col">
-                                        @SharedLocalizer["Email Notifications"]
-                                    </div>
-                                    <div class="col-6 text-body-secondary">
-                                        @(pageState.EmailEnabled ? SharedLocalizer["Enabled"] : SharedLocalizer["Disabled"])
-                                    </div>
-                                </div>
+                        <div class="settings-entry row align-items-center">
+                            <div class="col-auto">
+                                <i class="bi-inboxes settings-entry-icon"></i>
+                            </div>
+                            <div class="col">
+                                @SharedLocalizer["Email Notifications"]
+                            </div>
+                            <div class="col-6 text-body-secondary">
+                                @(pageState.EmailEnabled ? SharedLocalizer["Enabled"] : SharedLocalizer["Disabled"])
+                            </div>
+                        </div>
 
-                                <div class="settings-entry row align-items-center">
-                                    <div class="col-auto">
-                                        <i class="bi-pen settings-entry-icon"></i>
-                                    </div>
-                                    <div class="col">
-                                        <label asp-for="@settings.EmailDisplayName"></label>
-                                        <div class="form-text">@SharedLocalizer["* Requires restarting application"]</div>
-                                    </div>
-                                    <div class="col-6">
-                                        <input asp-for="@settings.EmailDisplayName" data-setting-edit="" class="form-control" maxlength="64" />
-                                    </div>
-                                </div>
-
-                                <div class="settings-entry row align-items-center">
-                                    <div class="col-auto">
-                                        <i class="bi-envelope settings-entry-icon"></i>
-                                    </div>
-                                    <div class="col">
-                                        @SharedLocalizer["Send Test Email"]
-                                    </div>
-                                    <div class="col-5 text-end">
-                                        <button type="button"
-                                                id="a-send-test-mail"
-                                                class="btn btn-sm btn-outline-accent"
-                                                disabled="@(!pageState.CanSendTestEmail)">
-                                            @SharedLocalizer["Send"]
-                                        </button>
-                                    </div>
-                                </div>
+                        <div class="settings-entry row align-items-center">
+                            <div class="col-auto">
+                                <i class="bi-envelope settings-entry-icon"></i>
+                            </div>
+                            <div class="col">
+                                @SharedLocalizer["Send Test Email"]
+                            </div>
+                            <div class="col-5 text-end">
+                                <button type="button"
+                                        id="a-send-test-mail"
+                                        class="btn btn-sm btn-outline-accent"
+                                        disabled="@(!pageState.CanSendTestEmail)">
+                                    @SharedLocalizer["Send"]
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -151,7 +127,7 @@
                             <div class="col-5 text-end">
                                 <div class="form-check form-switch form-control-lg">
                                     <input type="hidden" name="EnableEmailSending" value="false">
-                                    <input type="checkbox" id="@Html.IdFor(m => settings.EnableEmailSending)" name="EnableEmailSending" value="true" class="form-check-input" @(settings.EnableEmailSending ? "checked" : null)>
+                                    <input type="checkbox" id="@Html.IdFor(m => settings.EnableEmailSending)" name="EnableEmailSending" value="true" class="form-check-input" data-setting-requires="EmailDisplayName" @(settings.EnableEmailSending ? "checked" : null)>
                                 </div>
                             </div>
                             <button type="button" class="admin-settings-expander-toggle" data-bs-toggle="collapse" data-bs-target="#settings-notification-options" aria-controls="settings-notification-options" aria-expanded="@(settings.EnableEmailSending ? "true" : "false")" aria-label="@SharedLocalizer["Notification Options"]">
@@ -160,7 +136,19 @@
                         </div>
 
                         <div id="settings-notification-options" class="collapse @(settings.EnableEmailSending ? "show" : null)">
-                            <div class="admin-settings-expander-body">
+                            <fieldset id="settings-notification-fields" class="admin-settings-expander-body" disabled="@(!settings.EnableEmailSending)">
+                                <div class="settings-entry row align-items-center">
+                                    <div class="col-auto">
+                                        <i class="bi-pen settings-entry-icon"></i>
+                                    </div>
+                                    <div class="col">
+                                        <label asp-for="@settings.EmailDisplayName"></label>
+                                    </div>
+                                    <div class="col-6">
+                                        <input asp-for="@settings.EmailDisplayName" data-setting-edit="" class="form-control" maxlength="64" pattern=".*\S.*" required />
+                                    </div>
+                                </div>
+
                                 <div class="settings-entry row align-items-center">
                                     <div class="col-auto">
                                         <i class="bi-chat-left settings-entry-icon"></i>
@@ -188,10 +176,10 @@
                                             <input type="hidden" name="SendEmailOnCommentReply" value="false">
                                             <input type="checkbox" id="@Html.IdFor(m => settings.SendEmailOnCommentReply)" name="SendEmailOnCommentReply" value="true" class="form-check-input" @(settings.SendEmailOnCommentReply ? "checked" : null)>
                                         </div>
-                                            </div>
-                                        </div>
+                                    </div>
                                 </div>
-                            </div>
+                            </fieldset>
+                        </div>
                     </div>
                 </div>
             </div>

@@ -120,9 +120,6 @@
   <data name="* Image width and height must be equal" xml:space="preserve">
     <value>* 图片宽度和高度必须相同</value>
   </data>
-  <data name="* Requires restarting application" xml:space="preserve">
-    <value>* 需要重启应用程序生效</value>
-  </data>
   <data name="* Username: moonglade" xml:space="preserve">
     <value>* 用户名: moonglade</value>
   </data>
