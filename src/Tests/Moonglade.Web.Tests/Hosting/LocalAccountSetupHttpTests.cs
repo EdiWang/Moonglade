@@ -10,6 +10,42 @@ namespace Moonglade.Web.Tests.Hosting;
 
 public class LocalAccountSetupHttpTests
 {
+    [Fact]
+    public async Task SetupGate_ObservesCommittedSetupAndDoesNotReadDatabaseAgain()
+    {
+        var ct = TestContext.Current.CancellationToken;
+        await using var fixture = await LocalAccountHttpFixture.CreateAsync();
+        using var blocked = await fixture.SendAsync(HttpMethod.Get, "/api/probe");
+        Assert.Equal(HttpStatusCode.ServiceUnavailable, blocked.StatusCode);
+
+        var setup = await fixture.Store.Accounts.PrepareLocalSetupAsync("owner@example.test", "SyntheticPassword123!", ct);
+        await fixture.Store.Accounts.CompleteLocalSetupAsync(setup, null, ct);
+        using var first = await fixture.SendAsync(HttpMethod.Get, "/api/probe");
+        Assert.Equal(HttpStatusCode.OK, first.StatusCode);
+
+        // Closing this connection drops the test database, so another gate query would fail.
+        await fixture.Store.Db.Database.GetDbConnection().CloseAsync();
+        using var next = await fixture.SendAsync(HttpMethod.Get, "/api/probe");
+        Assert.Equal(HttpStatusCode.OK, next.StatusCode);
+        Assert.Equal(2, fixture.BusinessExecutions);
+    }
+
+    [Fact]
+    public async Task SetupGate_DoesNotShareCompletionBetweenApplications()
+    {
+        var ct = TestContext.Current.CancellationToken;
+        await using var initialized = await LocalAccountHttpFixture.CreateAsync();
+        var setup = await initialized.Store.Accounts.PrepareLocalSetupAsync("owner@example.test", "SyntheticPassword123!", ct);
+        await initialized.Store.Accounts.CompleteLocalSetupAsync(setup, null, ct);
+        using var open = await initialized.SendAsync(HttpMethod.Get, "/api/probe");
+        Assert.Equal(HttpStatusCode.OK, open.StatusCode);
+
+        await using var pending = await LocalAccountHttpFixture.CreateAsync();
+        using var blocked = await pending.SendAsync(HttpMethod.Get, "/api/probe");
+        Assert.Equal(HttpStatusCode.ServiceUnavailable, blocked.StatusCode);
+        Assert.Equal(0, pending.BusinessExecutions);
+    }
+
     [Theory]
     [InlineData("", "/")]
     [InlineData("/blog", "/")]

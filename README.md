@@ -65,6 +65,8 @@ Restrict access to the site until the owner completes setup. Any visitor who can
 
 Until setup completes, browser page reads redirect to setup and business APIs, feeds, and protocol endpoints return HTTP 503. Setup assets and health endpoints remain available.
 
+Each running host remembers when it confirms owner setup is complete. Stop all Moonglade hosts before restoring or replacing the database so setup status is checked against the restored or replacement database on restart.
+
 ## Configuration
 
 Host options use [appsettings.json](src/Moonglade.Web/appsettings.json) and standard environment overrides (`:` becomes `__`). Manage persisted blog preferences at `/admin/settings` and the owner profile and credentials at `/admin/account`.
