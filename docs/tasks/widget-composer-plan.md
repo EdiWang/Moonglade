@@ -4,21 +4,21 @@ Last updated: 2026-11-20 (Asia/Taipei).
 
 ## 1. Current checkpoint and authority
 
-- Phase: B1 verification complete and ready for user acceptance; B0 accepted on 2026-11-20 (Asia/Taipei).
-- Application feature implementation: NOT STARTED. B1 is limited to baseline checks, contracts, synthetic fixtures, characterization tests, and task tracking; B2-B6 have not started.
-- Plan status: B0 accepted; B1 ready for user acceptance. B2-B6 require separate execution authorization.
+- Phase: B2 in progress; B0 and B1 accepted on 2026-11-20 (Asia/Taipei).
+- Application feature implementation: B2 region/order storage, paired upgrades, title limit, public placement, and necessary current-page bindings are authorized. B3-B6 have not started.
+- Plan status: B0/B1 accepted; B2 execution authorized. B3-B6 require separate execution authorization.
 - Baseline branch: `master`.
 - Baseline HEAD: `3169a59557b7acd519c612b9ea1bc543908c68b2` (`Show activity log details in a reading pane`).
 - Planning baseline commit: `1e91dea838e593bf73e6799310d7b72c0855260e`.
-- Execution authorization: B1 granted; B2-B6 pending.
-- Next action: obtain B1 user acceptance of the contracts, baseline results, and fixtures; do not start B2 without explicit authorization.
+- Execution authorization: B2 granted; B3-B6 pending.
+- Next action: complete B2 provider migration and application verification, then obtain B2 user acceptance.
 
 This file contains the current requirements, implementation context, delivery gates, progress, and verification results. Update it in place after every batch or material change. Keep only the latest state: no questions and answers, discussion history, superseded proposals, or chronological work logs. Retain each batch's current outcome, implementation SHA, acceptance status, and unresolved limitations so work can resume without prior conversation context.
 
 ### Execution rules
 
 - Work in batches that can each be implemented, tested, committed, and accepted.
-- Current authorization covers B1 baseline checks, contract/fixture documentation, useful characterization tests, and batch commits. Do not implement B2-B6 features.
+- Current authorization covers B2 and its verification/documentation/commits. Do not implement B3-B6 features.
 - Ask the user whenever an unresolved issue materially affects requirements, business behavior, architecture, ownership, or public contracts. Explain alternatives and recommend one; do not choose on the user's behalf.
 - Continue independent research or documentation while awaiting an answer. Do not implement dependent work until the answer arrives.
 - Implementation requires explicit authorization separate from plan review.
@@ -170,8 +170,8 @@ Local implementation commits within an explicitly authorized batch are part of t
 | Batch | Scope | Implementation | Verification | Implementation SHA | User acceptance |
 | --- | --- | --- | --- | --- | --- |
 | B0 | Plan and requirements | Accepted | Source/path/requirements/format/diff checks passed | `c7ebf2bb16e6040ef5f1fc22af0701371266bcf7` | Accepted 2026-11-20 |
-| B1 | Baseline, concrete contracts, acceptance fixtures | Ready for user acceptance | Web build; 825 Web tests; 58 Node tests; both provider/browser baselines passed | `5c0dc4eb08d583872187f9058233e2a05c3d4cad` | Pending |
-| B2 | Region/order model and both database upgrades | Not started | Not run | None | Pending |
+| B1 | Baseline, concrete contracts, acceptance fixtures | Accepted | Web build; 825 Web tests; 58 Node tests; both provider/browser baselines passed | `5c0dc4eb08d583872187f9058233e2a05c3d4cad` | Accepted 2026-11-20 |
+| B2 | Region/order model and both database upgrades | In progress | Not run | None | Pending |
 | B3 | Atomic whole-collection save | Not started | Not run | None | Pending |
 | B4 | Composer and inline draft editing | Not started | Not run | None | Pending |
 | B5 | Real preview and complete arrangement controls | Not started | Not run | None | Pending |
@@ -346,12 +346,12 @@ Next permitted action:
 - Temporary fixtures and cleanup: none.
 - User acceptance: accepted on 2026-11-20.
 - Open B0 blockers: none.
-- Next action: B1 is ready for user acceptance.
+- Next action: B2 is authorized and in progress.
 
 ### B1 - Current verification status
 
-- Status: ready for user acceptance; baseline, contracts, fixtures, characterization tests, and verification complete.
-- Execution authorization: B1 granted; B2-B6 pending. Branch: `codex/widget-composer-b1`.
+- Status: accepted on 2026-11-20; baseline, contracts, fixtures, characterization tests, and verification complete.
+- Execution authorization: B2 granted; B3-B6 pending. Branch: `codex/widget-composer-b1`.
 - Deliverables: `docs/tasks/widget-composer-b1.md`, `docs/tasks/widget-composer-fixtures.json`, real widget lifecycle/validation characterization, and actual renderer URL/text security tests.
 - Commands/results: `dotnet build src/Moonglade.Web/Moonglade.Web.csproj` passed with zero warnings/errors; `dotnet test --project src/Tests/Moonglade.Web.Tests/Moonglade.Web.Tests.csproj` passed 825/825; `node --test src\Tests\Moonglade.Web.Tests\JavaScript\*.mjs` passed 58/58.
 - Providers: PostgreSQL 18.7 and SQL Server 16.0.4325.4; task-only fresh and legacy databases on each provider. Fresh seeds: one widget and 11 configuration groups. Legacy: 18 widgets, one disabled, 11 before Profile; UTC metadata verified.
@@ -361,8 +361,8 @@ Next permitted action:
 - Evidence: current results and durable local paths are listed in `docs/tasks/widget-composer-b1.md`. The committed contracts/JSON/tests support reproduction without those local files.
 - Local artifacts: fixture hosts stopped; task-owned PostgreSQL/SQL Server containers and their volumes removed; ports 15432/15433/18081/18082 have no listeners. Durable logs/screenshots and stopped external `b1/tools`/`b1/runtime` directories are retained as authorized local reproduction materials. No temporary fixture host or migration harness is committed.
 - Implementation commit SHA: `5c0dc4eb08d583872187f9058233e2a05c3d4cad`.
-- User acceptance: pending.
-- Next action: obtain B1 user acceptance of the contracts, baseline results, and fixtures; await explicit B2 authorization.
+- User acceptance: accepted on 2026-11-20.
+- Next action: B2 is authorized and in progress.
 
 ## 8. Resume from a fresh conversation
 

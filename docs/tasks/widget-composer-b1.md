@@ -1,6 +1,6 @@
 # Widget Composer B1 Contracts and Baseline
 
-Status: ready for B1 user acceptance. Application features and schema changes are not implemented.
+Status: accepted on 2026-11-20 (Asia/Taipei). Contracts are approved; implementation and verification progress is tracked in the delivery plan.
 
 This file specifies the current implementation target and verified baseline. Maintain it in place with the [delivery plan](widget-composer-plan.md); do not append discussion transcripts or superseded proposals. [Synthetic fixtures](widget-composer-fixtures.json) contain no real blog content or credentials.
 
@@ -159,4 +159,4 @@ Durable local evidence root: `C:/Users/Edi/Documents/Codex/Moonglade-Widgets-Des
 - `postgresql-editor-1440.jpg`: current editor and baseline visibility issue.
 - `postgresql-widgets-1920.jpg`, `sqlserver-widgets-1920.jpg`, `sqlserver-widgets-1440.jpg`: provider/viewport baselines.
 
-These local evidence paths are supplementary. The committed contract, synthetic JSON, and characterization tests are sufficient to recreate the scenarios on another machine. The fixture hosts are stopped and the database containers/volumes removed. The stopped local tools/runtime directories are retained as authorized reproduction materials. Cleanup status and the B1 implementation SHA are recorded in the delivery plan. B1 user acceptance is pending; B2 is not authorized.
+These local evidence paths are supplementary. The committed contract, synthetic JSON, and characterization tests are sufficient to recreate the scenarios on another machine. The fixture hosts are stopped and the database containers/volumes removed. The stopped local tools/runtime directories are retained as authorized reproduction materials. Cleanup status and the B1 implementation SHA are recorded in the delivery plan. B1 is accepted; B2 implementation is authorized and tracked in the delivery plan.
