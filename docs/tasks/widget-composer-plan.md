@@ -171,7 +171,7 @@ Local implementation commits within an explicitly authorized batch are part of t
 | --- | --- | --- | --- | --- | --- |
 | B0 | Plan and requirements | Accepted | Source/path/requirements/format/diff checks passed | `c7ebf2bb16e6040ef5f1fc22af0701371266bcf7` | Accepted 2026-11-20 |
 | B1 | Baseline, concrete contracts, acceptance fixtures | Accepted | Web build; 825 Web tests; 58 Node tests; both provider/browser baselines passed | `5c0dc4eb08d583872187f9058233e2a05c3d4cad` | Accepted 2026-11-20 |
-| B2 | Region/order model and both database upgrades | Ready for user acceptance | Web build; 836 Web, 79 Setup, 62 Node tests; both native provider fresh/upgrade/rerun and browser checks passed | Pending implementation commit | Pending |
+| B2 | Region/order model and both database upgrades | Ready for user acceptance | Web build; 836 Web, 79 Setup, 62 Node tests; both native provider fresh/upgrade/rerun and browser checks passed | `823a46328fa80f83f211bd89cea5b26ce462b1a1` | Pending |
 | B3 | Atomic whole-collection save | Not started | Not run | None | Pending |
 | B4 | Composer and inline draft editing | Not started | Not run | None | Pending |
 | B5 | Real preview and complete arrangement controls | Not started | Not run | None | Pending |
@@ -376,7 +376,7 @@ Next permitted action:
 - Browser: ChatGPT in-app browser, 1440x900/1920x1080; both providers across upgraded/fresh schemas. Save/reload, order 1000, title 128, public anchor placement, disabled filtering, and all five localized placement selectors passed. No application console errors. Browser version was not captured.
 - Evidence and limits: `docs/tasks/widget-composer-b2.md`; durable local logs/screenshots under `C:/Users/Edi/Documents/Codex/Moonglade-Widgets-Design/b2/`. Full themes/settings, TOTP, collection concurrency, and integrated composer acceptance remain later batches. The existing Button Link editor overlap remains assigned to B4.
 - Cleanup: all B2 hosts stopped; task containers and volumes removed; B2 migration tools, hosts, runtime directories, and launcher scripts removed. Logs/screenshots retained. B1 reproduction tools remain as authorized. Generated private development-configuration copies in B1/B2 build outputs were removed; the repository source override was not read or modified.
-- Implementation commit SHA: pending implementation commit.
+- Implementation commit SHA: `823a46328fa80f83f211bd89cea5b26ce462b1a1`.
 - User acceptance: pending.
 - Remaining risks: schema 12 and matching application must be upgraded together with stopped hosts and a backup; reverting the binary alone cannot restore the old schema. Native tests used synthetic representative data; rehearse on an operator-restored real backup before an actual upgrade.
 - Next permitted action: obtain B2 user acceptance. Do not begin B3 without authorization.
