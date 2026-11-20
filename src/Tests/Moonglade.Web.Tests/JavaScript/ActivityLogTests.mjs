@@ -46,6 +46,7 @@ test('activityLogManager clear confirmation flow', async t => {
         manager.selectedEventKeys = ['activity-log.cleared'];
         manager.isLoading = false;
         manager.$nextTick = callback => callback();
+        manager.$refs = { detailBody: { scrollTop: 200 }, logTable: { scrollTop: 200 } };
         return { manager, events, originalLogs: manager.logs };
     };
 
@@ -237,21 +238,21 @@ test('activityLogManager clear confirmation flow', async t => {
         assert.equal(events.filter(item => item === 'filter-hide').length, 2);
     });
 
-    await t.test('detail opens the offcanvas and restores focus when closed', async () => {
+    await t.test('selection loads structured details into the reading pane', async () => {
         const { manager, events } = createManager();
         const detail = { id: 42, eventKey: 'post.created', heading: 'Localized heading',
             targetId: 'snapshot-id', targetDisplayName: '<title>', ipAddress: '192.0.2.50', userAgent: '<agent>',
             fields: [{ key: 'PostStatus', label: 'Status', value: 'Published' }] };
-        manager.detailCanvas = { show: () => events.push('detail-show') };
-        manager.$refs = { detailCanvas: new EventTarget() };
         globalThis.b1Activity.fetch = async (url, method) => {
             assert.equal(url, '/api/activitylog/42/metadata');
             assert.equal(method, 'GET');
             assert.equal(manager.currentDetail, null);
             return detail;
         };
-        await manager.showDetail(42, { focus: () => events.push('detail-focus') });
-        manager.$refs.detailCanvas.dispatchEvent(new Event('hidden.bs.offcanvas'));
+        await manager.showDetail(42);
+        assert.equal(manager.selectedLogId, 42);
+        assert.equal(manager.isDetailLoading, false);
+        assert.equal(manager.$refs.detailBody.scrollTop, 0);
         assert.strictEqual(manager.currentDetail, detail);
         assert.equal(manager.currentDetail.heading, 'Localized heading');
         assert.equal(manager.hasDetailContext, true);
@@ -267,12 +268,11 @@ test('activityLogManager clear confirmation flow', async t => {
         assert.equal(manager.formatDetailValue(undefined, 'Slug'), '\u2014');
         assert.equal(manager.formatDetailValue(['<script>', 7, false, null], 'CommentIds'), '<script>, 7, no, \u2014');
         assert.equal(manager.formatDetailValue('<script>alert(1)</script>', 'Slug'), '<script>alert(1)</script>');
-        assert.deepEqual(events, ['detail-show', 'format', 'detail-focus']);
+        assert.deepEqual(events, ['format']);
     });
 
     await t.test('empty details remain a successful detail and context detection distinguishes each optional field', async () => {
         const { manager } = createManager();
-        manager.detailCanvas = { show() {} };
         globalThis.b1Activity.fetch = async () => ({ id: 44, heading: 'Post created', fields: [] });
         await manager.showDetail(44);
         assert.equal(manager.currentDetail.id, 44);
@@ -288,15 +288,60 @@ test('activityLogManager clear confirmation flow', async t => {
         assert.equal(manager.hasDetailContext, false);
     });
 
-    await t.test('failed detail drops stale values and reports error without opening modal', async () => {
+    await t.test('failed detail clears selection and stale values and reports error', async () => {
         const { manager, events } = createManager();
         const failure = new Error('Synthetic detail failed');
         manager.currentDetail = { id: 1, heading: 'Stale' };
-        manager.detailCanvas = { show: () => assert.fail('Failed detail must not open the offcanvas.') };
         globalThis.b1Activity.fetch = async () => { throw failure; };
         await manager.showDetail(55);
+        assert.equal(manager.selectedLogId, null);
+        assert.equal(manager.isDetailLoading, false);
         assert.equal(manager.currentDetail, null);
         assert.deepEqual(events, [['error', failure]]);
+    });
+
+    await t.test('rapid selection keeps the latest response and ignores stale successes and errors', async () => {
+        const { manager, events } = createManager();
+        const requests = [];
+        globalThis.b1Activity.fetch = () => new Promise((resolve, reject) => requests.push({ resolve, reject }));
+        const first = manager.showDetail(11);
+        const second = manager.showDetail(12);
+        const latest = manager.showDetail(11);
+        assert.equal(manager.selectedLogId, 11);
+        assert.equal(manager.isDetailLoading, true);
+        assert.equal(manager.currentDetail, null);
+
+        requests[0].resolve({ id: 11, heading: 'Stale first selection' });
+        await first;
+        assert.equal(manager.currentDetail, null);
+        assert.equal(manager.isDetailLoading, true);
+        requests[2].resolve({ id: 11, heading: 'Latest selection' });
+        await latest;
+        requests[1].reject(new Error('Stale failure'));
+        await second;
+        assert.equal(manager.currentDetail.heading, 'Latest selection');
+        assert.equal(manager.selectedLogId, 11);
+        assert.equal(manager.isDetailLoading, false);
+        assert.deepEqual(events, ['format']);
+    });
+
+    await t.test('list refresh clears selection and invalidates an in-flight detail request', async () => {
+        const { manager, events } = createManager();
+        let finishDetail;
+        globalThis.b1Activity.fetch = async url => {
+            if (url.endsWith('/metadata')) return new Promise(resolve => { finishDetail = resolve; });
+            return { items: [{ id: 99 }], totalItemCount: 1 };
+        };
+        const pending = manager.showDetail(11);
+        await manager.loadData();
+        finishDetail({ id: 11, heading: 'Previous page' });
+        await pending;
+        assert.equal(manager.selectedLogId, null);
+        assert.equal(manager.currentDetail, null);
+        assert.equal(manager.isDetailLoading, false);
+        assert.deepEqual(manager.logs, [{ id: 99 }]);
+        assert.equal(manager.$refs.logTable.scrollTop, 0);
+        assert.deepEqual(events, ['format']);
     });
 
     await t.test('B3 settings changes retain typed old and new values as plain text', async () => {
@@ -307,7 +352,6 @@ test('activityLogManager clear confirmation flow', async t => {
             { key: 'FeedItemCount', label: 'Feed items', oldValue: 0, newValue: 2147483647 },
             { key: 'SiteTitle', label: 'Nullable title', oldValue: null, newValue: '' }
         ];
-        manager.detailCanvas = { show: () => events.push('detail-show') };
         globalThis.b1Activity.fetch = async () => ({ id: 101, fields: [], changes });
 
         await manager.showDetail(101);
@@ -323,7 +367,7 @@ test('activityLogManager clear confirmation flow', async t => {
             ['0', '2147483647'],
             ['\u2014', '']
         ]);
-        assert.deepEqual(events, ['detail-show', 'format']);
+        assert.deepEqual(events, ['format']);
     });
 
     await t.test('empty changes are intentional while non-settings details have no change table', () => {

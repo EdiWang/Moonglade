@@ -2180,4 +2180,7 @@
   <data name="Use at least 8 characters, including an English letter and a number. Symbols are optional. Spaces and non-ASCII characters are not allowed." xml:space="preserve">
     <value>請使用最少 8 個字元，包含一個英文字母及一個數字。毋須使用符號。不允許空格及非 ASCII 字元。</value>
   </data>
+  <data name="Select an activity log to view details." xml:space="preserve">
+    <value>選取一筆活動記錄以查看詳細資料。</value>
+  </data>
 </root>

@@ -1,15 +1,71 @@
+.activity-log-layout {
+    display: grid;
+    height: 100%;
+    grid-template-columns: minmax(0, 1fr) minmax(22rem, 36%);
+    grid-template-rows: minmax(0, 1fr);
+    gap: 1rem;
+}
+
+.activity-log-list {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    min-height: 0;
+}
+
+.activity-log-list > .admin-panel {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-height: 0;
+}
+
+.activity-log-list .table-responsive {
+    min-height: 0;
+    overflow: auto;
+    overscroll-behavior: contain;
+}
+
 .admin-activity-table {
     table-layout: fixed;
+}
+
+.admin-activity-table thead {
+    position: sticky;
+    top: 0;
+    z-index: 1;
 }
 
 .activity-log-column-time {
     width: 14rem;
 }
 
-.activity-log-column-actor {
-    width: 16rem;
+.admin-activity-table time {
+    white-space: nowrap;
 }
 
-.activity-log-column-actions {
-    width: 6rem;
+.activity-log-column-actor {
+    width: 13rem;
+}
+
+.admin-activity-table tbody tr {
+    cursor: pointer;
+}
+
+.activity-log-select {
+    color: inherit;
+    font: inherit;
+    overflow-wrap: anywhere;
+}
+
+.activity-log-detail {
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+.activity-log-detail-body {
+    min-height: 0;
+    overflow-y: auto;
+    overscroll-behavior: contain;
 }

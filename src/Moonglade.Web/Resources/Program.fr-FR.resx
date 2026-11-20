@@ -2229,4 +2229,7 @@
   <data name="Use at least 8 characters, including an English letter and a number. Symbols are optional. Spaces and non-ASCII characters are not allowed." xml:space="preserve">
     <value>Utilisez au moins 8 caractères, dont une lettre de l’alphabet anglais et un chiffre. Les symboles sont facultatifs. Les espaces et les caractères non ASCII ne sont pas autorisés.</value>
   </data>
+  <data name="Select an activity log to view details." xml:space="preserve">
+    <value>Sélectionnez une entrée du journal d’activité pour afficher ses détails.</value>
+  </data>
 </root>

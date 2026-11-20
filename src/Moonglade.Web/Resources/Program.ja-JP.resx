@@ -2180,4 +2180,7 @@
   <data name="Use at least 8 characters, including an English letter and a number. Symbols are optional. Spaces and non-ASCII characters are not allowed." xml:space="preserve">
     <value>英字と数字をそれぞれ1文字以上含む、8文字以上のパスワードを使用してください。記号は任意です。空白とASCII以外の文字は使用できません。</value>
   </data>
+  <data name="Select an activity log to view details." xml:space="preserve">
+    <value>アクティビティログを選択すると詳細が表示されます。</value>
+  </data>
 </root>

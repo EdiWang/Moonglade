@@ -13,14 +13,15 @@ Alpine.data('activityLogManager', () => withPagination(10, {
     selectedEventKeys: [],
     startDate: '',
     endDate: '',
-    detailCanvas: null,
     filterCanvas: null,
     currentDetail: null,
+    selectedLogId: null,
+    isDetailLoading: false,
+    detailRequestId: 0,
 
     async init() {
         this.initPageFromUrl();
 
-        this.detailCanvas = new bootstrap.Offcanvas(this.$refs.detailCanvas);
         this.filterCanvas = createOffcanvas(this.$refs.filterCanvas);
 
         await this.loadEventTypes();
@@ -37,6 +38,10 @@ Alpine.data('activityLogManager', () => withPagination(10, {
 
     async loadData() {
         this.isLoading = true;
+        this.detailRequestId++;
+        this.selectedLogId = null;
+        this.currentDetail = null;
+        this.isDetailLoading = false;
         try {
             const params = new URLSearchParams({
                 pageIndex: this.currentPage,
@@ -62,6 +67,7 @@ Alpine.data('activityLogManager', () => withPagination(10, {
             this.totalRows = data.totalItemCount ?? 0;
 
             this.$nextTick(() => {
+                this.$refs.logTable.scrollTop = 0;
                 formatUtcTime();
             });
         } catch (err) {
@@ -111,17 +117,26 @@ Alpine.data('activityLogManager', () => withPagination(10, {
         });
     },
 
-    async showDetail(logId, trigger) {
+    async showDetail(logId) {
+        const requestId = ++this.detailRequestId;
+        this.selectedLogId = logId;
         this.currentDetail = null;
+        this.isDetailLoading = true;
         try {
-            this.currentDetail = await fetch2(`/api/activitylog/${logId}/metadata`, 'GET');
-            if (trigger) {
-                this.$refs.detailCanvas.addEventListener('hidden.bs.offcanvas', () => trigger.focus(), { once: true });
-            }
-            this.detailCanvas.show();
-            this.$nextTick(() => formatUtcTime());
+            const detail = await fetch2(`/api/activitylog/${logId}/metadata`, 'GET');
+            if (requestId !== this.detailRequestId) return;
+            this.currentDetail = detail;
+            this.$nextTick(() => {
+                this.$refs.detailBody.scrollTop = 0;
+                formatUtcTime();
+            });
         } catch (err) {
-            error(err);
+            if (requestId === this.detailRequestId) {
+                this.selectedLogId = null;
+                error(err);
+            }
+        } finally {
+            if (requestId === this.detailRequestId) this.isDetailLoading = false;
         }
     },
 
