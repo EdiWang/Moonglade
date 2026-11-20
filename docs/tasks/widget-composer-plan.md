@@ -4,21 +4,21 @@ Last updated: 2026-11-20 (Asia/Taipei).
 
 ## 1. Current checkpoint and authority
 
-- Phase: B0 documentation verification complete; awaiting user acceptance. Repository changes are limited to this plan file.
-- Implementation: NOT STARTED. No application code, database, configuration, deployment, or external service has been changed for this work.
-- Plan status: ready for B0 user acceptance. B1-B6 remain not started and require explicit execution authorization.
+- Phase: B1 in progress; B0 accepted on 2026-11-20 (Asia/Taipei).
+- Application feature implementation: NOT STARTED. B1 is limited to baseline checks, contracts, synthetic fixtures, characterization tests, and task tracking; B2-B6 have not started.
+- Plan status: B0 accepted; B1 execution authorized. B2-B6 require separate execution authorization.
 - Baseline branch: `master`.
 - Baseline HEAD: `3169a59557b7acd519c612b9ea1bc543908c68b2` (`Show activity log details in a reading pane`).
 - Planning baseline commit: `1e91dea838e593bf73e6799310d7b72c0855260e`.
-- B0 execution authorization: granted. B1-B6 execution authorization: pending.
-- Next action: obtain B0 user acceptance; do not begin B1 without explicit authorization.
+- Execution authorization: B1 granted; B2-B6 pending.
+- Next action: complete B1 and present its contracts, baseline results, and fixtures for user acceptance.
 
 This file contains the current requirements, implementation context, delivery gates, progress, and verification results. Update it in place after every batch or material change. Keep only the latest state: no questions and answers, discussion history, superseded proposals, or chronological work logs. Retain each batch's current outcome, implementation SHA, acceptance status, and unresolved limitations so work can resume without prior conversation context.
 
 ### Execution rules
 
 - Work in batches that can each be implemented, tested, committed, and accepted.
-- Current authorization covers B0 documentation checks and the tracking commit only; do not change application code or begin B1.
+- Current authorization covers B1 baseline checks, contract/fixture documentation, useful characterization tests, and batch commits. Do not implement B2-B6 features.
 - Ask the user whenever an unresolved issue materially affects requirements, business behavior, architecture, ownership, or public contracts. Explain alternatives and recommend one; do not choose on the user's behalf.
 - Continue independent research or documentation while awaiting an answer. Do not implement dependent work until the answer arrives.
 - Implementation requires explicit authorization separate from plan review.
@@ -165,8 +165,8 @@ Local implementation commits within an explicitly authorized batch are part of t
 
 | Batch | Scope | Implementation | Verification | Implementation SHA | User acceptance |
 | --- | --- | --- | --- | --- | --- |
-| B0 | Plan and requirements | Ready for user acceptance: documentation verified | Source/path/requirements/format/diff checks passed | `1e91dea838e593bf73e6799310d7b72c0855260e` (planning baseline) | Pending |
-| B1 | Baseline, concrete contracts, acceptance fixtures | Not started | Not run | None | Pending |
+| B0 | Plan and requirements | Accepted | Source/path/requirements/format/diff checks passed | `c7ebf2bb16e6040ef5f1fc22af0701371266bcf7` | Accepted 2026-11-20 |
+| B1 | Baseline, concrete contracts, acceptance fixtures | In progress | Baseline verification in progress | None | Pending |
 | B2 | Region/order model and both database upgrades | Not started | Not run | None | Pending |
 | B3 | Atomic whole-collection save | Not started | Not run | None | Pending |
 | B4 | Composer and inline draft editing | Not started | Not run | None | Pending |
@@ -328,8 +328,8 @@ Next permitted action:
 
 ### B0 - Current verification status
 
-- Status: ready for user acceptance; B0 documentation verification complete.
-- Execution authorization: B0 granted; B1-B6 pending.
+- Status: accepted on 2026-11-20 (Asia/Taipei).
+- Verification commit: `c7ebf2bb16e6040ef5f1fc22af0701371266bcf7`.
 - Scope: this plan file only; no application, configuration, database, deployment, or external service changes.
 - Planning baseline commit: `1e91dea838e593bf73e6799310d7b72c0855260e` on `master`.
 - Source verification: source changes from `3169a59557b7acd519c612b9ea1bc543908c68b2` to the planning baseline are limited to this plan file. Widget storage/validation, sidebar regions, link opening behavior, handler loading, and antiforgery wiring match Section 4.
@@ -338,9 +338,9 @@ Next permitted action:
 - Check commands: `git diff --name-status 3169a59557b7acd519c612b9ea1bc543908c68b2..1e91dea838e593bf73e6799310d7b72c0855260e` (plan file only), inline Python document/path checks (passed), and `git diff --check` (exit 0).
 - Application tests, application startup, provider verification, and browser acceptance: not run; these checks are outside the documentation-only B0 scope and remain required in the applicable later batches.
 - Temporary fixtures and cleanup: none.
-- User acceptance: pending.
+- User acceptance: accepted on 2026-11-20.
 - Open B0 blockers: none.
-- Next action: obtain B0 user acceptance and explicit authorization before beginning B1.
+- Next action: B1 is authorized and in progress.
 
 ## 8. Resume from a fresh conversation
 
