@@ -1,6 +1,6 @@
 # Widget Composer B2 Storage and Upgrade Verification
 
-Status: ready for user acceptance, 2026-11-20 (Asia/Taipei). B3-B6 implementation is not authorized. Implementation SHA and acceptance state are maintained in the [delivery plan](widget-composer-plan.md).
+Status: accepted on 2026-11-20 (Asia/Taipei). B3-B6 implementation is not authorized. Implementation SHA and acceptance state are maintained in the [delivery plan](widget-composer-plan.md).
 
 ## Delivered checkpoint
 
@@ -75,4 +75,4 @@ Completed on 2026-11-20 at 19:30 (Asia/Taipei), with explicit user authorization
 - Confirmed target schema: required `region` varchar(32), required `sort_order` integer, and title varchar(128); `display_order` is absent. Existing title nullability is preserved.
 - Sanitized verification manifest: `C:/Users/Edi/Documents/Codex/Moonglade-Widgets-Design/dev-db-20261120-192814/result.json`. The rehearsal container, volume, and temporary migration helper were removed; the backup and manifest remain. No application host was started as part of this database operation.
 
-No production data, deployment, or runtime configuration change was made. Other real upgrades still require their own backup/restoration rehearsal and stopped hosts. Full theme/settings, TOTP, collection-save concurrency, and integrated composer acceptance remain later-batch checks. Next action: user acceptance of B2, followed by separate authorization for B3.
+No production data, deployment, or runtime configuration change was made. Other real upgrades still require their own backup/restoration rehearsal and stopped hosts. Full theme/settings, TOTP, collection-save concurrency, and integrated composer acceptance remain later-batch checks. Next action: await explicit B3 execution authorization.
