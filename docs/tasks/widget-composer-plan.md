@@ -11,6 +11,7 @@ Last updated: 2026-11-20 (Asia/Taipei).
 - Baseline HEAD: `3169a59557b7acd519c612b9ea1bc543908c68b2` (`Show activity log details in a reading pane`).
 - Planning baseline commit: `1e91dea838e593bf73e6799310d7b72c0855260e`.
 - Execution authorization: B2 granted; B3-B6 pending.
+- Development database: PostgreSQL script 12 applied and repeat-verified on the user-confirmed development target on 2026-11-20; full backup and successful restoration rehearsal are recorded in the B2 notes. Do not reinitialize or restore this database as a disposable fixture.
 - Next action: obtain B2 user acceptance. B3 requires separate execution authorization.
 
 This file contains the current requirements, implementation context, delivery gates, progress, and verification results. Update it in place after every batch or material change. Keep only the latest state: no questions and answers, discussion history, superseded proposals, or chronological work logs. Retain each batch's current outcome, implementation SHA, acceptance status, and unresolved limitations so work can resume without prior conversation context.
@@ -375,10 +376,11 @@ Next permitted action:
 - Native providers: PostgreSQL 18.7 and SQL Server 16.0.4325.4. Both passed 20-row synthetic upgrade preservation, canonical GUID ties, upper-region capacity, invalid-order/partial-schema rollback, repeated execution including subsequent edits, title boundaries, empty legacy conversion, new-model fresh initialization, and target-schema guards. No production database was accessed.
 - Browser: ChatGPT in-app browser, 1440x900/1920x1080; both providers across upgraded/fresh schemas. Save/reload, order 1000, title 128, public anchor placement, disabled filtering, and all five localized placement selectors passed. No application console errors. Browser version was not captured.
 - Evidence and limits: `docs/tasks/widget-composer-b2.md`; durable local logs/screenshots under `C:/Users/Edi/Documents/Codex/Moonglade-Widgets-Design/b2/`. Full themes/settings, TOTP, collection concurrency, and integrated composer acceptance remain later batches. The existing Button Link editor overlap remains assigned to B4.
-- Cleanup: all B2 hosts stopped; task containers and volumes removed; B2 migration tools, hosts, runtime directories, and launcher scripts removed. Logs/screenshots retained. B1 reproduction tools remain as authorized. Generated private development-configuration copies in B1/B2 build outputs were removed; the repository source override was not read or modified.
+- Development migration: user-confirmed PostgreSQL `192.168.0.101:5432/moonglade`, completed 2026-11-20 at 19:30 (Asia/Taipei). Complete private backup restored into an isolated database; script 12 ran twice in the rehearsal and twice on development. All five widgets and all 22 unrelated public tables passed preservation checks. Target columns and local backup/manifest paths are in `widget-composer-b2.md`. No application host was started.
+- Cleanup: all B2 hosts stopped; task containers and volumes removed; B2 migration tools, hosts, runtime directories, and launcher scripts removed, including development rehearsal materials. Logs/screenshots and the private development backup/manifest are retained. B1 reproduction tools remain as authorized. Generated private development-configuration copies in B1/B2 build outputs were removed; the repository source override was used only in process for the authorized development migration and was not modified or copied into artifacts.
 - Implementation commit SHA: `823a46328fa80f83f211bd89cea5b26ce462b1a1`.
 - User acceptance: pending.
-- Remaining risks: schema 12 and matching application must be upgraded together with stopped hosts and a backup; reverting the binary alone cannot restore the old schema. Native tests used synthetic representative data; rehearse on an operator-restored real backup before an actual upgrade.
+- Remaining risks: schema 12 and matching application must be upgraded together with stopped hosts and a backup; reverting the binary alone cannot restore the old schema. Development restoration rehearsal passed; other real environments require their own backup rehearsal. Treat the retained full development backup as private.
 - Next permitted action: obtain B2 user acceptance. Do not begin B3 without authorization.
 
 ## 8. Resume from a fresh conversation
