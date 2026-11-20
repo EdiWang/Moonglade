@@ -61,6 +61,8 @@ In PowerShell, `./start.ps1` uses the Development launch profile. Open `https://
 
 Restrict access until setup is complete. Anyone who reaches an uninitialized site can claim it at `/auth/setup-account`. Enter the owner's email and password and verify the authenticator code when TOTP is required. Setup signs the owner in.
 
+Passwords must contain at least 8 printable ASCII characters, including an English letter and a digit. Uppercase/lowercase combinations and symbols are optional; all printable ASCII symbols are accepted. Spaces and other whitespace are not allowed. Account setup, password changes, and authenticator resets use the same rule.
+
 Pending setup redirects page requests to the setup page and returns HTTP 503 for business APIs, feeds, and protocol endpoints. Setup assets and health endpoints remain available. Hosts cache confirmed setup, so stop all hosts before restoring or replacing the database.
 
 ## Configuration

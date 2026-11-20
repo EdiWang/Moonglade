@@ -2177,4 +2177,7 @@
   <data name="The post changed. Reload the page to see its current state." xml:space="preserve">
     <value>文章已變更。請重新載入頁面以查看目前狀態。</value>
   </data>
+  <data name="Use at least 8 characters, including an English letter and a number. Symbols are optional. Spaces and non-ASCII characters are not allowed." xml:space="preserve">
+    <value>請使用最少 8 個字元，包含一個英文字母及一個數字。毋須使用符號。不允許空格及非 ASCII 字元。</value>
+  </data>
 </root>

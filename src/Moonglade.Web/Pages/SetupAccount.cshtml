@@ -59,7 +59,8 @@
                         </div>
                         <div class="mb-4">
                             <label asp-for="Password" class="form-label"></label>
-                            <input asp-for="Password" class="form-control" autocomplete="new-password" minlength="8" required />
+                            <input asp-for="Password" class="form-control" autocomplete="new-password" minlength="8" pattern="@UpdateLocalAccountPasswordRequest.PasswordPattern" aria-describedby="password-requirements" required />
+                            <div id="password-requirements" class="form-text">@SharedLocalizer[UpdateLocalAccountPasswordRequest.PasswordRequirements]</div>
                         </div>
                         <button class="btn btn-accent w-100" type="submit">@SharedLocalizer["Create Account"]</button>
                     </form>

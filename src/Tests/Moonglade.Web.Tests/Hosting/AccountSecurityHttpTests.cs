@@ -160,13 +160,16 @@ public partial class AccountSecurityHttpTests
         Assert.Contains("/auth/signin", stale.Headers.Location!.OriginalString);
     }
 
-    [Fact]
-    public async Task FortyCharacterPasswords_SetupSignInChangeAndResetPreserveSecurityState()
+    [Theory]
+    [InlineData("Setup12!", "Change2!")]
+    [InlineData("Setup-:!", "Change-:")]
+    [InlineData("\"<>/\\:!?", "{}|?=+%&")]
+    public async Task FortyCharacterPasswords_SetupSignInChangeAndResetPreserveSecurityState(string initialSuffix, string replacementSuffix)
     {
         var ct = TestContext.Current.CancellationToken;
         var prefix = new string('A', 30) + "a1";
-        var initialPassword = prefix + "Setup12!";
-        var replacementPassword = prefix + "Change2!";
+        var initialPassword = prefix + initialSuffix;
+        var replacementPassword = prefix + replacementSuffix;
         Assert.Equal(40, initialPassword.Length);
         Assert.Equal(40, replacementPassword.Length);
         await using var fixture = await LocalAccountHttpFixture.CreateAsync(required: true);

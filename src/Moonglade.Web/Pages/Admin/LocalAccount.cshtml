@@ -203,7 +203,7 @@
                                id="ResetAuthenticatorPassword"
                                x-model="formData.currentPassword"
                                minlength="8"
-                               pattern="^(?=.*[a-zA-Z])(?=.*[0-9])[A-Za-z0-9._~!@@#$^&*]{8,}$"
+                               pattern="@UpdateLocalAccountPasswordRequest.PasswordPattern"
                                required>
                     </div>
                 </div>
@@ -233,7 +233,7 @@
                                id="OldPassword"
                                x-model="formData.oldPassword"
                                minlength="8"
-                               pattern="^(?=.*[a-zA-Z])(?=.*[0-9])[A-Za-z0-9._~!@@#$^&*]{8,}$"
+                               pattern="@UpdateLocalAccountPasswordRequest.PasswordPattern"
                                required>
                     </div>
                     <div class="mb-2">
@@ -242,17 +242,12 @@
                                id="NewPassword"
                                x-model="formData.newPassword"
                                minlength="8"
-                               pattern="^(?=.*[a-zA-Z])(?=.*[0-9])[A-Za-z0-9._~!@@#$^&*]{8,}$"
+                               pattern="@UpdateLocalAccountPasswordRequest.PasswordPattern"
+                               aria-describedby="new-password-requirements"
                                required>
                     </div>
-                    <div class="text-muted">
-                        @SharedLocalizer["Your password must be:"]
-                        <ul>
-                            <li>@SharedLocalizer["Contain at least one letter (can be either lowercase or uppercase)."]</li>
-                            <li>@SharedLocalizer["Contain at least one digit."]</li>
-                            <li>@SharedLocalizer["Be at least 8 characters long."]</li>
-                            <li>@Html.Raw(string.Format(SharedLocalizer["Only contain characters from the set: uppercase letters, lowercase letters, digits, and the special characters {0}."].Value, "<code>._~!@@#$^&*`</code>"))</li>
-                        </ul>
+                    <div id="new-password-requirements" class="form-text">
+                        @SharedLocalizer[UpdateLocalAccountPasswordRequest.PasswordRequirements]
                     </div>
                 </div>
                 <div class="modal-footer">

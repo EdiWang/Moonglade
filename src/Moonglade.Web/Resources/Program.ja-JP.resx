@@ -2177,4 +2177,7 @@
   <data name="The post changed. Reload the page to see its current state." xml:space="preserve">
     <value>投稿が変更されました。ページを再読み込みして最新の状態を確認してください。</value>
   </data>
+  <data name="Use at least 8 characters, including an English letter and a number. Symbols are optional. Spaces and non-ASCII characters are not allowed." xml:space="preserve">
+    <value>英字と数字をそれぞれ1文字以上含む、8文字以上のパスワードを使用してください。記号は任意です。空白とASCII以外の文字は使用できません。</value>
+  </data>
 </root>

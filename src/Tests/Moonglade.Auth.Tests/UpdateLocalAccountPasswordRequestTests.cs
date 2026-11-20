@@ -39,6 +39,8 @@ public class UpdateLocalAccountPasswordRequestTests
 
         var results = ValidateModel(request);
         Assert.Contains(results, result => result.MemberNames.Contains(nameof(UpdateLocalAccountPasswordRequest.OldPassword)));
+        Assert.Contains(ValidateModel(new ResetLocalAccountTotpRequest { CurrentPassword = password }),
+            result => result.MemberNames.Contains(nameof(ResetLocalAccountTotpRequest.CurrentPassword)));
         Assert.Contains(results, result => result.MemberNames.Contains(nameof(UpdateLocalAccountPasswordRequest.NewPassword)));
     }
 
@@ -48,6 +50,11 @@ public class UpdateLocalAccountPasswordRequestTests
     [InlineData("short")]
     [InlineData("null")]
     [InlineData("empty")]
+    [InlineData("space")]
+    [InlineData("leading-space")]
+    [InlineData("trailing-space")]
+    [InlineData("control")]
+    [InlineData("non-ascii")]
     public void Invalid_NewPassword_FailsValidation(string scenario)
     {
         var password = InvalidPassword(scenario);
@@ -67,6 +74,11 @@ public class UpdateLocalAccountPasswordRequestTests
     [InlineData("short")]
     [InlineData("null")]
     [InlineData("empty")]
+    [InlineData("space")]
+    [InlineData("leading-space")]
+    [InlineData("trailing-space")]
+    [InlineData("control")]
+    [InlineData("non-ascii")]
     public void Invalid_OldPassword_FailsValidation(string scenario)
     {
         var password = InvalidPassword(scenario);
@@ -81,13 +93,14 @@ public class UpdateLocalAccountPasswordRequestTests
     }
 
     [Theory]
-    [InlineData(0)]
-    [InlineData(1)]
-    [InlineData(2)]
-    [InlineData(3)]
-    public void Valid_Passwords_PassValidation(int scenario)
+    [InlineData("Abcdefg1")]
+    [InlineData("MyP4ssword")]
+    [InlineData("Test1234")]
+    [InlineData("a1b2c3d4e5")]
+    [InlineData("nY8qR-v:3m_.!pK")]
+    [InlineData("a1!\"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~")]
+    public void Valid_Passwords_PassValidation(string password)
     {
-        var password = new[] { "Abcdefg1", "MyP4ssword", "Test1234", "a1b2c3d4e5" }[scenario];
         var request = new UpdateLocalAccountPasswordRequest
         {
             OldPassword = password,
@@ -96,6 +109,7 @@ public class UpdateLocalAccountPasswordRequestTests
 
         var results = ValidateModel(request);
         Assert.Empty(results);
+        Assert.Empty(ValidateModel(new ResetLocalAccountTotpRequest { CurrentPassword = password }));
     }
 
     private static string InvalidPassword(string scenario) => scenario switch
@@ -103,6 +117,11 @@ public class UpdateLocalAccountPasswordRequestTests
         "missing-digit" => "abcdefgh",
         "missing-letter" => "12345678",
         "short" => "Pass1",
+        "space" => "Pass word1",
+        "leading-space" => " Password1",
+        "trailing-space" => "Password1 ",
+        "control" => "Password1\0",
+        "non-ascii" => "Password1é",
         "null" => null,
         _ => ""
     };

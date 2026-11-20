@@ -26,6 +26,7 @@ public class SetupAccountModel(
     public string Email { get; set; }
 
     [BindProperty, Required, DataType(DataType.Password)]
+    [RegularExpression(UpdateLocalAccountPasswordRequest.PasswordPattern, ErrorMessage = UpdateLocalAccountPasswordRequest.PasswordRequirements)]
     [Display(Name = "Password")]
     public string Password { get; set; }
 
