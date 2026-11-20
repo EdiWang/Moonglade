@@ -4,20 +4,21 @@ Last updated: 2026-11-20 (Asia/Taipei).
 
 ## 1. Current checkpoint and authority
 
-- Phase: planning only. Repository changes are limited to this plan file.
+- Phase: B0 documentation verification complete; awaiting user acceptance. Repository changes are limited to this plan file.
 - Implementation: NOT STARTED. No application code, database, configuration, deployment, or external service has been changed for this work.
-- Plan status: prepared for user review; implementation requires a subsequent explicit instruction.
+- Plan status: ready for B0 user acceptance. B1-B6 remain not started and require explicit execution authorization.
 - Baseline branch: `master`.
 - Baseline HEAD: `3169a59557b7acd519c612b9ea1bc543908c68b2` (`Show activity log details in a reading pane`).
-- Plan commit: not committed.
-- Next action: plan review and explicit implementation authorization.
+- Planning baseline commit: `1e91dea838e593bf73e6799310d7b72c0855260e`.
+- B0 execution authorization: granted. B1-B6 execution authorization: pending.
+- Next action: obtain B0 user acceptance; do not begin B1 without explicit authorization.
 
 This file contains the current requirements, implementation context, delivery gates, progress, and verification results. Update it in place after every batch or material change. Keep only the latest state: no questions and answers, discussion history, superseded proposals, or chronological work logs. Retain each batch's current outcome, implementation SHA, acceptance status, and unresolved limitations so work can resume without prior conversation context.
 
 ### Execution rules
 
 - Work in batches that can each be implemented, tested, committed, and accepted.
-- For now, write the plan only; do not change application code.
+- Current authorization covers B0 documentation checks and the tracking commit only; do not change application code or begin B1.
 - Ask the user whenever an unresolved issue materially affects requirements, business behavior, architecture, ownership, or public contracts. Explain alternatives and recommend one; do not choose on the user's behalf.
 - Continue independent research or documentation while awaiting an answer. Do not implement dependent work until the answer arrives.
 - Implementation requires explicit authorization separate from plan review.
@@ -164,7 +165,7 @@ Local implementation commits within an explicitly authorized batch are part of t
 
 | Batch | Scope | Implementation | Verification | Implementation SHA | User acceptance |
 | --- | --- | --- | --- | --- | --- |
-| B0 | Plan and requirements | Ready for user acceptance: documentation only | Source/path/format/diff checks passed | Not committed | Pending plan review |
+| B0 | Plan and requirements | Ready for user acceptance: documentation verified | Source/path/requirements/format/diff checks passed | `1e91dea838e593bf73e6799310d7b72c0855260e` (planning baseline) | Pending |
 | B1 | Baseline, concrete contracts, acceptance fixtures | Not started | Not run | None | Pending |
 | B2 | Region/order model and both database upgrades | Not started | Not run | None | Pending |
 | B3 | Atomic whole-collection save | Not started | Not run | None | Pending |
@@ -178,7 +179,7 @@ Local implementation commits within an explicitly authorized batch are part of t
 
 **Check:** verify paths and source claims; validate document formatting and focused diff. No application startup, build, test run, database access, or migration execution is necessary for a document-only change.
 
-**Acceptance:** the user reviews batch boundaries and authorizes implementation separately. Commit the accepted planning baseline separately before implementation work, as part of that authorization.
+**Acceptance:** the user explicitly accepts the requirements and batch boundaries. B0 documentation verification does not authorize B1. Record acceptance before starting a separately authorized implementation batch.
 
 ### B1 - Baseline, contracts, and fixtures
 
@@ -327,13 +328,19 @@ Next permitted action:
 
 ### B0 - Current verification status
 
-- Status: ready for plan review; implementation authorization pending.
+- Status: ready for user acceptance; B0 documentation verification complete.
+- Execution authorization: B0 granted; B1-B6 pending.
 - Scope: this plan file only; no application, configuration, database, deployment, or external service changes.
-- Documentation checks: repository references, requirement coverage, batch gates, continuation instructions, UTF-8/CRLF/final newline, and Git whitespace validation passed.
-- Application tests, application startup, provider verification, and browser acceptance: not run for this documentation-only scope.
-- Commit: not committed.
+- Planning baseline commit: `1e91dea838e593bf73e6799310d7b72c0855260e` on `master`.
+- Source verification: source changes from `3169a59557b7acd519c612b9ea1bc543908c68b2` to the planning baseline are limited to this plan file. Widget storage/validation, sidebar regions, link opening behavior, handler loading, and antiforgery wiring match Section 4.
+- Requirement verification: R1-R9, B0-B6 scope, batch acceptance gates, verification matrix, current-state-only maintenance, and continuation instructions are present and consistent.
+- Documentation checks: referenced repository paths and planned build/test command targets exist; UTF-8 without BOM, CRLF, final newline, balanced code fences, and Git whitespace validation passed.
+- Check commands: `git diff --name-status 3169a59557b7acd519c612b9ea1bc543908c68b2..1e91dea838e593bf73e6799310d7b72c0855260e` (plan file only), inline Python document/path checks (passed), and `git diff --check` (exit 0).
+- Application tests, application startup, provider verification, and browser acceptance: not run; these checks are outside the documentation-only B0 scope and remain required in the applicable later batches.
+- Temporary fixtures and cleanup: none.
 - User acceptance: pending.
-- Next action: plan review and explicit authorization to begin B1.
+- Open B0 blockers: none.
+- Next action: obtain B0 user acceptance and explicit authorization before beginning B1.
 
 ## 8. Resume from a fresh conversation
 
