@@ -9,7 +9,6 @@ public sealed class OwnerOidcEntity
     public int Id { get; init; } = Slot;
     public Guid OwnerId { get; init; }
     public Guid Revision { get; set; }
-    public bool Enabled { get; set; }
     public required string DisplayName { get; set; }
     public required string Authority { get; set; }
     public required string ClientId { get; set; }

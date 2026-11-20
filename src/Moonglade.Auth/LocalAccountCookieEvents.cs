@@ -36,7 +36,7 @@ public sealed class LocalAccountCookieEvents(OwnerAccountStore accounts, IOption
         if (oidcRevision is null) return Task.FromResult(!options.Value.Totp.Required || account.IsTotpEnabled);
         if (!Guid.TryParse(oidcRevision, out var revision)) return Task.FromResult(false);
 
-        return db.OwnerOidc.AnyAsync(row => row.OwnerId == account.Id && row.Enabled &&
+        return db.OwnerOidc.AnyAsync(row => row.OwnerId == account.Id &&
             row.Issuer != null && row.Subject != null && row.SessionRevision == revision, context.HttpContext.RequestAborted);
     }
 }

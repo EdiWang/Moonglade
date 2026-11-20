@@ -91,7 +91,7 @@ public sealed class OwnerOidcModel(OwnerOidcStore store, OwnerAccountStore accou
     public async Task<IActionResult> OnPostBindAsync()
     {
         var settings = await store.ReadAsync(Ct);
-        if (!ModelState.IsValid || settings is not { Enabled: true, AccountLabel: null } || settings.Revision != Revision)
+        if (!ModelState.IsValid || settings is not { AccountLabel: null } || settings.Revision != Revision)
             return await RejectAsync("The provider settings changed. Reload the page and try again.");
 
         var proof = flow.ReadSavedProof(HttpContext);
@@ -139,10 +139,6 @@ public sealed class OwnerOidcModel(OwnerOidcStore store, OwnerAccountStore accou
         {
             switch (operation)
             {
-                case "enable":
-                case "disable":
-                    await store.SetEnabledAsync(OwnerId, revision, operation == "enable", Ct);
-                    break;
                 case "unbind":
                     await store.UnbindAsync(OwnerId, revision, Ct);
                     break;
@@ -181,14 +177,14 @@ public sealed class OwnerOidcModel(OwnerOidcStore store, OwnerAccountStore accou
         Authority = Settings?.Authority;
         ClientId = Settings?.ClientId;
         RequireTotp = authentication.Value.Totp.Required || (await accounts.ReadAsync(Ct))?.IsTotpEnabled == true;
-        CanReuseProof = Settings is { Enabled: true, AccountLabel: null } &&
+        CanReuseProof = Settings is { AccountLabel: null } &&
             flow.Matches(User, Settings.Revision, flow.ReadSavedProof(HttpContext));
         Pending = await ReadPendingAsync(Settings);
     }
 
     private async Task<PendingExternalAccount?> ReadPendingAsync(OwnerOidcSettings? settings)
     {
-        if (settings is not { Enabled: true, AccountLabel: null }) return null;
+        if (settings is not { AccountLabel: null }) return null;
         var ticket = await HttpContext.AuthenticateAsync(OidcBindingFlow.PendingScheme);
         var state = ticket.Properties?.Items;
         return ticket.Succeeded && state is not null &&

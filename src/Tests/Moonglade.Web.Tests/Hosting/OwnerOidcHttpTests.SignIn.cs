@@ -48,9 +48,8 @@ public partial class OwnerOidcHttpTests
 
     [Theory]
     [InlineData("unbound")]
-    [InlineData("disabled")]
     [InlineData("absent")]
-    public async Task OidcSignIn_RequiresAnEnabledBindingBeforeChallenge(string scenario)
+    public async Task OidcSignIn_RequiresBindingBeforeChallenge(string scenario)
     {
         using var provider = new SyntheticProvider();
         await using var fixture = await LocalAccountHttpFixture.CreateAsync(oidcBackchannel: provider);
@@ -61,11 +60,6 @@ public partial class OwnerOidcHttpTests
         else
         {
             await ConfigureSignInAsync(fixture, bind: scenario != "unbound");
-            if (scenario == "disabled")
-            {
-                var ct = TestContext.Current.CancellationToken;
-                await fixture.Store.Db.OwnerOidc.ExecuteUpdateAsync(setters => setters.SetProperty(row => row.Enabled, false), ct);
-            }
         }
 
         using var response = await ChallengeSignInAsync(fixture);
@@ -78,7 +72,7 @@ public partial class OwnerOidcHttpTests
     [InlineData("subject")]
     [InlineData("issuer")]
     [InlineData("changed")]
-    [InlineData("disabled")]
+    [InlineData("unbound")]
     public async Task OidcSignIn_RejectsMismatchedOrStaleExternalIdentity(string scenario)
     {
         var ct = TestContext.Current.CancellationToken;
@@ -90,8 +84,12 @@ public partial class OwnerOidcHttpTests
         var callback = provider.CallbackFor(challenge.Headers.Location!);
         if (scenario == "changed")
             await fixture.Store.Db.OwnerOidc.ExecuteUpdateAsync(setters => setters.SetProperty(row => row.Revision, Guid.NewGuid()), ct);
-        if (scenario == "disabled")
-            await fixture.Store.Db.OwnerOidc.ExecuteUpdateAsync(setters => setters.SetProperty(row => row.Enabled, false), ct);
+        if (scenario == "unbound")
+        {
+            var row = await fixture.Store.Db.OwnerOidc.AsNoTracking().SingleAsync(ct);
+            await using var scope = fixture.App.Services.CreateAsyncScope();
+            await scope.ServiceProvider.GetRequiredService<OwnerOidcStore>().UnbindAsync(owner.Id, row.Revision, ct);
+        }
 
         using var response = await fixture.SendAsync(HttpMethod.Get, callback);
         Assert.Equal(HttpStatusCode.Redirect, response.StatusCode);
@@ -104,7 +102,7 @@ public partial class OwnerOidcHttpTests
 
     [Theory]
     [InlineData("unbind")]
-    [InlineData("disable")]
+    [InlineData("rebind")]
     [InlineData("delete")]
     public async Task OidcSession_RevocationRejectsOldTicketAndKeepsLocalAccess(string operation)
     {
@@ -118,17 +116,15 @@ public partial class OwnerOidcHttpTests
         var ct = TestContext.Current.CancellationToken;
         var row = await fixture.Store.Db.OwnerOidc.AsNoTracking().SingleAsync(ct);
 
-        using var revoked = await ManageAsync(fixture, row.Revision, operation, confirmDelete: operation == "delete");
+        using var revoked = await ManageAsync(fixture, row.Revision, operation == "rebind" ? "unbind" : operation,
+            confirmDelete: operation == "delete");
         Assert.Equal(HttpStatusCode.Redirect, revoked.StatusCode);
-        if (operation == "disable")
+        if (operation == "rebind")
         {
-            fixture.SetTicket(oldTicket, BlogAuthSchemas.Local);
-            using var disabledSession = await fixture.SendAsync(HttpMethod.Get, "/admin/probe");
-            Assert.Equal(HttpStatusCode.Redirect, disabledSession.StatusCode);
-            fixture.SetTicket(local, BlogAuthSchemas.Local);
-            var disabled = await fixture.Store.Db.OwnerOidc.AsNoTracking().SingleAsync(ct);
-            using var enable = await ManageAsync(fixture, disabled.Revision, "enable");
-            Assert.Equal(HttpStatusCode.Redirect, enable.StatusCode);
+            var unbound = await fixture.Store.Db.OwnerOidc.AsNoTracking().SingleAsync(ct);
+            await using var scope = fixture.App.Services.CreateAsyncScope();
+            await scope.ServiceProvider.GetRequiredService<OwnerOidcStore>().BindAsync(owner.Id, unbound.Revision,
+                row.Issuer!, row.Subject!, row.AccountLabel!, ct);
         }
         using var localStillWorks = await fixture.SendAsync(HttpMethod.Get, "/admin/probe");
         Assert.Equal(HttpStatusCode.OK, localStillWorks.StatusCode);
@@ -168,9 +164,9 @@ public partial class OwnerOidcHttpTests
         var current = await fixture.Store.Accounts.ReadAsync(ct);
         fixture.SetTicket(LocalAccountPrincipal.Create(current!, BlogAuthSchemas.Local), BlogAuthSchemas.Local);
         var rotated = await fixture.Store.Db.OwnerOidc.AsNoTracking().SingleAsync(ct);
-        using var disable = await PostAsync(fixture, "Manage", rotated.Revision,
-            ("operation", "disable"), ("CurrentPassword", newPassword));
-        Assert.Equal(HttpStatusCode.Redirect, disable.StatusCode);
+        using var unbind = await PostAsync(fixture, "Manage", rotated.Revision,
+            ("operation", "unbind"), ("CurrentPassword", newPassword));
+        Assert.Equal(HttpStatusCode.Redirect, unbind.StatusCode);
         fixture.SetTicket(refreshed, BlogAuthSchemas.Local);
         using var rejected = await fixture.SendAsync(HttpMethod.Get, "/admin/probe");
         Assert.Equal(HttpStatusCode.Redirect, rejected.StatusCode);

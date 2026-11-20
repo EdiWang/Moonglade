@@ -40,7 +40,7 @@
     }
     else
     {
-    @if (Model.Settings is { Enabled: true, AccountLabel: null })
+    @if (Model.Settings is { AccountLabel: null })
     {
         <form method="post" asp-page-handler="Bind" class="admin-panel p-4 mb-3">
             <input asp-for="Revision" type="hidden" id="BindRevision" />
@@ -50,21 +50,11 @@
     }
     <form id="oidc-settings-form" method="post" asp-page-handler="Save" class="admin-panel p-4">
         <input asp-for="Revision" type="hidden" />
-        @if (Model.Settings is { } settings && (!settings.Enabled || settings.AccountLabel is not null))
+        @if (Model.Settings?.AccountLabel is { } label)
         {
             <p class="text-body-secondary">
-                @if (!settings.Enabled)
-                {
-                    @SharedLocalizer["Disabled"]
-                }
-                else if (settings.AccountLabel is not null)
-                {
-                    @SharedLocalizer["Bound account"]
-                }
-                @if (settings.AccountLabel is { } label)
-                {
-                    <span class="fw-semibold ms-2 text-break">@label</span>
-                }
+                @SharedLocalizer["Bound account"]
+                <span class="fw-semibold ms-2 text-break">@label</span>
             </p>
         }
         else if (Model.Settings is null)
@@ -125,8 +115,6 @@
                     <button asp-page-handler="Manage" formnovalidate type="submit" name="operation" value="unbind"
                             class="btn btn-outline-secondary">@SharedLocalizer["Unbind account"]</button>
                 }
-                <button asp-page-handler="Manage" formnovalidate type="submit" name="operation" value="@(current.Enabled ? "disable" : "enable")"
-                        class="btn btn-outline-secondary">@(current.Enabled ? SharedLocalizer["Disable"] : SharedLocalizer["Enable"])</button>
             }
         </div>
         @if (Model.Settings is not null)

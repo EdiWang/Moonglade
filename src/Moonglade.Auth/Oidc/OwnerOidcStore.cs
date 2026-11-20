@@ -9,7 +9,7 @@ using System.ComponentModel.DataAnnotations;
 namespace Moonglade.Auth.Oidc;
 
 public sealed record OwnerOidcSettings(Guid Revision, string DisplayName, string Authority, string ClientId,
-    bool Enabled, string? AccountLabel);
+    string? AccountLabel);
 
 public sealed record OwnerOidcSignInOption(Guid Revision, string DisplayName);
 
@@ -50,17 +50,17 @@ public sealed class OwnerOidcStore
 
     public Task<OwnerOidcSettings?> ReadAsync(CancellationToken ct) =>
         _db.OwnerOidc.AsNoTracking().Select(row => new OwnerOidcSettings(
-            row.Revision, row.DisplayName, row.Authority, row.ClientId, row.Enabled, row.AccountLabel)).SingleOrDefaultAsync(ct);
+            row.Revision, row.DisplayName, row.Authority, row.ClientId, row.AccountLabel)).SingleOrDefaultAsync(ct);
 
     public Task<OwnerOidcSignInOption?> ReadSignInOptionAsync(CancellationToken ct) =>
         _db.OwnerOidc.AsNoTracking()
-            .Where(row => row.Enabled && row.Issuer != null && row.Subject != null && row.SessionRevision != null)
+            .Where(row => row.Issuer != null && row.Subject != null && row.SessionRevision != null)
             .Select(row => new OwnerOidcSignInOption(row.Revision, row.DisplayName)).SingleOrDefaultAsync(ct);
 
     internal async Task<OwnerOidcCredentials?> ReadCredentialsAsync(CancellationToken ct)
     {
         var row = await _db.OwnerOidc.AsNoTracking().SingleOrDefaultAsync(ct);
-        return row is { Enabled: true }
+        return row is not null
             ? new(row.OwnerId, row.Revision, row.Authority, row.ClientId, _secrets.Protector.Unprotect(row.ProtectedSecret),
                 row.Issuer is not null && row.Subject is not null ? row.SessionRevision : null)
             : null;
@@ -70,7 +70,7 @@ public sealed class OwnerOidcStore
     {
         if (issuer is null || subject is null) return null;
         var row = await _db.OwnerOidc.AsNoTracking().SingleOrDefaultAsync(value =>
-            value.OwnerId == current.OwnerId && value.Revision == current.Revision && value.Enabled, ct);
+            value.OwnerId == current.OwnerId && value.Revision == current.Revision, ct);
         return row is not null && row.Issuer == issuer && row.Subject == subject ? row.SessionRevision : null;
     }
 
@@ -98,8 +98,7 @@ public sealed class OwnerOidcStore
                 DisplayName = input.DisplayName,
                 Authority = input.Authority,
                 ClientId = input.ClientId,
-                ProtectedSecret = protectedSecret,
-                Enabled = true
+                ProtectedSecret = protectedSecret
             };
             _db.OwnerOidc.Add(row);
         }
@@ -117,7 +116,7 @@ public sealed class OwnerOidcStore
     public async Task BindAsync(Guid ownerId, Guid revision, string issuer, string subject, string label, CancellationToken ct)
     {
         var row = await LoadAsync(ownerId, revision, ct);
-        if (row is not { Enabled: true, Subject: null }) throw new DbUpdateConcurrencyException();
+        if (row is not { Subject: null }) throw new DbUpdateConcurrencyException();
         if (string.IsNullOrWhiteSpace(subject) || subject.Length > 255 || issuer.Length > 500 ||
             !OidcPublicBackchannel.IsHttpsUrl(issuer) || string.IsNullOrWhiteSpace(label) || label.Length > 255)
             throw new ValidationException("The provider returned an invalid external account.");
@@ -136,15 +135,6 @@ public sealed class OwnerOidcStore
         row.Subject = null;
         row.AccountLabel = null;
         row.SessionRevision = null;
-        await SaveChangeAsync(row, ct);
-    }
-
-    public async Task SetEnabledAsync(Guid ownerId, Guid revision, bool enabled, CancellationToken ct)
-    {
-        var row = await LoadAsync(ownerId, revision, ct) ?? throw new DbUpdateConcurrencyException();
-        if (row.Enabled == enabled) return;
-        row.Enabled = enabled;
-        if (row.Subject is not null) row.SessionRevision = Guid.NewGuid();
         await SaveChangeAsync(row, ct);
     }
 

@@ -72,7 +72,7 @@ public sealed class OwnerOidcVerifyModel(OwnerOidcStore store, OwnerAccountStore
         var settings = await store.ReadAsync(Ct);
         return Draft is { } draft
             ? settings is null && drafts.Read(User, draft) is not null
-            : settings is { Enabled: true, AccountLabel: null } && settings.Revision == Revision;
+            : settings is { AccountLabel: null } && settings.Revision == Revision;
     }
 
     private async Task<PageResult> ShowAsync(string? error = null)

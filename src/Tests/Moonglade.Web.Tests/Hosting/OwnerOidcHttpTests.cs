@@ -84,7 +84,7 @@ public partial class OwnerOidcHttpTests
     }
 
     [Fact]
-    public async Task Management_RequiresProof_AndDisableRotateUnbindAndDeletePreserveLocalAccount()
+    public async Task Management_RequiresProof_AndRotateUnbindAndDeletePreserveLocalAccount()
     {
         var ct = TestContext.Current.CancellationToken;
         using var provider = new SyntheticProvider();
@@ -97,28 +97,17 @@ public partial class OwnerOidcHttpTests
         var row = await fixture.Store.Db.OwnerOidc.AsNoTracking().SingleAsync(ct);
         Assert.NotNull(row.SessionRevision);
 
-        using var noProof = await PostAsync(fixture, "Manage", row.Revision, ("operation", "disable"));
+        using var noProof = await PostAsync(fixture, "Manage", row.Revision, ("operation", "unbind"));
         Assert.Equal(HttpStatusCode.OK, noProof.StatusCode);
-        Assert.True((await fixture.Store.Db.OwnerOidc.AsNoTracking().SingleAsync(ct)).Enabled);
-        using var disable = await ManageAsync(fixture, row.Revision, "disable");
-        Assert.Equal(HttpStatusCode.Redirect, disable.StatusCode);
-        var disabled = await fixture.Store.Db.OwnerOidc.AsNoTracking().SingleAsync(ct);
-        Assert.False(disabled.Enabled);
-        Assert.Equal(row.Subject, disabled.Subject);
-        Assert.NotEqual(row.SessionRevision, disabled.SessionRevision);
+        Assert.Equal(row.Subject, (await fixture.Store.Db.OwnerOidc.AsNoTracking().SingleAsync(ct)).Subject);
 
-        var rotatedRevision = await SaveAsync(fixture, disabled.Revision, "rotated-disposable-secret");
+        var rotatedRevision = await SaveAsync(fixture, row.Revision, "rotated-disposable-secret");
         var rotated = await fixture.Store.Db.OwnerOidc.AsNoTracking().SingleAsync(ct);
-        Assert.NotEqual(disabled.ProtectedSecret, rotated.ProtectedSecret);
-        Assert.Equal(disabled.SessionRevision, rotated.SessionRevision);
-        using var enable = await ManageAsync(fixture, rotatedRevision, "enable");
-        Assert.Equal(HttpStatusCode.Redirect, enable.StatusCode);
-        var enabled = await fixture.Store.Db.OwnerOidc.AsNoTracking().SingleAsync(ct);
-        Assert.True(enabled.Enabled);
-        Assert.Equal(row.Subject, enabled.Subject);
-        Assert.NotEqual(disabled.SessionRevision, enabled.SessionRevision);
+        Assert.NotEqual(row.ProtectedSecret, rotated.ProtectedSecret);
+        Assert.Equal(row.SessionRevision, rotated.SessionRevision);
+        Assert.Equal(row.Subject, rotated.Subject);
 
-        using var unbind = await ManageAsync(fixture, enabled.Revision, "unbind");
+        using var unbind = await ManageAsync(fixture, rotatedRevision, "unbind");
         Assert.Equal(HttpStatusCode.Redirect, unbind.StatusCode);
         var unbound = await fixture.Store.Db.OwnerOidc.AsNoTracking().SingleAsync(ct);
         Assert.Null(unbound.Subject);
