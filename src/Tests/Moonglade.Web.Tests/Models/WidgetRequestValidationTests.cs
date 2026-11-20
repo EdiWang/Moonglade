@@ -138,6 +138,47 @@ public class WidgetRequestValidationTests
         Assert.Contains(results, result => result.MemberNames.Contains(nameof(EditWidgetRequest.ContentCode)));
     }
 
+    [Theory]
+    [InlineData(-31, false)]
+    [InlineData(-30, true)]
+    [InlineData(-21, true)]
+    [InlineData(-20, true)]
+    [InlineData(-11, true)]
+    [InlineData(-10, true)]
+    [InlineData(-1, true)]
+    [InlineData(0, true)]
+    [InlineData(999, true)]
+    [InlineData(1000, false)]
+    public void LinkList_DisplayOrder_EnforcesLegacyRange(int order, bool valid)
+    {
+        var request = CreateRequest(WidgetType.LinkList, "[]");
+        request.DisplayOrder = order;
+
+        Assert.Equal(valid, Validate(request).Count == 0);
+    }
+
+    [Theory]
+    [InlineData(2000, true)]
+    [InlineData(2001, false)]
+    public void LinkList_ContentCode_EnforcesSerializedLengthLimit(int length, bool valid)
+    {
+        const string content = "[{\"name\":\"Link\",\"url\":\"https://example.com\"}]";
+        var request = CreateRequest(WidgetType.LinkList, content.PadRight(length));
+
+        Assert.Equal(valid, Validate(request).Count == 0);
+    }
+
+    [Theory]
+    [InlineData("[null]")]
+    [InlineData("[{\"name\":\"  \",\"url\":\"https://example.com\"}]")]
+    [InlineData("[{\"name\":\"Example\",\"url\":\"  \"}]")]
+    public void LinkList_WithNullOrBlankRequiredFields_IsInvalid(string content)
+    {
+        var results = Validate(CreateRequest(WidgetType.LinkList, content));
+
+        Assert.Contains(results, result => result.MemberNames.Contains(nameof(EditWidgetRequest.ContentCode)));
+    }
+
     private static EditWidgetRequest CreateRequest(WidgetType widgetType, string contentCode) =>
         new()
         {

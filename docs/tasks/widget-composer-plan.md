@@ -4,14 +4,14 @@ Last updated: 2026-11-20 (Asia/Taipei).
 
 ## 1. Current checkpoint and authority
 
-- Phase: B1 in progress; B0 accepted on 2026-11-20 (Asia/Taipei).
+- Phase: B1 verification complete and ready for user acceptance; B0 accepted on 2026-11-20 (Asia/Taipei).
 - Application feature implementation: NOT STARTED. B1 is limited to baseline checks, contracts, synthetic fixtures, characterization tests, and task tracking; B2-B6 have not started.
-- Plan status: B0 accepted; B1 execution authorized. B2-B6 require separate execution authorization.
+- Plan status: B0 accepted; B1 ready for user acceptance. B2-B6 require separate execution authorization.
 - Baseline branch: `master`.
 - Baseline HEAD: `3169a59557b7acd519c612b9ea1bc543908c68b2` (`Show activity log details in a reading pane`).
 - Planning baseline commit: `1e91dea838e593bf73e6799310d7b72c0855260e`.
 - Execution authorization: B1 granted; B2-B6 pending.
-- Next action: complete B1 and present its contracts, baseline results, and fixtures for user acceptance.
+- Next action: obtain B1 user acceptance of the contracts, baseline results, and fixtures; do not start B2 without explicit authorization.
 
 This file contains the current requirements, implementation context, delivery gates, progress, and verification results. Update it in place after every batch or material change. Keep only the latest state: no questions and answers, discussion history, superseded proposals, or chronological work logs. Retain each batch's current outcome, implementation SHA, acceptance status, and unresolved limitations so work can resume without prior conversation context.
 
@@ -94,6 +94,10 @@ These requirements define the current scope. Ask before changing them or resolvi
 | R7 | Widgets API may change with this redesign. | Coordinate the new collection contract with all repository callers; other APIs remain unchanged. Do not maintain an unrequested permanent legacy ordering API. Document the cutover. |
 | R8 | Standardize the widget title limit at 128 characters. | Align request validation, editor, entity mapping, and both database upgrades; do not truncate existing values. |
 | R9 | Make public Link List rendering honor its opening-behavior switch. | Explicit true opens a new tab with appropriate rel protection; explicit false opens in the same tab. Preserve the existing new-link default and legacy missing-flag effective default. Apply the same behavior in preview. |
+| R10 | Convert legacy order ties deterministically. | Sort by original DisplayOrder, CreatedTimeUtc, and ordinal lowercase canonical GUID string, then assign region-local order. Preserve unequal-order precedence. |
+| R11 | Restored deleted widgets receive a new creation time. | Retain the submitted stable ID, assign current server UTC when the ID is absent, and preserve original creation times for surviving rows. |
+| R12 | Retain the existing per-widget content capacity. | Keep ContentCode at 2000 characters; identify the affected widget on validation failure. Do not add widget/link count caps. |
+| R13 | Coordinate collection writers through native transaction-level application locks. | PostgreSQL/SQL Server implementations stay in their provider projects. Do not add a collection lock table or rely on an in-process lock. |
 
 ### Whole-page overwrite semantics
 
@@ -103,13 +107,13 @@ The saved widget collection, not just modified rows, is authoritative. Capture t
 - Another tab deletes B and saves. An older draft containing B, saved afterwards, restores B's submitted content.
 - An explicitly empty collection can represent deleting the last widget; an absent, null, malformed, failed-to-load, or partially loaded collection must never be interpreted as an intentional empty replacement.
 - Keep database replacement atomic and serialize overlapping writers appropriately on both providers. A process-local lock alone does not protect multiple application instances.
-- Preserve IDs and creation timestamps for surviving rows. Specify treatment of reintroduced rows and server-owned metadata in B1's contract notes; never accept unchecked client-owned creation timestamps.
+- Preserve IDs and creation timestamps for surviving rows. Reintroduced rows retain their submitted ID and receive current server UTC creation time. Never accept unchecked client-owned creation timestamps.
 
 Whole-page overwrite, including its cross-tab effects, must be covered by acceptance. Conflict rejection and automatic merging are outside the current requirements.
 
 ### Conditions requiring clarification
 
-- Legacy duplicate numeric orders have no explicit stable tie-breaker today. Before converting actual tied data, show the proposed deterministic tie rule and its effect; ask if it would change an observable existing order. Do not claim an undefined legacy order can be preserved exactly.
+- Apply R10 to legacy duplicate orders. Report any additional invalid-data or conversion ambiguity before changing its handling; do not claim an undefined legacy order can be preserved exactly.
 - Out-of-band numeric positions, unsupported/malformed content, oversized payloads, or incomplete partially upgraded schemas must be reported with safe identifiers, not silently repaired, truncated, moved, or deleted.
 - Do not invent maximum widget/link counts, change the three-button cap, remove a saved field, add persistence for drafts, or expand built-in settings ownership without asking.
 - If a faithful isolated theme preview needs new dependencies, changes to global security policy, an admin-shell redesign, or server-side fetching of external images, stop that part and present alternatives.
@@ -166,7 +170,7 @@ Local implementation commits within an explicitly authorized batch are part of t
 | Batch | Scope | Implementation | Verification | Implementation SHA | User acceptance |
 | --- | --- | --- | --- | --- | --- |
 | B0 | Plan and requirements | Accepted | Source/path/requirements/format/diff checks passed | `c7ebf2bb16e6040ef5f1fc22af0701371266bcf7` | Accepted 2026-11-20 |
-| B1 | Baseline, concrete contracts, acceptance fixtures | In progress | Baseline verification in progress | None | Pending |
+| B1 | Baseline, concrete contracts, acceptance fixtures | Ready for user acceptance | Web build; 825 Web tests; 58 Node tests; both provider/browser baselines passed | Pending commit | Pending |
 | B2 | Region/order model and both database upgrades | Not started | Not run | None | Pending |
 | B3 | Atomic whole-collection save | Not started | Not run | None | Pending |
 | B4 | Composer and inline draft editing | Not started | Not run | None | Pending |
@@ -175,7 +179,7 @@ Local implementation commits within an explicitly authorized batch are part of t
 
 ### B0 - Plan and requirements review
 
-**Deliverable:** this English, repository-owned plan, including R1-R9, scope, verification gates, batch records, and fresh-conversation instructions.
+**Deliverable:** this English, repository-owned plan, including the current requirements, scope, verification gates, batch records, and fresh-conversation instructions.
 
 **Check:** verify paths and source claims; validate document formatting and focused diff. No application startup, build, test run, database access, or migration execution is necessary for a document-only change.
 
@@ -184,6 +188,8 @@ Local implementation commits within an explicitly authorized batch are part of t
 ### B1 - Baseline, contracts, and fixtures
 
 **Scope:** establish a safe acceptance environment and concrete contract notes before changing storage or behavior.
+
+**Deliverables:** [B1 contracts and verified baseline](widget-composer-b1.md), [synthetic fixture data](widget-composer-fixtures.json), and existing-behavior C#/Node tests. The API/cutover specification is ready for B1 user review; no B2-B6 implementation is included.
 
 - Run the existing relevant baseline checks and record independent failures with reproducible evidence.
 - Use disposable PostgreSQL and SQL Server databases and an isolated local host/profile. Record safe fixture names, host port, browser, and cleanup ownership; do not repoint the user's active blog or edit private development overrides.
@@ -266,7 +272,7 @@ Local implementation commits within an explicitly authorized batch are part of t
 - Verify all supported translations and current theme appearances at 1440 and 1920 CSS pixels, including a short viewport, long content, disabled/empty/all-regions cases, and keyboard-only usage.
 - Update `README.md`, `docs/agent-reference.md`, `src/Tests/README.md`, and `database/README.md` only where actual workflows, architecture/contracts, test commands, or upgrade instructions changed. Document Widgets API cutover and last-save-wins behavior. Do not rewrite unrelated maintained documentation.
 - Run the full solution tests and the existing Node suite once for the integrated candidate. Broaden/repeat only when fixes or unresolved concerns justify it.
-- Remove task-owned temporary hosts/databases/migration fixtures after evidence capture. Verify cleanup targets; preserve user environments and durable acceptance evidence.
+- Remove task-owned temporary hosts/databases/migration fixtures after evidence capture. Verify cleanup targets; preserve user environments, durable acceptance evidence, and the explicitly retained B1 local reproduction materials.
 - Record the accepted commit range, provider/script results, browser evidence, remaining limitations, and operator upgrade/backup/recovery steps. A code revert alone is not a database rollback.
 
 **User acceptance:** the user reviews the final checklist and remaining risks and explicitly accepts the release candidate. Deployment, production upgrade, and external changes remain separate future actions requiring explicit authorization.
@@ -333,14 +339,30 @@ Next permitted action:
 - Scope: this plan file only; no application, configuration, database, deployment, or external service changes.
 - Planning baseline commit: `1e91dea838e593bf73e6799310d7b72c0855260e` on `master`.
 - Source verification: source changes from `3169a59557b7acd519c612b9ea1bc543908c68b2` to the planning baseline are limited to this plan file. Widget storage/validation, sidebar regions, link opening behavior, handler loading, and antiforgery wiring match Section 4.
-- Requirement verification: R1-R9, B0-B6 scope, batch acceptance gates, verification matrix, current-state-only maintenance, and continuation instructions are present and consistent.
+- Requirement verification: functional requirements, B0-B6 scope, batch acceptance gates, verification matrix, current-state-only maintenance, and continuation instructions are present and consistent.
 - Documentation checks: referenced repository paths and planned build/test command targets exist; UTF-8 without BOM, CRLF, final newline, balanced code fences, and Git whitespace validation passed.
 - Check commands: `git diff --name-status 3169a59557b7acd519c612b9ea1bc543908c68b2..1e91dea838e593bf73e6799310d7b72c0855260e` (plan file only), inline Python document/path checks (passed), and `git diff --check` (exit 0).
 - Application tests, application startup, provider verification, and browser acceptance: not run; these checks are outside the documentation-only B0 scope and remain required in the applicable later batches.
 - Temporary fixtures and cleanup: none.
 - User acceptance: accepted on 2026-11-20.
 - Open B0 blockers: none.
-- Next action: B1 is authorized and in progress.
+- Next action: B1 is ready for user acceptance.
+
+### B1 - Current verification status
+
+- Status: ready for user acceptance; baseline, contracts, fixtures, characterization tests, and verification complete.
+- Execution authorization: B1 granted; B2-B6 pending. Branch: `codex/widget-composer-b1`.
+- Deliverables: `docs/tasks/widget-composer-b1.md`, `docs/tasks/widget-composer-fixtures.json`, real widget lifecycle/validation characterization, and actual renderer URL/text security tests.
+- Commands/results: `dotnet build src/Moonglade.Web/Moonglade.Web.csproj` passed with zero warnings/errors; `dotnet test --project src/Tests/Moonglade.Web.Tests/Moonglade.Web.Tests.csproj` passed 825/825; `node --test src\Tests\Moonglade.Web.Tests\JavaScript\*.mjs` passed 58/58.
+- Providers: PostgreSQL 18.7 and SQL Server 16.0.4325.4; task-only fresh and legacy databases on each provider. Fresh seeds: one widget and 11 configuration groups. Legacy: 18 widgets, one disabled, 11 before Profile; UTC metadata verified.
+- Browser: ChatGPT in-app browser, 1440x900 and 1920x1080 CSS pixels, real compiled pages and service/pipeline composition, both providers. Edit/Cancel and New/Cancel passed; public enabled filtering and opening-flag baseline confirmed. Only the expected Development console warning; no application console errors.
+- Known baseline issue: Button Link editor also shows the Link List region; assigned to B4's editor replacement. No production UI changes in B1.
+- Scope exclusions: no schema/upgrade SQL, new save/lock/preview implementation, production data access, private development override changes, or deployment. TOTP, full culture/theme/settings matrix, migrations, and new-feature acceptance remain later-batch checks.
+- Evidence: current results and durable local paths are listed in `docs/tasks/widget-composer-b1.md`. The committed contracts/JSON/tests support reproduction without those local files.
+- Local artifacts: fixture hosts stopped; task-owned PostgreSQL/SQL Server containers and their volumes removed; ports 15432/15433/18081/18082 have no listeners. Durable logs/screenshots and stopped external `b1/tools`/`b1/runtime` directories are retained as authorized local reproduction materials. No temporary fixture host or migration harness is committed.
+- Implementation commit SHA: pending commit.
+- User acceptance: pending.
+- Next action: finish the current tracking/verification checkpoint, obtain B1 user acceptance, and await explicit B2 authorization.
 
 ## 8. Resume from a fresh conversation
 
