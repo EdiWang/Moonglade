@@ -29,7 +29,15 @@ For 16.9.0 to 16.10.0, run the following scripts in order for your provider. [Po
 
 For 16.10.0 to 16.11.0, run `11.owner-oidc-binding-only.sql` after the earlier upgrades. It removes the OIDC enable/disable switch. Existing bindings are preserved, including previously disabled bindings, which resume allowing third-party sign-in.
 
+The widget-composer schema also requires `12.widget-regions.sql` after script 11. It replaces widget numeric placement bands with explicit regions and region-local order, and raises the stored title limit to 128. Follow the [widget upgrade and recovery steps](database/README.md#widget-regionorder-upgrade-12) before starting this application against an existing database.
+
 For databases older than 16.9.0, run the applicable category ID and PostgreSQL naming upgrades (`1` and `2`) first. Keep access restricted until any required owner setup is complete. [First run](#first-run)
+
+### Widget Placement
+
+In `/admin/widgets`, choose Before Profile, Before Tags, Before Categories, or After Categories, then enter a nonnegative Sort Order within that region. Lower values appear first; equal values use creation time and canonical ID for a stable order. Each widget still saves individually at this checkpoint. The title limit is 128 characters and the existing content limit remains 2000 characters.
+
+The Widgets API now requires `region` and `sortOrder` on create/update; `displayOrder` is removed from requests and responses. Region names are `BeforeProfile`, `BeforeTags`, `BeforeCategories`, and `AfterCategories`; Sort Order is an integer from 0 through 2147483647. List responses use sidebar order, including disabled widgets for management. Other APIs are unchanged. The composer delivery status is tracked in the [task plan](docs/tasks/widget-composer-plan.md).
 
 ### Quick Local Deployment (Docker)
 

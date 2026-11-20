@@ -1,4 +1,4 @@
-﻿@page "/admin/widgets"
+@page "/admin/widgets"
 
 @{
     ViewBag.Title = "Widgets";
@@ -20,7 +20,8 @@
      data-text-url-required="@SharedLocalizer["Button text and URL are required"]"
      data-max-buttons="@SharedLocalizer["You can add up to 3 buttons"]"
      data-remove-button="@SharedLocalizer["Are you sure you want to remove this button?"]"
-     data-display-order-range="@SharedLocalizer["Display Order must be between -30 and 999."]"
+     data-sort-order-range="@SharedLocalizer["Sort order must be zero or greater."]"
+     data-widget-region-required="@SharedLocalizer["Choose a valid widget placement."]"
      data-unnamed-link="@SharedLocalizer["Unnamed Link"]"
      data-unnamed-button="@SharedLocalizer["Unnamed Button"]"
      data-open-in-new-tab="@SharedLocalizer["Open in new tab"]"
@@ -115,9 +116,17 @@
                     </select>
                 </div>
                 <div class="mb-3">
-                    <label for="widget-display-order" class="form-label">@SharedLocalizer["Display Order"]</label>
-                    <input x-model.number="formData.displayOrder" type="number" id="widget-display-order" class="form-control" min="-30" max="999" required />
-                    <small class="form-text text-muted">@SharedLocalizer["[-21, -30]: before Profile, [-11, -20]: before Tags, [-1, -10]: before Categories, [0, 999]: after Categories"]</small>
+                    <label for="widget-region" class="form-label">@SharedLocalizer["Placement"]</label>
+                    <select x-model="formData.region" id="widget-region" class="form-select" required>
+                        <option value="BeforeProfile">@SharedLocalizer["Before Profile"]</option>
+                        <option value="BeforeTags">@SharedLocalizer["Before Tags"]</option>
+                        <option value="BeforeCategories">@SharedLocalizer["Before Categories"]</option>
+                        <option value="AfterCategories">@SharedLocalizer["After Categories"]</option>
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label for="widget-sort-order" class="form-label">@SharedLocalizer["Sort Order"]</label>
+                    <input x-model.number="formData.sortOrder" type="number" id="widget-sort-order" class="form-control" min="0" max="2147483647" required />
                 </div>
                 <div class="mb-3 form-check">
                     <input x-model="formData.isEnabled" type="checkbox" id="widget-enabled" class="form-check-input" />

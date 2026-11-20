@@ -20,3 +20,16 @@ Administrators apply the required SQL scripts directly. AI agents verify migrati
 1. Back up the database. When verifying a migration change, use a representative restored pre-upgrade database for each target provider.
 2. During migration verification, check the intended schema and data changes, then run the same script again. Both runs must succeed. The second run must preserve the resulting schema and data.
 3. Have an administrator apply the required scripts before starting the upgraded application. Use backup restoration if rollback is needed.
+
+## Widget Region/Order Upgrade (12)
+
+The widget-composer schema requires [PostgreSQL script 12](PostgreSql/12.widget-regions.sql) or [SQL Server script 12](SqlServer/12.widget-regions.sql), after the applicable upgrades through `11.owner-oidc-binding-only.sql`. The source schema has `DisplayOrder` (`display_order`); the target has `Region`/`SortOrder` (`region`/`sort_order`) and a 128-character title column. Fresh installations create the target schema directly.
+
+1. Stop every application host and back up the database. Verify the upgrade on a restored copy before touching the real database.
+2. Run script 12 for the configured provider. It uses one transaction and holds the widget table stable throughout conversion. Invalid legacy positions, oversized titles, and incomplete schemas fail instead of being silently repaired.
+3. Verify widget identifiers, content, enabled state, creation timestamps, placement, and ordering, then run the script again. A complete target schema is validated without reapplying conversion or overwriting later administrator edits.
+4. Start the matching upgraded application. Check `/admin/widgets` and the public sidebar. Deploy the application and schema together; the previous binary cannot use the new columns.
+
+Conversion maps `[-30,-21]` to `BeforeProfile`, `[-20,-11]` to `BeforeTags`, `[-10,-1]` to `BeforeCategories`, and `[0,999]` to `AfterCategories`. Within each region it assigns zero-based positions ordered by original DisplayOrder, CreatedTimeUtc, then ordinal lowercase canonical GUID string. IDs, content, titles, enabled flags, and UTC metadata are preserved. Empty legacy collections are supported. Subsequent positions are nonnegative integers, without the former numeric-band capacity.
+
+If validation fails, inspect the reported schema or safe widget identifier before retrying; do not manually delete columns or fabricate replacement positions. For rollback, keep all hosts stopped, restore the pre-upgrade backup, and restore its matching application version. Reverting the application binary alone is insufficient. There is no automatic migration runner or reverse conversion.

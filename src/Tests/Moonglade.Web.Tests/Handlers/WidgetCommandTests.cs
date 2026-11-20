@@ -25,7 +25,8 @@ public class WidgetCommandTests
             Title = "  Fixture links  ",
             WidgetType = WidgetType.LinkList,
             ContentCode = "[{\"name\":\"Example\",\"url\":\"https://example.com\",\"order\":0}]",
-            DisplayOrder = -30,
+            Region = WidgetRegion.BeforeProfile,
+            SortOrder = 0,
             IsEnabled = true
         };
 
@@ -46,7 +47,8 @@ public class WidgetCommandTests
             Title = "  Updated links  ",
             WidgetType = WidgetType.LinkList,
             ContentCode = "[{\"name\":\"Changed\",\"url\":\"https://example.com/changed\",\"order\":1}]",
-            DisplayOrder = 999,
+            Region = WidgetRegion.BeforeTags,
+            SortOrder = 1000,
             IsEnabled = false
         };
 
@@ -58,7 +60,8 @@ public class WidgetCommandTests
         Assert.Equal(createdTime, listed.CreatedTimeUtc);
         Assert.Equal("Updated links", listed.Title);
         Assert.Equal(updatedRequest.ContentCode, listed.ContentCode);
-        Assert.Equal(999, listed.DisplayOrder);
+        Assert.Equal(WidgetRegion.BeforeTags, listed.Region);
+        Assert.Equal(1000, listed.SortOrder);
         Assert.False(listed.IsEnabled);
 
         var delete = new DeleteWidgetCommandHandler(db, NullLogger<DeleteWidgetCommandHandler>.Instance);

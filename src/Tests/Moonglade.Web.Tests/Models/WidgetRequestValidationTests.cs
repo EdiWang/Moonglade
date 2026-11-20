@@ -1,6 +1,8 @@
 using Moonglade.Data.Entities;
 using Moonglade.Widgets;
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace Moonglade.Web.Tests.Models;
 
@@ -139,22 +141,60 @@ public class WidgetRequestValidationTests
     }
 
     [Theory]
-    [InlineData(-31, false)]
-    [InlineData(-30, true)]
-    [InlineData(-21, true)]
-    [InlineData(-20, true)]
-    [InlineData(-11, true)]
-    [InlineData(-10, true)]
-    [InlineData(-1, true)]
+    [InlineData(-1, false)]
     [InlineData(0, true)]
-    [InlineData(999, true)]
-    [InlineData(1000, false)]
-    public void LinkList_DisplayOrder_EnforcesLegacyRange(int order, bool valid)
+    [InlineData(10, true)]
+    [InlineData(1000, true)]
+    [InlineData(int.MaxValue, true)]
+    public void LinkList_SortOrder_EnforcesNonnegativeIntegerRange(int order, bool valid)
     {
         var request = CreateRequest(WidgetType.LinkList, "[]");
-        request.DisplayOrder = order;
+        request.SortOrder = order;
 
         Assert.Equal(valid, Validate(request).Count == 0);
+    }
+
+    [Theory]
+    [InlineData(-1, false)]
+    [InlineData(0, true)]
+    [InlineData(1, true)]
+    [InlineData(2, true)]
+    [InlineData(3, true)]
+    [InlineData(4, false)]
+    public void LinkList_Region_RejectsUndefinedValues(int region, bool valid)
+    {
+        var request = CreateRequest(WidgetType.LinkList, "[]");
+        request.Region = (WidgetRegion)region;
+
+        Assert.Equal(valid, Validate(request).Count == 0);
+    }
+
+    [Theory]
+    [InlineData(100, true)]
+    [InlineData(101, true)]
+    [InlineData(128, true)]
+    [InlineData(129, false)]
+    public void LinkList_Title_Enforces128CharacterLimit(int length, bool valid)
+    {
+        var request = CreateRequest(WidgetType.LinkList, "[]");
+        request.Title = new string('A', length);
+
+        Assert.Equal(valid, Validate(request).Count == 0);
+    }
+
+    [Theory]
+    [InlineData("{\"sortOrder\":0}")]
+    [InlineData("{\"region\":\"AfterCategories\"}")]
+    public void JsonInput_RequiresBothPlacementFields(string json)
+    {
+        var options = new JsonSerializerOptions(JsonSerializerDefaults.Web);
+        options.Converters.Add(new JsonStringEnumConverter());
+
+        var complete = JsonSerializer.Deserialize<EditWidgetRequest>("{\"region\":\"AfterCategories\",\"sortOrder\":0}", options);
+        Assert.NotNull(complete);
+        Assert.Equal(WidgetRegion.AfterCategories, complete.Region);
+        Assert.Equal(0, complete.SortOrder);
+        Assert.Throws<JsonException>(() => JsonSerializer.Deserialize<EditWidgetRequest>(json, options));
     }
 
     [Theory]
@@ -184,7 +224,8 @@ public class WidgetRequestValidationTests
         {
             Title = "Widget",
             WidgetType = widgetType,
-            DisplayOrder = 0,
+            Region = WidgetRegion.AfterCategories,
+            SortOrder = 0,
             IsEnabled = true,
             ContentCode = contentCode
         };

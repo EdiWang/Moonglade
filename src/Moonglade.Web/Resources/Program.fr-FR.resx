@@ -2232,4 +2232,25 @@
   <data name="Select an activity log to view details." xml:space="preserve">
     <value>Sélectionnez une entrée du journal d’activité pour afficher ses détails.</value>
   </data>
+  <data name="Placement" xml:space="preserve">
+    <value>Emplacement</value>
+  </data>
+  <data name="Before Profile" xml:space="preserve">
+    <value>Avant le profil</value>
+  </data>
+  <data name="Before Tags" xml:space="preserve">
+    <value>Avant les étiquettes</value>
+  </data>
+  <data name="Before Categories" xml:space="preserve">
+    <value>Avant les catégories</value>
+  </data>
+  <data name="After Categories" xml:space="preserve">
+    <value>Après les catégories</value>
+  </data>
+  <data name="Sort order must be zero or greater." xml:space="preserve">
+    <value>L’ordre de tri doit être supérieur ou égal à zéro.</value>
+  </data>
+  <data name="Choose a valid widget placement." xml:space="preserve">
+    <value>Choisissez un emplacement de widget valide.</value>
+  </data>
 </root>

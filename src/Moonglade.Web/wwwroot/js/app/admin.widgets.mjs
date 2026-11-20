@@ -1,4 +1,4 @@
-﻿import { Alpine } from './alpine-init.mjs';
+import { Alpine } from './alpine-init.mjs';
 import { fetch2 } from './httpService.mjs?v=1500';
 import { success, error } from './toastService.mjs';
 import { getLocalizedString } from './utils.module.mjs';
@@ -9,10 +9,12 @@ import { createButtonMixin } from './admin.widgets.buttons.mjs';
 import { createOffcanvas } from './admin.offcanvas.mjs';
 
 const emptyImageLink = () => ({ imageUrl: '', cssClass: '', title: '', altText: '', linkUrl: '', openInNewTab: true });
+const widgetRegions = ['BeforeProfile', 'BeforeTags', 'BeforeCategories', 'AfterCategories'];
 const emptyFormData = () => ({
     title: '',
     widgetType: 'LinkList',
-    displayOrder: 0,
+    region: 'AfterCategories',
+    sortOrder: 0,
     isEnabled: true,
     links: [],
     imageLink: emptyImageLink(),
@@ -50,7 +52,7 @@ Alpine.data('widgetManager', () => ({
     },
 
     get sortedWidgets() {
-        return [...this.widgets].sort((a, b) => a.displayOrder - b.displayOrder);
+        return this.widgets;
     },
 
     get hasWidgets() {
@@ -93,7 +95,8 @@ Alpine.data('widgetManager', () => ({
             this.formData = {
                 title: widget.title,
                 widgetType: widget.widgetType,
-                displayOrder: widget.displayOrder,
+                region: widget.region,
+                sortOrder: widget.sortOrder,
                 isEnabled: widget.isEnabled,
                 links,
                 imageLink,
@@ -124,8 +127,13 @@ Alpine.data('widgetManager', () => ({
         const apiAddress = isCreate ? '/api/widgets' : `/api/widgets/${this.currentWidgetId}`;
         const verb = isCreate ? 'POST' : 'PUT';
 
-        if (this.formData.displayOrder < -30 || this.formData.displayOrder > 999) {
-            alert(getLocalizedString('displayOrderRange'));
+        if (!widgetRegions.includes(this.formData.region)) {
+            alert(getLocalizedString('widgetRegionRequired'));
+            return;
+        }
+
+        if (!Number.isInteger(this.formData.sortOrder) || this.formData.sortOrder < 0 || this.formData.sortOrder > 2147483647) {
+            alert(getLocalizedString('sortOrderRange'));
             return;
         }
 
@@ -150,7 +158,8 @@ Alpine.data('widgetManager', () => ({
             await fetch2(apiAddress, verb, {
                 title: this.formData.title,
                 widgetType: this.formData.widgetType,
-                displayOrder: this.formData.displayOrder,
+                region: this.formData.region,
+                sortOrder: this.formData.sortOrder,
                 isEnabled: this.formData.isEnabled,
                 contentCode
             });

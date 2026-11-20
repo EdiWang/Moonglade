@@ -1,4 +1,5 @@
-﻿using LiteBus.Queries.Abstractions;
+using LiteBus.Queries.Abstractions;
+using Moonglade.Data.Entities;
 using Moonglade.Widgets;
 
 namespace Moonglade.Web.ViewComponents;
@@ -8,7 +9,7 @@ public class WidgetsViewComponent(
     ICacheAside cache,
     IConfiguration configuration) : ViewComponent
 {
-    public async Task<IViewComponentResult> InvokeAsync(int minOrder = int.MinValue, int maxOrder = int.MaxValue)
+    public async Task<IViewComponentResult> InvokeAsync(WidgetRegion region)
     {
         var widgets = await cache.GetOrCreateAsync(BlogCachePartition.General.ToString(), "widgets", async () =>
         {
@@ -17,8 +18,7 @@ public class WidgetsViewComponent(
         }, TimeSpan.FromMinutes(int.Parse(configuration["WidgetCacheMinutes"])));
 
         var filtered = widgets
-            .Where(w => w.IsEnabled && w.DisplayOrder >= minOrder && w.DisplayOrder <= maxOrder)
-            .OrderBy(w => w.DisplayOrder)
+            .Where(w => w.IsEnabled && w.Region == region)
             .ToList();
 
         return View(filtered);

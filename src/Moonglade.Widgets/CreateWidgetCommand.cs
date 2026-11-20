@@ -2,6 +2,7 @@ using LiteBus.Commands.Abstractions;
 using Microsoft.Extensions.Logging;
 using Moonglade.Data;
 using Moonglade.Data.Entities;
+using System.ComponentModel.DataAnnotations;
 
 namespace Moonglade.Widgets;
 
@@ -13,6 +14,7 @@ public class CreateWidgetCommandHandler(
 {
     public async Task<Guid> HandleAsync(CreateWidgetCommand request, CancellationToken ct)
     {
+        Validator.ValidateObject(request.Payload, new ValidationContext(request.Payload), true);
         var widget = new WidgetEntity
         {
             Id = Guid.NewGuid(),
@@ -20,7 +22,8 @@ public class CreateWidgetCommandHandler(
             WidgetType = request.Payload.WidgetType,
             ContentType = WidgetContentType.JSON, // Hardcoded to JSON for now
             ContentCode = request.Payload.ContentCode?.Trim(),
-            DisplayOrder = request.Payload.DisplayOrder,
+            Region = request.Payload.Region,
+            SortOrder = request.Payload.SortOrder,
             IsEnabled = request.Payload.IsEnabled,
             CreatedTimeUtc = DateTime.UtcNow
         };

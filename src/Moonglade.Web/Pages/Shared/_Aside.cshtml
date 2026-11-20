@@ -1,17 +1,18 @@
-﻿@{
+@{
     var snapshot = ViewData.CaptureSettings(SettingsReader);
 }
 @inject IConfiguration Configuration
+@using Moonglade.Data.Entities
 
 <aside class="blog-sidebar d-none d-lg-block">
-    @await Component.InvokeAsync("Widgets", new { minOrder = -30, maxOrder = -21 })
+    @await Component.InvokeAsync("Widgets", new { region = WidgetRegion.BeforeProfile })
 
     @if (snapshot.GeneralSettings.WidgetsProfile)
     {
         <partial name="_WidgetsProfile" />
     }
 
-    @await Component.InvokeAsync("Widgets", new { minOrder = -20, maxOrder = -11 })
+    @await Component.InvokeAsync("Widgets", new { region = WidgetRegion.BeforeTags })
 
     @if (snapshot.GeneralSettings.HotTagAmount > 0)
     {
@@ -32,7 +33,7 @@
         </section>
     }
 
-    @await Component.InvokeAsync("Widgets", new { minOrder = -10, maxOrder = -1 })
+    @await Component.InvokeAsync("Widgets", new { region = WidgetRegion.BeforeCategories })
 
     @if (snapshot.GeneralSettings.WidgetsCategoryList)
     {
@@ -44,7 +45,7 @@
         </section>
     }
 
-    @await Component.InvokeAsync("Widgets", new { minOrder = 0, maxOrder = 999 })
+    @await Component.InvokeAsync("Widgets", new { region = WidgetRegion.AfterCategories })
 
     @if (snapshot.FeedSettings.EnableSubscription && snapshot.GeneralSettings.WidgetsSubscriptionButtons)
     {
@@ -65,4 +66,3 @@
         <partial name="_SubscriptionModal" />
     }
 </aside>
-

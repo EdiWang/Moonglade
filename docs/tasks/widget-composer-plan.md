@@ -4,14 +4,14 @@ Last updated: 2026-11-20 (Asia/Taipei).
 
 ## 1. Current checkpoint and authority
 
-- Phase: B2 in progress; B0 and B1 accepted on 2026-11-20 (Asia/Taipei).
-- Application feature implementation: B2 region/order storage, paired upgrades, title limit, public placement, and necessary current-page bindings are authorized. B3-B6 have not started.
-- Plan status: B0/B1 accepted; B2 execution authorized. B3-B6 require separate execution authorization.
+- Phase: B2 ready for user acceptance; B0 and B1 accepted on 2026-11-20 (Asia/Taipei).
+- Application feature implementation: B2 region/order storage, paired upgrades, title limit, public placement, and necessary current-page bindings are implemented and verified. B3-B6 have not started.
+- Plan status: B0/B1 accepted; B2 awaiting user acceptance. B3-B6 require separate execution authorization.
 - Baseline branch: `master`.
 - Baseline HEAD: `3169a59557b7acd519c612b9ea1bc543908c68b2` (`Show activity log details in a reading pane`).
 - Planning baseline commit: `1e91dea838e593bf73e6799310d7b72c0855260e`.
 - Execution authorization: B2 granted; B3-B6 pending.
-- Next action: complete B2 provider migration and application verification, then obtain B2 user acceptance.
+- Next action: obtain B2 user acceptance. B3 requires separate execution authorization.
 
 This file contains the current requirements, implementation context, delivery gates, progress, and verification results. Update it in place after every batch or material change. Keep only the latest state: no questions and answers, discussion history, superseded proposals, or chronological work logs. Retain each batch's current outcome, implementation SHA, acceptance status, and unresolved limitations so work can resume without prior conversation context.
 
@@ -28,7 +28,7 @@ This file contains the current requirements, implementation context, delivery ga
 
 ## 2. Target design and scope
 
-The current `/admin/widgets` page displays three large preview cards per row. A large image stretches its row and leaves the neighboring cards mostly empty. Editing is hidden behind a three-dot menu. The editor is a 500-pixel offcanvas, with additional dialogs for individual links and buttons. Placement is entered as a numeric `DisplayOrder`, requiring the administrator to understand four numeric bands.
+The current `/admin/widgets` page displays three large preview cards per row. A large image stretches its row and leaves the neighboring cards mostly empty. Editing is hidden behind a three-dot menu. The editor is a 500-pixel offcanvas, with additional dialogs for individual links and buttons. The interim B2 editor uses a localized Placement selector and nonnegative Sort Order. The replacement composer remains scheduled for B4.
 
 Implement a **sidebar composer**: a sidebar structure on the left, an inline content editor in the middle, and a live blog-sidebar preview on the right.
 
@@ -119,27 +119,27 @@ Whole-page overwrite, including its cross-tab effects, must be covered by accept
 - If a faithful isolated theme preview needs new dependencies, changes to global security policy, an admin-shell redesign, or server-side fetching of external images, stop that part and present alternatives.
 - If batch size or implementation findings require splitting/reordering a batch in a way that changes its accepted behavior, update the proposal and ask before proceeding.
 
-## 4. Verified repository baseline
+## 4. Current repository implementation context
 
-These observations came from source inspection at the baseline HEAD, not from a running application or a live database.
+This map reflects the verified B2 checkpoint. The approved future API and composer contracts are specified in the B1 notes and batch scopes; do not mistake those targets for already delivered features.
 
 | Concern | Owning files / current behavior |
 | --- | --- |
 | Admin page | `src/Moonglade.Web/Pages/Admin/Widgets.cshtml`: card gallery, offcanvas, nested dialogs, translated data attributes, antiforgery token. |
-| Admin state | `src/Moonglade.Web/wwwroot/js/app/admin.widgets.mjs`, `admin.widgets.links.mjs`, `admin.widgets.buttons.mjs`: independent CRUD, numeric order, JSON content, and type-specific draft clearing. |
+| Admin state | `src/Moonglade.Web/wwwroot/js/app/admin.widgets.mjs`, `admin.widgets.links.mjs`, `admin.widgets.buttons.mjs`: independent CRUD, explicit region/order, JSON content, and type-specific draft clearing. |
 | Admin preview | `src/Moonglade.Web/wwwroot/js/app/admin.widgets.render.mjs`: separate client-side renderer; it currently does not establish frontend-template/theme parity. |
 | HTTP | `src/Moonglade.Web/Controllers/WidgetsController.cs`: GET list/detail, POST create, PUT update, DELETE; cache eviction and existing widget activity events follow mutations. `BlogControllerBase` supplies administrator authorization. Global MVC setup adds automatic antiforgery validation. |
 | Domain | `src/Moonglade.Widgets/`: request/content validation, queries, commands, and `Types/`. Existing commands save independently. `Program.cs` already includes this assembly in handler loading. |
-| Storage | `src/Moonglade.Data/Entities/WidgetEntity.cs`, `Configurations/WidgetConfiguration.cs`, `BlogDbContext.cs`: GUID ID, title, type, content type/code, integer DisplayOrder, enabled, CreatedTimeUtc. JSON content maximum is 2000 characters; title request maximum is 128 while mapping maximum is 100 (R8 resolves this). |
-| Fresh data | `src/Moonglade.Data/Seed.cs`: a Friend Links widget at order zero. `src/Moonglade.Setup/StartUpInitializer.cs`: widgets participate in nonempty-database protection. |
-| Public rendering | `src/Moonglade.Web/ViewComponents/WidgetsViewComponent.cs`, `Pages/Components/Widgets/Default.cshtml`, and `Pages/Shared/_Widget_LinkList.cshtml`, `_Widget_ImageLink.cshtml`, `_Widget_ButtonLink.cshtml`. Only enabled widgets render; ordering is numeric. |
-| Position anchors | `src/Moonglade.Web/Pages/Shared/_Aside.cshtml`: before Profile [-30,-21], before Tags [-20,-11], before Categories [-10,-1], after Categories [0,999], then subscription. Built-ins may be hidden by settings. |
+| Storage | `src/Moonglade.Data/Entities/WidgetEntity.cs`, `Configurations/WidgetConfiguration.cs`, `BlogDbContext.cs`: GUID ID, title, type, content type/code, WidgetRegion plus integer SortOrder, enabled, CreatedTimeUtc. JSON content maximum is 2000 characters; title validation and mapping maximum are both 128. Region is persisted as a string of at most 32 characters. |
+| Fresh data | `src/Moonglade.Data/Seed.cs`: a Friend Links widget in AfterCategories at order zero. `src/Moonglade.Setup/StartUpInitializer.cs`: widgets participate in nonempty-database protection. |
+| Public rendering | `src/Moonglade.Web/ViewComponents/WidgetsViewComponent.cs`, `Pages/Components/Widgets/Default.cshtml`, and `Pages/Shared/_Widget_LinkList.cshtml`, `_Widget_ImageLink.cshtml`, `_Widget_ButtonLink.cshtml`. Only enabled widgets render. ListWidgetsQuery orders by region, SortOrder, CreatedTimeUtc, and ordinal canonical GUID string; management and public rendering reuse this order. |
+| Position anchors | `src/Moonglade.Web/Pages/Shared/_Aside.cshtml`: BeforeProfile, BeforeTags, BeforeCategories, AfterCategories, then subscription. Numeric bands exist only as the legacy migration source. Built-ins may be hidden by settings. |
 | Opening behavior | Public Link List currently always uses a new tab despite storing an opening flag; image/button templates already use their own flag. R9 authorizes the scoped correction. |
 | Shared UI | `src/Moonglade.Web/wwwroot/css/admin.css`, shared admin layout, and existing Alpine/Bootstrap modules. Toolbar remains outside `.admin-main-body`; do not regress other admin pages with broad shared-style edits. |
 | Tests | Existing widget validation is in `src/Tests/Moonglade.Web.Tests/Models/WidgetRequestValidationTests.cs`. Web tests already reference the real Web application and use TestHost/SQLite. Frontend behavior tests use Node's built-in runner under `src/Tests/Moonglade.Web.Tests/JavaScript/`. No dedicated Widgets test project was found. |
 | Other callers | `Hosting/DiscoveryEndpointTests.cs` and `Pages/SearchPageTests.cs` in Web tests set up `ListWidgetsQuery`. Activity catalog/HTTP tests cover widget events. Revisit these when contracts change. |
 | Localization | `src/Moonglade.Web/Resources/Program.de-DE.resx`, `Program.fr-FR.resx`, `Program.ja-JP.resx`, `Program.zh-Hans.resx`, and `Program.zh-Hant.resx`. New English keys require all five translations. |
-| Providers/upgrades | Shared EF mapping plus PostgreSQL snake_case and SQL Server PascalCase mappings. `database/README.md` requires manually run, numbered, idempotent scripts for both providers. Highest observed number is 11; choose the next number at execution time, not from this snapshot. |
+| Providers/upgrades | Shared EF mapping plus PostgreSQL snake_case and SQL Server PascalCase mappings. `database/README.md` requires manually run, numbered, idempotent scripts for both providers. B2 adds paired script 12.widget-regions.sql after 11; fresh schema creation uses the target model. Recheck numbering before any later schema work. |
 | Export | The inspected application exporter supports Posts and Pages, not Widgets. Do not add a widget-export feature. Database-level backup remains necessary for upgrade acceptance. |
 
 Read `AGENTS.md`, the relevant sections of `docs/agent-reference.md`, `README.md`, `src/Tests/README.md`, and `database/README.md` again when resuming if they changed. Treat local development overrides as private; do not copy connection strings, cookies, credentials, or payloads into this file.
@@ -171,7 +171,7 @@ Local implementation commits within an explicitly authorized batch are part of t
 | --- | --- | --- | --- | --- | --- |
 | B0 | Plan and requirements | Accepted | Source/path/requirements/format/diff checks passed | `c7ebf2bb16e6040ef5f1fc22af0701371266bcf7` | Accepted 2026-11-20 |
 | B1 | Baseline, concrete contracts, acceptance fixtures | Accepted | Web build; 825 Web tests; 58 Node tests; both provider/browser baselines passed | `5c0dc4eb08d583872187f9058233e2a05c3d4cad` | Accepted 2026-11-20 |
-| B2 | Region/order model and both database upgrades | In progress | Not run | None | Pending |
+| B2 | Region/order model and both database upgrades | Ready for user acceptance | Web build; 836 Web, 79 Setup, 62 Node tests; both native provider fresh/upgrade/rerun and browser checks passed | Pending implementation commit | Pending |
 | B3 | Atomic whole-collection save | Not started | Not run | None | Pending |
 | B4 | Composer and inline draft editing | Not started | Not run | None | Pending |
 | B5 | Real preview and complete arrangement controls | Not started | Not run | None | Pending |
@@ -203,6 +203,8 @@ Local implementation commits within an explicitly authorized batch are part of t
 **User acceptance:** review the contract notes, exact migration preservation rules, last-save-wins examples, baseline issues, and fixtures. Agree to any newly exposed material choices before B2.
 
 ### B2 - Region/order model, preservation, and upgrades
+
+**Deliverables:** [B2 storage and upgrade verification](widget-composer-b2.md), paired script 12, new model/callers, interim placement controls, and focused tests. Status: ready for user acceptance.
 
 **Scope:** introduce the explicit region/order model and R8's 128-character title limit, keeping the current page and public sidebar functional until their replacement is ready.
 
@@ -338,7 +340,7 @@ Next permitted action:
 - Verification commit: `c7ebf2bb16e6040ef5f1fc22af0701371266bcf7`.
 - Scope: this plan file only; no application, configuration, database, deployment, or external service changes.
 - Planning baseline commit: `1e91dea838e593bf73e6799310d7b72c0855260e` on `master`.
-- Source verification: source changes from `3169a59557b7acd519c612b9ea1bc543908c68b2` to the planning baseline are limited to this plan file. Widget storage/validation, sidebar regions, link opening behavior, handler loading, and antiforgery wiring match Section 4.
+- Source verification: source changes from `3169a59557b7acd519c612b9ea1bc543908c68b2` to the planning baseline are limited to this plan file. The documentation-only B0 commit preserved baseline widget behavior and application wiring.
 - Requirement verification: functional requirements, B0-B6 scope, batch acceptance gates, verification matrix, current-state-only maintenance, and continuation instructions are present and consistent.
 - Documentation checks: referenced repository paths and planned build/test command targets exist; UTF-8 without BOM, CRLF, final newline, balanced code fences, and Git whitespace validation passed.
 - Check commands: `git diff --name-status 3169a59557b7acd519c612b9ea1bc543908c68b2..1e91dea838e593bf73e6799310d7b72c0855260e` (plan file only), inline Python document/path checks (passed), and `git diff --check` (exit 0).
@@ -346,7 +348,7 @@ Next permitted action:
 - Temporary fixtures and cleanup: none.
 - User acceptance: accepted on 2026-11-20.
 - Open B0 blockers: none.
-- Next action: B2 is authorized and in progress.
+- Next action: obtain B2 user acceptance; B3 execution authorization is pending.
 
 ### B1 - Current verification status
 
@@ -362,7 +364,22 @@ Next permitted action:
 - Local artifacts: fixture hosts stopped; task-owned PostgreSQL/SQL Server containers and their volumes removed; ports 15432/15433/18081/18082 have no listeners. Durable logs/screenshots and stopped external `b1/tools`/`b1/runtime` directories are retained as authorized local reproduction materials. No temporary fixture host or migration harness is committed.
 - Implementation commit SHA: `5c0dc4eb08d583872187f9058233e2a05c3d4cad`.
 - User acceptance: accepted on 2026-11-20.
-- Next action: B2 is authorized and in progress.
+- Next action: obtain B2 user acceptance; B3 execution authorization is pending.
+
+### B2 - Current verification status
+
+- Status: ready for user acceptance, 2026-11-20 (Asia/Taipei). Branch: `codex/widget-composer-b2`. B3-B6 have not started and require separate execution authorization.
+- Scope: explicit region/order mapping and seeding, canonical query/public ordering, paired manual script 12, title 128, interim current-editor placement fields, all five translations, focused command/model/frontend tests, and operator documentation.
+- Current HTTP cutover: individual CRUD remains; create/update require `region` and `sortOrder`, and responses no longer expose `displayOrder`. Whole-collection envelope/save/locks and real preview are not implemented yet. No temporary legacy bridge exists.
+- Commands/results: `dotnet build src/Moonglade.Web/Moonglade.Web.csproj` passed with zero warnings/errors; Web tests 836/836; Setup tests 79/79; Node tests 62/62; format/resource/document checks and `git diff --check` passed. Exact commands and coverage are in `widget-composer-b2.md`.
+- Native providers: PostgreSQL 18.7 and SQL Server 16.0.4325.4. Both passed 20-row synthetic upgrade preservation, canonical GUID ties, upper-region capacity, invalid-order/partial-schema rollback, repeated execution including subsequent edits, title boundaries, empty legacy conversion, new-model fresh initialization, and target-schema guards. No production database was accessed.
+- Browser: ChatGPT in-app browser, 1440x900/1920x1080; both providers across upgraded/fresh schemas. Save/reload, order 1000, title 128, public anchor placement, disabled filtering, and all five localized placement selectors passed. No application console errors. Browser version was not captured.
+- Evidence and limits: `docs/tasks/widget-composer-b2.md`; durable local logs/screenshots under `C:/Users/Edi/Documents/Codex/Moonglade-Widgets-Design/b2/`. Full themes/settings, TOTP, collection concurrency, and integrated composer acceptance remain later batches. The existing Button Link editor overlap remains assigned to B4.
+- Cleanup: all B2 hosts stopped; task containers and volumes removed; B2 migration tools, hosts, runtime directories, and launcher scripts removed. Logs/screenshots retained. B1 reproduction tools remain as authorized. Generated private development-configuration copies in B1/B2 build outputs were removed; the repository source override was not read or modified.
+- Implementation commit SHA: pending implementation commit.
+- User acceptance: pending.
+- Remaining risks: schema 12 and matching application must be upgraded together with stopped hosts and a backup; reverting the binary alone cannot restore the old schema. Native tests used synthetic representative data; rehearse on an operator-restored real backup before an actual upgrade.
+- Next permitted action: obtain B2 user acceptance. Do not begin B3 without authorization.
 
 ## 8. Resume from a fresh conversation
 

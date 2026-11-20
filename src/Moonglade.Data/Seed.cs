@@ -1,4 +1,4 @@
-﻿using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging;
 using Moonglade.Data.Entities;
 using System.Globalization;
 
@@ -96,7 +96,8 @@ public class Seed
                 ContentCode = "[{\"name\": \"Edi Wang\", \"url\": \"https://edi.wang\", \"openInNewTab\": true, \"order\": 0}]",
                 ContentType = WidgetContentType.JSON,
                 CreatedTimeUtc = DateTime.UtcNow,
-                DisplayOrder = 0,
+                Region = WidgetRegion.AfterCategories,
+                SortOrder = 0,
                 IsEnabled = true
             }
         ];

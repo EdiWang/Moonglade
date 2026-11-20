@@ -2183,4 +2183,25 @@
   <data name="Select an activity log to view details." xml:space="preserve">
     <value>選取一筆活動記錄以查看詳細資料。</value>
   </data>
+  <data name="Placement" xml:space="preserve">
+    <value>顯示位置</value>
+  </data>
+  <data name="Before Profile" xml:space="preserve">
+    <value>個人資料之前</value>
+  </data>
+  <data name="Before Tags" xml:space="preserve">
+    <value>標籤之前</value>
+  </data>
+  <data name="Before Categories" xml:space="preserve">
+    <value>分類之前</value>
+  </data>
+  <data name="After Categories" xml:space="preserve">
+    <value>分類之後</value>
+  </data>
+  <data name="Sort order must be zero or greater." xml:space="preserve">
+    <value>排序值必須大於或等於零。</value>
+  </data>
+  <data name="Choose a valid widget placement." xml:space="preserve">
+    <value>請選擇有效的小工具顯示位置。</value>
+  </data>
 </root>

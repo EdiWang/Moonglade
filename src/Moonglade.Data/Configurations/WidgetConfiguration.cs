@@ -8,7 +8,8 @@ public class WidgetConfiguration : IEntityTypeConfiguration<WidgetEntity>
     public void Configure(EntityTypeBuilder<WidgetEntity> builder)
     {
         builder.Property(e => e.Id).ValueGeneratedNever();
-        builder.Property(e => e.Title).HasMaxLength(100);
+        builder.Property(e => e.Title).HasMaxLength(128);
+        builder.Property(e => e.Region).HasMaxLength(32).HasConversion<string>();
         builder.Property(e => e.WidgetType)
             .HasMaxLength(50)
             .HasConversion<string>();

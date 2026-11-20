@@ -2,6 +2,7 @@ using LiteBus.Commands.Abstractions;
 using Microsoft.Extensions.Logging;
 using Moonglade.Data;
 using Moonglade.Data.Entities;
+using System.ComponentModel.DataAnnotations;
 
 namespace Moonglade.Widgets;
 
@@ -16,11 +17,13 @@ public class UpdateWidgetCommandHandler(
         var widget = await db.Widget.FindAsync([request.Id], ct);
         if (widget is null) return OperationCode.ObjectNotFound;
 
+        Validator.ValidateObject(request.Payload, new ValidationContext(request.Payload), true);
         widget.Title = request.Payload.Title.Trim();
         widget.WidgetType = request.Payload.WidgetType;
         widget.ContentType = WidgetContentType.JSON; // Currently only JSON is supported
         widget.ContentCode = request.Payload.ContentCode?.Trim();
-        widget.DisplayOrder = request.Payload.DisplayOrder;
+        widget.Region = request.Payload.Region;
+        widget.SortOrder = request.Payload.SortOrder;
         widget.IsEnabled = request.Payload.IsEnabled;
 
         await db.SaveChangesAsync(ct);

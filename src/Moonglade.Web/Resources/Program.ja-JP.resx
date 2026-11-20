@@ -2183,4 +2183,25 @@
   <data name="Select an activity log to view details." xml:space="preserve">
     <value>アクティビティログを選択すると詳細が表示されます。</value>
   </data>
+  <data name="Placement" xml:space="preserve">
+    <value>配置位置</value>
+  </data>
+  <data name="Before Profile" xml:space="preserve">
+    <value>プロフィールの前</value>
+  </data>
+  <data name="Before Tags" xml:space="preserve">
+    <value>タグの前</value>
+  </data>
+  <data name="Before Categories" xml:space="preserve">
+    <value>カテゴリーの前</value>
+  </data>
+  <data name="After Categories" xml:space="preserve">
+    <value>カテゴリーの後</value>
+  </data>
+  <data name="Sort order must be zero or greater." xml:space="preserve">
+    <value>並び順には 0 以上の値を指定してください。</value>
+  </data>
+  <data name="Choose a valid widget placement." xml:space="preserve">
+    <value>ウィジェットの有効な配置位置を選択してください。</value>
+  </data>
 </root>

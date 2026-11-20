@@ -3,6 +3,7 @@ using Moonglade.Data.Exporting;
 using Moonglade.Widgets.Types;
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace Moonglade.Widgets;
 
@@ -20,9 +21,15 @@ public class EditWidgetRequest : IValidatableObject
     [MaxLength(2000)]
     public string ContentCode { get; set; }
 
-    [Display(Name = "Display Order")]
-    [Range(-30, 999)]
-    public int DisplayOrder { get; set; }
+    [JsonRequired]
+    [Display(Name = "Placement")]
+    [EnumDataType(typeof(WidgetRegion))]
+    public WidgetRegion Region { get; set; } = WidgetRegion.AfterCategories;
+
+    [JsonRequired]
+    [Display(Name = "Sort Order")]
+    [Range(0, int.MaxValue)]
+    public int SortOrder { get; set; }
 
     [Display(Name = "Enabled")]
     public bool IsEnabled { get; set; } = true;
