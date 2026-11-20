@@ -170,7 +170,7 @@ Local implementation commits within an explicitly authorized batch are part of t
 | Batch | Scope | Implementation | Verification | Implementation SHA | User acceptance |
 | --- | --- | --- | --- | --- | --- |
 | B0 | Plan and requirements | Accepted | Source/path/requirements/format/diff checks passed | `c7ebf2bb16e6040ef5f1fc22af0701371266bcf7` | Accepted 2026-11-20 |
-| B1 | Baseline, concrete contracts, acceptance fixtures | Ready for user acceptance | Web build; 825 Web tests; 58 Node tests; both provider/browser baselines passed | Pending commit | Pending |
+| B1 | Baseline, concrete contracts, acceptance fixtures | Ready for user acceptance | Web build; 825 Web tests; 58 Node tests; both provider/browser baselines passed | `5c0dc4eb08d583872187f9058233e2a05c3d4cad` | Pending |
 | B2 | Region/order model and both database upgrades | Not started | Not run | None | Pending |
 | B3 | Atomic whole-collection save | Not started | Not run | None | Pending |
 | B4 | Composer and inline draft editing | Not started | Not run | None | Pending |
@@ -360,9 +360,9 @@ Next permitted action:
 - Scope exclusions: no schema/upgrade SQL, new save/lock/preview implementation, production data access, private development override changes, or deployment. TOTP, full culture/theme/settings matrix, migrations, and new-feature acceptance remain later-batch checks.
 - Evidence: current results and durable local paths are listed in `docs/tasks/widget-composer-b1.md`. The committed contracts/JSON/tests support reproduction without those local files.
 - Local artifacts: fixture hosts stopped; task-owned PostgreSQL/SQL Server containers and their volumes removed; ports 15432/15433/18081/18082 have no listeners. Durable logs/screenshots and stopped external `b1/tools`/`b1/runtime` directories are retained as authorized local reproduction materials. No temporary fixture host or migration harness is committed.
-- Implementation commit SHA: pending commit.
+- Implementation commit SHA: `5c0dc4eb08d583872187f9058233e2a05c3d4cad`.
 - User acceptance: pending.
-- Next action: finish the current tracking/verification checkpoint, obtain B1 user acceptance, and await explicit B2 authorization.
+- Next action: obtain B1 user acceptance of the contracts, baseline results, and fixtures; await explicit B2 authorization.
 
 ## 8. Resume from a fresh conversation
 
