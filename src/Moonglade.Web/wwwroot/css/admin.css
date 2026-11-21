@@ -389,15 +389,6 @@
     --bs-dropdown-item-padding-y: .25rem;
 }
 
-.admin-widget-preview img {
-    max-width: 100%;
-    height: auto;
-}
-
-.admin-widget-preview .btn-group {
-    max-width: 100%;
-}
-
 .admin-settings-page {
     max-width: 1120px;
     min-width: 0;

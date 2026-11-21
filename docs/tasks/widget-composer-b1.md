@@ -87,20 +87,20 @@ The native lock contracts are documented by [PostgreSQL](https://www.postgresql.
 
 ## 4. Existing caller and cutover inventory
 
-| Caller | Required transition |
+| Caller | Current cutover state |
 | --- | --- |
-| `admin.widgets.mjs` | Replace list/detail and individual writes with complete collection load/save when B4 lands; maintain one draft across selections. |
-| `admin.widgets.links.mjs`, `admin.widgets.buttons.mjs` | Preserve all content fields while moving dialog-specific editing into the draft editor; remove modules only when no callers remain. |
+| `admin.widgets.mjs` | B4 uses collection GET/PUT, one complete local draft, structured error recovery, and the shared confirmation modal. Draft/model and HTTP transport are separate page modules. |
+| `admin.widgets.links.mjs`, `admin.widgets.buttons.mjs` | Removed in B4; all supported fields now use inline draft editors with stable item keys. |
 | `admin.widgets.render.mjs` | Retain security coverage while replacing approximate previews with B5's actual template rendering. |
-| `WidgetsController` / Widgets queries and commands | Add the collection contract in B3; preserve the temporary existing-page routes only until B4 switches the page, then retire unused individual routes/handlers. |
-| `WidgetsViewComponent` / `_Aside.cshtml` | Select explicit regions and order in B2, preserving built-in ownership and enabled filtering. |
-| Current Widgets offcanvas | In B2, update only the necessary placement bindings/labels/request fields to explicit region/order so the old page remains functional. B4 replaces the layout and nested editing flow. |
+| `WidgetsController` / Widgets queries and commands | Collection GET/PUT are implemented. B4 retires old list/detail/individual routes and unused create/update/delete/detail handlers. |
+| `WidgetsViewComponent` / `_Aside.cshtml` | Use explicit regions and canonical order, preserving built-in ownership and enabled filtering. |
+| Current Widgets offcanvas | Removed in B4 together with nested link/button dialogs. The composer preserves retained fields and provides whole-page Save/Discard, staged delete/undo, region selection and movement buttons. |
 | Seed / Setup / mappings | B2 updates fresh data and paired provider upgrades, including title length. Preserve nonempty-install safeguards and UTC handling. |
 | `DiscoveryEndpointTests` / `SearchPageTests` | Keep real public composition and query setup coherent if query types or models change. |
 | Widget validation/lifecycle/security tests | Move assertions to the replacement contract in the batch that changes it; preserve behavioral coverage without asserting removed source is absent. |
 | Activity catalog/HTTP tests and widget audit events | Preserve supported event keys and safe target details. Full-collection replacement emits only actual create/update/delete outcomes after business persistence. |
 
-The old numeric HTTP model is replaced in B2 together with the minimum current-page bindings; a permanent numeric-to-region compatibility layer is unnecessary. The old individual-operation routes may remain briefly for the current page, using only the new authoritative region/order model. GET-list/detail, POST-create, PUT-by-ID, and DELETE-by-ID retire with the B4 caller cutover. Other public APIs, blog URLs, and protocols remain unchanged.
+The old numeric HTTP model is replaced in B2 together with the minimum current-page bindings; a permanent numeric-to-region compatibility layer is unnecessary. GET-list/detail, POST-create, PUT-by-ID, and DELETE-by-ID are retired by B4. The composer uses only the complete collection contract. Other public APIs, blog URLs, and protocols remain unchanged.
 
 ## 5. Preview and draft behavior
 
@@ -143,7 +143,7 @@ To recreate: provision task-owned disposable databases, initialize each through 
 - The fixture host clears default configuration sources, uses generated ephemeral credentials, task-only image/original/icon paths, and loopback-only ports 18081/18082. SMTP is disabled and the synthetic account uses password-only authentication; this is not TOTP or production-host acceptance.
 - Provider fixture key rings are independent while cookies are scoped to hostname rather than port. Moving between these loopback hosts requires fresh sign-in/antiforgery renewal; this baseline does not claim production authentication compatibility.
 - Browser checks passed: page identity, 18-item nonblank collection, no error overlay, actual Edit/Cancel and New/Cancel interactions, public enabled filtering, and existing opening-flag discrepancy. No application console errors; the public page's Development-environment warning is expected.
-- Known baseline UI issue: Button Link editing also displays an empty Link List section. Evidence is the actual compiled-page screenshot. B4 replaces this flow; B1 does not change production markup or styles.
+- Accepted baseline finding: Button Link editing also displayed an empty Link List section. B4 resolves it with separate type-specific editors; the B1 screenshot remains baseline evidence.
 - New schemas, migration SQL, complete-collection replacement, native lock coordination, new editor, and real draft preview are not implemented or accepted in B1. No production data or private development override was used.
 
 ### Evidence
@@ -159,4 +159,4 @@ Durable local evidence root: `C:/Users/Edi/Documents/Codex/Moonglade-Widgets-Des
 - `postgresql-editor-1440.jpg`: current editor and baseline visibility issue.
 - `postgresql-widgets-1920.jpg`, `sqlserver-widgets-1920.jpg`, `sqlserver-widgets-1440.jpg`: provider/viewport baselines.
 
-These local evidence paths are supplementary. The committed contract, synthetic JSON, and characterization tests are sufficient to recreate the scenarios on another machine. The fixture hosts are stopped and the database containers/volumes removed. The stopped local tools/runtime directories are retained as authorized reproduction materials. Cleanup status and the B1 implementation SHA are recorded in the delivery plan. B0-B2 are accepted; B3 is ready for user acceptance as tracked in the delivery plan.
+These local evidence paths are supplementary. The committed contract, synthetic JSON, and characterization tests are sufficient to recreate the scenarios on another machine. The fixture hosts are stopped and the database containers/volumes removed. The stopped local tools/runtime directories are retained as authorized reproduction materials. Cleanup status and the B1 implementation SHA are recorded in the delivery plan. B0-B3 are accepted; B4 is ready for user acceptance as tracked in the delivery plan.

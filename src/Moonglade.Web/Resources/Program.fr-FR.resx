@@ -2253,4 +2253,130 @@
   <data name="Choose a valid widget placement." xml:space="preserve">
     <value>Choisissez un emplacement de widget valide.</value>
   </data>
+  <data name="A URL is required." xml:space="preserve">
+    <value>Une URL est requise.</value>
+  </data>
+  <data name="A name or button text is required." xml:space="preserve">
+    <value>Un nom ou un texte de bouton est requis.</value>
+  </data>
+  <data name="A widget title is required." xml:space="preserve">
+    <value>Un titre de widget est requis.</value>
+  </data>
+  <data name="Add widget" xml:space="preserve">
+    <value>Ajouter un widget</value>
+  </data>
+  <data name="Advanced options" xml:space="preserve">
+    <value>Options avancées</value>
+  </data>
+  <data name="Blog preview" xml:space="preserve">
+    <value>Aperçu du blog</value>
+  </data>
+  <data name="Built-in" xml:space="preserve">
+    <value>Intégré</value>
+  </data>
+  <data name="Button widgets must contain one to three buttons." xml:space="preserve">
+    <value>Les widgets de boutons doivent contenir un à trois boutons.</value>
+  </data>
+  <data name="Change widget type? This clears its content in the draft. Saved content stays unchanged until you save." xml:space="preserve">
+    <value>Changer le type de widget ? Son contenu sera effacé dans le brouillon. Le contenu enregistré restera inchangé jusqu’à l’enregistrement.</value>
+  </data>
+  <data name="Discard all unsaved widget changes?" xml:space="preserve">
+    <value>Abandonner toutes les modifications non enregistrées des widgets ?</value>
+  </data>
+  <data name="Discard changes" xml:space="preserve">
+    <value>Abandonner les modifications</value>
+  </data>
+  <data name="Edit widget" xml:space="preserve">
+    <value>Modifier le widget</value>
+  </data>
+  <data name="Hidden" xml:space="preserve">
+    <value>Masqué</value>
+  </data>
+  <data name="Live preview is coming next." xml:space="preserve">
+    <value>L’aperçu en direct sera bientôt disponible.</value>
+  </data>
+  <data name="No items yet. Add one to edit its details." xml:space="preserve">
+    <value>Aucun élément. Ajoutez-en un pour modifier ses détails.</value>
+  </data>
+  <data name="Only link lists show this title on the blog." xml:space="preserve">
+    <value>Seules les listes de liens affichent ce titre sur le blog.</value>
+  </data>
+  <data name="Reload saved widgets" xml:space="preserve">
+    <value>Recharger les widgets enregistrés</value>
+  </data>
+  <data name="Reload saved widgets? This replaces your local draft with the latest saved collection." xml:space="preserve">
+    <value>Recharger les widgets enregistrés ? Le brouillon local sera remplacé par la dernière collection enregistrée.</value>
+  </data>
+  <data name="Remove item" xml:space="preserve">
+    <value>Retirer l’élément</value>
+  </data>
+  <data name="Remove widget" xml:space="preserve">
+    <value>Retirer le widget</value>
+  </data>
+  <data name="Removed from draft" xml:space="preserve">
+    <value>Retirés du brouillon</value>
+  </data>
+  <data name="Review the highlighted fields. Nothing was saved." xml:space="preserve">
+    <value>Vérifiez les champs signalés. Aucune modification n’a été enregistrée.</value>
+  </data>
+  <data name="Save changes" xml:space="preserve">
+    <value>Enregistrer les modifications</value>
+  </data>
+  <data name="Save not confirmed" xml:space="preserve">
+    <value>Enregistrement non confirmé</value>
+  </data>
+  <data name="Saved" xml:space="preserve">
+    <value>Enregistré</value>
+  </data>
+  <data name="Select a widget or add one to start editing." xml:space="preserve">
+    <value>Sélectionnez ou ajoutez un widget pour commencer à le modifier.</value>
+  </data>
+  <data name="Show on blog" xml:space="preserve">
+    <value>Afficher sur le blog</value>
+  </data>
+  <data name="Sidebar structure" xml:space="preserve">
+    <value>Structure de la barre latérale</value>
+  </data>
+  <data name="The blog sidebar is disabled." xml:space="preserve">
+    <value>La barre latérale du blog est désactivée.</value>
+  </data>
+  <data name="The previous save could not be confirmed. Replace the entire saved collection with this draft, including changes from other tabs?" xml:space="preserve">
+    <value>L’enregistrement précédent n’a pas pu être confirmé. Remplacer toute la collection enregistrée par ce brouillon, y compris les modifications des autres onglets ?</value>
+  </data>
+  <data name="The save could not be confirmed. Your draft is kept. Check the connection before retrying or reload saved widgets." xml:space="preserve">
+    <value>L’enregistrement n’a pas pu être confirmé. Votre brouillon est conservé. Vérifiez la connexion avant de réessayer ou rechargez les widgets enregistrés.</value>
+  </data>
+  <data name="The widget content is invalid." xml:space="preserve">
+    <value>Le contenu du widget n’est pas valide.</value>
+  </data>
+  <data name="Undo" xml:space="preserve">
+    <value>Annuler</value>
+  </data>
+  <data name="Unsaved changes" xml:space="preserve">
+    <value>Modifications non enregistrées</value>
+  </data>
+  <data name="Untitled widget" xml:space="preserve">
+    <value>Widget sans titre</value>
+  </data>
+  <data name="Widget content can contain up to 2000 characters." xml:space="preserve">
+    <value>Le contenu du widget est limité à 2000 caractères.</value>
+  </data>
+  <data name="Widget title" xml:space="preserve">
+    <value>Titre du widget</value>
+  </data>
+  <data name="Widget titles can contain up to 128 characters." xml:space="preserve">
+    <value>Les titres de widgets sont limités à 128 caractères.</value>
+  </data>
+  <data name="Widgets could not be loaded completely. Your draft is kept. Reload to try again." xml:space="preserve">
+    <value>Les widgets n’ont pas pu être chargés entièrement. Votre brouillon est conservé. Rechargez pour réessayer.</value>
+  </data>
+  <data name="Your changes stay in this draft until you save." xml:space="preserve">
+    <value>Vos modifications restent dans ce brouillon jusqu’à l’enregistrement.</value>
+  </data>
+  <data name="Your widgets were saved, but the public cache could not be refreshed. Your draft is kept. Reload saved widgets before continuing." xml:space="preserve">
+    <value>Vos widgets ont été enregistrés, mais le cache public n’a pas pu être actualisé. Votre brouillon est conservé. Rechargez les widgets enregistrés avant de continuer.</value>
+  </data>
+  <data name="characters" xml:space="preserve">
+    <value>caractères</value>
+  </data>
 </root>

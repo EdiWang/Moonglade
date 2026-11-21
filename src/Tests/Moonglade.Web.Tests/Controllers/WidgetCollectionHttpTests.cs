@@ -177,8 +177,8 @@ public class WidgetCollectionHttpTests
         var widget = WidgetCollectionTests.Draft("Before cache eviction");
         await SaveAsync(client, [widget], ct);
         var cache = fixture.App.Services.GetRequiredService<ICacheAside>();
-        Task<WidgetSnapshot[]> ReadCachedAsync() => cache.GetOrCreateAsync("General", "widgets",
-            () => ReadWidgetsAsync(fixture, ct), TimeSpan.FromMinutes(30));
+        async Task<WidgetSnapshot[]> ReadCachedAsync() => (await cache.GetOrCreateAsync("General", "widgets",
+            () => ReadWidgetsAsync(fixture, ct), TimeSpan.FromMinutes(30)))!;
         Assert.Equal(widget.Title, Assert.Single(await ReadCachedAsync()).Title);
         widget.Title = "After cache eviction";
 

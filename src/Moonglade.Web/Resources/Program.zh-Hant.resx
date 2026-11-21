@@ -2204,4 +2204,130 @@
   <data name="Choose a valid widget placement." xml:space="preserve">
     <value>請選擇有效的小工具顯示位置。</value>
   </data>
+  <data name="A URL is required." xml:space="preserve">
+    <value>請輸入網址。</value>
+  </data>
+  <data name="A name or button text is required." xml:space="preserve">
+    <value>請輸入名稱或按鈕文字。</value>
+  </data>
+  <data name="A widget title is required." xml:space="preserve">
+    <value>請輸入小工具標題。</value>
+  </data>
+  <data name="Add widget" xml:space="preserve">
+    <value>新增小工具</value>
+  </data>
+  <data name="Advanced options" xml:space="preserve">
+    <value>進階選項</value>
+  </data>
+  <data name="Blog preview" xml:space="preserve">
+    <value>網誌預覽</value>
+  </data>
+  <data name="Built-in" xml:space="preserve">
+    <value>內置</value>
+  </data>
+  <data name="Button widgets must contain one to three buttons." xml:space="preserve">
+    <value>按鈕小工具必須包含一至三個按鈕。</value>
+  </data>
+  <data name="Change widget type? This clears its content in the draft. Saved content stays unchanged until you save." xml:space="preserve">
+    <value>變更小工具類型？這會清空草稿內容。已儲存的內容在再次儲存前保持不變。</value>
+  </data>
+  <data name="Discard all unsaved widget changes?" xml:space="preserve">
+    <value>放棄所有未儲存的小工具變更？</value>
+  </data>
+  <data name="Discard changes" xml:space="preserve">
+    <value>放棄變更</value>
+  </data>
+  <data name="Edit widget" xml:space="preserve">
+    <value>編輯小工具</value>
+  </data>
+  <data name="Hidden" xml:space="preserve">
+    <value>已隱藏</value>
+  </data>
+  <data name="Live preview is coming next." xml:space="preserve">
+    <value>即時預覽即將推出。</value>
+  </data>
+  <data name="No items yet. Add one to edit its details." xml:space="preserve">
+    <value>尚無項目。新增後即可編輯詳細資料。</value>
+  </data>
+  <data name="Only link lists show this title on the blog." xml:space="preserve">
+    <value>只有連結清單會在網誌上顯示此標題。</value>
+  </data>
+  <data name="Reload saved widgets" xml:space="preserve">
+    <value>重新載入已儲存的小工具</value>
+  </data>
+  <data name="Reload saved widgets? This replaces your local draft with the latest saved collection." xml:space="preserve">
+    <value>重新載入已儲存的小工具？這會以最新儲存的內容取代本機草稿。</value>
+  </data>
+  <data name="Remove item" xml:space="preserve">
+    <value>移除項目</value>
+  </data>
+  <data name="Remove widget" xml:space="preserve">
+    <value>移除小工具</value>
+  </data>
+  <data name="Removed from draft" xml:space="preserve">
+    <value>已從草稿移除</value>
+  </data>
+  <data name="Review the highlighted fields. Nothing was saved." xml:space="preserve">
+    <value>請檢查標示的欄位。尚未儲存任何變更。</value>
+  </data>
+  <data name="Save changes" xml:space="preserve">
+    <value>儲存變更</value>
+  </data>
+  <data name="Save not confirmed" xml:space="preserve">
+    <value>儲存狀態未確認</value>
+  </data>
+  <data name="Saved" xml:space="preserve">
+    <value>已儲存</value>
+  </data>
+  <data name="Select a widget or add one to start editing." xml:space="preserve">
+    <value>選取或新增小工具以開始編輯。</value>
+  </data>
+  <data name="Show on blog" xml:space="preserve">
+    <value>在網誌上顯示</value>
+  </data>
+  <data name="Sidebar structure" xml:space="preserve">
+    <value>側欄結構</value>
+  </data>
+  <data name="The blog sidebar is disabled." xml:space="preserve">
+    <value>網誌側欄已停用。</value>
+  </data>
+  <data name="The previous save could not be confirmed. Replace the entire saved collection with this draft, including changes from other tabs?" xml:space="preserve">
+    <value>無法確認上次儲存的狀態。是否以此草稿覆寫全部已儲存內容，包括其他分頁的變更？</value>
+  </data>
+  <data name="The save could not be confirmed. Your draft is kept. Check the connection before retrying or reload saved widgets." xml:space="preserve">
+    <value>無法確認儲存狀態。草稿已保留。請檢查連線後重試，或重新載入已儲存的小工具。</value>
+  </data>
+  <data name="The widget content is invalid." xml:space="preserve">
+    <value>小工具內容無效。</value>
+  </data>
+  <data name="Undo" xml:space="preserve">
+    <value>復原</value>
+  </data>
+  <data name="Unsaved changes" xml:space="preserve">
+    <value>未儲存的變更</value>
+  </data>
+  <data name="Untitled widget" xml:space="preserve">
+    <value>未命名的小工具</value>
+  </data>
+  <data name="Widget content can contain up to 2000 characters." xml:space="preserve">
+    <value>小工具內容最多可包含 2000 個字元。</value>
+  </data>
+  <data name="Widget title" xml:space="preserve">
+    <value>小工具標題</value>
+  </data>
+  <data name="Widget titles can contain up to 128 characters." xml:space="preserve">
+    <value>小工具標題最多可包含 128 個字元。</value>
+  </data>
+  <data name="Widgets could not be loaded completely. Your draft is kept. Reload to try again." xml:space="preserve">
+    <value>無法完整載入小工具。草稿已保留。請重新載入以重試。</value>
+  </data>
+  <data name="Your changes stay in this draft until you save." xml:space="preserve">
+    <value>儲存前，所有變更只會保留在此草稿中。</value>
+  </data>
+  <data name="Your widgets were saved, but the public cache could not be refreshed. Your draft is kept. Reload saved widgets before continuing." xml:space="preserve">
+    <value>小工具已儲存，但無法重新整理前台快取。草稿已保留。請先重新載入已儲存的小工具，再繼續操作。</value>
+  </data>
+  <data name="characters" xml:space="preserve">
+    <value>字元</value>
+  </data>
 </root>

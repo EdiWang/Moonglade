@@ -2204,4 +2204,130 @@
   <data name="Choose a valid widget placement." xml:space="preserve">
     <value>Wählen Sie eine gültige Widget-Platzierung.</value>
   </data>
+  <data name="A URL is required." xml:space="preserve">
+    <value>Eine URL ist erforderlich.</value>
+  </data>
+  <data name="A name or button text is required." xml:space="preserve">
+    <value>Ein Name oder Schaltflächentext ist erforderlich.</value>
+  </data>
+  <data name="A widget title is required." xml:space="preserve">
+    <value>Ein Widget-Titel ist erforderlich.</value>
+  </data>
+  <data name="Add widget" xml:space="preserve">
+    <value>Widget hinzufügen</value>
+  </data>
+  <data name="Advanced options" xml:space="preserve">
+    <value>Erweiterte Optionen</value>
+  </data>
+  <data name="Blog preview" xml:space="preserve">
+    <value>Blog-Vorschau</value>
+  </data>
+  <data name="Built-in" xml:space="preserve">
+    <value>Integriert</value>
+  </data>
+  <data name="Button widgets must contain one to three buttons." xml:space="preserve">
+    <value>Schaltflächen-Widgets müssen eine bis drei Schaltflächen enthalten.</value>
+  </data>
+  <data name="Change widget type? This clears its content in the draft. Saved content stays unchanged until you save." xml:space="preserve">
+    <value>Widget-Typ ändern? Dadurch wird sein Inhalt im Entwurf gelöscht. Gespeicherte Inhalte bleiben bis zum Speichern unverändert.</value>
+  </data>
+  <data name="Discard all unsaved widget changes?" xml:space="preserve">
+    <value>Alle ungespeicherten Widget-Änderungen verwerfen?</value>
+  </data>
+  <data name="Discard changes" xml:space="preserve">
+    <value>Änderungen verwerfen</value>
+  </data>
+  <data name="Edit widget" xml:space="preserve">
+    <value>Widget bearbeiten</value>
+  </data>
+  <data name="Hidden" xml:space="preserve">
+    <value>Ausgeblendet</value>
+  </data>
+  <data name="Live preview is coming next." xml:space="preserve">
+    <value>Die Live-Vorschau folgt demnächst.</value>
+  </data>
+  <data name="No items yet. Add one to edit its details." xml:space="preserve">
+    <value>Noch keine Einträge. Fügen Sie einen hinzu, um seine Details zu bearbeiten.</value>
+  </data>
+  <data name="Only link lists show this title on the blog." xml:space="preserve">
+    <value>Nur Linklisten zeigen diesen Titel im Blog an.</value>
+  </data>
+  <data name="Reload saved widgets" xml:space="preserve">
+    <value>Gespeicherte Widgets neu laden</value>
+  </data>
+  <data name="Reload saved widgets? This replaces your local draft with the latest saved collection." xml:space="preserve">
+    <value>Gespeicherte Widgets neu laden? Der lokale Entwurf wird durch die zuletzt gespeicherte Sammlung ersetzt.</value>
+  </data>
+  <data name="Remove item" xml:space="preserve">
+    <value>Eintrag entfernen</value>
+  </data>
+  <data name="Remove widget" xml:space="preserve">
+    <value>Widget entfernen</value>
+  </data>
+  <data name="Removed from draft" xml:space="preserve">
+    <value>Aus dem Entwurf entfernt</value>
+  </data>
+  <data name="Review the highlighted fields. Nothing was saved." xml:space="preserve">
+    <value>Prüfen Sie die markierten Felder. Es wurde nichts gespeichert.</value>
+  </data>
+  <data name="Save changes" xml:space="preserve">
+    <value>Änderungen speichern</value>
+  </data>
+  <data name="Save not confirmed" xml:space="preserve">
+    <value>Speichern nicht bestätigt</value>
+  </data>
+  <data name="Saved" xml:space="preserve">
+    <value>Gespeichert</value>
+  </data>
+  <data name="Select a widget or add one to start editing." xml:space="preserve">
+    <value>Wählen Sie ein Widget aus oder fügen Sie eines hinzu, um es zu bearbeiten.</value>
+  </data>
+  <data name="Show on blog" xml:space="preserve">
+    <value>Im Blog anzeigen</value>
+  </data>
+  <data name="Sidebar structure" xml:space="preserve">
+    <value>Struktur der Seitenleiste</value>
+  </data>
+  <data name="The blog sidebar is disabled." xml:space="preserve">
+    <value>Die Blog-Seitenleiste ist deaktiviert.</value>
+  </data>
+  <data name="The previous save could not be confirmed. Replace the entire saved collection with this draft, including changes from other tabs?" xml:space="preserve">
+    <value>Das vorherige Speichern wurde nicht bestätigt. Die gesamte gespeicherte Sammlung einschließlich Änderungen aus anderen Tabs durch diesen Entwurf ersetzen?</value>
+  </data>
+  <data name="The save could not be confirmed. Your draft is kept. Check the connection before retrying or reload saved widgets." xml:space="preserve">
+    <value>Das Speichern wurde nicht bestätigt. Ihr Entwurf bleibt erhalten. Prüfen Sie die Verbindung und versuchen Sie es erneut oder laden Sie die gespeicherten Widgets neu.</value>
+  </data>
+  <data name="The widget content is invalid." xml:space="preserve">
+    <value>Der Widget-Inhalt ist ungültig.</value>
+  </data>
+  <data name="Undo" xml:space="preserve">
+    <value>Rückgängig</value>
+  </data>
+  <data name="Unsaved changes" xml:space="preserve">
+    <value>Ungespeicherte Änderungen</value>
+  </data>
+  <data name="Untitled widget" xml:space="preserve">
+    <value>Unbenanntes Widget</value>
+  </data>
+  <data name="Widget content can contain up to 2000 characters." xml:space="preserve">
+    <value>Der Widget-Inhalt darf höchstens 2000 Zeichen enthalten.</value>
+  </data>
+  <data name="Widget title" xml:space="preserve">
+    <value>Widget-Titel</value>
+  </data>
+  <data name="Widget titles can contain up to 128 characters." xml:space="preserve">
+    <value>Widget-Titel dürfen höchstens 128 Zeichen enthalten.</value>
+  </data>
+  <data name="Widgets could not be loaded completely. Your draft is kept. Reload to try again." xml:space="preserve">
+    <value>Die Widgets konnten nicht vollständig geladen werden. Ihr Entwurf bleibt erhalten. Laden Sie die Seite erneut.</value>
+  </data>
+  <data name="Your changes stay in this draft until you save." xml:space="preserve">
+    <value>Ihre Änderungen bleiben bis zum Speichern in diesem Entwurf.</value>
+  </data>
+  <data name="Your widgets were saved, but the public cache could not be refreshed. Your draft is kept. Reload saved widgets before continuing." xml:space="preserve">
+    <value>Ihre Widgets wurden gespeichert, aber der öffentliche Cache konnte nicht aktualisiert werden. Ihr Entwurf bleibt erhalten. Laden Sie die gespeicherten Widgets neu, bevor Sie fortfahren.</value>
+  </data>
+  <data name="characters" xml:space="preserve">
+    <value>Zeichen</value>
+  </data>
 </root>

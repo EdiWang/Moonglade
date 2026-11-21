@@ -1,13 +1,13 @@
 # Widget Composer B3 Collection Save and Verification
 
-Status: accepted on 2026-11-21 (Asia/Taipei). B0-B3 are accepted; B4 is authorized and B5-B6 implementation is not authorized. The [delivery plan](widget-composer-plan.md) records the implementation SHA and acceptance gate. Maintain current state only.
+Status: accepted on 2026-11-21 (Asia/Taipei). B0-B3 are accepted; B4 is ready for acceptance; B5-B6 implementation is not authorized. The [delivery plan](widget-composer-plan.md) records the implementation SHA and acceptance gate. Maintain current state only.
 
 ## Delivered scope and ownership
 
 - Widgets owns complete-draft validation, authoritative replacement, canonical ordering, stable identities, server-owned creation times, transaction orchestration, detached saved snapshots, and actual change snapshots.
 - Data owns `IWidgetCollectionLock`. PostgreSQL and SQL Server implement/register their native transaction-owned locks. `WidgetCollectionGate` is scoped and is registered by existing Web composition; LiteBus discovers the new command in the existing Widgets assembly.
 - Web exposes complete collection GET/PUT, retains administrator authorization and antiforgery conventions, removes the handling instance's widget cache after persistence, and dispatches existing widget activity keys from safe change snapshots.
-- The current page and individual routes remain usable until B4 replaces their callers. Every transitional writer uses the same collection gate. No new UI framework, dependency, configuration group, table, migration, or automatic upgrade runner is added. Schema 12 remains the prerequisite for existing databases.
+- The B4 composer uses only the complete collection GET/PUT. Old list/detail/individual routes and their unused handlers are retired. No new UI framework, dependency, configuration group, table, migration, or automatic upgrade runner is added. Schema 12 remains the prerequisite for existing databases.
 
 ## API and transition
 
@@ -15,7 +15,7 @@ Status: accepted on 2026-11-21 (Asia/Taipei). B0-B3 are accepted; B4 is authoriz
 | --- | --- |
 | `GET /api/widgets` | Administrator-only complete `{ "widgets": [...] }` response; `Cache-Control: no-store`; includes disabled widgets and canonical ordering. |
 | `PUT /api/widgets` | Administrator-only, antiforgery-protected replacement; returns the canonical saved collection in the same envelope. |
-| `GET /api/widgets/list`, `GET /api/widgets/{id}`, `POST /api/widgets`, `PUT /api/widgets/{id}`, `DELETE /api/widgets/{id}` | Temporary current-page compatibility. Same region/order model and shared write coordination; remove unused routes/handlers with B4's caller cutover. |
+| `GET /api/widgets/list`, `GET /api/widgets/{id}`, `POST /api/widgets`, `PUT /api/widgets/{id}`, `DELETE /api/widgets/{id}` | Retired by the B4 caller cutover; there is no compatibility bridge. |
 | `POST /api/widgets/preview` | Not implemented; belongs to B5. |
 
 The complete editable shape is specified in the [B1 contract](widget-composer-b1.md#3-collection-api-contract). The envelope must explicitly contain a non-null `widgets` array. Every element must explicitly include `id`, `title`, `widgetType`, `region`, `sortOrder`, `isEnabled`, and `contentCode`. IDs must be unique nonempty GUIDs. Null or incomplete elements, undefined enums, negative positions, oversized title/content, malformed type-specific JSON, and invalid link/image/button content are rejected before mutation. Error fields identify `Widgets[index].Field`, including content item paths when applicable. No new widget/link count cap is introduced.
@@ -26,7 +26,7 @@ Response widgets include the seven editable fields plus `contentType` and `creat
 
 Binding/domain validation returns HTTP 400 with field errors. Authentication/authorization and antiforgery retain their existing status conventions. Persistence failures retain the normal infrastructure-error response; canceled or failed precommit writes roll back. Once commit returns successfully, postcommit activity dispatch does not use the aborted request token. Activity failures are isolated by the existing dispatcher. Actual created/updated/deleted outcomes use the existing event keys and detached IDs, titles, and supported type metadata; no content payload is logged.
 
-A cache-removal failure after successful persistence returns HTTP 500 Problem Details with `committed: true` and `savedCollection` containing the saved envelope. Activity dispatch is still attempted. B4 must preserve the draft, compare/reload the saved state, and avoid blind resubmission. Generic infrastructure/transport errors without this marker do not establish rollback: the client must retain the draft and reconcile uncertain outcomes. There is no durable audit outbox or exactly-once request ledger.
+A cache-removal failure after successful persistence returns HTTP 500 Problem Details with `committed: true` and `savedCollection` containing the saved envelope. Activity dispatch is still attempted. The B4 composer preserves the draft, blocks editing/resubmission, and offers confirmed reload. Generic infrastructure/transport errors without this marker do not establish rollback: the B4 client retains the draft and requires explicit whole-page overwrite confirmation before retry. There is no durable audit outbox or exactly-once request ledger.
 
 ## Transaction and read consistency
 
@@ -34,7 +34,7 @@ The gate rejects enclosing transactions and pending tracked changes, preserving 
 
 - PostgreSQL uses advisory key `5570754044645364807`, with `pg_advisory_xact_lock` for writers and `pg_advisory_xact_lock_shared` for list readers. These locks follow transaction lifetime. [PostgreSQL documentation](https://www.postgresql.org/docs/18/functions-admin.html#FUNCTIONS-ADVISORY-LOCKS)
 - SQL Server uses `sys.sp_getapplock`, resource `Moonglade.Widgets`, transaction owner, Shared/Exclusive modes, and a 30000 ms lock timeout. Every negative return is rejected with error 51001 rather than continuing unlocked; command timeout/cancellation also aborts the operation. [Microsoft documentation](https://learn.microsoft.com/en-us/sql/relational-databases/system-stored-procedures/sp-getapplock-transact-sql)
-- The complete unit runs within the provider's existing retry strategy. IDs are allocated outside retries for the temporary create route; complete-draft IDs originate with the client. [EF Core execution-strategy guidance](https://learn.microsoft.com/en-us/ef/core/miscellaneous/connection-resiliency)
+- The complete unit runs within the provider's existing retry strategy. Complete-draft IDs originate with the client and remain stable across retries. [EF Core execution-strategy guidance](https://learn.microsoft.com/en-us/ef/core/miscellaneous/connection-resiliency)
 
 List readers share the same lock resource so a read cannot assemble old/new rows across a replacement on SQL Server's normal locking isolation. Readers can run together; writers serialize even when the table is empty. No database isolation option or process-local semaphore is substituted for native coordination.
 
@@ -58,7 +58,7 @@ Native checks used task-owned PostgreSQL 18.7 (`widgets_b3_pg`) and SQL Server 1
 - A paused uncommitted replacement held both a second writer and a list reader. After release, reads matched a complete committed collection, and the later writer's complete set won.
 - Actual transitional create/update/delete mediator handlers waited for the same native lock and completed after release.
 
-Each provider also passed actual HTTP sign-in with the synthetic owner, real antiforgery issuance, mixed replacement, invalid-save preservation followed by success, and two independent authenticated cookie sessions. A stale complete draft removed another session's addition and restored its deletion with a new server UTC. Canonical 18-widget snapshots and the resulting real public rendering/cache state were captured. These are backend/two-session checks; page-level two-tab drafts are B4 acceptance.
+Each provider also passed actual HTTP sign-in with the synthetic owner, real antiforgery issuance, mixed replacement, invalid-save preservation followed by success, and two independent authenticated cookie sessions. A stale complete draft removed another session's addition and restored its deletion with a new server UTC. Canonical 18-widget snapshots and the resulting real public rendering/cache state were captured. These are backend/two-session checks; page-level two-tab drafts are verified in the B4 record.
 
 Browser: ChatGPT in-app browser, PostgreSQL at 1440x900 and SQL Server at 1920x1080 CSS pixels, actual Razor pages/services/pipeline. Current-page Edit/Save succeeded; PostgreSQL reload retained the collection. Both showed the whole-collection result, added link before Tags, About B3 between Tags and Categories, and correct disabled filtering. No application console errors. Only the default fixture theme and English UI were exercised; no translated UI text changed. Browser version was not exposed by the documented read-only API. Temporary viewport overrides were reset.
 
@@ -73,4 +73,4 @@ Local evidence root: `C:/Users/Edi/Documents/Codex/Moonglade-Widgets-Design/b3/`
 
 Both temporary hosts are stopped. B3 containers and volumes, temporary tools/runtime directories, and launcher are removed; logs/screenshots/synthetic snapshots remain. The helper referenced compiled assemblies directly and produced no private development-configuration copies. No development/production database was accessed in B3, and the temporary helper did not read the private override. No deployment or external service change was made.
 
-Remaining scope: B4's composer, draft retention and committed-failure UX, removal of old callers/routes; B5 preview/dragging/movement/opening-flag correction; B6 integrated themes/cultures/TOTP/release acceptance. Public widget cache eviction remains the existing per-instance in-memory behavior; another application instance's public cache can remain warm until its usual expiry. Database collection coordination does not add distributed cache invalidation or durable audit delivery. B3 is accepted; B4 implementation is authorized and tracked in the delivery plan.
+Remaining scope: B4 user acceptance; B5 real preview, dragging and Link List opening-flag correction; B6 integrated themes/cultures/TOTP/release acceptance. Public widget cache eviction remains the existing per-instance in-memory behavior; another application instance's public cache can remain warm until its usual expiry. Database collection coordination does not add distributed cache invalidation or durable audit delivery. B3 is accepted; B4 verification and acceptance are tracked in the delivery plan.

@@ -1,16 +1,16 @@
 # Widget Composer B2 Storage and Upgrade Verification
 
-Status: accepted on 2026-11-20 (Asia/Taipei). B3 is ready for user acceptance; B4-B6 implementation is not authorized. Implementation SHA and acceptance state are maintained in the [delivery plan](widget-composer-plan.md).
+Status: accepted on 2026-11-20 (Asia/Taipei). B3 is accepted and B4 is ready for acceptance; B5-B6 implementation is not authorized. Implementation SHA and acceptance state are maintained in the [delivery plan](widget-composer-plan.md).
 
 ## Delivered checkpoint
 
 - Widgets use `WidgetRegion` (`BeforeProfile`, `BeforeTags`, `BeforeCategories`, `AfterCategories`) and nonnegative region-local `SortOrder`. The shared mapping persists region names as strings of at most 32 characters. Both providers use the shared contract.
 - `ListWidgetsQuery` sorts by region, order, UTC creation time, and ordinal canonical GUID string. The management page uses that result; public rendering selects enabled widgets at the existing four anchors. Built-in settings and URLs are unchanged.
-- Creation, updating, seeding, validation, and the existing editor use the new fields. Create/update JSON requires `region` and `sortOrder`; `displayOrder` is removed. No legacy placement bridge is retained. The current page still uses individual CRUD and its existing offcanvas/dialogs.
+- Creation, updating, seeding, validation, and the existing editor use the new fields. Create/update JSON requires `region` and `sortOrder`; `displayOrder` is removed. No legacy placement bridge is retained. B4 now uses only collection GET/PUT and the inline composer; individual CRUD and offcanvas/dialogs are retired.
 - Title validation and storage both allow 128 characters. Content stays limited to 2000 characters. Placement labels and validation text are translated in all five resource cultures.
 - Paired manual script `12.widget-regions.sql` converts legacy placement without changing identifiers, content, type, enabled state, or UTC metadata. It applies the approved timestamp/canonical-ID tie rule, rejects invalid or incomplete source state, and preserves later edits on rerun. See the [operator upgrade and recovery steps](../../database/README.md#widget-regionorder-upgrade-12).
 
-Whole-page saving and transaction-level application locks belong to B3; the composer belongs to B4; real theme preview, dragging, movement controls, and Link List opening-flag correction belong to B5. These features are not delivered in B2.
+Whole-page saving and transaction-level application locks belong to B3; the composer belongs to B4; real theme preview, dragging, and Link List opening-flag correction belong to B5. These features are not delivered in B2.
 
 ## Automated checks
 
@@ -52,7 +52,7 @@ The ChatGPT in-app browser exercised the real compiled Razor pages, application 
 | PostgreSQL fresh | 1920x1080 | Populate synthetic content, save Before Categories/order 1000, and verify Tags → About → Categories on the public page. |
 | SQL Server fresh | 1920x1080 and 1440x900 | Same save/public-order check; reopen at 1440 confirms persisted placement/order. |
 
-Actual placement labels/options were also checked in `zh-Hans`, `zh-Hant`, `ja-JP`, `fr-FR`, and `de-DE`. No application console errors were observed; only the expected Development-mode warning. Existing Button Link/Link List editor overlap remains assigned to B4.
+Actual placement labels/options were also checked in `zh-Hans`, `zh-Hant`, `ja-JP`, `fr-FR`, and `de-DE`. No application console errors were observed; only the expected Development-mode warning. The Button Link/Link List editor overlap is resolved by B4's type-specific editor.
 
 ## Evidence, cleanup, and remaining acceptance
 
@@ -75,4 +75,4 @@ Completed on 2026-11-20 at 19:30 (Asia/Taipei), with explicit user authorization
 - Confirmed target schema: required `region` varchar(32), required `sort_order` integer, and title varchar(128); `display_order` is absent. Existing title nullability is preserved.
 - Sanitized verification manifest: `C:/Users/Edi/Documents/Codex/Moonglade-Widgets-Design/dev-db-20261120-192814/result.json`. The rehearsal container, volume, and temporary migration helper were removed; the backup and manifest remain. No application host was started as part of this database operation.
 
-No production data, deployment, or runtime configuration change was made. Other real upgrades still require their own backup/restoration rehearsal and stopped hosts. Full theme/settings, TOTP, collection-save concurrency, and integrated composer acceptance remain later-batch checks. Next action: obtain B3 user acceptance; B4 requires separate authorization.
+No production data, deployment, or runtime configuration change was made. Other real upgrades still require their own backup/restoration rehearsal and stopped hosts. B3 collection concurrency and B4 composer checks are recorded in their batch records; full themes/settings, TOTP and integrated release acceptance remain B6. Next action: obtain B4 user acceptance; B5 requires separate authorization.
