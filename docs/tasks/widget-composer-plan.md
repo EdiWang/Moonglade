@@ -4,7 +4,7 @@ Last updated: 2026-11-21 (Asia/Taipei).
 
 ## 1. Current checkpoint and authority
 
-- Phase: B0-B2 accepted on 2026-11-20 and B3 accepted on 2026-11-21 (Asia/Taipei). B4 is implemented and verified; final commits and user acceptance are pending.
+- Phase: B0-B2 accepted on 2026-11-20 and B3 accepted on 2026-11-21 (Asia/Taipei). B4 is implemented, verified and committed; user acceptance is pending.
 - Application feature implementation: B2 region/order storage, paired upgrades, title limit, public placement, and necessary current-page bindings are implemented and verified. B3 backend collection saving is accepted; B4 composer/draft editing is implemented and verified. B5-B6 have not started.
 - Plan status: B0-B3 accepted; B4 authorized. B5-B6 require separate execution authorization.
 - Baseline branch: `master`.
@@ -12,7 +12,7 @@ Last updated: 2026-11-21 (Asia/Taipei).
 - Planning baseline commit: `1e91dea838e593bf73e6799310d7b72c0855260e`.
 - Execution authorization: B0-B3 completed; B4 granted; B5-B6 pending.
 - Development database: PostgreSQL script 12 applied and repeat-verified on the user-confirmed development target on 2026-11-20; full backup and successful restoration rehearsal are recorded in the B2 notes. Do not reinitialize or restore this database as a disposable fixture.
-- Next action: record the B4 implementation SHA and obtain B4 user acceptance. B5-B6 execution is not authorized.
+- Next action: obtain B4 user acceptance and the pending temporary-file disposition. B5-B6 execution is not authorized.
 
 This file contains the current requirements, implementation context, delivery gates, progress, and verification results. Update it in place after every batch or material change. Keep only the latest state: no questions and answers, discussion history, superseded proposals, or chronological work logs. Retain each batch's current outcome, implementation SHA, acceptance status, and unresolved limitations so work can resume without prior conversation context.
 
@@ -176,7 +176,7 @@ Local implementation commits within an explicitly authorized batch are part of t
 | B1 | Baseline, concrete contracts, acceptance fixtures | Accepted | Web build; 825 Web tests; 58 Node tests; both provider/browser baselines passed | `5c0dc4eb08d583872187f9058233e2a05c3d4cad` | Accepted 2026-11-20 |
 | B2 | Region/order model and both database upgrades | Accepted | Web build; 836 Web, 79 Setup, 62 Node tests; both native provider fresh/upgrade/rerun and browser checks passed | `823a46328fa80f83f211bd89cea5b26ce462b1a1` | Accepted 2026-11-20 |
 | B3 | Atomic whole-collection save | Accepted | Web build; 875 Web, 79 Setup, 62 Node tests; both native provider and real HTTP/browser checks passed | `79c80ed5bc44e5e7dfd8d0b33868e67d53673083` | Accepted 2026-11-21 |
-| B4 | Composer and inline draft editing | Verified; final commits pending | Web build; 874 Web and 87 Node tests; both provider-backed browsers, 1440/1920 and five cultures passed; native leave-prompt manual check pending | Pending commit | Pending |
+| B4 | Composer and inline draft editing | Ready for acceptance | Web build; 874 Web and 87 Node tests; both provider-backed browsers, 1440/1920 and five cultures passed; native leave-prompt manual check pending | `9f3a014a60040ea3cd35fada57edc8ebe83af805` | Pending |
 | B5 | Real preview and complete arrangement controls | Not started | Not run | None | Pending |
 | B6 | Integrated provider/browser acceptance and handoff | Not started | Not run | None | Pending |
 
@@ -241,7 +241,7 @@ Local implementation commits within an explicitly authorized batch are part of t
 
 ### B4 - Composer and inline draft editing
 
-**Deliverables:** [B4 workspace, verification and continuation](widget-composer-b4.md), three-panel composer and complete local draft model, structured collection transport/recovery, all retained fields and five translations, old caller/route retirement, behavioral tests and browser evidence. Status: verified; final commits and user acceptance pending.
+**Deliverables:** [B4 workspace, verification and continuation](widget-composer-b4.md), three-panel composer and complete local draft model, structured collection transport/recovery, all retained fields and five translations, old caller/route retirement, behavioral tests and browser evidence. Status: ready for user acceptance.
 
 **Scope:** replace the gallery/offcanvas/dialog flow with the structure/editor workspace and page-level draft actions, connected to B3.
 
@@ -355,7 +355,7 @@ Next permitted action:
 - Temporary fixtures and cleanup: none.
 - User acceptance: accepted on 2026-11-20.
 - Open B0 blockers: none.
-- Next action: record the B4 implementation SHA and obtain B4 user acceptance. B5-B6 execution is not authorized.
+- Next action: obtain B4 user acceptance and the pending temporary-file disposition. B5-B6 execution is not authorized.
 
 ### B1 - Current verification status
 
@@ -371,7 +371,7 @@ Next permitted action:
 - Local artifacts: fixture hosts stopped; task-owned PostgreSQL/SQL Server containers and their volumes removed; ports 15432/15433/18081/18082 have no listeners. Durable logs/screenshots and stopped external `b1/tools`/`b1/runtime` directories are retained as authorized local reproduction materials. No temporary fixture host or migration harness is committed.
 - Implementation commit SHA: `5c0dc4eb08d583872187f9058233e2a05c3d4cad`.
 - User acceptance: accepted on 2026-11-20.
-- Next action: record the B4 implementation SHA and obtain B4 user acceptance. B5-B6 execution is not authorized.
+- Next action: obtain B4 user acceptance and the pending temporary-file disposition. B5-B6 execution is not authorized.
 
 ### B2 - Current verification status
 
@@ -408,16 +408,16 @@ Next permitted action:
 
 ### B4 - Current verification status
 
-- Status: implemented and verified on 2026-11-21 (Asia/Taipei); final commits and user acceptance pending. Branch: `codex/widget-composer-b4`. B5-B6 are not started or authorized.
+- Status: implemented, verified and committed on 2026-11-21 (Asia/Taipei); ready for user acceptance. Branch: `codex/widget-composer-b4`. B5-B6 are not started or authorized.
 - Scope: three-panel structure/editor/reserved-preview workspace, complete baseline/local draft, all three types and supported fields, region/movement buttons, stable inline item keys, staged delete/undo, confirmed type/discard/reload, leave protection, loading/empty/validation/failure/save states and five translations. Old gallery/offcanvas/dialog modules and individual routes/handlers are retired.
 - Recovery: R14 is implemented with the existing shared confirmation modal. Unknown outcome requires confirmed overwrite before retry; known committed failure states Saved, retains inspectable draft, blocks edits/retry and offers confirmed reload. Original type JSON stays unchanged when type-specific content is untouched.
 - Commands/results: Web build zero warnings/errors; full Web tests 874/874; Node tests 87/87. Setup/migration checks are not repeated because this batch changes no schema, mapping, seeding or startup. Resource completeness, duplicate-key, UTF-8/CRLF/final-newline, document-link and Git whitespace checks passed.
 - Browser: ChatGPT in-app browser, actual production Razor/services/pipeline/authentication/antiforgery and disposable PostgreSQL 18.7/SQL Server 16.0.4325. PostgreSQL 1440x900/1920x1080, SQL Server 1920x1080; all five UI resource cultures at 1440. Actual save/reload for all types, two-tab authoritative replacement, explicit empty/recreate, settings references, keyboard/focus/long-content/scroll access, delayed load/save, validation, connection abort and actual postcommit cache-failure recovery passed. Final pages have no application/Alpine console errors. Temporary viewport reset and tabs closed.
 - Evidence/design: `docs/tasks/widget-composer-b4.md`; safe logs, synthetic snapshots/request-method counts and screenshots under `C:/Users/Edi/Documents/Codex/Moonglade-Widgets-Design/b4/`. Approved sketch and final rendered 1440/1920 views were compared for structure, palette, typography, selection, disclosure rows, scrolling and intentional checkpoint deviations.
 - Cleanup: both hosts stopped and B4 database containers/volumes removed after ownership checks. Temporary tools/runtime/launcher disposition is pending. No private development override copy exists in B4 evidence. Development/production databases, B1 retained materials and B2 private backup are untouched.
-- Implementation commit SHA: pending.
+- Implementation commit SHA: `9f3a014a60040ea3cd35fada57edc8ebe83af805`.
 - User acceptance: pending. Manually check the native browser leave-warning prompt; actual handler branches are covered in Node. Default light fixture theme/password-only owner only; other themes, TOTP and release matrix remain B6. Real preview, dragging and Link List public opening correction remain B5.
-- Next permitted action: complete B4 tracking commits and obtain user acceptance. Do not implement B5 until separately authorized.
+- Next permitted action: obtain B4 user acceptance and the pending temporary-file disposition. Do not implement B5 until separately authorized.
 
 ## 8. Resume from a fresh conversation
 

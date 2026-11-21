@@ -1,6 +1,6 @@
 # Widget Composer B4 Workspace and Draft Editing
 
-Status: verification complete, 2026-11-21 (Asia/Taipei); final commits and user acceptance pending. B0-B3 are accepted. B5-B6 are not started or authorized. Maintain this file and the [delivery tracker](widget-composer-plan.md) as current state, without discussion history.
+Status: implemented, verified and committed, 2026-11-21 (Asia/Taipei); ready for user acceptance. B0-B3 are accepted. B5-B6 are not started or authorized. Maintain this file and the [delivery tracker](widget-composer-plan.md) as current state, without discussion history.
 
 ## Scope and design reference
 
@@ -27,7 +27,7 @@ Intentional checkpoint differences from the sketch: preserve the actual admin na
 - [x] Actual browser workflow at 1440/1920, both provider-backed fixtures, keyboard/focus/scroll checks, failures/empty/loading states, and five resource cultures.
 - [x] Reference-to-render comparison covering structure, palette, typography, selected state, disclosure rows, and intentional checkpoint deviations.
 - [x] Safe evidence retained outside the repository; both hosts stopped and task database containers/volumes removed. Temporary tools/runtime/launcher disposition remains pending.
-- [ ] Final implementation SHA, acceptance status, risks, and next permitted action recorded in the delivery plan.
+- [x] Final implementation SHA, pending user acceptance, risks, and next permitted action recorded in the delivery plan.
 
 ## Delivered files and cutover
 
@@ -99,4 +99,4 @@ Local evidence root: `C:/Users/Edi/Documents/Codex/Moonglade-Widgets-Design/b4/`
 
 To reproduce without this local machine: read the delivery plan and B1 fixture specification, build the current Web assembly, create task-only fresh PostgreSQL/SQL Server databases with generated credentials, and use actual application services/Razor/pipeline with synthetic owner/settings and loopback ports. Reference compiled assemblies in temporary helpers so private development overrides are not automatically copied. Adapt the committed fixture JSON to explicit regions/order and exercise the browser matrix above. Never reinitialize the development database as a fixture.
 
-Implementation SHA and final acceptance status are recorded in the delivery tracker. Development/production database changes and deployment are outside this batch. No new schema means script 12 is not rerun by B4. B4 requires user acceptance before separate B5 authorization; B5 real preview/dragging/Link List opening correction and B6 full release acceptance remain unimplemented.
+Implementation SHA: `9f3a014a60040ea3cd35fada57edc8ebe83af805` on `codex/widget-composer-b4`. User acceptance remains pending in the delivery tracker. Development/production database changes and deployment are outside this batch. No new schema means script 12 is not rerun by B4. B4 requires user acceptance before separate B5 authorization; B5 real preview/dragging/Link List opening correction and B6 full release acceptance remain unimplemented.
