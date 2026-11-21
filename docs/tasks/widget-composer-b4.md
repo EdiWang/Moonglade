@@ -1,6 +1,6 @@
 # Widget Composer B4 Workspace and Draft Editing
 
-Status: accepted on 2026-11-21 (Asia/Taipei). B0-B4 are accepted. B5 is authorized; B6 is not authorized. Maintain this file and the [delivery tracker](widget-composer-plan.md) as current state, without discussion history.
+Status: accepted on 2026-11-21 (Asia/Taipei). B0-B4 are accepted. B5 is accepted; B6 is not authorized. Maintain this file and the [delivery tracker](widget-composer-plan.md) as current state, without discussion history.
 
 ## Scope and design reference
 
@@ -99,4 +99,4 @@ Local evidence root: `C:/Users/Edi/Documents/Codex/Moonglade-Widgets-Design/b4/`
 
 To reproduce without this local machine: read the delivery plan and B1 fixture specification, build the current Web assembly, create task-only fresh PostgreSQL/SQL Server databases with generated credentials, and use actual application services/Razor/pipeline with synthetic owner/settings and loopback ports. Reference compiled assemblies in temporary helpers so private development overrides are not automatically copied. Adapt the committed fixture JSON to explicit regions/order and exercise the browser matrix above. Never reinitialize the development database as a fixture.
 
-Implementation SHA: `9f3a014a60040ea3cd35fada57edc8ebe83af805` on `codex/widget-composer-b4`. User acceptance: accepted on 2026-11-21 (Asia/Taipei), recorded in the delivery tracker. Development/production database changes and deployment are outside this batch. No new schema means script 12 is not rerun by B4. B4 is accepted. B5 real preview/dragging/Link List opening correction are implemented and verified, awaiting acceptance; B6 full release acceptance remains unauthorized and unimplemented.
+Implementation SHA: `9f3a014a60040ea3cd35fada57edc8ebe83af805` on `codex/widget-composer-b4`. User acceptance: accepted on 2026-11-21 (Asia/Taipei), recorded in the delivery tracker. Development/production database changes and deployment are outside this batch. No new schema means script 12 is not rerun by B4. B4 is accepted. B5 real preview/dragging/Link List opening correction are accepted on 2026-11-21 (Asia/Taipei); B6 full release acceptance remains unauthorized and unimplemented.

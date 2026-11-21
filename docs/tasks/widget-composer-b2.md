@@ -1,6 +1,6 @@
 # Widget Composer B2 Storage and Upgrade Verification
 
-Status: accepted on 2026-11-20 (Asia/Taipei). B3 is accepted and B4 is accepted on 2026-11-21 (Asia/Taipei); B5 is authorized and B6 is not authorized. Implementation SHA and acceptance state are maintained in the [delivery plan](widget-composer-plan.md).
+Status: accepted on 2026-11-20 (Asia/Taipei). B3 is accepted and B4 is accepted on 2026-11-21 (Asia/Taipei); B5 is accepted and B6 is not authorized. Implementation SHA and acceptance state are maintained in the [delivery plan](widget-composer-plan.md).
 
 ## Delivered checkpoint
 
@@ -75,4 +75,4 @@ Completed on 2026-11-20 at 19:30 (Asia/Taipei), with explicit user authorization
 - Confirmed target schema: required `region` varchar(32), required `sort_order` integer, and title varchar(128); `display_order` is absent. Existing title nullability is preserved.
 - Sanitized verification manifest: `C:/Users/Edi/Documents/Codex/Moonglade-Widgets-Design/dev-db-20261120-192814/result.json`. The rehearsal container, volume, and temporary migration helper were removed; the backup and manifest remain. No application host was started as part of this database operation.
 
-No production data, deployment, or runtime configuration change was made. Other real upgrades still require their own backup/restoration rehearsal and stopped hosts. B3 collection concurrency and B4 composer checks are recorded in their batch records; full themes/settings, TOTP and integrated release acceptance remain B6. Next action: obtain B5 acceptance; B6 requires separate authorization.
+No production data, deployment, or runtime configuration change was made. Other real upgrades still require their own backup/restoration rehearsal and stopped hosts. B3 collection concurrency and B4 composer checks are recorded in their batch records; full themes/settings, TOTP and integrated release acceptance remain B6. Next action: await B6 execution authorization; B6 requires separate authorization.
