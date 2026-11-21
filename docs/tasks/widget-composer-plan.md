@@ -174,7 +174,7 @@ Local implementation commits within an explicitly authorized batch are part of t
 | B0 | Plan and requirements | Accepted | Source/path/requirements/format/diff checks passed | `c7ebf2bb16e6040ef5f1fc22af0701371266bcf7` | Accepted 2026-11-20 |
 | B1 | Baseline, concrete contracts, acceptance fixtures | Accepted | Web build; 825 Web tests; 58 Node tests; both provider/browser baselines passed | `5c0dc4eb08d583872187f9058233e2a05c3d4cad` | Accepted 2026-11-20 |
 | B2 | Region/order model and both database upgrades | Accepted | Web build; 836 Web, 79 Setup, 62 Node tests; both native provider fresh/upgrade/rerun and browser checks passed | `823a46328fa80f83f211bd89cea5b26ce462b1a1` | Accepted 2026-11-20 |
-| B3 | Atomic whole-collection save | Ready for user acceptance | Web build; 875 Web, 79 Setup, 62 Node tests; both native provider and real HTTP/browser checks passed | Pending implementation commit | Pending |
+| B3 | Atomic whole-collection save | Ready for user acceptance | Web build; 875 Web, 79 Setup, 62 Node tests; both native provider and real HTTP/browser checks passed | `79c80ed5bc44e5e7dfd8d0b33868e67d53673083` | Pending |
 | B4 | Composer and inline draft editing | Not started | Not run | None | Pending |
 | B5 | Real preview and complete arrangement controls | Not started | Not run | None | Pending |
 | B6 | Integrated provider/browser acceptance and handoff | Not started | Not run | None | Pending |
@@ -398,7 +398,7 @@ Next permitted action:
 - Browser: ChatGPT in-app browser, PostgreSQL 1440x900 and SQL Server 1920x1080. Both current-page Edit/Save paths and new-save public results passed; PostgreSQL reload passed. Added link appears before Tags; About B3 appears between Tags and Categories; disabled widgets are absent. No application console errors. English/default fixture theme only; browser version not exposed; viewport override reset. B4 owns actual page-draft two-tab interaction.
 - Evidence: `C:/Users/Edi/Documents/Codex/Moonglade-Widgets-Design/b3/`; full verification, files, saved synthetic snapshots, screenshots, and limitations are listed in `widget-composer-b3.md`.
 - Cleanup: both hosts stopped; B3 containers/volumes, temporary tools/runtime/launcher removed; no fixture listeners. Logs/screenshots/synthetic snapshots retained. No private configuration copies generated in temporary helper outputs. Development and production databases were not accessed or changed by B3.
-- Implementation commit SHA: pending implementation commit.
+- Implementation commit SHA: `79c80ed5bc44e5e7dfd8d0b33868e67d53673083`.
 - User acceptance: pending.
 - Remaining limits: old routes/page remain only until B4; preview/movement/opening correction remain B5; integrated matrix/TOTP/release remain B6. Existing per-instance public caches are not distributed; database locks do not add cross-instance cache eviction or durable audit delivery.
 - Next permitted action: obtain B3 user acceptance. B4 requires separate authorization.
