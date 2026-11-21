@@ -1,6 +1,6 @@
 # Widget Composer B3 Collection Save and Verification
 
-Status: accepted on 2026-11-21 (Asia/Taipei). B0-B3 are accepted; B4 is ready for acceptance; B5-B6 implementation is not authorized. The [delivery plan](widget-composer-plan.md) records the implementation SHA and acceptance gate. Maintain current state only.
+Status: accepted on 2026-11-21 (Asia/Taipei). B0-B3 are accepted; B4 is accepted on 2026-11-21 (Asia/Taipei); B5 is authorized and B6 is not authorized. The [delivery plan](widget-composer-plan.md) records the implementation SHA and acceptance gate. Maintain current state only.
 
 ## Delivered scope and ownership
 
