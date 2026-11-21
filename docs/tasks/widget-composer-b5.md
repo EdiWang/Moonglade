@@ -22,7 +22,7 @@ Status: ready for user acceptance, 2026-11-21 (Asia/Taipei). B0-B4 are accepted;
 - [x] Web build: zero warnings/errors. Full Web tests: 879 passed, zero failed/skipped. Node tests: 91 passed, zero failed/skipped; includes preview timing/cancellation/stale/error/height lifecycle and drag/model/transport behavior.
 - [x] Isolated PostgreSQL/SQL Server browser verification: actual public/preview parity, light/dark/current themes, left/right/disabled sidebar, hidden built-ins, all types/flags, invalid/missing images, stale/error recovery, drag and keyboard/button alternatives, 1440/1920 layouts and all resource cultures.
 - [x] Final reference-to-render comparison and evidence/fixture disposition.
-- [ ] Implementation commit and tracking SHA.
+- [x] Implementation commit and tracking SHA: `31d4401361754d9df1967ede0516218b666056e4`.
 
 ## Environment and continuation
 
@@ -84,4 +84,4 @@ Local evidence root: `C:/Users/Edi/Documents/Codex/Moonglade-Widgets-Design/b5/`
 - Task browser session closed, both hosts stopped; ownership-checked B5 containers/volumes removed and ports 15532/15533/18581/18582 have no listeners. Temporary `tools`, `runtime`, `run-fixture.ps1` and `browser.ps1` are retained as user-authorized local reproduction materials. No private development-configuration copies were generated. B1 retained materials, B4 pending files and B2 private backup are untouched.
 - To reproduce independently, read the delivery plan/B1 synthetic fixture specification, build current Web, create disposable provider databases with generated temporary credentials, reference compiled assemblies in an external helper and clear default configuration sources. Run actual service/pipeline/Razor/auth and compare the browser matrix above. Never use the development database as a fixture. Browser plugin was unavailable; install it for future sessions if preferred, or retain the regular Playwright CLI fallback without adding a project dependency.
 
-Implementation commit SHA: pending local commit on `codex/widget-composer-b5`. User acceptance: pending. Next permitted action: obtain B5 acceptance; B6 remains unauthorized. Full solution/Setup/migration and TOTP release acceptance were not repeated: no schema/seeding/startup/account changes; integrated release gates remain B6. Existing per-instance public cache invalidation is unchanged, and old public tabs may temporarily retain cached custom CSS.
+Implementation commit SHA: `31d4401361754d9df1967ede0516218b666056e4` on `codex/widget-composer-b5`. User acceptance: pending. Next permitted action: obtain B5 acceptance; B6 remains unauthorized. Full solution/Setup/migration and TOTP release acceptance were not repeated: no schema/seeding/startup/account changes; integrated release gates remain B6. Existing per-instance public cache invalidation is unchanged, and old public tabs may temporarily retain cached custom CSS.

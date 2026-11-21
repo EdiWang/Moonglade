@@ -178,7 +178,7 @@ Local implementation commits within an explicitly authorized batch are part of t
 | B2 | Region/order model and both database upgrades | Accepted | Web build; 836 Web, 79 Setup, 62 Node tests; both native provider fresh/upgrade/rerun and browser checks passed | `823a46328fa80f83f211bd89cea5b26ce462b1a1` | Accepted 2026-11-20 |
 | B3 | Atomic whole-collection save | Accepted | Web build; 875 Web, 79 Setup, 62 Node tests; both native provider and real HTTP/browser checks passed | `79c80ed5bc44e5e7dfd8d0b33868e67d53673083` | Accepted 2026-11-21 |
 | B4 | Composer and inline draft editing | Accepted | Web build; 874 Web and 87 Node tests; both provider-backed browsers, 1440/1920 and five cultures passed; native leave prompt observed in B5 | `9f3a014a60040ea3cd35fada57edc8ebe83af805` | Accepted 2026-11-21 |
-| B5 | Real preview and complete arrangement controls | Ready for user acceptance | Web build; 879 Web and 91 Node tests; both provider-backed browsers, themes/settings/five cultures, 1440/1920 passed | Pending local implementation commit | Pending |
+| B5 | Real preview and complete arrangement controls | Ready for user acceptance | Web build; 879 Web and 91 Node tests; both provider-backed browsers, themes/settings/five cultures, 1440/1920 passed | `31d4401361754d9df1967ede0516218b666056e4` | Pending |
 | B6 | Integrated provider/browser acceptance and handoff | Not started | Not run | None | Pending |
 
 ### B0 - Plan and requirements review
@@ -431,7 +431,7 @@ Next permitted action:
 - Browser: isolated Edge 158.0.4370.33 via Playwright CLI 0.1.25 (Browser plugin unavailable). Actual production Razor/services/pipeline/auth/antiforgery with disposable PostgreSQL 18.7 and SQL Server 16.00.4325; both all-type saves/reload/public parity and no preview persistence passed. PostgreSQL 1440/1920, SQL 1920; five cultures, light/dark/current green theme/custom CSS, left/right/hidden/disabled settings, failure/obsolete/invalid/missing-image recovery, native drag/buttons/keyboard/scroll and native leave prompt passed. Final pages have no application/Alpine errors.
 - Evidence: [B5 verification record](widget-composer-b5.md); local root `C:/Users/Edi/Documents/Codex/Moonglade-Widgets-Design/b5/`. Approved reference and final 1440/1920 screenshots compared for hierarchy, anchors, typography/palette, inline fields, scrolling and actual-template geometry.
 - Cleanup: task browser closed, both hosts stopped, task containers/volumes removed and no fixture listeners. B5 tools/runtime/launchers retained as authorized local reproduction materials; no private override copies. B4 file disposition remains pending. Development/production data, B1 retained files and B2 private backup untouched.
-- Implementation commit SHA: pending local commit.
+- Implementation commit SHA: `31d4401361754d9df1967ede0516218b666056e4`.
 - User acceptance: pending.
 - Limits: full integrated release/TOTP/provider-upgrade gates remain B6; public cache remains per-instance and old public tabs may retain cached CSS. No deployment or push performed.
 - Next permitted action: obtain B5 user acceptance; B6 requires separate execution authorization.
