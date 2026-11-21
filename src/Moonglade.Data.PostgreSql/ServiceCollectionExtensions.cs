@@ -7,6 +7,7 @@ public static class ServiceCollectionExtensions
 {
     public static IServiceCollection AddPostgreSqlStorage(this IServiceCollection services, string connectionString)
     {
+        services.AddScoped<IWidgetCollectionLock, PostgreSqlWidgetCollectionLock>();
         services.AddDbContext<BlogDbContext, PostgreSqlBlogDbContext>(options => options
             .EnableDetailedErrors()
             .UseNpgsql(connectionString, options =>

@@ -4,6 +4,7 @@ using Microsoft.Extensions.Logging.Abstractions;
 using Moonglade.Data;
 using Moonglade.Data.Entities;
 using Moonglade.Widgets;
+using Moonglade.Web.Tests.TestSupport;
 using System.ComponentModel.DataAnnotations;
 
 namespace Moonglade.Web.Tests.Handlers;
@@ -32,7 +33,7 @@ public class WidgetPlacementTests
             Create(earlierTime, WidgetRegion.BeforeProfile, 5, timestamp));
         await db.SaveChangesAsync(ct);
 
-        var result = await new ListWidgetsQueryHandler(db).HandleAsync(new ListWidgetsQuery(), ct);
+        var result = await new ListWidgetsQueryHandler(db, new WidgetCollectionGate(db, new SqliteWidgetCollectionLock(db))).HandleAsync(new ListWidgetsQuery(), ct);
 
         Assert.Equal([earlierPosition, earlierTime, canonicalFirst, canonicalLast, laterRegion], result.Select(widget => widget.Id));
         Assert.All(result, widget => Assert.False(widget.IsEnabled));
@@ -57,14 +58,14 @@ public class WidgetPlacementTests
             Region = (WidgetRegion)region,
             SortOrder = order
         };
-        var create = new CreateWidgetCommandHandler(db, NullLogger<CreateWidgetCommandHandler>.Instance);
+        var create = new CreateWidgetCommandHandler(db, NullLogger<CreateWidgetCommandHandler>.Instance, new WidgetCollectionGate(db, new SqliteWidgetCollectionLock(db)));
         await Assert.ThrowsAsync<ValidationException>(() => create.HandleAsync(new CreateWidgetCommand(request), ct));
         Assert.Empty(await db.Widget.ToListAsync(ct));
         var stored = Create(Guid.NewGuid(), WidgetRegion.BeforeTags, 10, DateTime.UtcNow);
         db.Widget.Add(stored);
         await db.SaveChangesAsync(ct);
 
-        var update = new UpdateWidgetCommandHandler(db, NullLogger<UpdateWidgetCommandHandler>.Instance);
+        var update = new UpdateWidgetCommandHandler(db, NullLogger<UpdateWidgetCommandHandler>.Instance, new WidgetCollectionGate(db, new SqliteWidgetCollectionLock(db)));
         await Assert.ThrowsAsync<ValidationException>(() => update.HandleAsync(new UpdateWidgetCommand(stored.Id, request), ct));
         await db.SaveChangesAsync(ct);
         db.ChangeTracker.Clear();

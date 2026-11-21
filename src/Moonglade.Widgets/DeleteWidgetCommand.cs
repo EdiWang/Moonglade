@@ -8,17 +8,22 @@ public record DeleteWidgetCommand(Guid Id) : ICommand<OperationCode>;
 
 public class DeleteWidgetCommandHandler(
     BlogDbContext db,
-    ILogger<DeleteWidgetCommandHandler> logger) : ICommandHandler<DeleteWidgetCommand, OperationCode>
+    ILogger<DeleteWidgetCommandHandler> logger,
+    WidgetCollectionGate gate) : ICommandHandler<DeleteWidgetCommand, OperationCode>
 {
     public async Task<OperationCode> HandleAsync(DeleteWidgetCommand request, CancellationToken ct)
     {
-        var widget = await db.Widget.FindAsync([request.Id], ct);
-        if (widget is null) return OperationCode.ObjectNotFound;
+        var result = await gate.ExecuteAsync(async token =>
+        {
+            var widget = await db.Widget.FindAsync([request.Id], token);
+            if (widget is null) return OperationCode.ObjectNotFound;
 
-        db.Widget.Remove(widget);
-        await db.SaveChangesAsync(ct);
+            db.Widget.Remove(widget);
+            await db.SaveChangesAsync(token);
+            return OperationCode.Done;
+        }, ct);
 
-        logger.LogInformation("Widget deleted: {WidgetId}", request.Id);
-        return OperationCode.Done;
+        if (result == OperationCode.Done) logger.LogInformation("Widget deleted: {WidgetId}", request.Id);
+        return result;
     }
 }

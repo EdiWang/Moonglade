@@ -4,6 +4,7 @@ using Microsoft.Extensions.Logging.Abstractions;
 using Moonglade.Data;
 using Moonglade.Data.Entities;
 using Moonglade.Widgets;
+using Moonglade.Web.Tests.TestSupport;
 
 namespace Moonglade.Web.Tests.Handlers;
 
@@ -19,7 +20,7 @@ public class WidgetCommandTests
             .UseSqlite(connection).Options);
         await db.Database.EnsureCreatedAsync(ct);
 
-        var create = new CreateWidgetCommandHandler(db, NullLogger<CreateWidgetCommandHandler>.Instance);
+        var create = new CreateWidgetCommandHandler(db, NullLogger<CreateWidgetCommandHandler>.Instance, new WidgetCollectionGate(db, new SqliteWidgetCollectionLock(db)));
         var request = new EditWidgetRequest
         {
             Title = "  Fixture links  ",
@@ -41,7 +42,7 @@ public class WidgetCommandTests
         Assert.Equal(DateTimeKind.Utc, created.CreatedTimeUtc.Kind);
         var createdTime = created.CreatedTimeUtc;
 
-        var update = new UpdateWidgetCommandHandler(db, NullLogger<UpdateWidgetCommandHandler>.Instance);
+        var update = new UpdateWidgetCommandHandler(db, NullLogger<UpdateWidgetCommandHandler>.Instance, new WidgetCollectionGate(db, new SqliteWidgetCollectionLock(db)));
         var updatedRequest = new EditWidgetRequest
         {
             Title = "  Updated links  ",
@@ -54,7 +55,7 @@ public class WidgetCommandTests
 
         Assert.Equal(OperationCode.Done,
             await update.HandleAsync(new UpdateWidgetCommand(id, updatedRequest), ct));
-        var listed = Assert.Single(await new ListWidgetsQueryHandler(db).HandleAsync(new ListWidgetsQuery(), ct));
+        var listed = Assert.Single(await new ListWidgetsQueryHandler(db, new WidgetCollectionGate(db, new SqliteWidgetCollectionLock(db))).HandleAsync(new ListWidgetsQuery(), ct));
 
         Assert.Equal(id, listed.Id);
         Assert.Equal(createdTime, listed.CreatedTimeUtc);
@@ -64,9 +65,9 @@ public class WidgetCommandTests
         Assert.Equal(1000, listed.SortOrder);
         Assert.False(listed.IsEnabled);
 
-        var delete = new DeleteWidgetCommandHandler(db, NullLogger<DeleteWidgetCommandHandler>.Instance);
+        var delete = new DeleteWidgetCommandHandler(db, NullLogger<DeleteWidgetCommandHandler>.Instance, new WidgetCollectionGate(db, new SqliteWidgetCollectionLock(db)));
         Assert.Equal(OperationCode.Done, await delete.HandleAsync(new DeleteWidgetCommand(id), ct));
-        Assert.Empty(await new ListWidgetsQueryHandler(db).HandleAsync(new ListWidgetsQuery(), ct));
+        Assert.Empty(await new ListWidgetsQueryHandler(db, new WidgetCollectionGate(db, new SqliteWidgetCollectionLock(db))).HandleAsync(new ListWidgetsQuery(), ct));
         Assert.Null(await new GetWidgetQueryHandler(db).HandleAsync(new GetWidgetQuery(id), ct));
         Assert.Equal(OperationCode.ObjectNotFound,
             await update.HandleAsync(new UpdateWidgetCommand(id, updatedRequest), ct));

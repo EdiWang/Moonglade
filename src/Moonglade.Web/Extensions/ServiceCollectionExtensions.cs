@@ -19,6 +19,7 @@ using Moonglade.Setup;
 using Moonglade.Syndication;
 using Moonglade.Web.Services;
 using Moonglade.Webmention;
+using Moonglade.Widgets;
 using System.Globalization;
 using System.IO.Compression;
 using System.Text.Encodings.Web;
@@ -290,6 +291,7 @@ public static class ServiceCollectionExtensions
         services.AddMoongladeEmail(configuration);
         services.AddIndexNowClient(configuration.GetSection("IndexNow"));
         services.AddScoped<IModerationKeywordProvider, BlogConfigModerationKeywordProvider>();
+        services.AddScoped<WidgetCollectionGate>();
         services.AddContentModerator();
 
         services.AddSingleton<ScheduledPublishWakeUp>();

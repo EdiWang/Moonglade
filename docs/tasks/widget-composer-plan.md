@@ -4,15 +4,15 @@ Last updated: 2026-11-21 (Asia/Taipei).
 
 ## 1. Current checkpoint and authority
 
-- Phase: B0, B1, and B2 accepted on 2026-11-20 (Asia/Taipei). B3 is in progress.
-- Application feature implementation: B2 region/order storage, paired upgrades, title limit, public placement, and necessary current-page bindings are implemented and verified. B3 backend collection saving is authorized; B4-B6 have not started.
-- Plan status: B0-B2 accepted. B3 execution is authorized. B4-B6 require separate execution authorization.
+- Phase: B0, B1, and B2 accepted on 2026-11-20 (Asia/Taipei). B3 is ready for user acceptance.
+- Application feature implementation: B2 region/order storage, paired upgrades, title limit, public placement, and necessary current-page bindings are implemented and verified. B3 backend collection saving is implemented and verified; B4-B6 have not started.
+- Plan status: B0-B2 accepted; B3 awaits user acceptance. B4-B6 require separate execution authorization.
 - Baseline branch: `master`.
 - Baseline HEAD: `3169a59557b7acd519c612b9ea1bc543908c68b2` (`Show activity log details in a reading pane`).
 - Planning baseline commit: `1e91dea838e593bf73e6799310d7b72c0855260e`.
 - Execution authorization: B0-B2 completed; B3 granted; B4-B6 pending.
 - Development database: PostgreSQL script 12 applied and repeat-verified on the user-confirmed development target on 2026-11-20; full backup and successful restoration rehearsal are recorded in the B2 notes. Do not reinitialize or restore this database as a disposable fixture.
-- Next action: complete B3 implementation and verification, then obtain B3 user acceptance.
+- Next action: obtain B3 user acceptance; B4 execution authorization is pending.
 
 This file contains the current requirements, implementation context, delivery gates, progress, and verification results. Update it in place after every batch or material change. Keep only the latest state: no questions and answers, discussion history, superseded proposals, or chronological work logs. Retain each batch's current outcome, implementation SHA, acceptance status, and unresolved limitations so work can resume without prior conversation context.
 
@@ -122,15 +122,15 @@ Whole-page overwrite, including its cross-tab effects, must be covered by accept
 
 ## 4. Current repository implementation context
 
-This map reflects the verified B2 checkpoint. The approved future API and composer contracts are specified in the B1 notes and batch scopes; do not mistake those targets for already delivered features.
+This map reflects the verified B3 checkpoint. The approved future API and composer contracts are specified in the B1 notes and batch scopes; do not mistake those targets for already delivered features.
 
 | Concern | Owning files / current behavior |
 | --- | --- |
 | Admin page | `src/Moonglade.Web/Pages/Admin/Widgets.cshtml`: card gallery, offcanvas, nested dialogs, translated data attributes, antiforgery token. |
-| Admin state | `src/Moonglade.Web/wwwroot/js/app/admin.widgets.mjs`, `admin.widgets.links.mjs`, `admin.widgets.buttons.mjs`: independent CRUD, explicit region/order, JSON content, and type-specific draft clearing. |
+| Admin state | `src/Moonglade.Web/wwwroot/js/app/admin.widgets.mjs`, `admin.widgets.links.mjs`, `admin.widgets.buttons.mjs`: temporary individual CRUD, explicit region/order, JSON content, and type-specific draft clearing. B4 replaces these callers with complete-draft GET/PUT. |
 | Admin preview | `src/Moonglade.Web/wwwroot/js/app/admin.widgets.render.mjs`: separate client-side renderer; it currently does not establish frontend-template/theme parity. |
-| HTTP | `src/Moonglade.Web/Controllers/WidgetsController.cs`: GET list/detail, POST create, PUT update, DELETE; cache eviction and existing widget activity events follow mutations. `BlogControllerBase` supplies administrator authorization. Global MVC setup adds automatic antiforgery validation. |
-| Domain | `src/Moonglade.Widgets/`: request/content validation, queries, commands, and `Types/`. Existing commands save independently. `Program.cs` already includes this assembly in handler loading. |
+| HTTP | `src/Moonglade.Web/Controllers/WidgetsController.cs`: complete-envelope GET/PUT plus temporary old list/detail/individual routes until B4. Collection binding is complete/required; successful persistence precedes cache eviction and isolated actual-change activity dispatch. Cache failure returns committed=true and savedCollection. `BlogControllerBase` supplies administrator authorization. Global MVC setup adds automatic antiforgery validation. |
+| Domain | `src/Moonglade.Widgets/`: request/content validation, queries, commands, and `Types/`. The collection command validates before mutation and returns canonical detached saved/change snapshots; collection and temporary individual commands share WidgetCollectionGate. `Program.cs` already includes this assembly in handler loading. |
 | Storage | `src/Moonglade.Data/Entities/WidgetEntity.cs`, `Configurations/WidgetConfiguration.cs`, `BlogDbContext.cs`: GUID ID, title, type, content type/code, WidgetRegion plus integer SortOrder, enabled, CreatedTimeUtc. JSON content maximum is 2000 characters; title validation and mapping maximum are both 128. Region is persisted as a string of at most 32 characters. |
 | Fresh data | `src/Moonglade.Data/Seed.cs`: a Friend Links widget in AfterCategories at order zero. `src/Moonglade.Setup/StartUpInitializer.cs`: widgets participate in nonempty-database protection. |
 | Public rendering | `src/Moonglade.Web/ViewComponents/WidgetsViewComponent.cs`, `Pages/Components/Widgets/Default.cshtml`, and `Pages/Shared/_Widget_LinkList.cshtml`, `_Widget_ImageLink.cshtml`, `_Widget_ButtonLink.cshtml`. Only enabled widgets render. ListWidgetsQuery orders by region, SortOrder, CreatedTimeUtc, and ordinal canonical GUID string; management and public rendering reuse this order. |
@@ -141,6 +141,7 @@ This map reflects the verified B2 checkpoint. The approved future API and compos
 | Other callers | `Hosting/DiscoveryEndpointTests.cs` and `Pages/SearchPageTests.cs` in Web tests set up `ListWidgetsQuery`. Activity catalog/HTTP tests cover widget events. Revisit these when contracts change. |
 | Localization | `src/Moonglade.Web/Resources/Program.de-DE.resx`, `Program.fr-FR.resx`, `Program.ja-JP.resx`, `Program.zh-Hans.resx`, and `Program.zh-Hant.resx`. New English keys require all five translations. |
 | Providers/upgrades | Shared EF mapping plus PostgreSQL snake_case and SQL Server PascalCase mappings. `database/README.md` requires manually run, numbered, idempotent scripts for both providers. B2 adds paired script 12.widget-regions.sql after 11; fresh schema creation uses the target model. Recheck numbering before any later schema work. |
+| Coordination | `src/Moonglade.Data/IWidgetCollectionLock.cs`, provider lock implementations/registrations, and `src/Moonglade.Widgets/WidgetCollectionGate.cs`: database transaction-owned shared list locks/exclusive writer locks, including empty collections. No lock table or schema change in B3. Per-instance public cache semantics remain unchanged. |
 | Export | The inspected application exporter supports Posts and Pages, not Widgets. Do not add a widget-export feature. Database-level backup remains necessary for upgrade acceptance. |
 
 Read `AGENTS.md`, the relevant sections of `docs/agent-reference.md`, `README.md`, `src/Tests/README.md`, and `database/README.md` again when resuming if they changed. Treat local development overrides as private; do not copy connection strings, cookies, credentials, or payloads into this file.
@@ -173,7 +174,7 @@ Local implementation commits within an explicitly authorized batch are part of t
 | B0 | Plan and requirements | Accepted | Source/path/requirements/format/diff checks passed | `c7ebf2bb16e6040ef5f1fc22af0701371266bcf7` | Accepted 2026-11-20 |
 | B1 | Baseline, concrete contracts, acceptance fixtures | Accepted | Web build; 825 Web tests; 58 Node tests; both provider/browser baselines passed | `5c0dc4eb08d583872187f9058233e2a05c3d4cad` | Accepted 2026-11-20 |
 | B2 | Region/order model and both database upgrades | Accepted | Web build; 836 Web, 79 Setup, 62 Node tests; both native provider fresh/upgrade/rerun and browser checks passed | `823a46328fa80f83f211bd89cea5b26ce462b1a1` | Accepted 2026-11-20 |
-| B3 | Atomic whole-collection save | In progress | Not run | None | Pending |
+| B3 | Atomic whole-collection save | Ready for user acceptance | Web build; 875 Web, 79 Setup, 62 Node tests; both native provider and real HTTP/browser checks passed | Pending implementation commit | Pending |
 | B4 | Composer and inline draft editing | Not started | Not run | None | Pending |
 | B5 | Real preview and complete arrangement controls | Not started | Not run | None | Pending |
 | B6 | Integrated provider/browser acceptance and handoff | Not started | Not run | None | Pending |
@@ -220,6 +221,8 @@ Local implementation commits within an explicitly authorized batch are part of t
 **User acceptance:** compare before/after content and sidebar position on both providers; review upgrade/recovery instructions and the still-working current management page.
 
 ### B3 - Atomic whole-collection save
+
+**Deliverables:** [B3 collection save and verification](widget-composer-b3.md), complete collection GET/PUT, validation/save snapshots, native provider coordination, transitional writer integration, and handler/HTTP tests. Status: ready for user acceptance.
 
 **Scope:** implement R1/R4's backend collection operation and coordinated Widgets API changes.
 
@@ -349,7 +352,7 @@ Next permitted action:
 - Temporary fixtures and cleanup: none.
 - User acceptance: accepted on 2026-11-20.
 - Open B0 blockers: none.
-- Next action: complete B3 implementation and verification, then obtain B3 user acceptance.
+- Next action: obtain B3 user acceptance; B4 execution authorization is pending.
 
 ### B1 - Current verification status
 
@@ -365,11 +368,11 @@ Next permitted action:
 - Local artifacts: fixture hosts stopped; task-owned PostgreSQL/SQL Server containers and their volumes removed; ports 15432/15433/18081/18082 have no listeners. Durable logs/screenshots and stopped external `b1/tools`/`b1/runtime` directories are retained as authorized local reproduction materials. No temporary fixture host or migration harness is committed.
 - Implementation commit SHA: `5c0dc4eb08d583872187f9058233e2a05c3d4cad`.
 - User acceptance: accepted on 2026-11-20.
-- Next action: complete B3 implementation and verification, then obtain B3 user acceptance.
+- Next action: obtain B3 user acceptance; B4 execution authorization is pending.
 
 ### B2 - Current verification status
 
-- Status: accepted on 2026-11-20 (Asia/Taipei). Branch: `codex/widget-composer-b2`. B3-B6 have not started and require separate execution authorization.
+- Status: accepted on 2026-11-20 (Asia/Taipei). Branch: `codex/widget-composer-b2`. B3 is ready for user acceptance; B4-B6 have not started and require separate execution authorization.
 - Scope: explicit region/order mapping and seeding, canonical query/public ordering, paired manual script 12, title 128, interim current-editor placement fields, all five translations, focused command/model/frontend tests, and operator documentation.
 - Current HTTP cutover: individual CRUD remains; create/update require `region` and `sortOrder`, and responses no longer expose `displayOrder`. Whole-collection envelope/save/locks and real preview are not implemented yet. No temporary legacy bridge exists.
 - Commands/results: `dotnet build src/Moonglade.Web/Moonglade.Web.csproj` passed with zero warnings/errors; Web tests 836/836; Setup tests 79/79; Node tests 62/62; format/resource/document checks and `git diff --check` passed. Exact commands and coverage are in `widget-composer-b2.md`.
@@ -381,7 +384,24 @@ Next permitted action:
 - Implementation commit SHA: `823a46328fa80f83f211bd89cea5b26ce462b1a1`.
 - User acceptance: accepted on 2026-11-20 (Asia/Taipei).
 - Remaining risks: schema 12 and matching application must be upgraded together with stopped hosts and a backup; reverting the binary alone cannot restore the old schema. Development restoration rehearsal passed; other real environments require their own backup rehearsal. Treat the retained full development backup as private.
-- Next permitted action: complete B3 implementation and verification, then obtain B3 user acceptance.
+- Next permitted action: obtain B3 user acceptance; B4 execution authorization is pending.
+
+### B3 - Current verification status
+
+- Status: ready for user acceptance, 2026-11-21 (Asia/Taipei). Branch: `codex/widget-composer-b3`. B4-B6 are not started or authorized.
+- Scope: complete-draft GET/PUT, atomic authoritative replacement, canonical region order, stable IDs/server UTC, shared list/exclusive writer locks in both providers, retry preservation, transitional CRUD coordination, postcommit cache/activity handling, focused handler/HTTP checks, and current API/continuation documentation.
+- Ownership: Widgets owns validation/replacement/gate/result snapshots; Data owns the narrow lock contract; each provider owns native locking/registration; Web owns binding/security/response and existing side effects. No new dependency, persisted schema, configuration, UI text, or SQL upgrade script.
+- Contract: `GET /api/widgets` returns an uncached complete envelope; `PUT /api/widgets` requires a complete explicit non-null array and every editable field. Empty is deliberate deletion; later complete saves win. Invalid input is 400 with widget/field/item paths. Postcommit cache failure is 500 with `committed: true` and `savedCollection`; activity failure preserves success. Generic transport/infrastructure failure does not prove rollback.
+- Commands/results: Web build zero warnings/errors; full Web tests 875/875; Setup tests 79/79; Node tests 62/62; format/link/whitespace checks passed. Exact commands and coverage are in `widget-composer-b3.md`.
+- Native providers: PostgreSQL 18.7 and SQL Server 16.0.4325.4, task-only loopback databases `widgets_b3_pg` and `widgets_b3_sql`. Mixed replacement, invalid/no-partial saves, metadata/retry/restoration, failed/canceled rollback, native lost-ack retry, postcommit cancellation, empty lock/wait cancellation/timeout/release, overlapping independent connections, whole committed reads, last writer wins, and all old writer lock paths passed. SQL Server negative native lock return was rejected.
+- Real HTTP: both providers passed password sign-in plus real antiforgery, mixed save, rejected save without mutation and subsequent success, two independent cookie sessions replacing additions/restoring deletions with new UTC, canonical 18-widget snapshots, and real public rendering/cache verification.
+- Browser: ChatGPT in-app browser, PostgreSQL 1440x900 and SQL Server 1920x1080. Both current-page Edit/Save paths and new-save public results passed; PostgreSQL reload passed. Added link appears before Tags; About B3 appears between Tags and Categories; disabled widgets are absent. No application console errors. English/default fixture theme only; browser version not exposed; viewport override reset. B4 owns actual page-draft two-tab interaction.
+- Evidence: `C:/Users/Edi/Documents/Codex/Moonglade-Widgets-Design/b3/`; full verification, files, saved synthetic snapshots, screenshots, and limitations are listed in `widget-composer-b3.md`.
+- Cleanup: both hosts stopped; B3 containers/volumes, temporary tools/runtime/launcher removed; no fixture listeners. Logs/screenshots/synthetic snapshots retained. No private configuration copies generated in temporary helper outputs. Development and production databases were not accessed or changed by B3.
+- Implementation commit SHA: pending implementation commit.
+- User acceptance: pending.
+- Remaining limits: old routes/page remain only until B4; preview/movement/opening correction remain B5; integrated matrix/TOTP/release remain B6. Existing per-instance public caches are not distributed; database locks do not add cross-instance cache eviction or durable audit delivery.
+- Next permitted action: obtain B3 user acceptance. B4 requires separate authorization.
 
 ## 8. Resume from a fresh conversation
 

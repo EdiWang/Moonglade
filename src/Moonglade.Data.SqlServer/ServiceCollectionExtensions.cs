@@ -8,6 +8,7 @@ public static class ServiceCollectionExtensions
 {
     public static IServiceCollection AddSqlServerStorage(this IServiceCollection services, string connectionString)
     {
+        services.AddScoped<IWidgetCollectionLock, SqlServerWidgetCollectionLock>();
         services.AddDbContext<BlogDbContext, SqlServerBlogDbContext>(options => options
                 .UseSqlServer(connectionString, builder =>
                 {

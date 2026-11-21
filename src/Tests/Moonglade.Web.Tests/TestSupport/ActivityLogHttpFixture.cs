@@ -29,7 +29,8 @@ public sealed class ActivityLogHttpFixture(WebApplication app, ActivityLogTestSt
     public ActivityLogTestStore Store { get; } = store;
 
     public static async Task<ActivityLogHttpFixture> CreateAsync(int historyCount = 3, CancellationToken ct = default,
-        bool includeSettings = false, Action<IServiceCollection>? configureServices = null, params Type[] additionalControllers)
+        bool includeSettings = false, Action<IServiceCollection>? configureServices = null, bool useExceptionHandler = false,
+        params Type[] additionalControllers)
     {
         var store = await ActivityLogTestStore.CreateAsync(historyCount, ct);
         if (includeSettings)
@@ -61,7 +62,6 @@ public sealed class ActivityLogHttpFixture(WebApplication app, ActivityLogTestSt
         builder.Configuration.Sources.Clear();
         builder.Logging.ClearProviders();
         store.ConfigureServices(builder.Services);
-        configureServices?.Invoke(builder.Services);
         builder.Services.AddLocalization(options => options.ResourcesPath = "Resources");
         builder.Services.AddInMemoryCacheAside();
         builder.Services.AddSingleton<ThemeCacheInvalidator>();
@@ -83,7 +83,10 @@ public sealed class ActivityLogHttpFixture(WebApplication app, ActivityLogTestSt
             .AddJsonOptions(options => options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()))
             .ConfigureApplicationPartManager(manager => manager.FeatureProviders.Add(new ActivityOnlyFeatureProvider(includeSettings, additionalControllers)));
         builder.Services.AddRazorPages(options => options.Conventions.AuthorizeFolder("/Admin", BlogAuthSchemas.AdministratorPolicy));
+        if (useExceptionHandler) builder.Services.AddProblemDetails();
+        configureServices?.Invoke(builder.Services);
         var app = builder.Build();
+        if (useExceptionHandler) app.UseExceptionHandler(Moonglade.Web.Configuration.ConfigureExceptionHandler.Handler);
         app.UseRequestLocalization(new RequestLocalizationOptions()
             .SetDefaultCulture("en-US")
             .AddSupportedCultures("en-US", "zh-Hans", "zh-Hant", "de-DE", "ja-JP", "fr-FR")

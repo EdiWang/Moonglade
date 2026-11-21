@@ -57,12 +57,11 @@ public class EditWidgetRequest : IValidatableObject
             return InvalidContentCode("Content code must be a JSON array of link list items.");
         }
 
-        if (links.Any(item =>
-            item == null ||
-            string.IsNullOrWhiteSpace(item.Name) ||
-            string.IsNullOrWhiteSpace(item.Url)))
+        for (var index = 0; index < links.Count; index++)
         {
-            return InvalidContentCode("Link list items require name and URL.");
+            var item = links[index];
+            if (item == null || string.IsNullOrWhiteSpace(item.Name) || string.IsNullOrWhiteSpace(item.Url))
+                return InvalidContentCode("Link list items require name and URL.", $"ContentCode[{index}]");
         }
 
         return null;
@@ -77,7 +76,7 @@ public class EditWidgetRequest : IValidatableObject
 
         if (string.IsNullOrWhiteSpace(imageLink.ImageUrl))
         {
-            return InvalidContentCode("Image link data requires an image URL.");
+            return InvalidContentCode("Image link data requires an image URL.", "ContentCode.ImageUrl");
         }
 
         return null;
@@ -95,12 +94,11 @@ public class EditWidgetRequest : IValidatableObject
             return InvalidContentCode("Button link data must include one to three buttons.");
         }
 
-        if (buttons.Any(item =>
-            item == null ||
-            string.IsNullOrWhiteSpace(item.Text) ||
-            string.IsNullOrWhiteSpace(item.Url)))
+        for (var index = 0; index < buttons.Count; index++)
         {
-            return InvalidContentCode("Button link items require text and URL.");
+            var item = buttons[index];
+            if (item == null || string.IsNullOrWhiteSpace(item.Text) || string.IsNullOrWhiteSpace(item.Url))
+                return InvalidContentCode("Button link items require text and URL.", $"ContentCode[{index}]");
         }
 
         return null;
@@ -130,6 +128,6 @@ public class EditWidgetRequest : IValidatableObject
         }
     }
 
-    private static ValidationResult InvalidContentCode(string errorMessage) =>
-        new(errorMessage, [nameof(ContentCode)]);
+    private static ValidationResult InvalidContentCode(string errorMessage, string itemPath = null) =>
+        new(errorMessage, itemPath is null ? [nameof(ContentCode)] : [nameof(ContentCode), itemPath]);
 }

@@ -19,6 +19,7 @@ using Moonglade.Email.Core;
 using Moonglade.Features.Comment;
 using Moonglade.Theme;
 using Moonglade.Web.Handlers;
+using Moonglade.Widgets;
 using Moq;
 
 namespace Moonglade.Web.Tests.TestSupport;
@@ -62,6 +63,8 @@ public sealed class ActivityLogTestStore : IAsyncDisposable
     {
         services.AddLogging();
         services.AddDbContext<BlogDbContext>(options => options.UseSqlite(_connection));
+        services.AddScoped<IWidgetCollectionLock, SqliteWidgetCollectionLock>();
+        services.AddScoped<WidgetCollectionGate>();
         services.AddSingleton<IBlogConfig>(Config);
         services.AddSingleton(Config);
         services.AddSingleton<ConfigurationWriteGate>();
@@ -93,11 +96,13 @@ public sealed class ActivityLogTestStore : IAsyncDisposable
                 module.RegisterFromAssembly(typeof(ClearActivityLogsCommand).Assembly);
                 module.RegisterFromAssembly(typeof(CreateCommentCommand).Assembly);
                 module.RegisterFromAssembly(typeof(UpdateConfigurationCommand).Assembly);
+                module.RegisterFromAssembly(typeof(SaveWidgetCollectionCommand).Assembly);
             });
             bus.AddQueries(module =>
             {
                 module.RegisterFromAssembly(typeof(ListActivityLogsQuery).Assembly);
                 module.RegisterFromAssembly(typeof(GetSiteThemeStyleSheetQuery).Assembly);
+                module.RegisterFromAssembly(typeof(ListWidgetsQuery).Assembly);
             });
             bus.AddEvents(module =>
             {
