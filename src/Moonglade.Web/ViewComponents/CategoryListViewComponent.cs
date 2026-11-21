@@ -1,4 +1,4 @@
-﻿using LiteBus.Queries.Abstractions;
+using LiteBus.Queries.Abstractions;
 using Moonglade.Features.Category;
 
 namespace Moonglade.Web.ViewComponents;
@@ -8,6 +8,6 @@ public class CategoryListViewComponent(IQueryMediator queryMediator) : ViewCompo
     public async Task<IViewComponentResult> InvokeAsync(bool isMenu)
     {
         var cats = await queryMediator.QueryAsync(new ListCategoriesQuery());
-        return isMenu ? View("Menu", cats) : View(cats);
+        return View(isMenu ? "/Pages/Components/CategoryList/Menu.cshtml" : "/Pages/Components/CategoryList/Default.cshtml", cats);
     }
 }

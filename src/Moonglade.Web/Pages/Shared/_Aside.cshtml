@@ -1,18 +1,19 @@
 @{
     var snapshot = ViewData.CaptureSettings(SettingsReader);
+    var draft = ViewData["WidgetPreviewDraft"] as IReadOnlyList<WidgetEntity>;
 }
 @inject IConfiguration Configuration
 @using Moonglade.Data.Entities
 
 <aside class="blog-sidebar d-none d-lg-block">
-    @await Component.InvokeAsync("Widgets", new { region = WidgetRegion.BeforeProfile })
+    @await Component.InvokeAsync("Widgets", new { region = WidgetRegion.BeforeProfile, draft })
 
     @if (snapshot.GeneralSettings.WidgetsProfile)
     {
         <partial name="_WidgetsProfile" />
     }
 
-    @await Component.InvokeAsync("Widgets", new { region = WidgetRegion.BeforeTags })
+    @await Component.InvokeAsync("Widgets", new { region = WidgetRegion.BeforeTags, draft })
 
     @if (snapshot.GeneralSettings.HotTagAmount > 0)
     {
@@ -33,7 +34,7 @@
         </section>
     }
 
-    @await Component.InvokeAsync("Widgets", new { region = WidgetRegion.BeforeCategories })
+    @await Component.InvokeAsync("Widgets", new { region = WidgetRegion.BeforeCategories, draft })
 
     @if (snapshot.GeneralSettings.WidgetsCategoryList)
     {
@@ -45,7 +46,7 @@
         </section>
     }
 
-    @await Component.InvokeAsync("Widgets", new { region = WidgetRegion.AfterCategories })
+    @await Component.InvokeAsync("Widgets", new { region = WidgetRegion.AfterCategories, draft })
 
     @if (snapshot.FeedSettings.EnableSubscription && snapshot.GeneralSettings.WidgetsSubscriptionButtons)
     {
@@ -63,6 +64,9 @@
                 </a>
             }
         </section>
-        <partial name="_SubscriptionModal" />
+        @if (draft is null)
+        {
+            <partial name="_SubscriptionModal" />
+        }
     }
 </aside>

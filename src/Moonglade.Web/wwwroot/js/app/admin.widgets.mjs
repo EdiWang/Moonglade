@@ -3,10 +3,14 @@ import { createWidgetDraft, widgetPayload, validateWidget } from './admin.widget
 import { loadWidgetCollection, saveWidgetCollection } from './admin.widgets.api.mjs';
 import { getLocalizedString } from './utils.module.mjs';
 import { showConfirmModal, hideConfirmModal, escapeHtml } from './adminModal.mjs';
+import { createWidgetPreview } from './admin.widgets.preview.mjs';
 
-Alpine.data('widgetManager', () => Object.defineProperties(createWidgetDraft(), Object.getOwnPropertyDescriptors({
+Alpine.data('widgetManager', () => Object.defineProperties(createWidgetDraft(), {
+    ...Object.getOwnPropertyDescriptors(createWidgetPreview()),
+    ...Object.getOwnPropertyDescriptors({
     isLoading: false, isSaving: false, loadError: '', saveMessage: '', saveState: '',
     validationShown: false, serverIssues: [], uncertain: false, committed: false,
+    draggingId: null, dropRegion: null, dropBeforeId: null,
     t: getLocalizedString,
     get locked() { return !this.loaded || this.isLoading || this.isSaving || this.committed; },
     get canSave() { return !this.locked && this.dirty; },
@@ -25,8 +29,33 @@ Alpine.data('widgetManager', () => Object.defineProperties(createWidgetDraft(), 
         };
         window.addEventListener('beforeunload', this.leaveHandler);
         await this.loadWidgets();
+        if (this.$watch) this.initializePreview();
     },
-    destroy() { window.removeEventListener('beforeunload', this.leaveHandler); },
+    destroy() { window.removeEventListener('beforeunload', this.leaveHandler); this.stopPreview(); },
+    startWidgetDrag(id, event) {
+        if (this.locked) { event.preventDefault(); return; }
+        this.draggingId = id;
+        event.dataTransfer.effectAllowed = 'move';
+        event.dataTransfer.setData('text/x-moonglade-widget', id);
+    },
+    hoverWidgetDrop(region, beforeId, event) {
+        if (this.locked || !this.draggingId) { event.dataTransfer.dropEffect = 'none'; return; }
+        event.dataTransfer.dropEffect = 'move';
+        this.dropRegion = region;
+        this.dropBeforeId = beforeId;
+    },
+    dropWidget(region, beforeId, event) {
+        const id = this.draggingId;
+        if (!this.locked && id && event.dataTransfer.getData('text/x-moonglade-widget') === id) {
+            this.moveWidgetTo(id, region, beforeId);
+            this.selectedId = id;
+            this.edited();
+            this.revealSelection();
+            this.focusTitle();
+        }
+        this.finishWidgetDrag();
+    },
+    finishWidgetDrag() { this.draggingId = null; this.dropRegion = null; this.dropBeforeId = null; },
     confirmAction(messageKey, action) {
         showConfirmModal({
             title: this.t('confirm'), body: escapeHtml(this.t(messageKey)),
@@ -209,4 +238,4 @@ Alpine.data('widgetManager', () => Object.defineProperties(createWidgetDraft(), 
         if (this.serverIssues[0]) { this.selectedId = this.serverIssues[0].widgetId; this.focusInvalidField(); }
     },
     validateWidget
-})));
+})}));

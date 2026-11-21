@@ -242,6 +242,33 @@ test('actual composer controls draft persistence and recovery', async t => {
         assert.equal(manager.selectedId, row(2).id);
     });
 
+    await t.test('drag controls move the authenticated local draft only and reject locked or foreign drops', async () => {
+        const manager = await create();
+        manager.widgets[0].items[0].data.name = 'Retained edit';
+        const data = new Map();
+        let prevented = false;
+        const event = { preventDefault() { prevented = true; }, dataTransfer: {
+            setData: (type, value) => data.set(type, value), getData: type => data.get(type)
+        } };
+        manager.startWidgetDrag(row(2).id, event);
+        manager.hoverWidgetDrop('BeforeTags', null, event);
+        manager.dropWidget('BeforeTags', null, event);
+        assert.equal(manager.widgets[1].region, 'BeforeTags');
+        assert.equal(manager.selectedId, row(2).id);
+        assert.equal(manager.widgets[0].items[0].data.name, 'Retained edit');
+        assert.equal(manager.draggingId, null);
+        assert.equal(state.writes.length, 0);
+        const before = manager.payload();
+        manager.startWidgetDrag(row(2).id, event);
+        data.clear();
+        manager.dropWidget('AfterCategories', row().id, event);
+        assert.deepEqual(manager.payload(), before);
+        manager.isSaving = true;
+        manager.startWidgetDrag(row().id, event);
+        assert.equal(prevented, true);
+        assert.equal(manager.draggingId, null);
+    });
+
     await t.test('explicit removal of the last widget saves an empty collection', async () => {
         const manager = await create();
         manager.stageDeletion(); manager.stageDeletion();

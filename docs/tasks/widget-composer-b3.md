@@ -7,7 +7,7 @@ Status: accepted on 2026-11-21 (Asia/Taipei). B0-B3 are accepted; B4 is accepted
 - Widgets owns complete-draft validation, authoritative replacement, canonical ordering, stable identities, server-owned creation times, transaction orchestration, detached saved snapshots, and actual change snapshots.
 - Data owns `IWidgetCollectionLock`. PostgreSQL and SQL Server implement/register their native transaction-owned locks. `WidgetCollectionGate` is scoped and is registered by existing Web composition; LiteBus discovers the new command in the existing Widgets assembly.
 - Web exposes complete collection GET/PUT, retains administrator authorization and antiforgery conventions, removes the handling instance's widget cache after persistence, and dispatches existing widget activity keys from safe change snapshots.
-- The B4 composer uses only the complete collection GET/PUT. Old list/detail/individual routes and their unused handlers are retired. No new UI framework, dependency, configuration group, table, migration, or automatic upgrade runner is added. Schema 12 remains the prerequisite for existing databases.
+- The composer uses complete collection GET/PUT plus B5 nonpersisting POST preview. Old list/detail/individual routes and their unused handlers are retired. No new UI framework, dependency, configuration group, table, migration, or automatic upgrade runner is added. Schema 12 remains the prerequisite for existing databases.
 
 ## API and transition
 
@@ -16,7 +16,7 @@ Status: accepted on 2026-11-21 (Asia/Taipei). B0-B3 are accepted; B4 is accepted
 | `GET /api/widgets` | Administrator-only complete `{ "widgets": [...] }` response; `Cache-Control: no-store`; includes disabled widgets and canonical ordering. |
 | `PUT /api/widgets` | Administrator-only, antiforgery-protected replacement; returns the canonical saved collection in the same envelope. |
 | `GET /api/widgets/list`, `GET /api/widgets/{id}`, `POST /api/widgets`, `PUT /api/widgets/{id}`, `DELETE /api/widgets/{id}` | Retired by the B4 caller cutover; there is no compatibility bridge. |
-| `POST /api/widgets/preview` | Not implemented; belongs to B5. |
+| `POST /api/widgets/preview` | Implemented in B5: same complete editable envelope/validation, administrator and antiforgery protection, uncached HTML, no widget/settings/audit writes. Optional dark/culture queries affect presentation only. |
 
 The complete editable shape is specified in the [B1 contract](widget-composer-b1.md#3-collection-api-contract). The envelope must explicitly contain a non-null `widgets` array. Every element must explicitly include `id`, `title`, `widgetType`, `region`, `sortOrder`, `isEnabled`, and `contentCode`. IDs must be unique nonempty GUIDs. Null or incomplete elements, undefined enums, negative positions, oversized title/content, malformed type-specific JSON, and invalid link/image/button content are rejected before mutation. Error fields identify `Widgets[index].Field`, including content item paths when applicable. No new widget/link count cap is introduced.
 
@@ -73,4 +73,4 @@ Local evidence root: `C:/Users/Edi/Documents/Codex/Moonglade-Widgets-Design/b3/`
 
 Both temporary hosts are stopped. B3 containers and volumes, temporary tools/runtime directories, and launcher are removed; logs/screenshots/synthetic snapshots remain. The helper referenced compiled assemblies directly and produced no private development-configuration copies. No development/production database was accessed in B3, and the temporary helper did not read the private override. No deployment or external service change was made.
 
-Remaining scope: B4 user acceptance; B5 real preview, dragging and Link List opening-flag correction; B6 integrated themes/cultures/TOTP/release acceptance. Public widget cache eviction remains the existing per-instance in-memory behavior; another application instance's public cache can remain warm until its usual expiry. Database collection coordination does not add distributed cache invalidation or durable audit delivery. B3 is accepted; B4 verification and acceptance are tracked in the delivery plan.
+Remaining scope: B5 user acceptance; B6 integrated provider/TOTP/release acceptance. B5 verifies preview themes/settings/cultures, dragging and Link List opening flags. Public widget cache eviction remains the existing per-instance in-memory behavior; another application instance's public cache can remain warm until its usual expiry. Database collection coordination does not add distributed cache invalidation or durable audit delivery. B3 is accepted; B4 verification and acceptance are tracked in the delivery plan.

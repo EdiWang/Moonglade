@@ -168,3 +168,25 @@ test('title and serialized content limits identify the affected widget and item'
     draft.selectedWidget.items[0].data.name = '';
     assert.ok(draft.issues.some(issue => issue.itemKey === draft.selectedWidget.items[0].key && issue.field === 'name'));
 });
+
+test('cross-region drops and movement controls share ordering and retain widget and item identity', () => {
+    const draft = loaded([row(1), row(2), row(3)]);
+    const first = draft.widgets[0];
+    const itemKey = first.items[0]?.key;
+    draft.moveWidgetTo(first.id, 'BeforeTags');
+    assert.equal(draft.regionWidgets('BeforeTags')[0], first);
+    draft.moveWidgetTo(first.id, 'AfterCategories', draft.widgets[2].id);
+    assert.deepEqual(draft.regionWidgets('AfterCategories').map(widget => widget.id), [draft.widgets[1].id, first.id, draft.widgets[2].id]);
+    draft.selectWidget(first.id);
+    draft.moveWidget(1);
+    assert.deepEqual(draft.regionWidgets('AfterCategories').map(widget => widget.sortOrder), [0, 1, 2]);
+    assert.equal(draft.regionWidgets('AfterCategories').at(-1), first);
+    assert.equal(first.items[0]?.key, itemKey);
+    const before = draft.payload();
+    draft.moveWidgetTo(first.id, 'BeforeProfile', draft.widgets[1].id);
+    draft.moveWidgetTo(first.id, 'Unknown');
+    draft.moveWidgetTo(first.id, first.region, first.id);
+    assert.deepEqual(draft.payload(), before);
+    draft.discard();
+    assert.equal(draft.dirty, false);
+});

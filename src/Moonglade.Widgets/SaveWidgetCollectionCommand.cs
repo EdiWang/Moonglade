@@ -2,7 +2,6 @@ using LiteBus.Commands.Abstractions;
 using Microsoft.EntityFrameworkCore;
 using Moonglade.Data;
 using Moonglade.Data.Entities;
-using System.ComponentModel.DataAnnotations;
 
 namespace Moonglade.Widgets;
 
@@ -13,11 +12,7 @@ public class SaveWidgetCollectionCommandHandler(BlogDbContext db, WidgetCollecti
 {
     public async Task<WidgetCollectionSaveResult> HandleAsync(SaveWidgetCollectionCommand request, CancellationToken ct)
     {
-        Validator.ValidateObject(request.Payload, new ValidationContext(request.Payload), true);
-        var draft = request.Payload.Widgets!
-            .Select((widget, index) => (Widget: widget!, Index: index))
-            .OrderBy(item => item.Widget.Region).ThenBy(item => item.Widget.SortOrder).ThenBy(item => item.Index)
-            .ToArray();
+        var draft = request.Payload.Materialize();
         WidgetCollectionSaveResult previousAttempt = null;
 
         return await gate.ExecuteAsync(async token =>
@@ -28,7 +23,7 @@ public class SaveWidgetCollectionCommandHandler(BlogDbContext db, WidgetCollecti
                 && previousAttempt.Collection.Widgets.All(widget => current.TryGetValue(widget.Id, out var row)
                     && WidgetSnapshot.From(row) == widget))
                 return previousAttempt;
-            var submittedIds = draft.Select(item => item.Widget.Id).ToHashSet();
+            var submittedIds = draft.Select(widget => widget.Id).ToHashSet();
             List<WidgetChange> changes = [];
             foreach (var removed in current.Values.Where(widget => !submittedIds.Contains(widget.Id)))
             {
@@ -36,8 +31,7 @@ public class SaveWidgetCollectionCommandHandler(BlogDbContext db, WidgetCollecti
                 changes.Add(new WidgetChange(WidgetChangeKind.Deleted, removed.Id, removed.Title, removed.WidgetType));
             }
 
-            var regionOrder = new Dictionary<WidgetRegion, int>();
-            foreach (var (widget, _) in draft)
+            foreach (var widget in draft)
             {
                 var exists = current.TryGetValue(widget.Id, out var entity);
                 if (!exists)
@@ -46,13 +40,12 @@ public class SaveWidgetCollectionCommandHandler(BlogDbContext db, WidgetCollecti
                     db.Widget.Add(entity);
                 }
                 var before = WidgetSnapshot.From(entity);
-                entity.Title = widget.Title!.Trim();
+                entity.Title = widget.Title;
                 entity.WidgetType = widget.WidgetType;
                 entity.ContentType = WidgetContentType.JSON;
-                entity.ContentCode = widget.ContentCode!.Trim();
+                entity.ContentCode = widget.ContentCode;
                 entity.Region = widget.Region;
-                entity.SortOrder = regionOrder.GetValueOrDefault(widget.Region);
-                regionOrder[widget.Region] = entity.SortOrder + 1;
+                entity.SortOrder = widget.SortOrder;
                 entity.IsEnabled = widget.IsEnabled;
                 var after = WidgetSnapshot.From(entity);
                 if (!exists || before != after)

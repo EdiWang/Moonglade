@@ -9,9 +9,9 @@ public class WidgetsViewComponent(
     ICacheAside cache,
     IConfiguration configuration) : ViewComponent
 {
-    public async Task<IViewComponentResult> InvokeAsync(WidgetRegion region)
+    public async Task<IViewComponentResult> InvokeAsync(WidgetRegion region, IReadOnlyList<WidgetEntity> draft = null)
     {
-        var widgets = await cache.GetOrCreateAsync(BlogCachePartition.General.ToString(), "widgets", async () =>
+        var widgets = draft ?? await cache.GetOrCreateAsync(BlogCachePartition.General.ToString(), "widgets", async () =>
         {
             var data = await queryMediator.QueryAsync(new ListWidgetsQuery());
             return data;
@@ -21,6 +21,6 @@ public class WidgetsViewComponent(
             .Where(w => w.IsEnabled && w.Region == region)
             .ToList();
 
-        return View(filtered);
+        return View("/Pages/Components/Widgets/Default.cshtml", filtered);
     }
 }

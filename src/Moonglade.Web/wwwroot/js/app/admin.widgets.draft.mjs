@@ -137,8 +137,7 @@ export function createWidgetDraft() {
             const index = region.findIndex(item => item.id === widget.id);
             const destination = index + direction;
             if (destination < 0 || destination >= region.length) return;
-            [region[index], region[destination]] = [region[destination], region[index]];
-            region.forEach((item, order) => item.sortOrder = order);
+            this.moveWidgetTo(widget.id, widget.region, direction < 0 ? region[destination].id : (region[destination + 1]?.id ?? null));
         },
         canMoveWidget(direction) {
             const widget = this.selectedWidget;
@@ -150,13 +149,19 @@ export function createWidgetDraft() {
         placeWidget(region) {
             const widget = this.selectedWidget;
             if (!widget || !widgetRegions.includes(region) || widget.region === region) return;
+            this.moveWidgetTo(widget.id, region);
+        },
+        moveWidgetTo(id, region, beforeId = null) {
+            const widget = this.widgets.find(item => item.id === id && !item.deleted);
+            if (!widget || !widgetRegions.includes(region) || beforeId === id) return;
+            const target = this.regionWidgets(region).filter(item => item.id !== id);
+            const index = beforeId === null ? target.length : target.findIndex(item => item.id === beforeId);
+            if (index < 0) return;
             const previous = widget.region;
-            const nextOrder = this.regionWidgets(region).length;
-            this.normalizeRegion(region);
             widget.region = region;
-            widget.sortOrder = nextOrder;
+            target.splice(index, 0, widget);
+            target.forEach((item, order) => item.sortOrder = order);
             this.normalizeRegion(previous);
-            this.normalizeRegion(region);
         },
         removeWidget() {
             const widget = this.selectedWidget;

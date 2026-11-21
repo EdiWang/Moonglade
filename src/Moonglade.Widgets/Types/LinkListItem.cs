@@ -1,4 +1,4 @@
-﻿namespace Moonglade.Widgets.Types;
+namespace Moonglade.Widgets.Types;
 
 public class LinkListItem
 {
@@ -8,7 +8,7 @@ public class LinkListItem
 
     public string Url { get; set; }
 
-    public bool OpenInNewTab { get; set; }
+    public bool OpenInNewTab { get; set; } = true;
 
     public int Order { get; set; }
 }

@@ -2292,9 +2292,6 @@
   <data name="Hidden" xml:space="preserve">
     <value>Masqué</value>
   </data>
-  <data name="Live preview is coming next." xml:space="preserve">
-    <value>L’aperçu en direct sera bientôt disponible.</value>
-  </data>
   <data name="No items yet. Add one to edit its details." xml:space="preserve">
     <value>Aucun élément. Ajoutez-en un pour modifier ses détails.</value>
   </data>
@@ -2370,13 +2367,40 @@
   <data name="Widgets could not be loaded completely. Your draft is kept. Reload to try again." xml:space="preserve">
     <value>Les widgets n’ont pas pu être chargés entièrement. Votre brouillon est conservé. Rechargez pour réessayer.</value>
   </data>
-  <data name="Your changes stay in this draft until you save." xml:space="preserve">
-    <value>Vos modifications restent dans ce brouillon jusqu’à l’enregistrement.</value>
-  </data>
   <data name="Your widgets were saved, but the public cache could not be refreshed. Your draft is kept. Reload saved widgets before continuing." xml:space="preserve">
     <value>Vos widgets ont été enregistrés, mais le cache public n’a pas pu être actualisé. Votre brouillon est conservé. Rechargez les widgets enregistrés avant de continuer.</value>
   </data>
   <data name="characters" xml:space="preserve">
     <value>caractères</value>
+  </data>
+  <data name="Draft preview" xml:space="preserve">
+    <value>Aperçu du brouillon</value>
+  </data>
+  <data name="Updating preview..." xml:space="preserve">
+    <value>Mise à jour de l’aperçu...</value>
+  </data>
+  <data name="Complete the required fields to update the preview." xml:space="preserve">
+    <value>Remplissez les champs obligatoires pour actualiser l’aperçu.</value>
+  </data>
+  <data name="Preview unavailable. Your draft is kept." xml:space="preserve">
+    <value>Aperçu indisponible. Votre brouillon est conservé.</value>
+  </data>
+  <data name="Refresh preview" xml:space="preserve">
+    <value>Actualiser l’aperçu</value>
+  </data>
+  <data name="The last preview is out of date." xml:space="preserve">
+    <value>Le dernier aperçu n’est plus à jour.</value>
+  </data>
+  <data name="Drag to move widget" xml:space="preserve">
+    <value>Faire glisser pour déplacer le widget</value>
+  </data>
+  <data name="Drop widget here" xml:space="preserve">
+    <value>Déposer le widget ici</value>
+  </data>
+  <data name="Left sidebar" xml:space="preserve">
+    <value>Barre latérale à gauche</value>
+  </data>
+  <data name="Right sidebar" xml:space="preserve">
+    <value>Barre latérale à droite</value>
   </data>
 </root>

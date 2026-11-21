@@ -2,6 +2,8 @@ using LiteBus.Commands.Abstractions;
 using LiteBus.Queries.Abstractions;
 using Moonglade.ActivityLog;
 using Moonglade.Widgets;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
 
 namespace Moonglade.Web.Controllers;
 
@@ -12,6 +14,23 @@ public class WidgetsController(
     ICommandMediator commandMediator,
     ILogger<WidgetsController> logger) : BlogControllerBase(commandMediator, logger)
 {
+    [HttpPost("preview")]
+    [ResponseCache(NoStore = true, Location = ResponseCacheLocation.None)]
+    public IActionResult Preview(WidgetCollectionRequest request, [FromQuery] bool dark = false)
+    {
+        var viewData = new ViewDataDictionary(new EmptyModelMetadataProvider(), ModelState)
+        {
+            Model = request.Materialize()
+        };
+        viewData["WidgetPreviewDark"] = dark;
+        return new ViewResult
+        {
+            ViewName = "/Pages/Shared/_WidgetPreviewDocument.cshtml",
+            ViewData = viewData,
+            ContentType = "text/html; charset=utf-8"
+        };
+    }
+
     [HttpGet]
     [ResponseCache(NoStore = true, Location = ResponseCacheLocation.None)]
     public async Task<IActionResult> Collection(CancellationToken ct)

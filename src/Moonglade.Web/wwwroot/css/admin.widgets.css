@@ -14,7 +14,7 @@
 
 .widget-composer-grid {
     display: grid;
-    grid-template-columns: 260px minmax(0, 1fr) 260px;
+    grid-template-columns: 260px minmax(0, 1fr) 320px;
     gap: 16px;
     flex: 1;
     min-height: 0;
@@ -62,13 +62,21 @@
 .widget-advanced { font-size: .8125rem; }
 .widget-advanced > summary { color: var(--accent-color1); cursor: pointer; }
 .widget-content-count { margin-top: 24px; padding-top: 12px; border-top: 1px solid var(--bs-border-color); text-align: end; }
-.widget-preview-notice { text-align: center; padding: 36px 8px; color: var(--bs-secondary-color); }
-.widget-preview-notice > i { display: block; font-size: 1.75rem; margin-bottom: 16px; }
-.widget-preview-notice > p { margin-bottom: 12px; }
+.widget-preview-state { flex: none; padding: 10px 12px; border-bottom: 1px solid var(--bs-border-color); }
+.widget-preview-state > span { display: block; }
+.widget-preview-viewport { flex: 1; min-height: 0; overflow-x: hidden; overflow-y: auto; }
+.widget-preview-frame { display: block; width: 100vw; border: 0; background: var(--bs-body-bg); }
+.widget-drag-handle { flex: none; cursor: grab; color: var(--bs-secondary-color); }
+.widget-drag-handle:active { cursor: grabbing; }
+.widget-structure-row.is-drop-before { box-shadow: inset 0 3px var(--accent-color1); }
+.widget-drop-zone { position: relative; height: 4px; margin: 2px 0; border: 1px dashed var(--bs-border-color); border-radius: 4px; visibility: hidden; }
+.widget-drop-zone.is-visible { visibility: visible; }
+.widget-drop-zone > span { position: absolute; top: -8px; right: 4px; padding: 0 4px; font-size: .6875rem; background: var(--bs-body-bg); color: var(--bs-secondary-color); pointer-events: none; }
+.widget-region.is-drop-region .widget-drop-zone { border-color: var(--accent-color1); background: var(--bs-tertiary-bg); }
 .widget-composer button:focus-visible, .widget-composer summary:focus-visible { outline: 2px solid var(--accent-color1); outline-offset: 2px; }
 
 @media (min-width: 1700px) {
-    .widget-composer-grid { grid-template-columns: 280px minmax(0, 1fr) 300px; }
+    .widget-composer-grid { grid-template-columns: 280px minmax(0, 1fr) 340px; }
     .widget-editor-fields { padding: 20px 24px; }
 }
 

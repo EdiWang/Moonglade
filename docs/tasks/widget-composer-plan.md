@@ -4,15 +4,15 @@ Last updated: 2026-11-21 (Asia/Taipei).
 
 ## 1. Current checkpoint and authority
 
-- Phase: B0-B2 accepted on 2026-11-20 and B3 accepted on 2026-11-21 (Asia/Taipei). B4 is accepted on 2026-11-21 (Asia/Taipei). B5 is in progress.
-- Application feature implementation: B2 region/order storage, paired upgrades, title limit, public placement, and necessary current-page bindings are implemented and verified. B3 backend collection saving is accepted; B4 composer/draft editing is implemented and verified. B5 implementation is authorized; B6 has not started.
+- Phase: B0-B2 accepted on 2026-11-20 and B3 accepted on 2026-11-21 (Asia/Taipei). B4 is accepted on 2026-11-21 (Asia/Taipei). B5 is ready for user acceptance.
+- Application feature implementation: B2 region/order storage, paired upgrades, title limit, public placement, and necessary current-page bindings are implemented and verified. B3 backend collection saving is accepted; B4 composer/draft editing is implemented and verified. B5 real preview, dragging and opening behavior are implemented and verified; B6 has not started.
 - Plan status: B0-B4 accepted; B5 authorized. B6 requires separate execution authorization.
 - Baseline branch: `master`.
 - Baseline HEAD: `3169a59557b7acd519c612b9ea1bc543908c68b2` (`Show activity log details in a reading pane`).
 - Planning baseline commit: `1e91dea838e593bf73e6799310d7b72c0855260e`.
 - Execution authorization: B0-B4 completed; B5 granted; B6 pending.
 - Development database: PostgreSQL script 12 applied and repeat-verified on the user-confirmed development target on 2026-11-20; full backup and successful restoration rehearsal are recorded in the B2 notes. Do not reinitialize or restore this database as a disposable fixture.
-- Next action: implement and verify B5, then obtain user acceptance. B6 execution is not authorized. B4 temporary-file disposition remains pending; do not remove its retained files without a decision.
+- Next action: obtain B5 user acceptance. B6 execution is not authorized. B4 temporary-file disposition remains pending; do not remove its retained files without a decision.
 
 This file contains the current requirements, implementation context, delivery gates, progress, and verification results. Update it in place after every batch or material change. Keep only the latest state: no questions and answers, discussion history, superseded proposals, or chronological work logs. Retain each batch's current outcome, implementation SHA, acceptance status, and unresolved limitations so work can resume without prior conversation context.
 
@@ -29,7 +29,7 @@ This file contains the current requirements, implementation context, delivery ga
 
 ## 2. Target design and scope
 
-The current `/admin/widgets` page uses the B4 sidebar composer: a structure list, one inline selected-widget editor and a labeled preview reservation. Page-level Save/Discard owns a complete in-memory draft; the old gallery, numeric order input, offcanvas and nested link/button dialogs are retired. B5 completes the real preview and dragging.
+The current `/admin/widgets` page uses the completed sidebar composer: a structure list, one inline selected-widget editor and an isolated real-template preview. Page-level Save/Discard owns a complete in-memory draft; the old gallery, numeric order input, offcanvas and nested link/button dialogs are retired. Drag handles, movement buttons and placement selection share draft ordering.
 
 Implement a **sidebar composer**: a sidebar structure on the left, an inline content editor in the middle, and a live blog-sidebar preview on the right.
 
@@ -100,6 +100,7 @@ These requirements define the current scope. Ask before changing them or resolvi
 | R12 | Retain the existing per-widget content capacity. | Keep ContentCode at 2000 characters; identify the affected widget on validation failure. Do not add widget/link count caps. |
 | R13 | Coordinate collection writers through native transaction-level application locks. | PostgreSQL/SQL Server implementations stay in their provider projects. Do not add a collection lock table or rely on an in-process lock. |
 | R14 | Preserve truthful recovery after failed saves. | Unknown network/infrastructure outcomes retain the draft and require explicit whole-page overwrite confirmation before retry. Discard restores local data without claiming the saved baseline is current; the uncertain status remains until successful reload/save. A response with `committed: true` states Saved, keeps the draft for inspection, blocks edits/resubmission and offers confirmed reload. |
+| R15 | Preview immediately uses current saved custom CSS. | Embed captured CSS with HTML raw-text boundary protection inside the sandboxed document. Preserve the existing public one-hour asset cache; old public tabs may temporarily differ. Compare parity with a fresh public asset cache. |
 
 ### Whole-page overwrite semantics
 
@@ -123,20 +124,20 @@ Whole-page overwrite, including its cross-tab effects, must be covered by accept
 
 ## 4. Current repository implementation context
 
-This map reflects the verified B3 checkpoint. The approved future API and composer contracts are specified in the B1 notes and batch scopes; do not mistake those targets for already delivered features.
+This map reflects the verified B5 checkpoint. Batch records retain their accepted scope and evidence; this inventory describes the current implementation.
 
 | Concern | Owning files / current behavior |
 | --- | --- |
 | Admin page | `src/Moonglade.Web/Pages/Admin/Widgets.cshtml`: three-panel composer, top Save/Discard, inline fields, translated data attributes and antiforgery token; page-only `wwwroot/css/admin.widgets.css` owns layout. |
 | Admin state | `src/Moonglade.Web/wwwroot/js/app/admin.widgets.mjs`, `admin.widgets.draft.mjs`, `admin.widgets.api.mjs`: complete local baseline/draft, structured GET/PUT errors/commit outcome, shared confirmation modal, stable widget/item keys and complete Save/Discard. The two dialog modules are removed. |
-| Admin preview | `src/Moonglade.Web/wwwroot/js/app/admin.widgets.render.mjs`: unused by the B4 page; retain the renderer/security tests until B5's actual-template cutover. B4 explicitly reserves the preview area. |
-| HTTP | `src/Moonglade.Web/Controllers/WidgetsController.cs`: complete-envelope GET/PUT only; old list/detail/individual routes are retired in B4. Collection binding is complete/required; successful persistence precedes cache eviction and isolated actual-change activity dispatch. Cache failure returns committed=true and savedCollection. `BlogControllerBase` supplies administrator authorization. Global MVC setup adds automatic antiforgery validation. |
-| Domain | `src/Moonglade.Widgets/`: request/content validation, queries, commands, and `Types/`. The collection command validates before mutation and returns canonical detached saved/change snapshots; collection writes/list reads share WidgetCollectionGate. Unused create/update/delete/detail handlers are removed in B4. `Program.cs` already includes this assembly in handler loading. |
+| Admin preview | `admin.widgets.preview.mjs` debounces/aborts obsolete requests and measures a scriptless, inert iframe. `_WidgetPreviewDocument.cshtml` reuses actual `_Aside` and components with submitted draft entities/current theme/settings; the approximate renderer is removed and security coverage uses compiled templates. |
+| HTTP | `src/Moonglade.Web/Controllers/WidgetsController.cs`: complete-envelope GET/PUT and protected nonpersisting POST preview; old list/detail/individual routes are retired in B4. Collection binding is complete/required; successful persistence precedes cache eviction and isolated actual-change activity dispatch. Cache failure returns committed=true and savedCollection. `BlogControllerBase` supplies administrator authorization. Global MVC setup adds automatic antiforgery validation. |
+| Domain | `src/Moonglade.Widgets/`: request/content validation, queries, commands, and `Types/`. Shared Materialize validates/canonicalizes both Save and preview before mutation; the collection command returns canonical detached saved/change snapshots; collection writes/list reads share WidgetCollectionGate. Unused create/update/delete/detail handlers are removed in B4. `Program.cs` already includes this assembly in handler loading. |
 | Storage | `src/Moonglade.Data/Entities/WidgetEntity.cs`, `Configurations/WidgetConfiguration.cs`, `BlogDbContext.cs`: GUID ID, title, type, content type/code, WidgetRegion plus integer SortOrder, enabled, CreatedTimeUtc. JSON content maximum is 2000 characters; title validation and mapping maximum are both 128. Region is persisted as a string of at most 32 characters. |
 | Fresh data | `src/Moonglade.Data/Seed.cs`: a Friend Links widget in AfterCategories at order zero. `src/Moonglade.Setup/StartUpInitializer.cs`: widgets participate in nonempty-database protection. |
 | Public rendering | `src/Moonglade.Web/ViewComponents/WidgetsViewComponent.cs`, `Pages/Components/Widgets/Default.cshtml`, and `Pages/Shared/_Widget_LinkList.cshtml`, `_Widget_ImageLink.cshtml`, `_Widget_ButtonLink.cshtml`. Only enabled widgets render. ListWidgetsQuery orders by region, SortOrder, CreatedTimeUtc, and ordinal canonical GUID string; management and public rendering reuse this order. |
 | Position anchors | `src/Moonglade.Web/Pages/Shared/_Aside.cshtml`: BeforeProfile, BeforeTags, BeforeCategories, AfterCategories, then subscription. Numeric bands exist only as the legacy migration source. Built-ins may be hidden by settings. |
-| Opening behavior | Public Link List currently always uses a new tab despite storing an opening flag; image/button templates already use their own flag. R9 authorizes the scoped correction. |
+| Opening behavior | Public and preview Link List honor explicit true/false; a missing legacy flag defaults to true. Image/button opening behavior is unchanged. |
 | Shared UI | `src/Moonglade.Web/wwwroot/css/admin.css`, shared admin layout, and existing Alpine/Bootstrap modules. Toolbar remains outside `.admin-main-body`; do not regress other admin pages with broad shared-style edits. |
 | Tests | Existing widget validation is in `src/Tests/Moonglade.Web.Tests/Models/WidgetRequestValidationTests.cs`. Web tests already reference the real Web application and use TestHost/SQLite. Frontend behavior tests use Node's built-in runner under `src/Tests/Moonglade.Web.Tests/JavaScript/`. No dedicated Widgets test project was found. |
 | Other callers | `Hosting/DiscoveryEndpointTests.cs` and `Pages/SearchPageTests.cs` in Web tests set up `ListWidgetsQuery`. Activity catalog/HTTP tests cover widget events. Revisit these when contracts change. |
@@ -176,8 +177,8 @@ Local implementation commits within an explicitly authorized batch are part of t
 | B1 | Baseline, concrete contracts, acceptance fixtures | Accepted | Web build; 825 Web tests; 58 Node tests; both provider/browser baselines passed | `5c0dc4eb08d583872187f9058233e2a05c3d4cad` | Accepted 2026-11-20 |
 | B2 | Region/order model and both database upgrades | Accepted | Web build; 836 Web, 79 Setup, 62 Node tests; both native provider fresh/upgrade/rerun and browser checks passed | `823a46328fa80f83f211bd89cea5b26ce462b1a1` | Accepted 2026-11-20 |
 | B3 | Atomic whole-collection save | Accepted | Web build; 875 Web, 79 Setup, 62 Node tests; both native provider and real HTTP/browser checks passed | `79c80ed5bc44e5e7dfd8d0b33868e67d53673083` | Accepted 2026-11-21 |
-| B4 | Composer and inline draft editing | Accepted | Web build; 874 Web and 87 Node tests; both provider-backed browsers, 1440/1920 and five cultures passed; native leave-prompt manual check pending | `9f3a014a60040ea3cd35fada57edc8ebe83af805` | Accepted 2026-11-21 |
-| B5 | Real preview and complete arrangement controls | In progress | Not run | None | Pending |
+| B4 | Composer and inline draft editing | Accepted | Web build; 874 Web and 87 Node tests; both provider-backed browsers, 1440/1920 and five cultures passed; native leave prompt observed in B5 | `9f3a014a60040ea3cd35fada57edc8ebe83af805` | Accepted 2026-11-21 |
+| B5 | Real preview and complete arrangement controls | Ready for user acceptance | Web build; 879 Web and 91 Node tests; both provider-backed browsers, themes/settings/five cultures, 1440/1920 passed | Pending local implementation commit | Pending |
 | B6 | Integrated provider/browser acceptance and handoff | Not started | Not run | None | Pending |
 
 ### B0 - Plan and requirements review
@@ -258,6 +259,8 @@ Local implementation commits within an explicitly authorized batch are part of t
 **User acceptance:** perform the end-to-end Social Links workflow, switch widgets without losing edits, create each type, cancel and confirm type changes, delete and discard, and recover from failed validation/network saves. Confirm the old nested editing flow is gone and retained fields still work.
 
 ### B5 - Real preview and arrangement completion
+
+**Deliverables:** [B5 implementation and verification record](widget-composer-b5.md). Status: ready for user acceptance.
 
 **Scope:** deliver R3/R5/R9, completing the selected screen.
 
@@ -355,7 +358,7 @@ Next permitted action:
 - Temporary fixtures and cleanup: none.
 - User acceptance: accepted on 2026-11-20.
 - Open B0 blockers: none.
-- Next action: implement and verify B5, then obtain user acceptance. B6 execution is not authorized. B4 temporary-file disposition remains pending; do not remove its retained files without a decision.
+- Next action: obtain B5 user acceptance. B6 execution is not authorized. B4 temporary-file disposition remains pending; do not remove its retained files without a decision.
 
 ### B1 - Current verification status
 
@@ -371,13 +374,13 @@ Next permitted action:
 - Local artifacts: fixture hosts stopped; task-owned PostgreSQL/SQL Server containers and their volumes removed; ports 15432/15433/18081/18082 have no listeners. Durable logs/screenshots and stopped external `b1/tools`/`b1/runtime` directories are retained as authorized local reproduction materials. No temporary fixture host or migration harness is committed.
 - Implementation commit SHA: `5c0dc4eb08d583872187f9058233e2a05c3d4cad`.
 - User acceptance: accepted on 2026-11-20.
-- Next action: implement and verify B5, then obtain user acceptance. B6 execution is not authorized. B4 temporary-file disposition remains pending; do not remove its retained files without a decision.
+- Next action: obtain B5 user acceptance. B6 execution is not authorized. B4 temporary-file disposition remains pending; do not remove its retained files without a decision.
 
 ### B2 - Current verification status
 
 - Status: accepted on 2026-11-20 (Asia/Taipei). Branch: `codex/widget-composer-b2`. B3 is accepted; B4 is accepted; B5 is authorized and B6 requires separate execution authorization.
 - Scope: explicit region/order mapping and seeding, canonical query/public ordering, paired manual script 12, title 128, interim current-editor placement fields, all five translations, focused command/model/frontend tests, and operator documentation.
-- Current HTTP cutover: root collection GET/PUT and native locking are implemented; B4 retires individual CRUD. Requests/responses use `region` and `sortOrder` only. Real preview remains B5.
+- Current HTTP cutover: root collection GET/PUT and native locking are implemented; B4 retires individual CRUD. Requests/responses use `region` and `sortOrder` only. Real preview is implemented in B5.
 - Commands/results: `dotnet build src/Moonglade.Web/Moonglade.Web.csproj` passed with zero warnings/errors; Web tests 836/836; Setup tests 79/79; Node tests 62/62; format/resource/document checks and `git diff --check` passed. Exact commands and coverage are in `widget-composer-b2.md`.
 - Native providers: PostgreSQL 18.7 and SQL Server 16.0.4325.4. Both passed 20-row synthetic upgrade preservation, canonical GUID ties, upper-region capacity, invalid-order/partial-schema rollback, repeated execution including subsequent edits, title boundaries, empty legacy conversion, new-model fresh initialization, and target-schema guards. No production database was accessed.
 - Browser: ChatGPT in-app browser, 1440x900/1920x1080; both providers across upgraded/fresh schemas. Save/reload, order 1000, title 128, public anchor placement, disabled filtering, and all five localized placement selectors passed. No application console errors. Browser version was not captured.
@@ -387,7 +390,7 @@ Next permitted action:
 - Implementation commit SHA: `823a46328fa80f83f211bd89cea5b26ce462b1a1`.
 - User acceptance: accepted on 2026-11-20 (Asia/Taipei).
 - Remaining risks: schema 12 and matching application must be upgraded together with stopped hosts and a backup; reverting the binary alone cannot restore the old schema. Development restoration rehearsal passed; other real environments require their own backup rehearsal. Treat the retained full development backup as private.
-- Next permitted action: obtain B4 user acceptance; B5 execution authorization is pending.
+- Next permitted action: obtain B5 user acceptance; B6 is not authorized.
 
 ### B3 - Current verification status
 
@@ -403,8 +406,8 @@ Next permitted action:
 - Cleanup: both hosts stopped; B3 containers/volumes, temporary tools/runtime/launcher removed; no fixture listeners. Logs/screenshots/synthetic snapshots retained. No private configuration copies generated in temporary helper outputs. Development and production databases were not accessed or changed by B3.
 - Implementation commit SHA: `79c80ed5bc44e5e7dfd8d0b33868e67d53673083`.
 - User acceptance: accepted on 2026-11-21 (Asia/Taipei).
-- Remaining limits: B4 retires old routes/page; real preview/dragging/opening correction remain B5; integrated matrix/TOTP/release remain B6. Existing per-instance public caches are not distributed; database locks do not add cross-instance cache eviction or durable audit delivery.
-- Next permitted action: implement and verify B5, then obtain user acceptance.
+- Remaining limits: B4 retires old routes/page; B5 preview/dragging/opening correction are implemented and await acceptance; integrated matrix/TOTP/release remain B6. Existing per-instance public caches are not distributed; database locks do not add cross-instance cache eviction or durable audit delivery.
+- Next permitted action: obtain B5 user acceptance.
 
 ### B4 - Current verification status
 
@@ -416,8 +419,22 @@ Next permitted action:
 - Evidence/design: `docs/tasks/widget-composer-b4.md`; safe logs, synthetic snapshots/request-method counts and screenshots under `C:/Users/Edi/Documents/Codex/Moonglade-Widgets-Design/b4/`. Approved sketch and final rendered 1440/1920 views were compared for structure, palette, typography, selection, disclosure rows, scrolling and intentional checkpoint deviations.
 - Cleanup: both hosts stopped and B4 database containers/volumes removed after ownership checks. Temporary tools/runtime/launcher disposition is pending. No private development override copy exists in B4 evidence. Development/production databases, B1 retained materials and B2 private backup are untouched.
 - Implementation commit SHA: `9f3a014a60040ea3cd35fada57edc8ebe83af805`.
-- User acceptance: accepted on 2026-11-21 (Asia/Taipei). The native browser leave-warning prompt was not independently observed; actual handler branches are covered in Node. Default light fixture theme/password-only owner only; other themes, TOTP and release matrix remain B6. Real preview, dragging and Link List public opening correction remain B5.
-- Next permitted action: implement and verify the authorized B5 batch; B4 temporary-file disposition remains pending.
+- User acceptance: accepted on 2026-11-21 (Asia/Taipei). The native browser leave-warning prompt was observed and canceled in B5; actual handler branches are also covered in Node. Default light fixture theme/password-only owner only; B5 also verifies other themes; TOTP and integrated release matrix remain B6. Real preview, dragging and Link List public opening correction are implemented and verified in B5.
+- Next permitted action: obtain B5 acceptance; B4 temporary-file disposition remains pending.
+
+### B5 - Current verification status
+
+- Status: ready for user acceptance on 2026-11-21 (Asia/Taipei). Branch: `codex/widget-composer-b5`. B0-B4 accepted; B6 not started or authorized.
+- Scope: real-template/current-theme draft preview, nonpersisting protected POST route, shared canonical projection, isolated inert/scriptless iframe, debounce/abort/stale/error recovery, native drag with existing movement alternatives, Link List opening correction and five translations. Approximate renderer retired with security coverage moved to actual compiled-template tests.
+- R15: preview immediately embeds current saved custom CSS with raw-text boundary escaping. Public one-hour stylesheet cache is unchanged; parity uses a fresh asset cache.
+- Commands/results: Web build zero warnings/errors; full Web tests 879/879 and Node tests 91/91. Encoding/resource/link/whitespace checks passed. No dependency, schema, mapping, seeding, startup or configuration changes; Setup/migration checks not repeated.
+- Browser: isolated Edge 158.0.4370.33 via Playwright CLI 0.1.25 (Browser plugin unavailable). Actual production Razor/services/pipeline/auth/antiforgery with disposable PostgreSQL 18.7 and SQL Server 16.00.4325; both all-type saves/reload/public parity and no preview persistence passed. PostgreSQL 1440/1920, SQL 1920; five cultures, light/dark/current green theme/custom CSS, left/right/hidden/disabled settings, failure/obsolete/invalid/missing-image recovery, native drag/buttons/keyboard/scroll and native leave prompt passed. Final pages have no application/Alpine errors.
+- Evidence: [B5 verification record](widget-composer-b5.md); local root `C:/Users/Edi/Documents/Codex/Moonglade-Widgets-Design/b5/`. Approved reference and final 1440/1920 screenshots compared for hierarchy, anchors, typography/palette, inline fields, scrolling and actual-template geometry.
+- Cleanup: task browser closed, both hosts stopped, task containers/volumes removed and no fixture listeners. B5 tools/runtime/launchers retained as authorized local reproduction materials; no private override copies. B4 file disposition remains pending. Development/production data, B1 retained files and B2 private backup untouched.
+- Implementation commit SHA: pending local commit.
+- User acceptance: pending.
+- Limits: full integrated release/TOTP/provider-upgrade gates remain B6; public cache remains per-instance and old public tabs may retain cached CSS. No deployment or push performed.
+- Next permitted action: obtain B5 user acceptance; B6 requires separate execution authorization.
 
 ## 8. Resume from a fresh conversation
 

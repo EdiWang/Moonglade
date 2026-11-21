@@ -42,6 +42,8 @@ public class WidgetCollectionHttpTests
         Assert.Equal(status, (await client.GetAsync("/api/widgets", ct)).StatusCode);
         using var response = await client.PutAsJsonAsync("/api/widgets", new WidgetCollectionRequest { Widgets = [] }, JsonOptions, ct);
         Assert.Equal(status, response.StatusCode);
+        using var preview = await client.PostAsJsonAsync("/api/widgets/preview", new WidgetCollectionRequest { Widgets = [] }, JsonOptions, ct);
+        Assert.Equal(status, preview.StatusCode);
         Assert.Empty(await ReadWidgetsAsync(fixture, ct));
         Assert.Empty(await fixture.Store.ReadLogsAsync(ct));
     }
@@ -58,6 +60,8 @@ public class WidgetCollectionHttpTests
         if (invalid) client.DefaultRequestHeaders.Add("XSRF-TOKEN", "invalid");
         using var response = await client.PutAsJsonAsync("/api/widgets", new WidgetCollectionRequest { Widgets = [] }, JsonOptions, ct);
         Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+        using var preview = await client.PostAsJsonAsync("/api/widgets/preview", new WidgetCollectionRequest { Widgets = [] }, JsonOptions, ct);
+        Assert.Equal(HttpStatusCode.BadRequest, preview.StatusCode);
         Assert.Empty(await ReadWidgetsAsync(fixture, ct));
         Assert.Empty(await fixture.Store.ReadLogsAsync(ct));
     }
@@ -113,6 +117,8 @@ public class WidgetCollectionHttpTests
         var errors = problem.RootElement.GetProperty("errors");
         Assert.NotEmpty(errors.EnumerateObject());
         if (mode == "item") Assert.Contains(errors.EnumerateObject(), field => field.Name.Contains("Widgets[1].ContentCode[0]", StringComparison.Ordinal));
+        using var preview = await client.PostAsync("/api/widgets/preview", new StringContent(root.ToJsonString(), Encoding.UTF8, "application/json"), ct);
+        Assert.Equal(HttpStatusCode.BadRequest, preview.StatusCode);
         Assert.Equal(baseline, await ReadWidgetsAsync(fixture, ct));
         Assert.Equal(count, (await fixture.Store.ReadLogsAsync(ct)).Count);
     }
@@ -216,6 +222,103 @@ public class WidgetCollectionHttpTests
             cache.Verify(value => value.Remove(It.IsAny<string>(), "widgets"), Times.Once);
         }
         else Assert.Empty(await fixture.Store.ReadLogsAsync(ct));
+    }
+
+    [Theory]
+    [InlineData("javascript:alert(1)")]
+    [InlineData("data:text/html,test")]
+    public async Task Preview_RendersSubmittedContentWithSecurityAndOpeningSemantics_WithoutPersistenceOrAudit(string unsafeUrl)
+    {
+        var ct = TestContext.Current.CancellationToken;
+        await using var fixture = await CreateAsync(ct);
+        var settings = fixture.Store.Config.Capture();
+        fixture.Store.Config.Publish(settings with
+        {
+            GeneralSettings = settings.GeneralSettings with
+            {
+                WidgetsProfile = false, HotTagAmount = 0, WidgetsCategoryList = false, WidgetsSubscriptionButtons = false
+            }
+        });
+        var previewSettings = fixture.Store.Config.Capture();
+        using var client = await AdminClientAsync(fixture, ct);
+        var saved = await SaveAsync(client, [WidgetCollectionTests.Draft("Persisted cache value")], ct);
+        var cache = fixture.App.Services.GetRequiredService<ICacheAside>();
+        var cached = await cache.GetOrCreateAsync("General", "widgets", async () =>
+        {
+            using var scope = fixture.App.Services.CreateScope();
+            return await scope.ServiceProvider.GetRequiredService<BlogDbContext>().Widget.AsNoTracking().ToListAsync(ct);
+        }, TimeSpan.FromMinutes(20));
+        var links = WidgetCollectionTests.Draft("Draft <script>encoded</script>");
+        links.ContentCode = """[{"name":"<script>label</script>","url":"javascript:alert(1)","openInNewTab":true},{"name":"New","url":"https://example.test/new","openInNewTab":true},{"name":"Same","url":"https://example.test/same","openInNewTab":false},{"name":"Legacy","url":"https://example.test/legacy"}]""";
+        var image = WidgetCollectionTests.Draft("Image");
+        image.WidgetType = WidgetType.ImageLink;
+        image.ContentCode = """{"imageUrl":"javascript:alert(1)","altText":"<script>image</script>","cssClass":"x\" onerror=\"alert(1)","linkUrl":"javascript:alert(1)"}""";
+        var button = WidgetCollectionTests.Draft("Button");
+        button.WidgetType = WidgetType.ButtonLink;
+        button.ContentCode = """[{"text":"<script>button</script>","url":"javascript:alert(1)","cssClass":"x\" onclick=\"alert(1)"}]""";
+        links.ContentCode = links.ContentCode.Replace("javascript:alert(1)", unsafeUrl);
+        image.ContentCode = image.ContentCode.Replace("javascript:alert(1)", unsafeUrl);
+        button.ContentCode = button.ContentCode.Replace("javascript:alert(1)", unsafeUrl);
+        using var response = await client.PostAsJsonAsync("/api/widgets/preview?dark=true",
+            new WidgetCollectionRequest { Widgets = [links, image, button] }, JsonOptions, ct);
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        Assert.Equal("text/html", response.Content.Headers.ContentType!.MediaType);
+        Assert.True(response.Headers.CacheControl!.NoStore);
+        var html = await response.Content.ReadAsStringAsync(ct);
+        Assert.Contains("Draft &lt;script&gt;encoded&lt;/script&gt;", html);
+        Assert.DoesNotContain("Persisted cache value", html);
+        Assert.DoesNotContain("<script", html, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotMatch("(?:href|src)=\"(?:javascript:|data:text/html)", html);
+        Assert.DoesNotMatch(" on(?:error|click)=\"", html);
+        Assert.Contains("script-src 'none'", html);
+        var newLink = Regex.Match(html, "<a[^>]*href=\"https://example.test/new\"[^>]*>").Value;
+        var sameLink = Regex.Match(html, "<a[^>]*href=\"https://example.test/same\"[^>]*>").Value;
+        var legacyLink = Regex.Match(html, "<a[^>]*href=\"https://example.test/legacy\"[^>]*>").Value;
+        Assert.Contains("target=\"_blank\"", newLink);
+        Assert.Contains("noopener noreferrer", newLink);
+        Assert.NotEmpty(sameLink);
+        Assert.DoesNotContain("target=", sameLink);
+        Assert.Contains("target=\"_blank\"", legacyLink);
+        Assert.Contains("noopener noreferrer", legacyLink);
+        using var empty = await client.PostAsJsonAsync("/api/widgets/preview", new WidgetCollectionRequest { Widgets = [] }, JsonOptions, ct);
+        Assert.Equal(HttpStatusCode.OK, empty.StatusCode);
+        Assert.DoesNotContain("Persisted cache value", await empty.Content.ReadAsStringAsync(ct));
+        Assert.Equal(saved.Widgets, await ReadWidgetsAsync(fixture, ct));
+        Assert.Single(await fixture.Store.ReadLogsAsync(ct));
+        var stillCached = await cache.GetOrCreateAsync("General", "widgets", () => Task.FromResult(new List<WidgetEntity>()), TimeSpan.FromMinutes(20));
+        Assert.Same(cached, stillCached);
+        Assert.Same(previewSettings, fixture.Store.Config.Capture());
+    }
+
+    [Theory]
+    [InlineData("</style>")]
+    [InlineData("</STYLE >")]
+    [InlineData("</sty</stylele>")]
+    public async Task Preview_CapturesCurrentCustomCss_WithoutEscapingItsHtmlRawTextBoundary(string closingTag)
+    {
+        var ct = TestContext.Current.CancellationToken;
+        await using var fixture = await CreateAsync(ct);
+        var settings = fixture.Store.Config.Capture();
+        fixture.Store.Config.Publish(settings with
+        {
+            AppearanceSettings = settings.AppearanceSettings with
+            {
+                EnableCustomCss = true,
+                CssCode = "/* raw text fixture */ body { --label: \"" + closingTag + "<script>alert(1)</script>\"; }"
+            },
+            GeneralSettings = settings.GeneralSettings with { SideBarOption = Moonglade.Configuration.SideBarOption.Disabled }
+        });
+        using var client = await AdminClientAsync(fixture, ct);
+        using var response = await client.PostAsJsonAsync("/api/widgets/preview", new WidgetCollectionRequest { Widgets = [] }, JsonOptions, ct);
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        var html = await response.Content.ReadAsStringAsync(ct);
+        var start = html.IndexOf("/* raw text fixture */", StringComparison.Ordinal);
+        Assert.True(start >= 0);
+        var css = html[start..html.LastIndexOf("</style>", StringComparison.OrdinalIgnoreCase)];
+        Assert.DoesNotContain("</style", css, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("<\\/style", css, StringComparison.OrdinalIgnoreCase);
+        Assert.Empty(await ReadWidgetsAsync(fixture, ct));
+        Assert.Empty(await fixture.Store.ReadLogsAsync(ct));
     }
 
     private static Task<ActivityLogHttpFixture> CreateAsync(CancellationToken ct, Action<IServiceCollection>? extra = null) =>

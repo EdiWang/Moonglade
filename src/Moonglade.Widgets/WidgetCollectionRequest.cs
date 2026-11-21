@@ -12,6 +12,26 @@ public sealed class WidgetCollectionRequest : IValidatableObject
     [Required]
     public List<WidgetDraft?>? Widgets { get; set; }
 
+    public List<WidgetEntity> Materialize()
+    {
+        Validator.ValidateObject(this, new ValidationContext(this), true);
+        var orders = new Dictionary<WidgetRegion, int>();
+        return Widgets!.Select((widget, index) => (Widget: widget!, Index: index))
+            .OrderBy(item => item.Widget.Region).ThenBy(item => item.Widget.SortOrder).ThenBy(item => item.Index)
+            .Select(item =>
+            {
+                var widget = item.Widget;
+                var order = orders.GetValueOrDefault(widget.Region);
+                orders[widget.Region] = order + 1;
+                return new WidgetEntity
+                {
+                    Id = widget.Id, Title = widget.Title!.Trim(), WidgetType = widget.WidgetType,
+                    ContentType = WidgetContentType.JSON, ContentCode = widget.ContentCode!.Trim(),
+                    Region = widget.Region, SortOrder = order, IsEnabled = widget.IsEnabled
+                };
+            }).ToList();
+    }
+
     public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
     {
         if (Widgets is null) yield break;

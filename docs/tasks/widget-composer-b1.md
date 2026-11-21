@@ -91,8 +91,8 @@ The native lock contracts are documented by [PostgreSQL](https://www.postgresql.
 | --- | --- |
 | `admin.widgets.mjs` | B4 uses collection GET/PUT, one complete local draft, structured error recovery, and the shared confirmation modal. Draft/model and HTTP transport are separate page modules. |
 | `admin.widgets.links.mjs`, `admin.widgets.buttons.mjs` | Removed in B4; all supported fields now use inline draft editors with stable item keys. |
-| `admin.widgets.render.mjs` | Retain security coverage while replacing approximate previews with B5's actual template rendering. |
-| `WidgetsController` / Widgets queries and commands | Collection GET/PUT are implemented. B4 retires old list/detail/individual routes and unused create/update/delete/detail handlers. |
+| `admin.widgets.render.mjs` | Removed in B5; actual compiled-template HTTP tests retain URL/text security coverage. |
+| `WidgetsController` / Widgets queries and commands | Collection GET/PUT and nonpersisting POST preview are implemented. B4 retires old list/detail/individual routes and unused create/update/delete/detail handlers. |
 | `WidgetsViewComponent` / `_Aside.cshtml` | Use explicit regions and canonical order, preserving built-in ownership and enabled filtering. |
 | Current Widgets offcanvas | Removed in B4 together with nested link/button dialogs. The composer preserves retained fields and provides whole-page Save/Discard, staged delete/undo, region selection and movement buttons. |
 | Seed / Setup / mappings | B2 updates fresh data and paired provider upgrades, including title length. Preserve nonempty-install safeguards and UTC handling. |
@@ -100,7 +100,7 @@ The native lock contracts are documented by [PostgreSQL](https://www.postgresql.
 | Widget validation/lifecycle/security tests | Move assertions to the replacement contract in the batch that changes it; preserve behavioral coverage without asserting removed source is absent. |
 | Activity catalog/HTTP tests and widget audit events | Preserve supported event keys and safe target details. Full-collection replacement emits only actual create/update/delete outcomes after business persistence. |
 
-The old numeric HTTP model is replaced in B2 together with the minimum current-page bindings; a permanent numeric-to-region compatibility layer is unnecessary. GET-list/detail, POST-create, PUT-by-ID, and DELETE-by-ID are retired by B4. The composer uses only the complete collection contract. Other public APIs, blog URLs, and protocols remain unchanged.
+The old numeric HTTP model is replaced in B2 together with the minimum current-page bindings; a permanent numeric-to-region compatibility layer is unnecessary. GET-list/detail, POST-create, PUT-by-ID, and DELETE-by-ID are retired by B4. The composer uses the complete collection contract plus nonpersisting draft preview. Other public APIs, blog URLs, and protocols remain unchanged.
 
 ## 5. Preview and draft behavior
 

@@ -95,7 +95,7 @@ dotnet test --solution src/Moonglade.slnx
 
 The root `global.json` selects Microsoft.Testing.Platform. Moving tests within a project needs no compile or solution entries; update saved fully qualified test filters when namespaces change.
 
-Web JavaScript behavior tests use Node.js's built-in test runner without additional packages. They cover frontend helpers, avatar crop and upload, and site-icon image selection and preview resizing:
+Web JavaScript behavior tests use Node.js's built-in test runner without additional packages. They cover frontend helpers, avatar crop/upload, site-icon image selection/resizing, and widget draft/save/drag/preview lifecycle. Web HTTP tests cover widget preview authorization, antiforgery, complete-draft validation, real-template encoding and nonpersistence. Presentation, localization and public/preview parity require browser verification with disposable provider databases:
 
 ```powershell
 node --test src\Tests\Moonglade.Web.Tests\JavaScript\*.mjs

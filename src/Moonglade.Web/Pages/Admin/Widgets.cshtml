@@ -21,6 +21,11 @@
 }
 
 <div id="localizedStrings" hidden
+     data-preview-culture="@System.Globalization.CultureInfo.CurrentUICulture.Name"
+     data-draft-preview="@SharedLocalizer["Draft preview"]"
+     data-updating-preview="@SharedLocalizer["Updating preview..."]"
+     data-preview-invalid="@SharedLocalizer["Complete the required fields to update the preview."]"
+     data-preview-failed="@SharedLocalizer["Preview unavailable. Your draft is kept."]"
      data-confirm="@SharedLocalizer["Confirm"]"
      data-loading-widgets="@SharedLocalizer["Loading widgets..."]"
      data-saving="@SharedLocalizer["Saving..."]"
@@ -106,10 +111,11 @@
                 <p x-show="loaded && !orderedWidgets.length" x-cloak class="small text-body-secondary">@SharedLocalizer["No widgets yet."]</p>
                 @foreach (var region in regions)
                 {
-                    <section class="widget-region" aria-label="@SharedLocalizer[region.Label]">
+                    <section class="widget-region" aria-label="@SharedLocalizer[region.Label]" :class="{ 'is-drop-region': draggingId && dropRegion === '@region.Region' && !dropBeforeId }" x-on:dragover.prevent="hoverWidgetDrop('@region.Region', null, $event)" x-on:drop.prevent="dropWidget('@region.Region', null, $event)">
                         <h3>@SharedLocalizer[region.Label]</h3>
                         <template x-for="widget in regionWidgets('@region.Region')" :key="widget.id">
-                            <button type="button" class="widget-structure-row" :id="`widget-select-${widget.id}`" :class="{ 'is-selected': selectedId === widget.id, 'has-errors': widgetHasErrors(widget.id) }" :aria-pressed="selectedId === widget.id" x-on:click="chooseWidget(widget.id)" :title="widget.title || t('unnamedWidget')">
+                            <button type="button" class="widget-structure-row" :id="`widget-select-${widget.id}`" :class="{ 'is-selected': selectedId === widget.id, 'has-errors': widgetHasErrors(widget.id), 'is-drop-before': draggingId && dropBeforeId === widget.id }" :aria-pressed="selectedId === widget.id" x-on:dragover.prevent.stop="hoverWidgetDrop(widget.region, widget.id, $event)" x-on:drop.prevent.stop="dropWidget(widget.region, widget.id, $event)" x-on:click="chooseWidget(widget.id)" :title="widget.title || t('unnamedWidget')">
+                                <span class="widget-drag-handle" :draggable="!locked" x-on:dragstart.stop="startWidgetDrag(widget.id, $event)" x-on:dragend.stop="finishWidgetDrag()" title="@SharedLocalizer["Drag to move widget"]" aria-hidden="true"><i class="bi-grip-vertical"></i></span>
                                 <span class="widget-row-copy">
                                     <span class="widget-row-title" x-text="widget.title || t('unnamedWidget')"></span>
                                     <span class="widget-row-type" x-text="t(widget.widgetType === 'LinkList' ? 'linkList' : widget.widgetType === 'ImageLink' ? 'imageLink' : 'buttonLink')"></span>
@@ -118,6 +124,7 @@
                                 <i class="bi-chevron-right" aria-hidden="true"></i>
                             </button>
                         </template>
+                        <div class="widget-drop-zone" :class="{ 'is-visible': draggingId }" :aria-hidden="!draggingId"><span>@SharedLocalizer["Drop widget here"]</span></div>
                         <div class="widget-builtin">
                             <span>@SharedLocalizer[region.Anchor]</span>
                             <span class="small text-body-secondary">@SharedLocalizer[sidebarEnabled && region.Visible ? "Built-in" : "Hidden"]</span>
@@ -253,9 +260,19 @@
             </form>
         </section>
 
-        <section class="widget-pane widget-preview-reserved" aria-labelledby="widget-preview-title">
-            <header class="widget-pane-heading"><h2 id="widget-preview-title">@SharedLocalizer["Blog preview"]</h2></header>
-            <div class="widget-pane-body"><div class="widget-preview-notice"><i class="bi-layout-sidebar-inset" aria-hidden="true"></i><p>@SharedLocalizer["Live preview is coming next."]</p><p class="small text-body-secondary mb-0">@SharedLocalizer["Your changes stay in this draft until you save."]</p></div></div>
+        <section class="widget-pane" aria-labelledby="widget-preview-title">
+            <header class="widget-pane-heading">
+                <h2 id="widget-preview-title">@SharedLocalizer["Blog preview"]</h2>
+                <button type="button" class="btn btn-sm btn-outline-secondary" x-on:click="schedulePreview()" :disabled="!loaded || issues.length > 0" title="@SharedLocalizer["Refresh preview"]" aria-label="@SharedLocalizer["Refresh preview"]"><i class="bi-arrow-clockwise" aria-hidden="true"></i></button>
+            </header>
+            <div class="widget-preview-state small text-body-secondary" role="status" aria-live="polite">
+                <span x-text="previewStatusText"></span>
+                <span x-show="previewHtml && previewState !== 'ready'" x-cloak>@SharedLocalizer["The last preview is out of date."]</span>
+                <span class="d-block">@SharedLocalizer[snapshot.GeneralSettings.SideBarOption == SideBarOption.Left ? "Left sidebar" : snapshot.GeneralSettings.SideBarOption == SideBarOption.Right ? "Right sidebar" : "The blog sidebar is disabled."]</span>
+            </div>
+            <div class="widget-preview-viewport">
+                <iframe class="widget-preview-frame" title="@SharedLocalizer["Blog preview"]" sandbox="allow-same-origin" :srcdoc="previewHtml" :style="{ height: `${previewHeight}px` }" scrolling="no" x-on:load="measurePreview($event.target)" x-show="previewHtml" x-cloak></iframe>
+            </div>
         </section>
     </div>
 </div>

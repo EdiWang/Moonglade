@@ -1,0 +1,49 @@
+@using Moonglade.Data.Entities
+@using Moonglade.Theme
+@using System.Text.RegularExpressions
+@model List<WidgetEntity>
+@{
+    Layout = null;
+    var snapshot = ViewData.CaptureSettings(SettingsReader);
+    ViewData["WidgetPreviewDraft"] = Model;
+    var themeCss = await QueryMediator.QueryAsync(new GetSiteThemeStyleSheetQuery(snapshot.AppearanceSettings.ThemeId), Context.RequestAborted);
+}
+<!DOCTYPE html>
+<html lang="@System.Globalization.CultureInfo.CurrentUICulture.Name" data-bs-theme="@(ViewData["WidgetPreviewDark"] is true ? "dark" : "light")">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'none'; style-src 'self' 'unsafe-inline'; img-src 'self' https: http: data:; font-src 'self'; base-uri 'self'; form-action 'none'" />
+    <base href="@Url.Content("~/")" />
+    <title>@SharedLocalizer["Blog preview"]</title>
+    <link href="~/lib/twitter-bootstrap/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="~/lib/bootstrap-icons/bootstrap-icons.min.css" rel="stylesheet" />
+    <link href="~/fonts/font.css" rel="stylesheet" />
+    <link href="~/css/base.css" rel="stylesheet" />
+    <link href="~/css/rwd.css" rel="stylesheet" />
+    @if (!string.IsNullOrEmpty(themeCss))
+    {
+        <style>@Html.Raw(themeCss.Replace("</style", string.Empty, StringComparison.OrdinalIgnoreCase))</style>
+    }
+    @if (snapshot.AppearanceSettings.EnableCustomCss)
+    {
+        // Escape HTML raw-text terminators while preserving CSS string values.
+        var customCss = Regex.Replace(snapshot.AppearanceSettings.CssCode ?? string.Empty, "</style",
+            match => match.Value.Insert(1, "\\"), RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
+        <style>@Html.Raw(customCss)</style>
+    }
+    <link href="~/css/widget-preview.css" rel="stylesheet" asp-append-version="true" />
+</head>
+<body class="bg-gray-1">
+    <div inert>
+        @if (snapshot.GeneralSettings.SideBarOption != SideBarOption.Disabled)
+        {
+            <partial name="_Aside" />
+        }
+        else
+        {
+            <p class="text-body-secondary">@SharedLocalizer["The blog sidebar is disabled."]</p>
+        }
+    </div>
+</body>
+</html>

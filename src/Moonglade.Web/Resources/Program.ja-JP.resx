@@ -2243,9 +2243,6 @@
   <data name="Hidden" xml:space="preserve">
     <value>非表示</value>
   </data>
-  <data name="Live preview is coming next." xml:space="preserve">
-    <value>ライブプレビューは今後追加されます。</value>
-  </data>
   <data name="No items yet. Add one to edit its details." xml:space="preserve">
     <value>項目はまだありません。追加すると詳細を編集できます。</value>
   </data>
@@ -2321,13 +2318,40 @@
   <data name="Widgets could not be loaded completely. Your draft is kept. Reload to try again." xml:space="preserve">
     <value>ウィジェットを完全に読み込めませんでした。下書きは保持されています。再読み込みして再試行してください。</value>
   </data>
-  <data name="Your changes stay in this draft until you save." xml:space="preserve">
-    <value>保存するまで変更はこの下書きにのみ保持されます。</value>
-  </data>
   <data name="Your widgets were saved, but the public cache could not be refreshed. Your draft is kept. Reload saved widgets before continuing." xml:space="preserve">
     <value>ウィジェットは保存されましたが、公開ページのキャッシュを更新できませんでした。下書きは保持されています。保存済みウィジェットを再読み込みしてから続行してください。</value>
   </data>
   <data name="characters" xml:space="preserve">
     <value>文字</value>
+  </data>
+  <data name="Draft preview" xml:space="preserve">
+    <value>下書きのプレビュー</value>
+  </data>
+  <data name="Updating preview..." xml:space="preserve">
+    <value>プレビューを更新中...</value>
+  </data>
+  <data name="Complete the required fields to update the preview." xml:space="preserve">
+    <value>必須項目を入力してプレビューを更新してください。</value>
+  </data>
+  <data name="Preview unavailable. Your draft is kept." xml:space="preserve">
+    <value>プレビューを表示できません。下書きは保持されています。</value>
+  </data>
+  <data name="Refresh preview" xml:space="preserve">
+    <value>プレビューを更新</value>
+  </data>
+  <data name="The last preview is out of date." xml:space="preserve">
+    <value>前回のプレビューは最新の内容ではありません。</value>
+  </data>
+  <data name="Drag to move widget" xml:space="preserve">
+    <value>ドラッグしてウィジェットを移動</value>
+  </data>
+  <data name="Drop widget here" xml:space="preserve">
+    <value>ここにウィジェットをドロップ</value>
+  </data>
+  <data name="Left sidebar" xml:space="preserve">
+    <value>左サイドバー</value>
+  </data>
+  <data name="Right sidebar" xml:space="preserve">
+    <value>右サイドバー</value>
   </data>
 </root>

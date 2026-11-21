@@ -1,0 +1,3 @@
+/* Keep desktop media queries intact; the parent displays only the sidebar slice. */
+.blog-sidebar { width: 278px; }
+body { margin: 0; padding: 8px; width: 294px; }

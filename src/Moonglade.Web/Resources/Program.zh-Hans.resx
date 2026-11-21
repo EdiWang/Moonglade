@@ -2243,9 +2243,6 @@
   <data name="Hidden" xml:space="preserve">
     <value>已隐藏</value>
   </data>
-  <data name="Live preview is coming next." xml:space="preserve">
-    <value>实时预览即将提供。</value>
-  </data>
   <data name="No items yet. Add one to edit its details." xml:space="preserve">
     <value>暂无条目。添加后即可编辑详情。</value>
   </data>
@@ -2321,13 +2318,40 @@
   <data name="Widgets could not be loaded completely. Your draft is kept. Reload to try again." xml:space="preserve">
     <value>无法完整加载小工具。草稿已保留。请重新加载以重试。</value>
   </data>
-  <data name="Your changes stay in this draft until you save." xml:space="preserve">
-    <value>保存前，所有更改仅保留在此草稿中。</value>
-  </data>
   <data name="Your widgets were saved, but the public cache could not be refreshed. Your draft is kept. Reload saved widgets before continuing." xml:space="preserve">
     <value>小工具已保存，但无法刷新前台缓存。草稿已保留。请先重新加载已保存的小工具，再继续操作。</value>
   </data>
   <data name="characters" xml:space="preserve">
     <value>字符</value>
+  </data>
+  <data name="Draft preview" xml:space="preserve">
+    <value>草稿预览</value>
+  </data>
+  <data name="Updating preview..." xml:space="preserve">
+    <value>正在更新预览...</value>
+  </data>
+  <data name="Complete the required fields to update the preview." xml:space="preserve">
+    <value>请填写必填项以更新预览。</value>
+  </data>
+  <data name="Preview unavailable. Your draft is kept." xml:space="preserve">
+    <value>预览暂不可用。你的草稿已保留。</value>
+  </data>
+  <data name="Refresh preview" xml:space="preserve">
+    <value>刷新预览</value>
+  </data>
+  <data name="The last preview is out of date." xml:space="preserve">
+    <value>上次预览并非最新内容。</value>
+  </data>
+  <data name="Drag to move widget" xml:space="preserve">
+    <value>拖动以移动小工具</value>
+  </data>
+  <data name="Drop widget here" xml:space="preserve">
+    <value>将小工具拖放到此处</value>
+  </data>
+  <data name="Left sidebar" xml:space="preserve">
+    <value>左侧侧栏</value>
+  </data>
+  <data name="Right sidebar" xml:space="preserve">
+    <value>右侧侧栏</value>
   </data>
 </root>

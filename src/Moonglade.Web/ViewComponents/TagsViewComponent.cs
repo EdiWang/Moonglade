@@ -10,6 +10,6 @@ public class TagsViewComponent(IBlogConfig blogConfig, IQueryMediator queryMedia
     {
         var settings = ViewData.CaptureSettings(blogConfig);
         var tags = await queryMediator.QueryAsync(new ListTopTagsQuery(settings.GeneralSettings.HotTagAmount));
-        return View(tags);
+        return View("/Pages/Components/Tags/Default.cshtml", tags);
     }
 }

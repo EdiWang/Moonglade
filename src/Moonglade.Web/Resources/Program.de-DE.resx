@@ -2243,9 +2243,6 @@
   <data name="Hidden" xml:space="preserve">
     <value>Ausgeblendet</value>
   </data>
-  <data name="Live preview is coming next." xml:space="preserve">
-    <value>Die Live-Vorschau folgt demnächst.</value>
-  </data>
   <data name="No items yet. Add one to edit its details." xml:space="preserve">
     <value>Noch keine Einträge. Fügen Sie einen hinzu, um seine Details zu bearbeiten.</value>
   </data>
@@ -2321,13 +2318,40 @@
   <data name="Widgets could not be loaded completely. Your draft is kept. Reload to try again." xml:space="preserve">
     <value>Die Widgets konnten nicht vollständig geladen werden. Ihr Entwurf bleibt erhalten. Laden Sie die Seite erneut.</value>
   </data>
-  <data name="Your changes stay in this draft until you save." xml:space="preserve">
-    <value>Ihre Änderungen bleiben bis zum Speichern in diesem Entwurf.</value>
-  </data>
   <data name="Your widgets were saved, but the public cache could not be refreshed. Your draft is kept. Reload saved widgets before continuing." xml:space="preserve">
     <value>Ihre Widgets wurden gespeichert, aber der öffentliche Cache konnte nicht aktualisiert werden. Ihr Entwurf bleibt erhalten. Laden Sie die gespeicherten Widgets neu, bevor Sie fortfahren.</value>
   </data>
   <data name="characters" xml:space="preserve">
     <value>Zeichen</value>
+  </data>
+  <data name="Draft preview" xml:space="preserve">
+    <value>Entwurfsvorschau</value>
+  </data>
+  <data name="Updating preview..." xml:space="preserve">
+    <value>Vorschau wird aktualisiert...</value>
+  </data>
+  <data name="Complete the required fields to update the preview." xml:space="preserve">
+    <value>Füllen Sie die Pflichtfelder aus, um die Vorschau zu aktualisieren.</value>
+  </data>
+  <data name="Preview unavailable. Your draft is kept." xml:space="preserve">
+    <value>Vorschau nicht verfügbar. Ihr Entwurf bleibt erhalten.</value>
+  </data>
+  <data name="Refresh preview" xml:space="preserve">
+    <value>Vorschau aktualisieren</value>
+  </data>
+  <data name="The last preview is out of date." xml:space="preserve">
+    <value>Die letzte Vorschau ist nicht mehr aktuell.</value>
+  </data>
+  <data name="Drag to move widget" xml:space="preserve">
+    <value>Widget zum Verschieben ziehen</value>
+  </data>
+  <data name="Drop widget here" xml:space="preserve">
+    <value>Widget hier ablegen</value>
+  </data>
+  <data name="Left sidebar" xml:space="preserve">
+    <value>Seitenleiste links</value>
+  </data>
+  <data name="Right sidebar" xml:space="preserve">
+    <value>Seitenleiste rechts</value>
   </data>
 </root>
