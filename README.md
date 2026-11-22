@@ -39,7 +39,33 @@ In `/admin/widgets`, select a widget in the sidebar structure and edit its conte
 
 The isolated, noninteractive preview uses the actual public sidebar templates, current theme and saved custom CSS. It follows draft changes without saving. Invalid fields or preview failures retain the last successful preview with an out-of-date notice; use Refresh preview to retry. Preview immediately reflects saved custom CSS; public tabs retain the existing one-hour stylesheet cache and may need a fresh asset cache for comparison. Link List respects each link's opening switch; legacy links without a stored switch retain their new-tab default.
 
-The Widgets API uses `region` and `sortOrder`; `displayOrder` is removed from requests and responses. Region names are `BeforeProfile`, `BeforeTags`, `BeforeCategories`, and `AfterCategories`; Sort Order is an integer from 0 through 2147483647. List responses use sidebar order, including disabled widgets for management. Administrator-only `GET /api/widgets` and `PUT /api/widgets` now read/replace a complete `{ "widgets": [...] }` collection. Replacement requires a complete non-null array, stable nonempty widget IDs, all editable fields, and a valid antiforgery token. An explicit empty array deletes every widget; the later successful whole-page save replaces earlier additions and deletions. The response includes canonical order and server-owned UTC metadata. Administrator/antiforgery-protected `POST /api/widgets/preview` accepts the same editable envelope and returns uncached HTML without saving. Old list/detail and individual create/update/delete routes are retired. An uncertain save retains the draft and requires explicit overwrite confirmation before retry; a known committed failure blocks retry and offers reload. See the [collection API and failure contract](docs/tasks/widget-composer-b3.md#api-and-transition). Other APIs are unchanged. The composer delivery status is tracked in the [task plan](docs/tasks/widget-composer-plan.md). The [integrated acceptance and operator handoff](docs/tasks/widget-composer-b6.md) records the tested candidate and upgrade/recovery checklist; production release requires separate approval.
+### Widgets API
+
+Administrator-only `GET /api/widgets` returns an uncached complete `{ "widgets": [...] }` collection, including disabled widgets in canonical sidebar order. Antiforgery-protected `PUT /api/widgets` atomically replaces that collection and returns the canonical saved envelope. `POST /api/widgets/preview` accepts the same editable envelope and returns uncached HTML without saving widgets, settings or activity. Other APIs are unchanged; the old widget list/detail and individual create/update/delete routes are retired.
+
+Every entry must explicitly include all seven editable fields:
+
+```json
+{
+    "widgets": [
+        {
+            "id": "10000000-0000-0000-0000-000000000001",
+            "title": "Links",
+            "widgetType": "LinkList",
+            "region": "AfterCategories",
+            "sortOrder": 0,
+            "isEnabled": true,
+            "contentCode": "[]"
+        }
+    ]
+}
+```
+
+IDs must be unique nonempty GUIDs and stay stable across retries. Types are `LinkList`, `ImageLink` and `ButtonLink`; `contentCode` is the corresponding JSON string, limited to 2000 characters per widget. Empty link lists are valid; images require an image URL and button lists contain one to three buttons. Titles are required, trimmed and limited to 128 characters. Missing/null/incomplete envelopes, invalid values or malformed type content return HTTP 400 with field errors such as `Widgets[index].ContentCode[item].Name`, before mutation. There is no widget/link count cap beyond existing host request limits.
+
+Regions are `BeforeProfile`, `BeforeTags`, `BeforeCategories` and `AfterCategories`; submitted `sortOrder` is an integer from 0 through 2147483647. Within each region, submitted array position breaks order ties; saved orders become contiguous from zero. `displayOrder` is retired. An explicit empty array deletes every widget. Omitted IDs are deleted, absent IDs are created/restored and matching IDs are updated. The later successful whole-page save replaces earlier additions and deletions. Surviving IDs retain creation UTC; new/restored IDs receive current server UTC. Responses also include server-owned `contentType` and `createdTimeUtc`, which clients cannot overwrite.
+
+An uncertain save retains the draft and requires explicit whole-page overwrite confirmation before retry. Cache invalidation failure after commit returns HTTP 500 Problem Details with `committed: true` and `savedCollection`; the editor reports Saved, blocks edits/resubmission and offers confirmed reload. Activity dispatch failures preserve successful persistence. Public widget caches remain per-instance. Follow the [database upgrade and recovery guide](database/README.md#widget-regionorder-upgrade-12) when installing the matching schema and application.
 
 ### Quick Local Deployment (Docker)
 
