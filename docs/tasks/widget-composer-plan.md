@@ -179,7 +179,7 @@ Local implementation commits within an explicitly authorized batch are part of t
 | B3 | Atomic whole-collection save | Accepted | Web build; 875 Web, 79 Setup, 62 Node tests; both native provider and real HTTP/browser checks passed | `79c80ed5bc44e5e7dfd8d0b33868e67d53673083` | Accepted 2026-11-21 |
 | B4 | Composer and inline draft editing | Accepted | Web build; 874 Web and 87 Node tests; both provider-backed browsers, 1440/1920 and five cultures passed; native leave prompt observed in B5 | `9f3a014a60040ea3cd35fada57edc8ebe83af805` | Accepted 2026-11-21 |
 | B5 | Real preview and complete arrangement controls | Accepted | Web build; 879 Web and 91 Node tests; both provider-backed browsers, themes/settings/five cultures, 1440/1920 passed | `31d4401361754d9df1967ede0516218b666056e4` | Accepted 2026-11-21 |
-| B6 | Integrated provider/browser acceptance and handoff | Ready for user acceptance | 2175 solution/91 Node; both providers fresh/upgrade/backup/transactions; 80 browser combinations; published Production TOTP passed | Pending verification/handoff commit | Pending |
+| B6 | Integrated provider/browser acceptance and handoff | Ready for user acceptance | 2175 solution/91 Node; both providers fresh/upgrade/backup/transactions; 80 browser combinations; published Production TOTP passed | `a32956ae2111779184065e91c4de802c70d51cba` | Pending |
 
 ### B0 - Plan and requirements review
 
@@ -449,7 +449,7 @@ Next permitted action:
 - Evidence and handoff: [B6 integrated acceptance](widget-composer-b6.md), local root `C:/Users/Edi/Documents/Codex/Moonglade-Widgets-Design/b6/`. Approved reference and final 1440/1920 screenshots compared for panel hierarchy, anchored structure, selected state, inline fields, typography/theme and scrolling.
 - Cleanup: task browser and six hosts stopped; ownership-checked containers/volumes and all six fixture databases/backups removed; no fixture listeners. B6 tools/runtime/published output/scripts retained as authorized local reproduction materials, about 668 MiB including evidence. No private development-configuration copies. Development/production data, B1/B5 retained materials, B4 pending files and B2 private backup untouched.
 - Documentation: operator PostgreSQL aborted-transaction handling, release checklist/test workflow and current module/acceptance references updated. A binary revert alone is not a schema rollback.
-- Verification/handoff commit SHA: pending local commit. User acceptance: pending.
+- Verification/handoff commit SHA: `a32956ae2111779184065e91c4de802c70d51cba`. User acceptance: pending.
 - Limits: Edge on Windows/loopback and representative themes; other browsers/OS/deployment topologies/custom stylesheets are not certified. Existing per-instance widget cache and public one-hour CSS cache remain unchanged; real environments need their own backup/restore rehearsal.
 - Next permitted action: obtain B6 user acceptance. Deployment and real database upgrades require separate authorization.
 

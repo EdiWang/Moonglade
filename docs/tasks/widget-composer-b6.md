@@ -12,7 +12,7 @@ The final application sources match accepted B5 implementation `31d4401361754d9d
 - [x] All four browser profiles: complete saves, authorization/antiforgery, public/cache/audit, two-tab replacement/restoration, cultures/themes/settings and keyboard access.
 - [x] Published Release assets in local Production hosts: real TOTP reset/enrollment/re-login and pending-session rejection, widget save/public cache and keyboard preview scrolling on both providers.
 - [x] Reference/final screenshots compared; task browser/hosts/containers/volumes stopped or removed, and local materials retained as authorized.
-- [ ] Verification/handoff commit SHA recorded after local commit.
+- [x] Verification/handoff commit SHA: `a32956ae2111779184065e91c4de802c70d51cba`.
 - [ ] User release-candidate acceptance.
 
 No B6 application, schema, dependency, startup, configuration or translation change is required. Operator documentation now explicitly explains ending an aborted PostgreSQL script transaction before inspection/retry. Workflow/test/reference documents point to this release-candidate checklist. There is no automatic database upgrade or deployment action.
@@ -88,4 +88,4 @@ For another machine, reproduce from the committed plan, B1 synthetic fixture spe
 
 Remaining limits: Edge on Windows/loopback and representative Blue/Green/custom themes, not every browser/OS/custom stylesheet or deployment topology. Public caches remain per-instance; another instance may retain warm widgets until its normal invalidation/expiry. Public custom CSS keeps the existing one-hour browser cache, while preview immediately uses captured saved CSS. Real targets require their own backup/restore rehearsal.
 
-Verification/handoff commit SHA: pending local commit. User acceptance: pending. Next permitted action: obtain explicit B6 acceptance; deployment and real database upgrades require separate authorization.
+Verification/handoff commit SHA: `a32956ae2111779184065e91c4de802c70d51cba`. User acceptance: pending. Next permitted action: obtain explicit B6 acceptance; deployment and real database upgrades require separate authorization.
