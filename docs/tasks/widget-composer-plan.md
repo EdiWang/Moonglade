@@ -5,14 +5,14 @@ Last updated: 2026-11-22 (Asia/Taipei).
 ## 1. Current checkpoint and authority
 
 - Phase: B0-B2 accepted on 2026-11-20 and B3 accepted on 2026-11-21 (Asia/Taipei). B4 is accepted on 2026-11-21 (Asia/Taipei). B5 is accepted on 2026-11-21 (Asia/Taipei).
-- Application feature implementation: B2 region/order storage, paired upgrades, title limit, public placement, and necessary current-page bindings are implemented and verified. B3 backend collection saving is accepted; B4 composer/draft editing is implemented and verified. B5 real preview, dragging and opening behavior are implemented and verified; B6 integrated acceptance is in progress.
-- Plan status: B0-B5 accepted. B6 implementation, verification, documentation and local commits are authorized; deployment is not authorized.
+- Application feature implementation: B2 region/order storage, paired upgrades, title limit, public placement, and necessary current-page bindings are implemented and verified. B3 backend collection saving is accepted; B4 composer/draft editing is implemented and verified. B5 real preview, dragging and opening behavior are implemented and verified; B6 integrated verification is complete and awaits user acceptance.
+- Plan status: B0-B5 accepted; B6 ready for user acceptance. Deployment is not authorized.
 - Baseline branch: `master`.
 - Baseline HEAD: `3169a59557b7acd519c612b9ea1bc543908c68b2` (`Show activity log details in a reading pane`).
 - Planning baseline commit: `1e91dea838e593bf73e6799310d7b72c0855260e`.
 - Execution authorization: B0-B5 completed and accepted; B6 granted.
 - Development database: PostgreSQL script 12 applied and repeat-verified on the user-confirmed development target on 2026-11-20; full backup and successful restoration rehearsal are recorded in the B2 notes. Do not reinitialize or restore this database as a disposable fixture.
-- Next action: complete and verify B6, then obtain user acceptance. B6 execution is authorized; deployment is not authorized. B4 temporary-file disposition remains pending; do not remove its retained files without a decision.
+- Next action: obtain B6 user acceptance. B6 execution is authorized; deployment is not authorized. B4 temporary-file disposition remains pending; do not remove its retained files without a decision.
 
 This file contains the current requirements, implementation context, delivery gates, progress, and verification results. Update it in place after every batch or material change. Keep only the latest state: no questions and answers, discussion history, superseded proposals, or chronological work logs. Retain each batch's current outcome, implementation SHA, acceptance status, and unresolved limitations so work can resume without prior conversation context.
 
@@ -179,7 +179,7 @@ Local implementation commits within an explicitly authorized batch are part of t
 | B3 | Atomic whole-collection save | Accepted | Web build; 875 Web, 79 Setup, 62 Node tests; both native provider and real HTTP/browser checks passed | `79c80ed5bc44e5e7dfd8d0b33868e67d53673083` | Accepted 2026-11-21 |
 | B4 | Composer and inline draft editing | Accepted | Web build; 874 Web and 87 Node tests; both provider-backed browsers, 1440/1920 and five cultures passed; native leave prompt observed in B5 | `9f3a014a60040ea3cd35fada57edc8ebe83af805` | Accepted 2026-11-21 |
 | B5 | Real preview and complete arrangement controls | Accepted | Web build; 879 Web and 91 Node tests; both provider-backed browsers, themes/settings/five cultures, 1440/1920 passed | `31d4401361754d9df1967ede0516218b666056e4` | Accepted 2026-11-21 |
-| B6 | Integrated provider/browser acceptance and handoff | In progress | Full solution: 2175 passed; provider/browser verification in progress | None | Pending |
+| B6 | Integrated provider/browser acceptance and handoff | Ready for user acceptance | 2175 solution/91 Node; both providers fresh/upgrade/backup/transactions; 80 browser combinations; published Production TOTP passed | Pending verification/handoff commit | Pending |
 
 ### B0 - Plan and requirements review
 
@@ -278,7 +278,7 @@ Local implementation commits within an explicitly authorized batch are part of t
 
 ### B6 - Integrated acceptance, documentation, and handoff
 
-**Deliverable:** [B6 integrated acceptance and handoff](widget-composer-b6.md). Status: in progress, authorized 2026-11-22 (Asia/Taipei).
+**Deliverable:** [B6 integrated acceptance and handoff](widget-composer-b6.md). Status: ready for user acceptance, authorized 2026-11-22 (Asia/Taipei).
 
 **Scope:** close remaining cross-batch regressions and deliver a reviewable release candidate. This batch does not authorize deployment.
 
@@ -360,7 +360,7 @@ Next permitted action:
 - Temporary fixtures and cleanup: none.
 - User acceptance: accepted on 2026-11-20.
 - Open B0 blockers: none.
-- Next action: complete and verify B6, then obtain user acceptance. B6 execution is authorized; deployment is not authorized. B4 temporary-file disposition remains pending; do not remove its retained files without a decision.
+- Next action: obtain B6 user acceptance. B6 execution is authorized; deployment is not authorized. B4 temporary-file disposition remains pending; do not remove its retained files without a decision.
 
 ### B1 - Current verification status
 
@@ -376,7 +376,7 @@ Next permitted action:
 - Local artifacts: fixture hosts stopped; task-owned PostgreSQL/SQL Server containers and their volumes removed; ports 15432/15433/18081/18082 have no listeners. Durable logs/screenshots and stopped external `b1/tools`/`b1/runtime` directories are retained as authorized local reproduction materials. No temporary fixture host or migration harness is committed.
 - Implementation commit SHA: `5c0dc4eb08d583872187f9058233e2a05c3d4cad`.
 - User acceptance: accepted on 2026-11-20.
-- Next action: complete and verify B6, then obtain user acceptance. B6 execution is authorized; deployment is not authorized. B4 temporary-file disposition remains pending; do not remove its retained files without a decision.
+- Next action: obtain B6 user acceptance. B6 execution is authorized; deployment is not authorized. B4 temporary-file disposition remains pending; do not remove its retained files without a decision.
 
 ### B2 - Current verification status
 
@@ -392,11 +392,11 @@ Next permitted action:
 - Implementation commit SHA: `823a46328fa80f83f211bd89cea5b26ce462b1a1`.
 - User acceptance: accepted on 2026-11-20 (Asia/Taipei).
 - Remaining risks: schema 12 and matching application must be upgraded together with stopped hosts and a backup; reverting the binary alone cannot restore the old schema. Development restoration rehearsal passed; other real environments require their own backup rehearsal. Treat the retained full development backup as private.
-- Next permitted action: complete and verify B6, then obtain user acceptance; B6 is not authorized.
+- Next permitted action: obtain B6 user acceptance; deployment is not authorized.
 
 ### B3 - Current verification status
 
-- Status: accepted on 2026-11-21 (Asia/Taipei). Branch: `codex/widget-composer-b3`. B4 is accepted; B5 is accepted and B6 is not started or authorized.
+- Status: accepted on 2026-11-21 (Asia/Taipei). Branch: `codex/widget-composer-b3`. B4 is accepted; B5 is accepted and B6 is ready for user acceptance.
 - Scope: complete-draft GET/PUT, atomic authoritative replacement, canonical region order, stable IDs/server UTC, shared list/exclusive writer locks in both providers, retry preservation, transitional CRUD coordination, postcommit cache/activity handling, focused handler/HTTP checks, and current API/continuation documentation.
 - Ownership: Widgets owns validation/replacement/gate/result snapshots; Data owns the narrow lock contract; each provider owns native locking/registration; Web owns binding/security/response and existing side effects. No new dependency, persisted schema, configuration, UI text, or SQL upgrade script.
 - Contract: `GET /api/widgets` returns an uncached complete envelope; `PUT /api/widgets` requires a complete explicit non-null array and every editable field. Empty is deliberate deletion; later complete saves win. Invalid input is 400 with widget/field/item paths. Postcommit cache failure is 500 with `committed: true` and `savedCollection`; activity failure preserves success. Generic transport/infrastructure failure does not prove rollback.
@@ -409,11 +409,11 @@ Next permitted action:
 - Implementation commit SHA: `79c80ed5bc44e5e7dfd8d0b33868e67d53673083`.
 - User acceptance: accepted on 2026-11-21 (Asia/Taipei).
 - Remaining limits: B4 retires old routes/page; B5 preview/dragging/opening correction are accepted; integrated matrix/TOTP/release remain B6. Existing per-instance public caches are not distributed; database locks do not add cross-instance cache eviction or durable audit delivery.
-- Next permitted action: complete and verify B6, then obtain user acceptance.
+- Next permitted action: obtain B6 user acceptance.
 
 ### B4 - Current verification status
 
-- Status: accepted on 2026-11-21 (Asia/Taipei). Branch: `codex/widget-composer-b4`. B5 is accepted; B6 is not authorized.
+- Status: accepted on 2026-11-21 (Asia/Taipei). Branch: `codex/widget-composer-b4`. B5 is accepted; deployment is not authorized.
 - Scope: three-panel structure/editor/reserved-preview workspace, complete baseline/local draft, all three types and supported fields, region/movement buttons, stable inline item keys, staged delete/undo, confirmed type/discard/reload, leave protection, loading/empty/validation/failure/save states and five translations. Old gallery/offcanvas/dialog modules and individual routes/handlers are retired.
 - Recovery: R14 is implemented with the existing shared confirmation modal. Unknown outcome requires confirmed overwrite before retry; known committed failure states Saved, retains inspectable draft, blocks edits/retry and offers confirmed reload. Original type JSON stays unchanged when type-specific content is untouched.
 - Commands/results: Web build zero warnings/errors; full Web tests 874/874; Node tests 87/87. Setup/migration checks are not repeated because this batch changes no schema, mapping, seeding or startup. Resource completeness, duplicate-key, UTF-8/CRLF/final-newline, document-link and Git whitespace checks passed.
@@ -422,11 +422,11 @@ Next permitted action:
 - Cleanup: both hosts stopped and B4 database containers/volumes removed after ownership checks. Temporary tools/runtime/launcher disposition is pending. No private development override copy exists in B4 evidence. Development/production databases, B1 retained materials and B2 private backup are untouched.
 - Implementation commit SHA: `9f3a014a60040ea3cd35fada57edc8ebe83af805`.
 - User acceptance: accepted on 2026-11-21 (Asia/Taipei). The native browser leave-warning prompt was observed and canceled in B5; actual handler branches are also covered in Node. Default light fixture theme/password-only owner only; B5 also verifies other themes; TOTP and integrated release matrix remain B6. Real preview, dragging and Link List public opening correction are implemented and verified in B5.
-- Next permitted action: complete and verify B6, then obtain user acceptance; B4 temporary-file disposition remains pending.
+- Next permitted action: obtain B6 user acceptance; B4 temporary-file disposition remains pending.
 
 ### B5 - Current verification status
 
-- Status: accepted on 2026-11-21 (Asia/Taipei). Branch: `codex/widget-composer-b5`. B0-B5 accepted; B6 not started or authorized.
+- Status: accepted on 2026-11-21 (Asia/Taipei). Branch: `codex/widget-composer-b5`. B0-B5 accepted; B6 ready for user acceptance.
 - Scope: real-template/current-theme draft preview, nonpersisting protected POST route, shared canonical projection, isolated inert/scriptless iframe, debounce/abort/stale/error recovery, native drag with existing movement alternatives, Link List opening correction and five translations. Approximate renderer retired with security coverage moved to actual compiled-template tests.
 - R15: preview immediately embeds current saved custom CSS with raw-text boundary escaping. Public one-hour stylesheet cache is unchanged; parity uses a fresh asset cache.
 - Commands/results: Web build zero warnings/errors; full Web tests 879/879 and Node tests 91/91. Encoding/resource/link/whitespace checks passed. No dependency, schema, mapping, seeding, startup or configuration changes; Setup/migration checks not repeated.
@@ -436,7 +436,22 @@ Next permitted action:
 - Implementation commit SHA: `31d4401361754d9df1967ede0516218b666056e4`.
 - User acceptance: accepted on 2026-11-21 (Asia/Taipei).
 - Limits: full integrated release/TOTP/provider-upgrade gates remain B6; public cache remains per-instance and old public tabs may retain cached CSS. No deployment or push performed.
-- Next permitted action: complete and verify B6, then obtain user acceptance; B6 implementation, verification, documentation and local commits are authorized; deployment is not authorized.
+- Next permitted action: obtain B6 user acceptance; B6 implementation, verification, documentation and local commits are authorized; deployment is not authorized.
+
+### B6 - Current verification status
+
+- Status: ready for user acceptance, 2026-11-22 (Asia/Taipei); branch `codex/widget-composer-b6`. B0-B5 accepted. Deployment, production data changes, pushes and external changes are not authorized.
+- Candidate application sources match accepted B5 implementation `31d4401361754d9df1967ede0516218b666056e4`; B5 acceptance checkpoint `f2003fe46`. B6 authority commit: `f8fd631f6`. No application/schema/dependency/startup/configuration/translation change is required.
+- Full solution: 2175 passed across 15 projects, zero failed/skipped. Node: 91 passed. Explicit Web build and Release publication passed. No new C# presentation assertions or permanent migration/browser harness.
+- Native PostgreSQL 18.7 and SQL Server 16.00.4325: fresh schema/seed, 20-row representative legacy Widget upgrade, native backup/restoration all-table matching, script 12 repeated three times including after edits, invalid-order rollback, stable GUID ties/content/UTC/enabled, 22 unrelated table datasets, title boundaries and real transaction rollback/empty-lock overlap/cancellation/complete-read checks passed. Current nonwidget schema is retained in the upgrade fixture; scripts 1-11 are not rerun by B6.
+- All four browser core/security/public/save/cache/audit and stale-page overwrite/restoration profiles passed. Both providers also have an explicit empty/old-page restore observation. 80 culture/width/appearance combinations, Blue/Green/custom CSS, left/right/hidden/disabled settings, long fields, 1440x720 keyboard/scroll/native drag and failure recovery passed. Existing public URLs returned 200; final no-store/inert previews match actual public HTML with disabled filtering, no overflow and zero app/Alpine console errors.
+- Both providers passed real TOTP setup/re-login and pending-session rejection; separately published Release assets in local Production hosts also passed reset/enrollment/re-login, widget save/public cache and keyboard scrolling. These are isolated fixture hosts, not deployment.
+- Evidence and handoff: [B6 integrated acceptance](widget-composer-b6.md), local root `C:/Users/Edi/Documents/Codex/Moonglade-Widgets-Design/b6/`. Approved reference and final 1440/1920 screenshots compared for panel hierarchy, anchored structure, selected state, inline fields, typography/theme and scrolling.
+- Cleanup: task browser and six hosts stopped; ownership-checked containers/volumes and all six fixture databases/backups removed; no fixture listeners. B6 tools/runtime/published output/scripts retained as authorized local reproduction materials, about 668 MiB including evidence. No private development-configuration copies. Development/production data, B1/B5 retained materials, B4 pending files and B2 private backup untouched.
+- Documentation: operator PostgreSQL aborted-transaction handling, release checklist/test workflow and current module/acceptance references updated. A binary revert alone is not a schema rollback.
+- Verification/handoff commit SHA: pending local commit. User acceptance: pending.
+- Limits: Edge on Windows/loopback and representative themes; other browsers/OS/deployment topologies/custom stylesheets are not certified. Existing per-instance widget cache and public one-hour CSS cache remain unchanged; real environments need their own backup/restore rehearsal.
+- Next permitted action: obtain B6 user acceptance. Deployment and real database upgrades require separate authorization.
 
 ## 8. Resume from a fresh conversation
 

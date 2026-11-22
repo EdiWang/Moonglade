@@ -101,6 +101,10 @@ Web JavaScript behavior tests use Node.js's built-in test runner without additio
 node --test src\Tests\Moonglade.Web.Tests\JavaScript\*.mjs
 ```
 
+## Widget Composer Release Acceptance
+
+Run the full solution and Node suites and build Web separately. Use independent fresh and representative legacy-widget databases on both providers; verify native backups/restoration and repeat script 12 before/after edits with hosts stopped. Exercise actual transactions, complete collection/last-save-wins, protected nonpersisting preview, public URLs/cache/audit and the real composer in a browser. Include 1440/1920, short windows, all five resource cultures, current light/dark themes, sidebar settings, long/empty/disabled content and keyboard/movement alternatives. Bring the tested tab to the foreground for native keyboard scrolling. Use published Release assets in isolated Production hosts for TOTP acceptance and exclude private development overrides from temporary outputs. Keep migration/browser helpers outside the repository. See [B6 evidence and operator handoff](../../docs/tasks/widget-composer-b6.md) for the current tested candidate and precise limits. User acceptance does not authorize deployment.
+
 ## Owner Account Release Acceptance
 
 Run the solution and frontend test commands above and build the Web project separately. For runtime acceptance, use independent disposable databases on PostgreSQL and SQL Server for fresh installs, upgraded local accounts, and upgraded profile-only OIDC sites. Use synthetic data, isolated key/image directories, loopback HTTPS and explicitly isolated configuration; never inherit a developer connection string or run faults against a real blog.

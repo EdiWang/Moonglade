@@ -1,6 +1,6 @@
 # Widget Composer B3 Collection Save and Verification
 
-Status: accepted on 2026-11-21 (Asia/Taipei). B0-B3 are accepted; B4 is accepted on 2026-11-21 (Asia/Taipei); B5 is accepted and B6 is not authorized. The [delivery plan](widget-composer-plan.md) records the implementation SHA and acceptance gate. Maintain current state only.
+Status: accepted on 2026-11-21 (Asia/Taipei). B0-B3 are accepted; B4 is accepted on 2026-11-21 (Asia/Taipei); B5 is accepted and B6 is ready for user acceptance; deployment is not authorized. The [delivery plan](widget-composer-plan.md) records the implementation SHA and acceptance gate. Maintain current state only.
 
 ## Delivered scope and ownership
 
@@ -73,4 +73,4 @@ Local evidence root: `C:/Users/Edi/Documents/Codex/Moonglade-Widgets-Design/b3/`
 
 Both temporary hosts are stopped. B3 containers and volumes, temporary tools/runtime directories, and launcher are removed; logs/screenshots/synthetic snapshots remain. The helper referenced compiled assemblies directly and produced no private development-configuration copies. No development/production database was accessed in B3, and the temporary helper did not read the private override. No deployment or external service change was made.
 
-Remaining scope: B6 integrated provider/TOTP/release acceptance. B5 verifies preview themes/settings/cultures, dragging and Link List opening flags. Public widget cache eviction remains the existing per-instance in-memory behavior; another application instance's public cache can remain warm until its usual expiry. Database collection coordination does not add distributed cache invalidation or durable audit delivery. B3 is accepted; B4 verification and acceptance are tracked in the delivery plan.
+Remaining scope: B6 user acceptance and separately authorized deployment. B5 verifies preview themes/settings/cultures, dragging and Link List opening flags. Public widget cache eviction remains the existing per-instance in-memory behavior; another application instance's public cache can remain warm until its usual expiry. Database collection coordination does not add distributed cache invalidation or durable audit delivery. B3 is accepted; B4 verification and acceptance are tracked in the delivery plan.

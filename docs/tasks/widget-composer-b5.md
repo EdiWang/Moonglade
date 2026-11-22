@@ -1,6 +1,6 @@
 # Widget Composer B5 Real Preview and Arrangement
 
-Status: accepted on 2026-11-21 (Asia/Taipei). B0-B5 are accepted. B6 is not authorized. Maintain current state only with the [delivery tracker](widget-composer-plan.md).
+Status: accepted on 2026-11-21 (Asia/Taipei). B0-B5 are accepted. B6 is ready for user acceptance; deployment is not authorized. Maintain current state only with the [delivery tracker](widget-composer-plan.md).
 
 ## Scope and implementation contract
 
@@ -30,7 +30,7 @@ Use task-owned loopback-only fixture databases and synthetic owner/settings. Nev
 
 Safe evidence root: `C:/Users/Edi/Documents/Codex/Moonglade-Widgets-Design/b5/`. Browser plugin is not available in this session; browser QA uses the installed Playwright CLI fallback, without adding a project dependency. B4 temporary tools/runtime/launcher disposition remains pending and its files are untouched.
 
-Native browser verification is complete for this batch. Browser: isolated Microsoft Edge 158.0.4370.33 via Playwright CLI 0.1.25. No schema, deployment or external service change; existing public configuration/cache contracts are preserved. Await separate B6 execution authority.
+Native browser verification is complete for this batch. Browser: isolated Microsoft Edge 158.0.4370.33 via Playwright CLI 0.1.25. No schema, deployment or external service change; existing public configuration/cache contracts are preserved. B6 integrated checks are complete; obtain user acceptance before separately authorized deployment.
 
 Custom CSS contract: preview immediately uses the currently saved captured CSS, independently of the existing one-hour public browser asset cache. Public cache behavior remains unchanged; use a fresh public asset cache for parity acceptance. Old public tabs may temporarily differ.
 ## Verification results
@@ -84,4 +84,4 @@ Local evidence root: `C:/Users/Edi/Documents/Codex/Moonglade-Widgets-Design/b5/`
 - Task browser session closed, both hosts stopped; ownership-checked B5 containers/volumes removed and ports 15532/15533/18581/18582 have no listeners. Temporary `tools`, `runtime`, `run-fixture.ps1` and `browser.ps1` are retained as user-authorized local reproduction materials. No private development-configuration copies were generated. B1 retained materials, B4 pending files and B2 private backup are untouched.
 - To reproduce independently, read the delivery plan/B1 synthetic fixture specification, build current Web, create disposable provider databases with generated temporary credentials, reference compiled assemblies in an external helper and clear default configuration sources. Run actual service/pipeline/Razor/auth and compare the browser matrix above. Never use the development database as a fixture. Browser plugin was unavailable; install it for future sessions if preferred, or retain the regular Playwright CLI fallback without adding a project dependency.
 
-Implementation commit SHA: `31d4401361754d9df1967ede0516218b666056e4` on `codex/widget-composer-b5`. User acceptance: accepted on 2026-11-21 (Asia/Taipei). Next permitted action: await B6 execution authorization; B6 remains unauthorized. Full solution/Setup/migration and TOTP release acceptance were not repeated: no schema/seeding/startup/account changes; integrated release gates remain B6. Existing per-instance public cache invalidation is unchanged, and old public tabs may temporarily retain cached custom CSS.
+Implementation commit SHA: `31d4401361754d9df1967ede0516218b666056e4` on `codex/widget-composer-b5`. User acceptance: accepted on 2026-11-21 (Asia/Taipei). Next permitted action: obtain B6 user acceptance; B6 verification is complete and awaits user acceptance. Full solution/Setup/migration and TOTP release acceptance were not repeated: no schema/seeding/startup/account changes; B6 provides the completed integrated candidate checks, awaiting user acceptance. Existing per-instance public cache invalidation is unchanged, and old public tabs may temporarily retain cached custom CSS.
