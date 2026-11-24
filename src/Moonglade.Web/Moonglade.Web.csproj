@@ -39,7 +39,7 @@
 		<PackageReference Include="Microsoft.Extensions.Diagnostics.HealthChecks.EntityFrameworkCore" Version="10.0.15" />
 		<PackageReference Include="Moonglade.Editor.StaticAssets" Version="1.0.0" />
 
-		<PackageReference Include="QRCoder" Version="1.8.1" />
+		<PackageReference Include="QRCoder" Version="1.9.0" />
 	</ItemGroup>
 	<ItemGroup>
 		<ProjectReference Include="..\Moonglade.ActivityLog\Moonglade.ActivityLog.csproj" />
