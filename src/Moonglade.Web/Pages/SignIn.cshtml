@@ -61,8 +61,13 @@
             </form>
             @if (oidc is not null)
             {
-                <form method="post" asp-page-handler="Oidc" class="mt-3">
-                    <button type="submit" class="btn btn-outline-accent w-100 text-break">@SharedLocalizer["Sign in with {0}", oidc.DisplayName]</button>
+                <div class="d-flex align-items-center gap-3 my-4">
+                    <hr class="flex-grow-1 my-0" />
+                    <span class="small text-muted">@SharedLocalizer["Third-Party Sign In"]</span>
+                    <hr class="flex-grow-1 my-0" />
+                </div>
+                <form method="post" asp-page-handler="Oidc">
+                    <button type="submit" class="btn btn-outline-accent w-100 text-break">@oidc.DisplayName</button>
                 </form>
             }
             <p class="text-muted mt-4 mb-0 small">

@@ -47,58 +47,59 @@
     </div>
 }
 
-<div class="admin-panel">
-    <div x-show="isLoading"
-         class="text-muted"
-         :class="{ 'd-flex align-items-center': isLoading }">
-        <div class="spinner-border spinner-border-sm me-2" role="status"></div>
-        <span>@SharedLocalizer["Loading mentions..."]</span>
-    </div>
+<div x-show="isLoading"
+     class="text-muted mb-3"
+     :class="{ 'd-flex align-items-center': isLoading }">
+    <div class="spinner-border spinner-border-sm me-2" role="status"></div>
+    <span>@SharedLocalizer["Loading mentions..."]</span>
+</div>
 
-    <div x-show="!isLoading && !hasMentions" class="alert alert-info mb-0">
-        @SharedLocalizer["No mentions yet."]
-    </div>
+<div x-show="!isLoading && !hasMentions" class="alert alert-info mb-0">
+    @SharedLocalizer["No mentions yet."]
+</div>
 
-    <div x-show="!isLoading && hasMentions" class="mentions-container admin-list">
-        <template x-for="item in mentions" :key="item.id">
-            <div class="mention-item-entry admin-list-item">
-                <div :id="`mention-box-${item.id}`" class="mention-item row">
-                    <div class="col-auto d-flex align-items-center">
-                        <input type="checkbox" 
-                               class="form-check-input" 
-                               :id="`checkbox-${item.id}`"
-                               :value="item.id"
-                               x-model="selectedIds">
-                    </div>
-                    <div class="col admin-list-content">
-                        <strong>
-                            <a :href="item.sourceUrl" target="_blank" x-text="item.sourceTitle"></a>
-                        </strong>
+<div x-show="!isLoading && hasMentions" class="mentions-container row row-cols-1 admin-card-grid" style="--bs-gutter-y: 5px;">
+    <template x-for="item in mentions" :key="item.id">
+        <div class="col">
+            <div class="mention-item-entry card admin-card">
+                <div class="card-body">
+                    <div :id="`mention-box-${item.id}`" class="mention-item row">
+                        <div class="col-auto d-flex align-items-center">
+                            <input type="checkbox"
+                                   class="form-check-input"
+                                   :id="`checkbox-${item.id}`"
+                                   :value="item.id"
+                                   x-model="selectedIds">
+                        </div>
+                        <div class="col admin-list-content">
+                            <strong>
+                                <a :href="item.sourceUrl" target="_blank" x-text="item.sourceTitle"></a>
+                            </strong>
 
-                        <div>
-                            <i class="bi-link"></i>
-                            <span x-text="item.targetPostTitle"></span>
+                            <div>
+                                <i class="bi-link"></i>
+                                <span x-text="item.targetPostTitle"></span>
+                            </div>
+
+                            <div class="text-muted">
+                                <span x-text="item.domain"></span>,
+                                <span x-text="item.sourceIp"></span>,
+                                <time :data-utc-label="item.pingTimeUtc" x-text="formatTime(item.pingTimeUtc)"></time>
+                            </div>
                         </div>
 
-                        <div class="text-muted">
-                            <span x-text="item.domain"></span>, 
-                            <span x-text="item.sourceIp"></span>,
-                            <time :data-utc-label="item.pingTimeUtc" x-text="formatTime(item.pingTimeUtc)"></time>
+                        <div class="col-auto admin-list-actions">
+                            <a class="btn btn-sm btn-outline-danger btn-delete"
+                               x-on:click="deleteMention(item.id)"
+                               role="button">
+                                <i class="bi-trash"></i>
+                            </a>
                         </div>
-                    </div>
-
-                    <div class="col-auto admin-list-actions">
-                        <a class="btn btn-sm btn-outline-danger btn-delete" 
-                           x-on:click="deleteMention(item.id)"
-                           role="button">
-                            <i class="bi-trash"></i>
-                        </a>
                     </div>
                 </div>
             </div>
-        </template>
-    </div>
-
+        </div>
+    </template>
 </div>
 
 <div x-show.important="hasMentions" class="admin-pagination d-flex flex-wrap justify-content-between align-items-center gap-3 mt-3">
