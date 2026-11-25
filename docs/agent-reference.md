@@ -55,6 +55,7 @@ Follow the [database authoring and execution guide](../database/README.md) for s
 
 ## Blog Content
 
+- The shared Markdown renderer adds the Bootstrap classes `table` and `table-bordered` to Markdown pipe tables, including tables with images. When article rendering allows embedded HTML, it leaves authored HTML tables and their classes unchanged.
 - `PostEntityHelper.SetStatus` assigns status, publication UTC time, scheduled UTC time, and route together. Deletion is an independent flag. Published posts keep date-and-slug routes. Editing a published post preserves its publication date. Manual publication uses the current time and scheduled publication uses the actual execution time while preserving `LastModifiedUtc`.
 - Web's `PostManagementCommands` coordinates saves, activity, scheduler wake-up, Webmention, and IndexNow. Simple recycle, publish, and unpublish endpoints dispatch feature commands directly.
 - `ScheduledPublishService` includes overdue posts, excludes deleted posts and missing schedule times, and rechecks the enable switch immediately before dispatch. Settings writes wake it even while disabled. Work already dispatched runs to completion.

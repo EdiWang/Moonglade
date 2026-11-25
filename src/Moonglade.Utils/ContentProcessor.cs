@@ -1,4 +1,6 @@
 ﻿using Markdig;
+using Markdig.Extensions.Tables;
+using Markdig.Renderers.Html;
 using Markdig.Syntax;
 using Markdig.Syntax.Inlines;
 using System.Text;
@@ -104,9 +106,7 @@ public static class ContentProcessor
 
     public static string MarkdownToContent(string markdown, MarkdownConvertType type, bool disableHtml = true)
     {
-        var pipeline = new MarkdownPipelineBuilder()
-            .UsePipeTables()
-            .UseBootstrap();
+        var pipeline = CreateMarkdownPipeline();
 
         if (disableHtml)
         {
@@ -131,9 +131,7 @@ public static class ContentProcessor
             return SecureCommentLinks(MarkdownToContent(markdown, MarkdownConvertType.Html));
         }
 
-        var pipeline = new MarkdownPipelineBuilder()
-            .UsePipeTables()
-            .UseBootstrap()
+        var pipeline = CreateMarkdownPipeline()
             .DisableHtml()
             .UsePreciseSourceLocation()
             .Build();
@@ -157,6 +155,19 @@ public static class ContentProcessor
         }
 
         return document.ToHtml(pipeline);
+    }
+
+    private static MarkdownPipelineBuilder CreateMarkdownPipeline()
+    {
+        var pipeline = new MarkdownPipelineBuilder()
+            .UsePipeTables()
+            .UseBootstrap();
+        pipeline.DocumentProcessed += static document =>
+        {
+            foreach (var table in document.Descendants<Table>())
+                table.GetAttributes().AddClass("table-bordered");
+        };
+        return pipeline;
     }
 
     private static string SecureCommentLinks(string html)
