@@ -11,7 +11,7 @@
 | B1 | Unified account store and two-provider upgrade | Accepted on 2026-11-26 | `c8ffabb7300bb0d0cedfa22f21070c9272de6004` | Passed both providers and development owner sign-in |
 | B2 | Authorization, content access and activity attribution | Accepted on 2026-11-26 | `cc5eecc8cd561a0a32ae1080c9fd0ccaa2fbdc4d` | Developer verification passed. Owner accepted B2 |
 | B3 | Shared sign-in and credential lifecycle | Accepted on 2026-11-26 | `57b09f3e1481c62e2f07cf6349aade9db492d7ab`, `79a99b448e67488c6335ac347bac519e224a9866` | Developer verification and owner acceptance passed |
-| B4 | Owner account management and collaborator UI | Awaiting owner acceptance | `Add owner management and collaborator navigation` | Developer verification passed. See B4 acceptance steps |
+| B4 | Owner account management and collaborator UI | Awaiting owner acceptance | `7d231321ae6e6ec4943d9acde0dcaf46c721d579` | Developer verification passed. See B4 acceptance steps |
 | B5 | Release verification and operator documentation | Awaiting B4 acceptance | Pending | Pending |
 
 ## Confirmed Behavior
