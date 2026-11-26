@@ -10,7 +10,7 @@
 | --- | --- | --- | --- | --- |
 | B1 | Unified account store and two-provider upgrade | Accepted on 2026-11-26 | `c8ffabb7300bb0d0cedfa22f21070c9272de6004` | Passed both providers and development owner sign-in |
 | B2 | Authorization, content access and activity attribution | Accepted on 2026-11-26 | `cc5eecc8cd561a0a32ae1080c9fd0ccaa2fbdc4d` | Developer verification passed. Owner accepted B2 |
-| B3 | Shared sign-in and credential lifecycle | Awaiting owner acceptance | `Enable collaborator sign-in and credential lifecycle` | Developer verification passed. See B3 evidence and acceptance steps |
+| B3 | Shared sign-in and credential lifecycle | Awaiting owner acceptance | `57b09f3e1481c62e2f07cf6349aade9db492d7ab`, `Use desktop layout for sign-in flow` | Developer verification passed. See B3 evidence and acceptance steps |
 | B4 | Owner account management and collaborator UI | Awaiting B3 acceptance | Pending | Pending |
 | B5 | Release verification and operator documentation | Awaiting B4 acceptance | Pending | Pending |
 
@@ -22,6 +22,7 @@
 - The owner creates, disables, re-enables and deletes collaborators, changes their email addresses, and resets their passwords and authenticators. Disabled accounts still occupy a slot. Deletion releases the slot and retains the account's historical activity. The owner account is outside this management lifecycle.
 - The owner sets a temporary password on creation and password reset. It has no time-based expiration and can only enter a restricted password-change flow. The collaborator chooses a permanent password before receiving content access. Expiring intermediate authentication tickets still apply. The owner handles forgotten passwords, email changes and lost authenticators. Collaborators can change their own passwords.
 - Both roles enter through the existing email sign-in page and follow the site's existing TOTP setting and remembered-device rules. OpenID Connect sign-in and management are owner-only. Account management mutations require fresh owner password proof and applicable TOTP proof, including when the owner's session began through OpenID Connect.
+- Sign-in, mandatory password change, and the authenticator enrollment and verification screens use desktop layouts.
 - Each account has a stable identity and its own session revision. Password resets, email changes, authenticator resets, disablement and deletion revoke that account's prior application sessions, pending authentication and remembered-device trust on the next validation. Re-enabling or creating another account in a freed slot does not revive earlier credentials or cookies. Preserve the existing owner session behaviors for owner self-service operations.
 - Account email is unique after normalization for all three slots. Account management and role decisions use the persisted identity rather than user-supplied role or target claims.
 
@@ -107,7 +108,7 @@ Project paths in this table are under `src/`. Read the owning code, its callers 
 - Developer verification passed on 2026-11-26. `dotnet test --solution src/Moonglade.slnx --no-restore --no-ansi` passed all 2,190 tests. The JavaScript suite passed 91 tests. The Release Web build and publish succeeded.
 - Authentication tests exercised the shared sign-in and forced password change with TOTP required and optional, protected ticket expiry and replay, account/role matching, remembered-device isolation, self-service password changes and revision-based session revocation. The full suite also exercised the existing owner Local and synthetic OIDC flows.
 - Production Auth stores on disposable PostgreSQL and SQL Server both passed concurrent creation with distinct emails, concurrent duplicate normalized-email rejection, and competing writes against a single revision.
-- Playwright Chromium verified the published Release app with disposable PostgreSQL. A test-provisioned collaborator signed in, changed the temporary password at 390 by 844 CSS pixels, enrolled TOTP, reached Posts at 1440 by 900, and was denied direct access to system settings. The Posts page reported zero console errors or warnings. Playwright CLI was used because the Browser plugin and skill were unavailable.
+- The desktop sign-in layout passed all 890 Web tests and a Release publish. Playwright Chromium verified sign-in, temporary password change, TOTP enrollment, and returning sign-in with TOTP on disposable PostgreSQL at 1440 by 900 CSS pixels. All four forms rendered at 365 CSS pixels and the collaborator reached Posts. The final page reported zero console errors or warnings. Playwright CLI was used because the Browser plugin and skill were unavailable.
 - For owner acceptance, run `dotnet test --project src/Tests/Moonglade.Web.Tests/Moonglade.Web.Tests.csproj --filter-class '*CollaboratorSignInHttpTests'`. The host provisions isolated test collaborators via the Auth store and exercises the real forms, credentials and authorization. The owner management surface and collaborator account navigation are B4.
 
 ## B4 — Owner Management and Collaborator UI

@@ -3,11 +3,9 @@
     align-items: center;
     justify-content: center;
     min-height: 100vh;
-    min-height: 100dvh;
     padding: 2rem 1.5rem;
 }
 
 .signin-content {
-    width: 100%;
-    max-width: 365px;
+    width: 365px;
 }
