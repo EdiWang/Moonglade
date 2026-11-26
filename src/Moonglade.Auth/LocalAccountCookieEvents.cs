@@ -7,18 +7,16 @@ using System.Security.Claims;
 
 namespace Moonglade.Auth;
 
-public sealed class LocalAccountCookieEvents(OwnerAccountStore accounts, IOptions<AuthenticationSettings> options, BlogDbContext db)
+public sealed class LocalAccountCookieEvents(LocalAccountStore accounts, IOptions<AuthenticationSettings> options, BlogDbContext db)
     : CookieAuthenticationEvents
 {
     public override async Task ValidatePrincipal(CookieValidatePrincipalContext context)
     {
-        var account = await accounts.ReadAsync(context.HttpContext.RequestAborted);
-        var applicationCookie = context.Scheme.Name == CookieAuthenticationDefaults.AuthenticationScheme;
-        if (LocalAccountPrincipal.Matches(context.Principal, account)
-            && (context.Scheme.Name != BlogAuthSchemas.LocalAccountRememberedDevice || account.IsTotpEnabled)
-            && (!applicationCookie || await IsApplicationSessionValidAsync(context, account)))
+        var principal = context.Principal;
+        var account = await accounts.ReadAsync(principal, context.HttpContext.RequestAborted);
+        if (account is not null && principal is not null && await IsValidSessionAsync(context, principal, account))
         {
-            if (applicationCookie && context.Principal.Identity is System.Security.Claims.ClaimsIdentity identity &&
+            if (context.Scheme.Name == BlogAuthSchemas.Local && principal.Identity is ClaimsIdentity identity &&
                 !identity.HasClaim(claim => claim.Type == LocalAccountPrincipal.SessionClaim))
             {
                 identity.AddClaim(new(LocalAccountPrincipal.SessionClaim, Guid.NewGuid().ToString("N")));
@@ -30,13 +28,23 @@ public sealed class LocalAccountCookieEvents(OwnerAccountStore accounts, IOption
         await context.HttpContext.SignOutAsync(context.Scheme.Name);
     }
 
-    private Task<bool> IsApplicationSessionValidAsync(CookieValidatePrincipalContext context, OwnerAccountSnapshot account)
+    private async Task<bool> IsValidSessionAsync(
+        CookieValidatePrincipalContext context, ClaimsPrincipal principal, LocalAccountSnapshot account)
     {
-        var oidcRevision = context.Principal.FindFirstValue(LocalAccountPrincipal.OidcSessionClaim);
-        if (oidcRevision is null) return Task.FromResult(!options.Value.Totp.Required || account.IsTotpEnabled);
-        if (!Guid.TryParse(oidcRevision, out var revision)) return Task.FromResult(false);
+        var scheme = context.Scheme.Name;
+        var administrator = principal.IsInRole(BlogAuthSchemas.AdministratorRole);
+        var collaborator = principal.IsInRole(BlogAuthSchemas.CollaboratorRole);
+        var oidcRevision = principal.FindFirstValue(LocalAccountPrincipal.OidcSessionClaim);
+        if (scheme != BlogAuthSchemas.Local && (administrator || collaborator || oidcRevision is not null)) return false;
+        if (scheme == BlogAuthSchemas.TemporaryPasswordChange) return !account.IsOwner && account.MustChangePassword;
+        if (account.MustChangePassword) return false;
+        if (scheme == BlogAuthSchemas.LocalAccountRememberedDevice) return account.IsTotpEnabled;
+        if (scheme != BlogAuthSchemas.Local) return true;
 
-        return db.OwnerOidc.AnyAsync(row => row.OwnerId == account.Id &&
-            row.Issuer != null && row.Subject != null && row.SessionRevision == revision, context.HttpContext.RequestAborted);
+        if (administrator != account.IsOwner || collaborator == account.IsOwner) return false;
+        if (oidcRevision is null) return !options.Value.Totp.Required || account.IsTotpEnabled;
+        return account.IsOwner && Guid.TryParse(oidcRevision, out var revision) &&
+            await db.OwnerOidc.AnyAsync(row => row.OwnerId == account.Id &&
+                row.Issuer != null && row.Subject != null && row.SessionRevision == revision, context.HttpContext.RequestAborted);
     }
 }

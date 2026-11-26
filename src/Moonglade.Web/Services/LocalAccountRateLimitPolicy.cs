@@ -16,7 +16,7 @@ public class LocalAccountRateLimitPolicy(IOptionsMonitor<LocalAccountRateLimitOp
         var settings = options.CurrentValue;
         var partitionKey = GetPartitionKey(httpContext);
 
-        if (!settings.Enabled || !HttpMethods.IsPost(httpContext.Request.Method))
+        if (!settings.Enabled || (!HttpMethods.IsPost(httpContext.Request.Method) && !HttpMethods.IsPut(httpContext.Request.Method)))
         {
             return RateLimitPartition.GetNoLimiter($"unlimited|{partitionKey}");
         }
@@ -49,6 +49,9 @@ public class LocalAccountRateLimitPolicy(IOptionsMonitor<LocalAccountRateLimitOp
     {
         var path = httpContext.Request.Path.Value;
         if (path?.Equals("/auth/setup-account", StringComparison.OrdinalIgnoreCase) == true) return "setup";
+        if (path?.Equals("/auth/change-temporary-password", StringComparison.OrdinalIgnoreCase) == true ||
+            path?.Equals("/api/account/collaborator/password", StringComparison.OrdinalIgnoreCase) == true)
+            return "password-change";
         return path?.Contains("signin", StringComparison.OrdinalIgnoreCase) == true
             ? "signin"
             : "totp";

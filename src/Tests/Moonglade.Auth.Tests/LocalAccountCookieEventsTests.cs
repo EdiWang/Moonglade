@@ -78,7 +78,7 @@ public class LocalAccountCookieEventsTests
         var auth = new Mock<IAuthenticationService>();
         var context = CreateContext(LocalAccountPrincipal.Create(account, CookieAuthenticationDefaults.AuthenticationScheme),
             CookieAuthenticationDefaults.AuthenticationScheme, auth);
-        var events = new LocalAccountCookieEvents(store.Accounts, Options.Create(new AuthenticationSettings()), store.Db);
+        var events = new LocalAccountCookieEvents(store.CreateLocalAccounts(required: true), Options.Create(new AuthenticationSettings()), store.Db);
 
         await events.ValidatePrincipal(context);
 
@@ -87,7 +87,7 @@ public class LocalAccountCookieEventsTests
     }
 
     private static LocalAccountCookieEvents Events(OwnerAccountTestStore store) =>
-        new(store.Accounts, Options.Create(new AuthenticationSettings
+        new(store.CreateLocalAccounts(), Options.Create(new AuthenticationSettings
         { Totp = new TotpAuthenticationSettings { Required = false } }), store.Db);
 
     [Theory]

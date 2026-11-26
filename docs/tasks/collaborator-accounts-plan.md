@@ -2,15 +2,15 @@
 
 ## Current Status
 
-- B1 is accepted. B2 developer verification is complete on branch `codex/collaborator-accounts`. Owner acceptance is pending.
+- B1 and B2 are accepted. B3 developer verification is complete on branch `codex/collaborator-accounts`. Owner acceptance is pending.
 - Planning baseline is `fc2050cc6`. Recheck the current branch, working tree and next migration number when implementation starts.
 - Use this file as the source of truth for the current requirements, batch status and acceptance evidence. Replace superseded decisions and obsolete blocker details. Keep conversation records and rejected alternatives out of this file.
 
 | Batch | Scope | State | Commit | Verification and acceptance |
 | --- | --- | --- | --- | --- |
 | B1 | Unified account store and two-provider upgrade | Accepted on 2026-11-26 | `c8ffabb7300bb0d0cedfa22f21070c9272de6004` | Passed both providers and development owner sign-in |
-| B2 | Authorization, content access and activity attribution | Awaiting owner acceptance | `Authorize collaborator content and attribute activity` | Developer verification passed. See B2 evidence and acceptance steps |
-| B3 | Shared sign-in and credential lifecycle | Awaiting B2 acceptance | Pending | Pending |
+| B2 | Authorization, content access and activity attribution | Accepted on 2026-11-26 | `cc5eecc8cd561a0a32ae1080c9fd0ccaa2fbdc4d` | Developer verification passed. Owner accepted B2 |
+| B3 | Shared sign-in and credential lifecycle | Awaiting owner acceptance | `Enable collaborator sign-in and credential lifecycle` | Developer verification passed. See B3 evidence and acceptance steps |
 | B4 | Owner account management and collaborator UI | Awaiting B3 acceptance | Pending | Pending |
 | B5 | Release verification and operator documentation | Awaiting B4 acceptance | Pending | Pending |
 
@@ -92,7 +92,7 @@ Project paths in this table are under `src/`. Read the owning code, its callers 
 - The Web test host exercised 136 method and path combinations with synthetic owner, collaborator, authenticated reader and anonymous identities using the production Razor Pages authorization registration and valid antiforgery proofs. The tests covered both recycle bins, content previews, owner-only pages and APIs, public routes and the intentional public comment, Webmention and image entry points.
 - An HTTP integration test verified that a collaborator edited an owner-created draft, created a category and saw comment email and IP fields. Permanent post deletion and activity log clearing were denied with the existing rows preserved. Owner-visible history returned collaborator account IDs and display-name snapshots. The public byline and legacy activity remained readable.
 - Verified the published Release site against disposable PostgreSQL in Playwright Chromium at 1440 by 900 CSS pixels. A signed-in owner opened collaborator and legacy activity details in English and checked the collaborator label and account ID in Traditional Chinese. The activity pages reported no browser console errors or warnings. Playwright CLI was used because the Browser plugin and skill were unavailable.
-- For owner acceptance, run `dotnet test --project src/Tests/Moonglade.Web.Tests/Moonglade.Web.Tests.csproj --filter-class '*CollaboratorAccessHttpTests'`. The disposable HTTP host demonstrates allow and deny outcomes and real content writes. Shared collaborator sign-in is the B3 acceptance flow.
+- The owner accepted B2 on 2026-11-26. The disposable HTTP host reproduces the authorization and content-write checks with `dotnet test --project src/Tests/Moonglade.Web.Tests/Moonglade.Web.Tests.csproj --filter-class '*CollaboratorAccessHttpTests'`.
 
 ## B3 — Shared Sign-In and Credential Lifecycle
 
@@ -101,6 +101,14 @@ Project paths in this table are under `src/`. Read the owning code, its callers 
 - Implement the Auth operations for creation, disablement, re-enablement, deletion, email change and resets. Keep web binding and owner proof orchestration in Web when the management surface is introduced in B4. Validate concurrent retries and stale revisions so failed mutations avoid partially changing account or session state.
 - Verify with Auth and Web suites and a Web build. Cover valid and invalid credentials, temporary password replacement, TOTP required and optional, remembered devices, cross-account cookie rejection, revision changes, self-service boundaries, session revocation and unchanged owner OIDC/Local behavior.
 - Owner acceptance uses test-provisioned accounts to exercise shared sign-in, mandatory first password change, applicable TOTP, sign-out and ordinary self-service password change.
+
+### B3 verification and acceptance
+
+- Developer verification passed on 2026-11-26. `dotnet test --solution src/Moonglade.slnx --no-restore --no-ansi` passed all 2,190 tests. The JavaScript suite passed 91 tests. The Release Web build and publish succeeded.
+- Authentication tests exercised the shared sign-in and forced password change with TOTP required and optional, protected ticket expiry and replay, account/role matching, remembered-device isolation, self-service password changes and revision-based session revocation. The full suite also exercised the existing owner Local and synthetic OIDC flows.
+- Production Auth stores on disposable PostgreSQL and SQL Server both passed concurrent creation with distinct emails, concurrent duplicate normalized-email rejection, and competing writes against a single revision.
+- Playwright Chromium verified the published Release app with disposable PostgreSQL. A test-provisioned collaborator signed in, changed the temporary password at 390 by 844 CSS pixels, enrolled TOTP, reached Posts at 1440 by 900, and was denied direct access to system settings. The Posts page reported zero console errors or warnings. Playwright CLI was used because the Browser plugin and skill were unavailable.
+- For owner acceptance, run `dotnet test --project src/Tests/Moonglade.Web.Tests/Moonglade.Web.Tests.csproj --filter-class '*CollaboratorSignInHttpTests'`. The host provisions isolated test collaborators via the Auth store and exercises the real forms, credentials and authorization. The owner management surface and collaborator account navigation are B4.
 
 ## B4 — Owner Management and Collaborator UI
 

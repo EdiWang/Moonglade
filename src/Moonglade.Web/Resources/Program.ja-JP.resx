@@ -2356,4 +2356,8 @@
   </data>
   <data name="Collaborator" xml:space="preserve"><value>共同編集者</value></data>
   <data name="Account ID" xml:space="preserve"><value>アカウント ID</value></data>
+  <data name="Change temporary password" xml:space="preserve"><value>一時パスワードを変更</value></data>
+  <data name="Confirm password" xml:space="preserve"><value>パスワードを確認</value></data>
+  <data name="Passwords do not match." xml:space="preserve"><value>パスワードが一致しません。</value></data>
+  <data name="Choose a password different from the temporary password." xml:space="preserve"><value>一時パスワードとは異なるパスワードを選択してください。</value></data>
 </root>

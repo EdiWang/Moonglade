@@ -35,6 +35,10 @@ internal sealed class OwnerAccountTestStore : IAsyncDisposable
             Totp = new TotpAuthenticationSettings { Required = required }
         }), Clock, Events.Object);
 
+    public LocalAccountStore CreateLocalAccounts(bool required = false) =>
+        new(Db, Accounts, Totp, Options.Create(new AuthenticationSettings
+        { Totp = new TotpAuthenticationSettings { Required = required } }), Clock);
+
     public async Task<OwnerAccountSnapshot> InitializeAsync(CancellationToken ct)
     {
         var pending = await Accounts.PrepareLocalSetupAsync(Email, Password, ct);

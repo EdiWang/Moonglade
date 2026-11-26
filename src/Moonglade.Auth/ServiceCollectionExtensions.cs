@@ -19,6 +19,7 @@ public static class ServiceCollectionExtensions
             .PersistKeysToDbContext<BlogDbContext>();
 
         services.AddScoped<OwnerAccountStore>();
+        services.AddScoped<LocalAccountStore>();
         services.AddScoped<OwnerAvatarStore>();
         services.AddScoped<LocalAccountCookieEvents>();
         services.TryAddSingleton(TimeProvider.System);
@@ -49,6 +50,14 @@ public static class ServiceCollectionExtensions
                 options.AccessDeniedPath = "/auth/accessdenied";
                 options.LoginPath = "/auth/signin";
                 options.LogoutPath = "/auth/signout";
+                options.EventsType = typeof(LocalAccountCookieEvents);
+            })
+            .AddCookie(BlogAuthSchemas.TemporaryPasswordChange, options =>
+            {
+                options.Cookie.Name = ".Moonglade.LocalAccount.PasswordChange";
+                options.LoginPath = "/auth/signin";
+                options.ExpireTimeSpan = TimeSpan.FromMinutes(10);
+                options.SlidingExpiration = false;
                 options.EventsType = typeof(LocalAccountCookieEvents);
             })
             .AddCookie(BlogAuthSchemas.LocalAccountSetup, options =>

@@ -102,7 +102,7 @@ public class SignInModelTests
 
     private static SignInModel CreateModel(LocalAccountPageFixture fixture)
     {
-        var model = fixture.Attach(new SignInModel(fixture.Options, fixture.Accounts, Mock.Of<ILogger<SignInModel>>()));
+        var model = fixture.Attach(new SignInModel(fixture.Options, fixture.LocalAccounts, Mock.Of<ILogger<SignInModel>>()));
         model.Email = LocalAccountPageFixture.Email;
         model.Password = LocalAccountPageFixture.Password;
         return model;

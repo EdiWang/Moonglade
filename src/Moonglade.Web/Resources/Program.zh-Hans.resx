@@ -2356,4 +2356,8 @@
   </data>
   <data name="Collaborator" xml:space="preserve"><value>协同编辑</value></data>
   <data name="Account ID" xml:space="preserve"><value>账号 ID</value></data>
+  <data name="Change temporary password" xml:space="preserve"><value>修改临时密码</value></data>
+  <data name="Confirm password" xml:space="preserve"><value>确认密码</value></data>
+  <data name="Passwords do not match." xml:space="preserve"><value>两次输入的密码不一致。</value></data>
+  <data name="Choose a password different from the temporary password." xml:space="preserve"><value>请选择与临时密码不同的密码。</value></data>
 </root>

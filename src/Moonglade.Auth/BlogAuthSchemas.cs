@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.Cookies;
 
 namespace Moonglade.Auth;
 
@@ -6,6 +6,7 @@ public static class BlogAuthSchemas
 {
     public const string Local = CookieAuthenticationDefaults.AuthenticationScheme;
     public const string LocalAccountSetup = "MoongladeLocalAccountSetup";
+    public const string TemporaryPasswordChange = "MoongladeTemporaryPasswordChange";
     public const string LocalAccountTwoFactor = "MoongladeLocalAccountTwoFactor";
     public const string LocalAccountRememberedDevice = "MoongladeLocalAccountRememberedDevice";
     public const string InitialAccountSetup = "MoongladeInitialAccountSetup";

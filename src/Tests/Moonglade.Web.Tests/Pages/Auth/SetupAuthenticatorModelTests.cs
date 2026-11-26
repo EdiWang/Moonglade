@@ -130,7 +130,7 @@ public class SetupAuthenticatorModelTests
     }
 
     private static SetupAuthenticatorModel CreateModel(LocalAccountPageFixture fixture) =>
-        fixture.Attach(new SetupAuthenticatorModel(fixture.Options, fixture.Accounts, fixture.Totp,
+        fixture.Attach(new SetupAuthenticatorModel(fixture.Options, fixture.LocalAccounts, fixture.Totp,
             Mock.Of<ILogger<SetupAuthenticatorModel>>()), BlogAuthSchemas.LocalAccountSetup);
 
 }

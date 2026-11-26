@@ -102,6 +102,6 @@ public class VerifyAuthenticatorModelTests
     }
 
     private static VerifyAuthenticatorModel CreateModel(LocalAccountPageFixture fixture) =>
-        fixture.Attach(new VerifyAuthenticatorModel(fixture.Options, fixture.Accounts,
+        fixture.Attach(new VerifyAuthenticatorModel(fixture.Options, fixture.LocalAccounts,
             Mock.Of<ILogger<VerifyAuthenticatorModel>>()), BlogAuthSchemas.LocalAccountTwoFactor);
 }

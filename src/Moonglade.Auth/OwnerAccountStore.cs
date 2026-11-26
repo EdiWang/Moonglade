@@ -1,13 +1,12 @@
 #nullable enable
 
-using Edi.AspNetCore.Utils;
 using LiteBus.Events.Abstractions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Moonglade.Data;
 using Moonglade.Data.Entities;
 using System.ComponentModel.DataAnnotations;
-using System.Security.Cryptography;
+using static Moonglade.Auth.LocalAccountCredentials;
 
 namespace Moonglade.Auth;
 
@@ -37,7 +36,7 @@ public sealed class OwnerAccountStore(
 
     public async Task<OwnerAccountSnapshot> CreateProfileAsync(string email, CancellationToken ct = default)
     {
-        var address = NormalizeEmail(email);
+        var address = NormalizeEmail(email, "An owner email is required.");
         EnsureOwnCommit();
         var account = await SaveNewProfileAsync(address, ct);
         await events.PublishAsync(new OwnerProfileChangedEvent(), CancellationToken.None);
@@ -62,17 +61,17 @@ public sealed class OwnerAccountStore(
     public async Task<PendingOwnerSetup> PrepareLocalSetupAsync(
         string email, string password, CancellationToken ct = default)
     {
-        var address = NormalizeEmail(email);
+        var address = NormalizeEmail(email, "An owner email is required.");
         ValidatePassword(password);
         var current = await ReadAsync(ct);
         if (current?.IsLocalInitialized == true)
             throw new DbUpdateConcurrencyException("The owner account is already initialized.");
-        var salt = SecurityHelper.GenerateSalt();
+        var credentials = HashPassword(password);
         return new PendingOwnerSetup
         {
             Email = address.Email,
-            PasswordHash = SecurityHelper.HashPassword(password, salt),
-            PasswordSalt = salt,
+            PasswordHash = credentials.Hash,
+            PasswordSalt = credentials.Salt,
             ExpectedRevision = current?.Revision,
             RequiresTotp = options.Value.Totp.Required,
             TotpSecret = options.Value.Totp.Required ? totpService.GenerateSecret() : null,
@@ -103,7 +102,7 @@ public sealed class OwnerAccountStore(
         {
             throw new ValidationException("Account setup is invalid. Start again.");
         }
-        var address = NormalizeEmail(pending.Email);
+        var address = NormalizeEmail(pending.Email, "An owner email is required.");
         EnsureOwnCommit();
 
         var account = await OwnerQuery().SingleOrDefaultAsync(ct);
@@ -158,7 +157,7 @@ public sealed class OwnerAccountStore(
         Guid id, Guid expectedRevision, string currentPassword, string email, CancellationToken ct = default)
     {
         EnsureOwnCommit();
-        var address = NormalizeEmail(email);
+        var address = NormalizeEmail(email, "An owner email is required.");
         var account = await LoadCurrentAsync(id, expectedRevision, ct);
         if (string.IsNullOrWhiteSpace(currentPassword) || !PasswordMatches(account, currentPassword)) return null;
         return await SaveEmailAsync(account, address, ct);
@@ -196,8 +195,7 @@ public sealed class OwnerAccountStore(
         var account = await LoadCurrentAsync(id, expectedRevision, ct);
         if (!PasswordMatches(account, currentPassword)) return null;
         db.BlogAccount.Attach(account);
-        account.PasswordSalt = SecurityHelper.GenerateSalt();
-        account.PasswordHash = SecurityHelper.HashPassword(newPassword, account.PasswordSalt);
+        (account.PasswordSalt, account.PasswordHash) = HashPassword(newPassword);
         return await SaveUpdatedAsync(account, ct);
     }
 
@@ -248,24 +246,6 @@ public sealed class OwnerAccountStore(
         return Snapshot(account);
     }
 
-    private static bool PasswordMatches(BlogAccountEntity account, string password)
-    {
-        if (account.PasswordHash is not { } hash || account.PasswordSalt is not { } salt)
-            throw new InvalidOperationException("The initialized owner account has incomplete credentials.");
-        var actual = Convert.FromBase64String(SecurityHelper.HashPassword(password.Trim(), salt));
-        return CryptographicOperations.FixedTimeEquals(actual, Convert.FromBase64String(hash));
-    }
-
-    private void ValidatePassword(string password)
-    {
-        Validator.ValidateValue(password, new ValidationContext(this) { DisplayName = "Password" }, [
-            new RequiredAttribute(), new RegularExpressionAttribute(UpdateLocalAccountPasswordRequest.PasswordPattern)
-            {
-                ErrorMessage = UpdateLocalAccountPasswordRequest.PasswordRequirements
-            }
-        ]);
-    }
-
     private async Task SaveAsync(BlogAccountEntity account, CancellationToken ct)
     {
         try
@@ -290,19 +270,6 @@ public sealed class OwnerAccountStore(
     {
         if (db.Database.CurrentTransaction is not null || System.Transactions.Transaction.Current is not null)
             throw new InvalidOperationException("Owner account writes must own their commit.");
-    }
-
-    private static (string Email, string NormalizedEmail) NormalizeEmail(string email)
-    {
-        if (email is null) throw new ValidationException("An owner email is required.");
-        var address = email.Trim();
-        Validator.ValidateValue(address, new ValidationContext(typeof(OwnerAccountStore)), [
-            new RequiredAttribute(), new EmailAddressAttribute(), new StringLengthAttribute(254)
-        ]);
-        var normalized = address.ToUpperInvariant();
-        Validator.ValidateValue(normalized, new ValidationContext(typeof(OwnerAccountStore)),
-            [new StringLengthAttribute(254)]);
-        return (address, normalized);
     }
 
     private static OwnerAccountSnapshot Snapshot(BlogAccountEntity account) =>

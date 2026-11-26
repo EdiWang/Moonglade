@@ -2356,4 +2356,8 @@
   </data>
   <data name="Collaborator" xml:space="preserve"><value>Mitwirkender</value></data>
   <data name="Account ID" xml:space="preserve"><value>Konto-ID</value></data>
+  <data name="Change temporary password" xml:space="preserve"><value>Temporäres Passwort ändern</value></data>
+  <data name="Confirm password" xml:space="preserve"><value>Passwort bestätigen</value></data>
+  <data name="Passwords do not match." xml:space="preserve"><value>Die Passwörter stimmen nicht überein.</value></data>
+  <data name="Choose a password different from the temporary password." xml:space="preserve"><value>Wählen Sie ein anderes Passwort als das temporäre Passwort.</value></data>
 </root>

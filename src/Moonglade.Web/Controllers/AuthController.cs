@@ -12,6 +12,7 @@ public class AuthController : ControllerBase
         await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
         await HttpContext.SignOutAsync(BlogAuthSchemas.LocalAccountSetup);
         await HttpContext.SignOutAsync(BlogAuthSchemas.LocalAccountTwoFactor);
+        await HttpContext.SignOutAsync(BlogAuthSchemas.TemporaryPasswordChange);
         return RedirectToPage("/Index");
     }
 
