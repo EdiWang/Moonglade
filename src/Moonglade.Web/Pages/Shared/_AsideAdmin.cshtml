@@ -1,24 +1,29 @@
-﻿@{
+﻿@using Moonglade.Auth
+@{
     var snapshot = ViewData.CaptureSettings(SettingsReader);
 }
 @{
     var currentPage = ViewContext.RouteData.Values["Page"]?.ToString();
+    var isOwner = User.IsInRole(BlogAuthSchemas.AdministratorRole);
 }
 
 <aside class="admin-nav d-flex flex-column">
     <section class="admin-nav-section mt-3 mb-3">
         <div class="list-group list-group-flush mx-1">
-            <a asp-page="/Admin/Dashboard"
-               class="list-group-item list-group-item-action @(currentPage is "/Admin/Dashboard" ? "active" : null)" title="@SharedLocalizer["Dashboard"]">
-                <div class="positioning-region">
-                    <div class="content-region">
-                        <i class="bi-speedometer2 admin-nav-icon"></i>
-                        @SharedLocalizer["Dashboard"]
+            @if (isOwner)
+            {
+                <a asp-page="/Admin/Dashboard"
+                   class="list-group-item list-group-item-action @(currentPage is "/Admin/Dashboard" ? "active" : null)" title="@SharedLocalizer["Dashboard"]">
+                    <div class="positioning-region">
+                        <div class="content-region">
+                            <i class="bi-speedometer2 admin-nav-icon"></i>
+                            @SharedLocalizer["Dashboard"]
+                        </div>
                     </div>
-                </div>
-            </a>
+                </a>
+            }
             <a asp-page="/Admin/Post"
-               class="list-group-item list-group-item-action @(currentPage is "/Admin/Post" or "/Admin/EditPost" or "/Admin/Draft" or "/Admin/RecycleBin" ? "active" : null)" title="@SharedLocalizer["Manage posts link"]">
+               class="list-group-item list-group-item-action @(currentPage is "/Admin/Post" or "/Admin/EditPost" or "/Admin/Draft" or "/Admin/Scheduled" or "/Admin/RecycleBin" ? "active" : null)" title="@SharedLocalizer["Manage posts link"]">
                 <div class="positioning-region">
                     <div class="content-region">
                         <i class="bi-file-earmark-richtext admin-nav-icon"></i>
@@ -65,56 +70,62 @@
                     </div>
                 </div>
             </a>
-            <a asp-page="/Admin/Menu"
-               class="list-group-item list-group-item-action @(currentPage is "/Admin/Menu" ? "active" : null)" title="@SharedLocalizer["Manage menus link"]">
-                <div class="positioning-region">
-                    <div class="content-region">
-                        <i class="bi-menu-button-wide admin-nav-icon"></i>
-                        @SharedLocalizer["Menus"]
+            @if (isOwner)
+            {
+                <a asp-page="/Admin/Menu"
+                   class="list-group-item list-group-item-action @(currentPage is "/Admin/Menu" ? "active" : null)" title="@SharedLocalizer["Manage menus link"]">
+                    <div class="positioning-region">
+                        <div class="content-region">
+                            <i class="bi-menu-button-wide admin-nav-icon"></i>
+                            @SharedLocalizer["Menus"]
+                        </div>
                     </div>
-                </div>
-            </a>
-            <a asp-page="/Admin/Widgets"
-               class="list-group-item list-group-item-action @(currentPage is "/Admin/Widgets" ? "active" : null)" title="@SharedLocalizer["Manage widgets"]">
-                <div class="positioning-region">
-                    <div class="content-region">
-                        <i class="bi-code-square admin-nav-icon"></i>
-                        @SharedLocalizer["Widgets"]
+                </a>
+                <a asp-page="/Admin/Widgets"
+                   class="list-group-item list-group-item-action @(currentPage is "/Admin/Widgets" ? "active" : null)" title="@SharedLocalizer["Manage widgets"]">
+                    <div class="positioning-region">
+                        <div class="content-region">
+                            <i class="bi-code-square admin-nav-icon"></i>
+                            @SharedLocalizer["Widgets"]
+                        </div>
                     </div>
-                </div>
-            </a>
-            <a asp-page="/Admin/Mention"
-               class="list-group-item list-group-item-action @(currentPage is "/Admin/Mention" ? "active" : null)" title="@SharedLocalizer["Manage mention link"]">
-                <div class="positioning-region">
-                    <div class="content-region">
-                        <i class="bi-arrow-left-right admin-nav-icon"></i>
-                        @SharedLocalizer["Mentions"]
+                </a>
+                <a asp-page="/Admin/Mention"
+                   class="list-group-item list-group-item-action @(currentPage is "/Admin/Mention" ? "active" : null)" title="@SharedLocalizer["Manage mention link"]">
+                    <div class="positioning-region">
+                        <div class="content-region">
+                            <i class="bi-arrow-left-right admin-nav-icon"></i>
+                            @SharedLocalizer["Mentions"]
+                        </div>
                     </div>
-                </div>
-            </a>
+                </a>
+            }
         </div>
     </section>
 
-    <section class="admin-nav-section admin-nav-bottom mb-3">
-        <div class="list-group list-group-flush mx-1">
-            <a asp-page="/Admin/ActivityLogs"
-               class="list-group-item list-group-item-action @(currentPage is "/Admin/ActivityLogs" ? "active" : null)" title="@SharedLocalizer["Activity Logs"]">
-                <div class="positioning-region">
-                    <div class="content-region">
-                        <i class="bi-card-list admin-nav-icon"></i>
-                        @SharedLocalizer["Activity Logs"]
+    @if (isOwner)
+    {
+        <section class="admin-nav-section admin-nav-bottom mb-3">
+            <div class="list-group list-group-flush mx-1">
+                <a asp-page="/Admin/ActivityLogs"
+                   class="list-group-item list-group-item-action @(currentPage is "/Admin/ActivityLogs" ? "active" : null)" title="@SharedLocalizer["Activity Logs"]">
+                    <div class="positioning-region">
+                        <div class="content-region">
+                            <i class="bi-card-list admin-nav-icon"></i>
+                            @SharedLocalizer["Activity Logs"]
+                        </div>
                     </div>
-                </div>
-            </a>
-            <a asp-page="/Admin/Settings/General"
-               class="list-group-item list-group-item-action @(currentPage?.StartsWith("/Admin/Settings/") == true ? "active" : null)" title="@SharedLocalizer["Settings"]">
-                <div class="positioning-region">
-                    <div class="content-region">
-                        <i class="bi-gear admin-nav-icon"></i>
-                        @SharedLocalizer["Settings"]
+                </a>
+                <a asp-page="/Admin/Settings/General"
+                   class="list-group-item list-group-item-action @(currentPage?.StartsWith("/Admin/Settings/") == true ? "active" : null)" title="@SharedLocalizer["Settings"]">
+                    <div class="positioning-region">
+                        <div class="content-region">
+                            <i class="bi-gear admin-nav-icon"></i>
+                            @SharedLocalizer["Settings"]
+                        </div>
                     </div>
-                </div>
-            </a>
-        </div>
-    </section>
+                </a>
+            </div>
+        </section>
+    }
 </aside>

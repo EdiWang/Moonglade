@@ -2360,4 +2360,36 @@
   <data name="Confirm password" xml:space="preserve"><value>パスワードを確認</value></data>
   <data name="Passwords do not match." xml:space="preserve"><value>パスワードが一致しません。</value></data>
   <data name="Choose a password different from the temporary password." xml:space="preserve"><value>一時パスワードとは異なるパスワードを選択してください。</value></data>
+  <data name="Collaborators" xml:space="preserve"><value>共同編集者</value></data>
+  <data name="{0} of {1} collaborator slots in use" xml:space="preserve"><value>共同編集者枠 {1} 件のうち {0} 件を使用中</value></data>
+  <data name="Add collaborator" xml:space="preserve"><value>共同編集者を追加</value></data>
+  <data name="Change email" xml:space="preserve"><value>メールアドレスを変更</value></data>
+  <data name="Delete collaborator" xml:space="preserve"><value>共同編集者を削除</value></data>
+  <data name="Share the temporary password with the collaborator. They must change it when they sign in." xml:space="preserve"><value>一時パスワードを共同編集者に伝えてください。共同編集者はサインイン時に変更する必要があります。</value></data>
+  <data name="This signs the collaborator out. They must change the temporary password when they sign in." xml:space="preserve"><value>共同編集者はサインアウトされ、次回サインイン時に一時パスワードを変更する必要があります。</value></data>
+  <data name="This signs the collaborator out and clears their authenticator setup." xml:space="preserve"><value>共同編集者はサインアウトされ、認証アプリの設定が消去されます。</value></data>
+  <data name="Changing the email signs the collaborator out." xml:space="preserve"><value>メールアドレスを変更すると共同編集者はサインアウトされます。</value></data>
+  <data name="This signs the collaborator out. The account continues to use a slot." xml:space="preserve"><value>共同編集者はサインアウトされます。アカウントは引き続き枠を使用します。</value></data>
+  <data name="This permanently deletes the account and frees its slot. Activity history is kept." xml:space="preserve"><value>アカウントは完全に削除され、枠が空きます。アクティビティ履歴は保持されます。</value></data>
+  <data name="Disabled accounts still use a slot." xml:space="preserve"><value>無効なアカウントも枠を使用します。</value></data>
+  <data name="Temporary password" xml:space="preserve"><value>一時パスワード</value></data>
+  <data name="Owner password" xml:space="preserve"><value>サイト所有者のパスワード</value></data>
+  <data name="Confirm account deletion" xml:space="preserve"><value>アカウントの削除を確認</value></data>
+  <data name="Password change required" xml:space="preserve"><value>パスワードの変更が必要</value></data>
+  <data name="Authenticator enrolled" xml:space="preserve"><value>認証アプリ設定済み</value></data>
+  <data name="Manage {0}" xml:space="preserve"><value>{0} を管理</value></data>
+  <data name="Check the account details and try again." xml:space="preserve"><value>アカウント情報を確認して、もう一度お試しください。</value></data>
+  <data name="The collaborator account changed. Reload and try again." xml:space="preserve"><value>共同編集者アカウントが変更されました。ページを再読み込みして、もう一度お試しください。</value></data>
+  <data name="Confirm deletion before deleting the account." xml:space="preserve"><value>アカウントを削除するには、確認欄を選択してください。</value></data>
+  <data name="Both collaborator slots are in use." xml:space="preserve"><value>共同編集者枠は 2 件とも使用中です。</value></data>
+  <data name="This email address is already in use." xml:space="preserve"><value>このメールアドレスはすでに使用されています。</value></data>
+  <data name="Old password is incorrect." xml:space="preserve"><value>現在のパスワードが正しくありません。</value></data>
+  <data name="The account changed. Sign in again." xml:space="preserve"><value>アカウントが変更されました。サインインし直してください。</value></data>
+  <data name="Collaborator account created" xml:space="preserve"><value>共同編集者アカウントを作成しました</value></data>
+  <data name="Collaborator email changed" xml:space="preserve"><value>共同編集者のメールアドレスを変更しました</value></data>
+  <data name="Collaborator password reset" xml:space="preserve"><value>共同編集者のパスワードをリセットしました</value></data>
+  <data name="Collaborator authenticator reset" xml:space="preserve"><value>共同編集者の認証アプリをリセットしました</value></data>
+  <data name="Collaborator account disabled" xml:space="preserve"><value>共同編集者アカウントを無効にしました</value></data>
+  <data name="Collaborator account enabled" xml:space="preserve"><value>共同編集者アカウントを有効にしました</value></data>
+  <data name="Collaborator account deleted" xml:space="preserve"><value>共同編集者アカウントを削除しました</value></data>
 </root>

@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Razor.TagHelpers;
+using Moonglade.Auth;
 using System.Security.Claims;
 using System.Text.Encodings.Web;
 
@@ -71,6 +72,9 @@ public class UserInfoTagHelper : TagHelper
 
     private string GetName()
     {
+        var accountDisplayName = User.FindFirstValue(BlogAuthSchemas.AccountDisplayNameClaim);
+        if (!string.IsNullOrWhiteSpace(accountDisplayName)) return accountDisplayName;
+
         // First try standard Identity.Name
         if (!string.IsNullOrWhiteSpace(User.Identity?.Name))
         {

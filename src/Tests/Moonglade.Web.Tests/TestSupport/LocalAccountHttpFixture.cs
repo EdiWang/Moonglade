@@ -51,7 +51,7 @@ internal sealed class LocalAccountHttpFixture : IAsyncDisposable
     public static async Task<LocalAccountHttpFixture> CreateAsync(
         bool required = false, string pathBase = "", string environment = "Production",
         int permits = 100, bool legacyOidcConfiguration = false, HttpMessageHandler? oidcBackchannel = null,
-        TimeProvider? timeProvider = null)
+        TimeProvider? timeProvider = null, bool useProductionPageConventions = false)
     {
         var ct = TestContext.Current.CancellationToken;
         var store = new ConfigurationCommandRecorder();
@@ -115,7 +115,8 @@ internal sealed class LocalAccountHttpFixture : IAsyncDisposable
         });
         builder.Services.AddControllers(options => options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute()))
             .ConfigureApplicationPartManager(manager => manager.FeatureProviders.Add(new AccountOnlyFeatureProvider()));
-        builder.Services.AddRazorPages(options =>
+        if (useProductionPageConventions) builder.Services.AddMoongladeRazorPages();
+        else builder.Services.AddRazorPages(options =>
             options.Conventions.AuthorizeFolder("/Admin", BlogAuthSchemas.AdministratorPolicy));
         var app = builder.Build();
         var fixture = new LocalAccountHttpFixture(app, store, pathBase);

@@ -2,6 +2,7 @@ using LiteBus.Commands.Abstractions;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Localization;
 using Moonglade.ActivityLog;
 using Moonglade.Web.Services;
 
@@ -12,6 +13,7 @@ namespace Moonglade.Web.Controllers;
 public class CollaboratorAccountController(
     LocalAccountStore accounts,
     ICommandMediator commandMediator,
+    IStringLocalizer<Program> localizer,
     ILogger<CollaboratorAccountController> logger) : ContentControllerBase(commandMediator, logger)
 {
     [HttpPut("password")]
@@ -29,9 +31,9 @@ public class CollaboratorAccountController(
         }
         catch (DbUpdateConcurrencyException)
         {
-            return Conflict("The account changed. Sign in again.");
+            return Conflict(localizer["The account changed. Sign in again."].Value);
         }
-        if (saved is null) return Conflict("Old password is incorrect.");
+        if (saved is null) return Conflict(localizer["Old password is incorrect."].Value);
 
         await HttpContext.SignInAsync(BlogAuthSchemas.Local, LocalAccountPrincipal.Create(saved, BlogAuthSchemas.Local));
         await LogActivityAsync(ActivityEvents.SettingsPasswordUpdated, saved.DisplayName ?? saved.Email);

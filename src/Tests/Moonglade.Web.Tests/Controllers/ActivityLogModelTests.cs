@@ -58,6 +58,13 @@ public partial class ActivityLogModelTests
             ("account.profile.updated", "Account", "Account profile updated"),
             ("account.password.updated", "Account", "Account password updated"),
             ("account.authenticator.reset", "Account", "Account authenticator reset"),
+            ("account.collaborator.created", "Account", "Collaborator account created"),
+            ("account.collaborator.email.changed", "Account", "Collaborator email changed"),
+            ("account.collaborator.password.reset", "Account", "Collaborator password reset"),
+            ("account.collaborator.authenticator.reset", "Account", "Collaborator authenticator reset"),
+            ("account.collaborator.disabled", "Account", "Collaborator account disabled"),
+            ("account.collaborator.enabled", "Account", "Collaborator account enabled"),
+            ("account.collaborator.deleted", "Account", "Collaborator account deleted"),
             ("image.uploaded", "Images", "Image uploaded"),
             ("asset.avatar.updated", "Site assets", "Avatar updated"),
             ("asset.site-icon.updated", "Site assets", "Site icon updated"),
@@ -71,10 +78,10 @@ public partial class ActivityLogModelTests
             ("activity-log.cleared", "Activity log", "Activity log cleared")
         ];
         var actual = ActivityEvents.All;
-        Assert.Equal(52, actual.Count);
+        Assert.Equal(expected.Length, actual.Count);
         Assert.Equal(expected.OrderBy(item => item.Key), actual.Select(item => (item.Key, item.Group, item.Label)).OrderBy(item => item.Key));
-        Assert.Equal(52, actual.Select(item => item.Key).Distinct(StringComparer.Ordinal).Count());
-        Assert.Equal(52, actual.Select(item => item.Label).Distinct(StringComparer.Ordinal).Count());
+        Assert.Equal(expected.Length, actual.Select(item => item.Key).Distinct(StringComparer.Ordinal).Count());
+        Assert.Equal(expected.Length, actual.Select(item => item.Label).Distinct(StringComparer.Ordinal).Count());
         Assert.Equal(expected.Select(item => item.Key).Order(), typeof(ActivityEvents)
             .GetFields(BindingFlags.Public | BindingFlags.Static).Where(field => field.IsLiteral)
             .Select(field => Assert.IsType<string>(field.GetRawConstantValue())).Order());

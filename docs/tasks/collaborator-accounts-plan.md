@@ -2,7 +2,7 @@
 
 ## Current Status
 
-- B1 and B2 are accepted. B3 developer verification is complete on branch `codex/collaborator-accounts`. Owner acceptance is pending.
+- B1 through B3 are accepted. B4 developer verification is complete on branch `codex/collaborator-accounts`. B4 owner acceptance is pending.
 - Planning baseline is `fc2050cc6`. Recheck the current branch, working tree and next migration number when implementation starts.
 - Use this file as the source of truth for the current requirements, batch status and acceptance evidence. Replace superseded decisions and obsolete blocker details. Keep conversation records and rejected alternatives out of this file.
 
@@ -10,8 +10,8 @@
 | --- | --- | --- | --- | --- |
 | B1 | Unified account store and two-provider upgrade | Accepted on 2026-11-26 | `c8ffabb7300bb0d0cedfa22f21070c9272de6004` | Passed both providers and development owner sign-in |
 | B2 | Authorization, content access and activity attribution | Accepted on 2026-11-26 | `cc5eecc8cd561a0a32ae1080c9fd0ccaa2fbdc4d` | Developer verification passed. Owner accepted B2 |
-| B3 | Shared sign-in and credential lifecycle | Awaiting owner acceptance | `57b09f3e1481c62e2f07cf6349aade9db492d7ab`, `Use desktop layout for sign-in flow` | Developer verification passed. See B3 evidence and acceptance steps |
-| B4 | Owner account management and collaborator UI | Awaiting B3 acceptance | Pending | Pending |
+| B3 | Shared sign-in and credential lifecycle | Accepted on 2026-11-26 | `57b09f3e1481c62e2f07cf6349aade9db492d7ab`, `79a99b448e67488c6335ac347bac519e224a9866` | Developer verification and owner acceptance passed |
+| B4 | Owner account management and collaborator UI | Awaiting owner acceptance | `Add owner management and collaborator navigation` | Developer verification passed. See B4 acceptance steps |
 | B5 | Release verification and operator documentation | Awaiting B4 acceptance | Pending | Pending |
 
 ## Confirmed Behavior
@@ -113,11 +113,15 @@ Project paths in this table are under `src/`. Read the owning code, its callers 
 
 ## B4 — Owner Management and Collaborator UI
 
-- Add an owner-only management page and matching protected endpoints, with visible slot usage and account state. Support all approved lifecycle actions with fresh password and applicable TOTP proof. Use the existing localization, form, validation and confirmation patterns. Never redisplay a stored password.
-- Give collaborators a permitted post-management landing page and navigation for the allowed modules and personal password change. Show scheduling, preview, recycle and restore controls where available. Show privileged and irreversible post/page actions to the owner. Preserve the public flows for both roles.
-- Add owner-visible audit events for collaborator administration and ensure content activity distinguishes actual accounts. Verify that payloads and UI contain only the intended actor, target and safe details.
-- Verify with Auth and Web suites, affected frontend behavior tests and a Web build. Exercise the browser at the supported admin width of 1440 CSS pixels and check localized navigation, slot capacity, forms and errors. Exercise both password and TOTP management proof and direct deep links.
-- Owner acceptance creates two accounts, verifies rejection of a third, disables one and verifies it still occupies a slot, re-enables it and signs in again, then deletes it and creates a replacement. Verify existing sessions and remembered devices are rejected after revocation and prior audit history continues to identify the original account.
+- The owner manages collaborators at `/admin/account/collaborators`, reached from Account Settings. Razor form submissions require antiforgery, fresh owner password and applicable TOTP. Updates use the account revision. The list shows slot use, disabled state, required password change and authenticator enrollment. Deletion requires confirmation.
+- Collaborators land at `/admin/post`, see permitted content navigation and can change their password at `/admin/account/password`. Public edit links use the shared content policy. The owner alone sees export, recycle-bin emptying and permanent deletion controls. Both roles can open content previews and restore items from the recycle bins.
+- Activity Logs shows collaborator creation, email change, password and authenticator resets, disablement, re-enablement and deletion. Records retain the actor account ID and target account ID and display name. Credential material and collaborator email addresses are excluded from management events.
+
+### B4 verification and acceptance
+
+- `dotnet test --solution src/Moonglade.slnx --no-restore --no-ansi` passed 2,193 tests. B4 HTTP coverage includes owner-only forms, antiforgery, owner password and TOTP, stale revisions, session revocation, slot reuse and persisted audit identity. `node --test src/Tests/Moonglade.Web.Tests/JavaScript/*.mjs` passed 91 tests. Release Web publish passed.
+- Published Release with disposable PostgreSQL and Chromium at 1440 CSS pixels verified first sign-in, password change, TOTP, English and Simplified Chinese UI, owner and collaborator navigation, denied deep links, slot usage, lifecycle actions and audit display after deletion. A collaborator recycled and restored a post, and the owner alone saw permanent deletion and emptying controls. Both-provider release acceptance is in B5.
+- To accept B4, go to Account Settings → Collaborators. Create two test editors and check that both slots are occupied. Sign in as one editor in a separate browser profile and complete the password change and any authenticator steps. Disable the editor from the owner session and verify that the slot stays occupied and the editor session ends. Re-enable the editor and sign in again, delete the test account, and create a replacement. Verify that Activity Logs retains the original account’s identity after replacement. Use an isolated database or designated test accounts.
 
 ## B5 — Release Verification and Operator Documentation
 

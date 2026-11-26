@@ -2360,4 +2360,36 @@
   <data name="Confirm password" xml:space="preserve"><value>Passwort bestätigen</value></data>
   <data name="Passwords do not match." xml:space="preserve"><value>Die Passwörter stimmen nicht überein.</value></data>
   <data name="Choose a password different from the temporary password." xml:space="preserve"><value>Wählen Sie ein anderes Passwort als das temporäre Passwort.</value></data>
+  <data name="Collaborators" xml:space="preserve"><value>Mitwirkende</value></data>
+  <data name="{0} of {1} collaborator slots in use" xml:space="preserve"><value>{0} von {1} Plätzen für Mitwirkende belegt</value></data>
+  <data name="Add collaborator" xml:space="preserve"><value>Mitwirkenden hinzufügen</value></data>
+  <data name="Change email" xml:space="preserve"><value>E-Mail-Adresse ändern</value></data>
+  <data name="Delete collaborator" xml:space="preserve"><value>Mitwirkenden löschen</value></data>
+  <data name="Share the temporary password with the collaborator. They must change it when they sign in." xml:space="preserve"><value>Teilen Sie das temporäre Passwort mit der mitwirkenden Person. Sie muss es bei der Anmeldung ändern.</value></data>
+  <data name="This signs the collaborator out. They must change the temporary password when they sign in." xml:space="preserve"><value>Die mitwirkende Person wird abgemeldet und muss das temporäre Passwort bei der Anmeldung ändern.</value></data>
+  <data name="This signs the collaborator out and clears their authenticator setup." xml:space="preserve"><value>Die mitwirkende Person wird abgemeldet und ihre Authenticator-Einrichtung wird gelöscht.</value></data>
+  <data name="Changing the email signs the collaborator out." xml:space="preserve"><value>Durch die Änderung der E-Mail-Adresse wird die mitwirkende Person abgemeldet.</value></data>
+  <data name="This signs the collaborator out. The account continues to use a slot." xml:space="preserve"><value>Die mitwirkende Person wird abgemeldet. Das Konto belegt weiterhin einen Platz.</value></data>
+  <data name="This permanently deletes the account and frees its slot. Activity history is kept." xml:space="preserve"><value>Das Konto wird dauerhaft gelöscht und der Platz wird frei. Der Aktivitätsverlauf bleibt erhalten.</value></data>
+  <data name="Disabled accounts still use a slot." xml:space="preserve"><value>Deaktivierte Konten belegen weiterhin einen Platz.</value></data>
+  <data name="Temporary password" xml:space="preserve"><value>Temporäres Passwort</value></data>
+  <data name="Owner password" xml:space="preserve"><value>Passwort des Inhabers</value></data>
+  <data name="Confirm account deletion" xml:space="preserve"><value>Kontolöschung bestätigen</value></data>
+  <data name="Password change required" xml:space="preserve"><value>Passwortänderung erforderlich</value></data>
+  <data name="Authenticator enrolled" xml:space="preserve"><value>Authenticator eingerichtet</value></data>
+  <data name="Manage {0}" xml:space="preserve"><value>{0} verwalten</value></data>
+  <data name="Check the account details and try again." xml:space="preserve"><value>Prüfen Sie die Kontodaten und versuchen Sie es erneut.</value></data>
+  <data name="The collaborator account changed. Reload and try again." xml:space="preserve"><value>Das Konto wurde geändert. Laden Sie die Seite neu und versuchen Sie es erneut.</value></data>
+  <data name="Confirm deletion before deleting the account." xml:space="preserve"><value>Bestätigen Sie die Löschung des Kontos.</value></data>
+  <data name="Both collaborator slots are in use." xml:space="preserve"><value>Beide Plätze für Mitwirkende sind belegt.</value></data>
+  <data name="This email address is already in use." xml:space="preserve"><value>Diese E-Mail-Adresse wird bereits verwendet.</value></data>
+  <data name="Old password is incorrect." xml:space="preserve"><value>Das aktuelle Passwort ist falsch.</value></data>
+  <data name="The account changed. Sign in again." xml:space="preserve"><value>Das Konto wurde geändert. Melden Sie sich erneut an.</value></data>
+  <data name="Collaborator account created" xml:space="preserve"><value>Konto für Mitwirkende erstellt</value></data>
+  <data name="Collaborator email changed" xml:space="preserve"><value>E-Mail-Adresse des mitwirkenden Kontos geändert</value></data>
+  <data name="Collaborator password reset" xml:space="preserve"><value>Passwort des mitwirkenden Kontos zurückgesetzt</value></data>
+  <data name="Collaborator authenticator reset" xml:space="preserve"><value>Authenticator des mitwirkenden Kontos zurückgesetzt</value></data>
+  <data name="Collaborator account disabled" xml:space="preserve"><value>Konto für Mitwirkende deaktiviert</value></data>
+  <data name="Collaborator account enabled" xml:space="preserve"><value>Konto für Mitwirkende aktiviert</value></data>
+  <data name="Collaborator account deleted" xml:space="preserve"><value>Konto für Mitwirkende gelöscht</value></data>
 </root>

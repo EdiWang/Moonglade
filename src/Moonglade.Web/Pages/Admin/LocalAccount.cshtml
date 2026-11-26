@@ -122,6 +122,16 @@
                aria-describedby="account-oidc-title">@SharedLocalizer["Manage"]</a>
         </div>
     </div>
+    <div class="settings-entry row align-items-center">
+        <div class="col-auto">
+            <i class="bi-people settings-entry-icon" aria-hidden="true"></i>
+        </div>
+        <div class="col" id="account-collaborators-title">@SharedLocalizer["Collaborators"]</div>
+        <div class="col-5 text-end">
+            <a asp-page="/Admin/Collaborators" class="btn btn-sm btn-outline-accent"
+               aria-describedby="account-collaborators-title">@SharedLocalizer["Manage"]</a>
+        </div>
+    </div>
 </div>
 
 <div class="modal fade" id="ownerProfileModal" tabindex="-1" aria-labelledby="ownerProfileModalLabel" aria-hidden="true">

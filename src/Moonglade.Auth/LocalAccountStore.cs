@@ -208,12 +208,13 @@ public sealed class LocalAccountStore(
         return await UpdateAsync(account, row => row.TotpSecret = null, ct);
     }
 
-    public async Task DeleteCollaboratorAsync(Guid id, Guid revision, CancellationToken ct)
+    public async Task<LocalAccountSnapshot> DeleteCollaboratorAsync(Guid id, Guid revision, CancellationToken ct)
     {
         EnsureOwnCommit();
         var account = await LoadCollaboratorAsync(id, revision, ct);
         db.BlogAccount.Remove(account);
         await SaveDetachedAsync(account, ct);
+        return Snapshot(account);
     }
 
     private async Task<BlogAccountEntity> LoadCollaboratorAsync(Guid id, Guid revision, CancellationToken ct) =>

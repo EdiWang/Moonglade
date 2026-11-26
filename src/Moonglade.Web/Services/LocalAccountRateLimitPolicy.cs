@@ -47,8 +47,9 @@ public class LocalAccountRateLimitPolicy(IOptionsMonitor<LocalAccountRateLimitOp
 
     private static string GetAuthStep(HttpContext httpContext)
     {
-        var path = httpContext.Request.Path.Value;
+        var path = httpContext.Request.Path.Value?.TrimEnd('/');
         if (path?.Equals("/auth/setup-account", StringComparison.OrdinalIgnoreCase) == true) return "setup";
+        if (path?.Equals("/admin/account/collaborators", StringComparison.OrdinalIgnoreCase) == true) return "collaborator-management";
         if (path?.Equals("/auth/change-temporary-password", StringComparison.OrdinalIgnoreCase) == true ||
             path?.Equals("/api/account/collaborator/password", StringComparison.OrdinalIgnoreCase) == true)
             return "password-change";

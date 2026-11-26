@@ -161,7 +161,7 @@ public static class ServiceCollectionExtensions
                         "/Admin/Post" or "/Admin/Draft" or "/Admin/Scheduled" or "/Admin/EditPost" or
                         "/Admin/PostPreview" or "/Admin/RecycleBin" or
                         "/Admin/BlogPage" or "/Admin/EditPage" or "/Admin/PagePreview" or "/Admin/PageRecycleBin" or
-                        "/Admin/Category" or "/Admin/Tags" or "/Admin/Comments"
+                        "/Admin/Category" or "/Admin/Tags" or "/Admin/Comments" or "/Admin/CollaboratorPassword"
                         ? BlogAuthSchemas.ContentManagementPolicy
                         : BlogAuthSchemas.AdministratorPolicy;
                     page.EndpointMetadata.Add(new AuthorizeAttribute(policy));
