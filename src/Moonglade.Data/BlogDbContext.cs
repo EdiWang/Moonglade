@@ -35,7 +35,7 @@ public class BlogDbContext : DbContext, IDataProtectionKeyContext
     public virtual DbSet<EmailOutboxMessageEntity> EmailOutboxMessage { get; set; }
     public virtual DbSet<SiteVerificationFileEntity> SiteVerificationFile { get; set; }
     public DbSet<OwnerAvatarEntity> OwnerAvatar { get; set; }
-    public virtual DbSet<OwnerAccountEntity> OwnerAccount { get; set; }
+    public virtual DbSet<BlogAccountEntity> BlogAccount { get; set; }
     public DbSet<OwnerOidcEntity> OwnerOidc { get; set; }
     public DbSet<DataProtectionKey> DataProtectionKeys { get; set; }
 
@@ -58,8 +58,8 @@ public class BlogDbContext : DbContext, IDataProtectionKeyContext
         modelBuilder.ApplyConfiguration(new EmailOutboxMessageConfiguration());
         modelBuilder.ApplyConfiguration(new SiteVerificationFileConfiguration());
         modelBuilder.ApplyConfiguration(new PostViewDailyConfiguration());
-        modelBuilder.ApplyConfiguration(new OwnerAccountConfiguration());
-        OwnerAccountConfiguration.ConfigureConstraints(modelBuilder);
+        modelBuilder.ApplyConfiguration(new BlogAccountConfiguration());
+        BlogAccountConfiguration.ConfigureConstraints(modelBuilder);
         modelBuilder.Entity<OwnerAvatarEntity>().Property(avatar => avatar.Id).ValueGeneratedNever();
         ConfigureOwnerAvatarConstraint(modelBuilder);
         var oidc = modelBuilder.Entity<OwnerOidcEntity>();
@@ -71,7 +71,7 @@ public class BlogDbContext : DbContext, IDataProtectionKeyContext
         oidc.Property(value => value.Issuer).HasMaxLength(500);
         oidc.Property(value => value.Subject).HasMaxLength(255);
         oidc.Property(value => value.AccountLabel).HasMaxLength(255);
-        oidc.HasOne<OwnerAccountEntity>().WithOne().HasForeignKey<OwnerOidcEntity>(value => value.OwnerId);
+        oidc.HasOne<BlogAccountEntity>().WithOne().HasForeignKey<OwnerOidcEntity>(value => value.OwnerId);
         ConfigureOwnerOidcConstraint(modelBuilder);
         modelBuilder
             .Entity<PostEntity>()
@@ -167,7 +167,7 @@ public static class BlogDbContextExtension
             await context.OwnerAvatar.ExecuteDeleteAsync();
             await context.OwnerOidc.ExecuteDeleteAsync();
             await context.DataProtectionKeys.ExecuteDeleteAsync();
-            await context.OwnerAccount.ExecuteDeleteAsync();
+            await context.BlogAccount.ExecuteDeleteAsync();
 
             await transaction.CommitAsync();
         });

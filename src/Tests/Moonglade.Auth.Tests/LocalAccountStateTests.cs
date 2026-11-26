@@ -25,7 +25,7 @@ public class LocalAccountStateTests
         Assert.NotEqual(OwnerAccountTestStore.Password, pending.PasswordHash);
         if (required) Assert.True(store.Totp.VerifyCode(pending.TotpSecret!, Code(pending.TotpSecret!)));
         else Assert.Null(pending.TotpSecret);
-        Assert.False(await store.Db.OwnerAccount.AnyAsync(ct));
+        Assert.False(await store.Db.BlogAccount.AnyAsync(ct));
         Assert.Null(await store.Accounts.AuthenticateLocalAsync(pending.Email, OwnerAccountTestStore.Password, ct));
         Assert.DoesNotContain(OwnerAccountTestStore.Password, pending.ToString());
         Assert.DoesNotContain(pending.PasswordHash, pending.ToString());
@@ -51,7 +51,7 @@ public class LocalAccountStateTests
         Assert.True(initialized.IsTotpEnabled);
         if (profileOnly) Assert.Equal(profile!.Id, initialized.Id);
         Assert.Equal(initialized, await store.Accounts.AuthenticateLocalAsync(pending.Email, OwnerAccountTestStore.Password, ct));
-        var row = await store.Db.OwnerAccount.AsNoTracking().SingleAsync(ct);
+        var row = await store.Db.BlogAccount.AsNoTracking().SingleAsync(ct);
         Assert.Equal(pending.PasswordHash, row.PasswordHash);
         Assert.Equal(pending.PasswordSalt, row.PasswordSalt);
         Assert.Equal(pending.TotpSecret, row.TotpSecret);
@@ -77,7 +77,7 @@ public class LocalAccountStateTests
 
         Assert.Equal(before, await store.Accounts.ReadAsync(ct));
         Assert.Null(await store.Accounts.AuthenticateLocalAsync(pending.Email, OwnerAccountTestStore.Password, ct));
-        Assert.Empty(store.Db.ChangeTracker.Entries<OwnerAccountEntity>());
+        Assert.Empty(store.Db.ChangeTracker.Entries<BlogAccountEntity>());
         Assert.DoesNotContain(pending.PasswordHash, error.ToString());
         Assert.DoesNotContain(pending.PasswordSalt, error.ToString());
         Assert.DoesNotContain(pending.TotpSecret!, error.ToString());
@@ -100,7 +100,7 @@ public class LocalAccountStateTests
         if (expired)
         {
             await Assert.ThrowsAsync<ValidationException>(() => store.Accounts.CompleteLocalSetupAsync(pending, null, ct));
-            Assert.False(await store.Db.OwnerAccount.AnyAsync(ct));
+            Assert.False(await store.Db.BlogAccount.AnyAsync(ct));
         }
         else
         {
@@ -122,7 +122,7 @@ public class LocalAccountStateTests
         await Assert.ThrowsAsync<ValidationException>(() => changed.CompleteLocalSetupAsync(
             pending, requiredWhenPrepared ? Code(pending.TotpSecret!) : null, ct));
 
-        Assert.False(await store.Db.OwnerAccount.AnyAsync(ct));
+        Assert.False(await store.Db.BlogAccount.AnyAsync(ct));
     }
 
     [Theory]
@@ -165,11 +165,11 @@ public class LocalAccountStateTests
 
         await Assert.ThrowsAsync<ValidationException>(() => store.Accounts.CompleteLocalSetupAsync(pending, null, ct));
 
-        Assert.False(await store.Db.OwnerAccount.AnyAsync(ct));
-        Assert.Empty(store.Db.ChangeTracker.Entries<OwnerAccountEntity>());
+        Assert.False(await store.Db.BlogAccount.AnyAsync(ct));
+        Assert.Empty(store.Db.ChangeTracker.Entries<BlogAccountEntity>());
         store.Db.BlogConfiguration.Add(new BlogConfigurationEntity { CfgKey = "Unrelated", CfgValue = "{}" });
         await store.Db.SaveChangesAsync(ct);
-        Assert.False(await store.Db.OwnerAccount.AnyAsync(ct));
+        Assert.False(await store.Db.BlogAccount.AnyAsync(ct));
         Assert.Null(await store.Accounts.AuthenticateLocalAsync(valid.Email, OwnerAccountTestStore.Password, ct));
     }
 
@@ -179,7 +179,7 @@ public class LocalAccountStateTests
         var ct = TestContext.Current.CancellationToken;
         await using var store = new OwnerAccountTestStore();
         var abandoned = await store.Accounts.PrepareLocalSetupAsync("abandoned@example.test", OwnerAccountTestStore.Password, ct);
-        Assert.False(await store.Db.OwnerAccount.AnyAsync(ct));
+        Assert.False(await store.Db.BlogAccount.AnyAsync(ct));
         var winner = await store.InitializeAsync(ct);
 
         await Assert.ThrowsAsync<DbUpdateConcurrencyException>(() => store.Accounts.CompleteLocalSetupAsync(abandoned, null, ct));

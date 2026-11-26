@@ -33,3 +33,12 @@ The widget-composer schema requires [PostgreSQL script 12](PostgreSql/12.widget-
 Conversion maps `[-30,-21]` to `BeforeProfile`, `[-20,-11]` to `BeforeTags`, `[-10,-1]` to `BeforeCategories`, and `[0,999]` to `AfterCategories`. Within each region it assigns zero-based positions ordered by original DisplayOrder, CreatedTimeUtc, then ordinal lowercase canonical GUID string. IDs, content, titles, enabled flags, and UTC metadata are preserved. Empty legacy collections are supported. Subsequent positions are nonnegative integers, without the former numeric-band capacity.
 
 If validation fails, inspect the reported schema or safe widget identifier before retrying; do not manually delete columns or fabricate replacement positions. If PostgreSQL reports an error inside the script transaction, issue `ROLLBACK` or close that session before inspecting or retrying; do not leave an aborted transaction open. For rollback, keep all hosts stopped, restore the pre-upgrade backup, and restore its matching application version. Reverting the application binary alone is insufficient. There is no automatic migration runner or reverse conversion.
+
+## Unified Account Upgrade (13)
+
+Run [PostgreSQL script 13](PostgreSql/13.unified-accounts.sql) or [SQL Server script 13](SqlServer/13.unified-accounts.sql) after the applicable upgrades through script 12. Fresh installations create the unified schema directly.
+
+1. Stop all application hosts, take a database backup and test the migration on a restored copy.
+2. Run script 13 for the configured provider. It renames the account table and adds the collaborator account state and nullable activity actor ID. Existing owner rows and the OIDC foreign key retain the same identity. Account, avatar, OIDC, activity and Data Protection records are preserved.
+3. Repeat script 13 against the unified schema and confirm that the schema and data remain stable. To rehearse an earlier script again, restore a backup from its applicable starting version.
+4. Start the matching upgraded application. Verify the owner sign-in or pending setup, public profile and applicable OIDC binding. If rollback is required, stop the hosts and restore the pre-upgrade database backup together with the previous application version.

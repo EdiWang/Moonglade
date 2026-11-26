@@ -33,7 +33,7 @@ public class ConfigurationCommandRegistrationTests
         await avatars.SetGravatarAsync(true, ct);
 
         Assert.True(await avatars.UsesGravatarAsync(ct));
-        Assert.False(await store.Db.OwnerAccount.AnyAsync(ct));
+        Assert.False(await store.Db.BlogAccount.AnyAsync(ct));
         Assert.False(await store.Db.BlogConfiguration.AnyAsync(ct));
     }
 

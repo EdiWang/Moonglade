@@ -8,6 +8,7 @@ public class ActivityLogEntity
     public string EventKey { get; set; } = string.Empty;
     public DateTime EventTimeUtc { get; set; }
     public ActivityActorKind ActorKind { get; set; }
+    public Guid? ActorAccountId { get; set; }
     public string? ActorDisplayName { get; set; }
     public string? TargetId { get; set; }
     public string? TargetDisplayName { get; set; }

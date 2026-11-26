@@ -102,16 +102,34 @@ public class ServiceCollectionExtensionsTests
 
             await using var scope = application.CreateAsyncScope();
             var db = scope.ServiceProvider.GetRequiredService<BlogDbContext>();
-            var owner = new OwnerAccountEntity
+            var owner = new BlogAccountEntity
             {
                 Id = Guid.NewGuid(),
                 Email = "owner@example.test",
                 NormalizedEmail = "OWNER@EXAMPLE.TEST",
                 Revision = Guid.NewGuid()
             };
-            db.OwnerAccount.Add(owner);
+            db.BlogAccount.Add(owner);
             await db.SaveChangesAsync(ct);
-            await scope.ServiceProvider.GetRequiredService<OwnerOidcStore>().SaveAsync(owner.Id, null,
+            var store = scope.ServiceProvider.GetRequiredService<OwnerOidcStore>();
+            var collaborator = new BlogAccountEntity
+            {
+                Id = Guid.NewGuid(),
+                Slot = 2,
+                Email = "editor@example.test",
+                NormalizedEmail = "EDITOR@EXAMPLE.TEST",
+                Revision = Guid.NewGuid(),
+                LocalInitializedUtc = DateTime.UtcNow,
+                PasswordHash = "synthetic-hash",
+                PasswordSalt = "synthetic-salt"
+            };
+            db.BlogAccount.Add(collaborator);
+            await db.SaveChangesAsync(ct);
+            await Assert.ThrowsAsync<DbUpdateConcurrencyException>(() => store.SaveAsync(collaborator.Id, null,
+                "Synthetic provider", "https://identity.example.test", "synthetic-client", "disposable-test-secret", ct));
+            Assert.False(await db.OwnerOidc.AnyAsync(ct));
+
+            await store.SaveAsync(owner.Id, null,
                 "Synthetic provider", "https://identity.example.test", "synthetic-client", "replacement-synthetic-secret", ct);
             savedSecret = (await db.OwnerOidc.AsNoTracking().SingleAsync(ct)).ProtectedSecret;
             Assert.Throws<CryptographicException>(() => protection.Unprotect(savedSecret));

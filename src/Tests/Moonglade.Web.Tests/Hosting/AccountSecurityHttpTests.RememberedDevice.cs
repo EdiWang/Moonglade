@@ -182,7 +182,7 @@ public partial class AccountSecurityHttpTests
         using var login = await PasswordLoginAsync(fixture, account);
         Assert.Equal(fixture.PathBase + "/auth/verify-authenticator", login.Headers.Location!.OriginalString);
         var token = await fixture.FormTokenAsync("/auth/verify-authenticator");
-        var row = await fixture.Store.Db.OwnerAccount.AsNoTracking().SingleAsync(TestContext.Current.CancellationToken);
+        var row = await fixture.Store.Db.BlogAccount.AsNoTracking().SingleAsync(TestContext.Current.CancellationToken);
         using var content = new FormUrlEncodedContent(new Dictionary<string, string>
         {
             ["AuthenticatorCode"] = LocalAccountPageFixture.Code(row.TotpSecret!),

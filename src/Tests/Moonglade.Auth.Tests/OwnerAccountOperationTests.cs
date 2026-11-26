@@ -36,7 +36,7 @@ public partial class OwnerAccountOperationTests
         var ct = TestContext.Current.CancellationToken;
         await using var store = new OwnerAccountTestStore(withTotp);
         var account = await InitializeAsync(store, withTotp, ct);
-        var before = await store.Db.OwnerAccount.AsNoTracking().SingleAsync(ct);
+        var before = await store.Db.BlogAccount.AsNoTracking().SingleAsync(ct);
 
         var changed = await store.Accounts.ChangePasswordAsync(account.Id, account.Revision,
             OwnerAccountTestStore.Password, "Replacement456!", ct);
@@ -48,7 +48,7 @@ public partial class OwnerAccountOperationTests
         Assert.True(changed.IsLocalInitialized);
         Assert.Null(await store.Accounts.AuthenticateLocalAsync(account.Email, OwnerAccountTestStore.Password, ct));
         Assert.Equal(changed, await store.Accounts.AuthenticateLocalAsync(account.Email, "Replacement456!", ct));
-        var saved = await store.Db.OwnerAccount.AsNoTracking().SingleAsync(ct);
+        var saved = await store.Db.BlogAccount.AsNoTracking().SingleAsync(ct);
         Assert.Equal(before.LocalInitializedUtc, saved.LocalInitializedUtc);
         Assert.Equal(before.TotpSecret, saved.TotpSecret);
         Assert.NotEqual(before.PasswordSalt, saved.PasswordSalt);
@@ -64,7 +64,7 @@ public partial class OwnerAccountOperationTests
         var ct = TestContext.Current.CancellationToken;
         await using var store = new OwnerAccountTestStore(required: true);
         var account = await InitializeAsync(store, true, ct);
-        var before = await store.Db.OwnerAccount.AsNoTracking().SingleAsync(ct);
+        var before = await store.Db.BlogAccount.AsNoTracking().SingleAsync(ct);
 
         var result = operation == "password"
             ? await store.Accounts.ChangePasswordAsync(account.Id, account.Revision, "WrongPassword789!", "Replacement456!", ct)
@@ -72,7 +72,7 @@ public partial class OwnerAccountOperationTests
 
         Assert.Null(result);
         Assert.Equal(account, await store.Accounts.ReadAsync(ct));
-        var saved = await store.Db.OwnerAccount.AsNoTracking().SingleAsync(ct);
+        var saved = await store.Db.BlogAccount.AsNoTracking().SingleAsync(ct);
         Assert.Equal(before.PasswordHash, saved.PasswordHash);
         Assert.Equal(before.PasswordSalt, saved.PasswordSalt);
         Assert.Equal(before.TotpSecret, saved.TotpSecret);
@@ -98,7 +98,7 @@ public partial class OwnerAccountOperationTests
         var ct = TestContext.Current.CancellationToken;
         await using var store = new OwnerAccountTestStore(required: true);
         var account = await InitializeAsync(store, true, ct);
-        var before = await store.Db.OwnerAccount.AsNoTracking().SingleAsync(ct);
+        var before = await store.Db.BlogAccount.AsNoTracking().SingleAsync(ct);
         var staleCode = Code(before.TotpSecret!);
 
         var reset = await store.Accounts.ResetTotpAsync(account.Id, account.Revision, OwnerAccountTestStore.Password, ct);
@@ -108,7 +108,7 @@ public partial class OwnerAccountOperationTests
         Assert.NotEqual(account.Revision, reset.Revision);
         Assert.True(reset.IsLocalInitialized);
         Assert.False(reset.IsTotpEnabled);
-        var saved = await store.Db.OwnerAccount.AsNoTracking().SingleAsync(ct);
+        var saved = await store.Db.BlogAccount.AsNoTracking().SingleAsync(ct);
         Assert.Null(saved.TotpSecret);
         Assert.Equal(before.PasswordHash, saved.PasswordHash);
         Assert.Equal(before.PasswordSalt, saved.PasswordSalt);
@@ -131,7 +131,7 @@ public partial class OwnerAccountOperationTests
 
         Assert.Null(await store.Accounts.EnrollTotpAsync(account.Id, account.Revision, secret, "invalid-code", ct));
         Assert.Equal(account, await store.Accounts.ReadAsync(ct));
-        Assert.Null((await store.Db.OwnerAccount.AsNoTracking().SingleAsync(ct)).TotpSecret);
+        Assert.Null((await store.Db.BlogAccount.AsNoTracking().SingleAsync(ct)).TotpSecret);
         var enabled = await store.Accounts.EnrollTotpAsync(account.Id, account.Revision, secret, Code(secret), ct);
 
         Assert.Equal(account.Id, enabled!.Id);
@@ -139,7 +139,7 @@ public partial class OwnerAccountOperationTests
         Assert.NotEqual(account.Revision, enabled.Revision);
         Assert.True(enabled.IsLocalInitialized);
         Assert.True(enabled.IsTotpEnabled);
-        Assert.Equal(secret, (await store.Db.OwnerAccount.AsNoTracking().SingleAsync(ct)).TotpSecret);
+        Assert.Equal(secret, (await store.Db.BlogAccount.AsNoTracking().SingleAsync(ct)).TotpSecret);
         Assert.Equal(enabled, await store.Accounts.VerifyTotpAsync(enabled.Id, enabled.Revision, Code(secret), ct));
         Assert.Null(await store.Accounts.VerifyTotpAsync(enabled.Id, enabled.Revision, "invalid-code", ct));
         await Assert.ThrowsAsync<DbUpdateConcurrencyException>(() =>
@@ -188,11 +188,11 @@ public partial class OwnerAccountOperationTests
         var required = operation != "enroll";
         await using var store = new OwnerAccountTestStore(required);
         var account = await InitializeAsync(store, required, ct);
-        var before = await store.Db.OwnerAccount.AsNoTracking().SingleAsync(ct);
+        var before = await store.Db.BlogAccount.AsNoTracking().SingleAsync(ct);
         using var cancellation = new CancellationTokenSource();
         if (cancelled) await cancellation.CancelAsync();
         else await store.Db.Database.ExecuteSqlRawAsync(
-            "CREATE TRIGGER reject_owner BEFORE UPDATE ON OwnerAccount BEGIN SELECT RAISE(ABORT, 'Save rejected'); END;", ct);
+            "CREATE TRIGGER reject_owner BEFORE UPDATE ON BlogAccount BEGIN SELECT RAISE(ABORT, 'Save rejected'); END;", ct);
         var secret = store.Totp.GenerateSecret();
         var token = cancelled ? cancellation.Token : ct;
 
@@ -205,12 +205,12 @@ public partial class OwnerAccountOperationTests
 
         if (cancelled) Assert.IsAssignableFrom<OperationCanceledException>(error);
         else Assert.IsType<DbUpdateException>(error);
-        Assert.Empty(store.Db.ChangeTracker.Entries<OwnerAccountEntity>());
+        Assert.Empty(store.Db.ChangeTracker.Entries<BlogAccountEntity>());
         if (!cancelled) await store.Db.Database.ExecuteSqlRawAsync("DROP TRIGGER reject_owner;", ct);
         store.Db.BlogConfiguration.Add(new BlogConfigurationEntity { CfgKey = "Unrelated", CfgValue = "{}" });
         await store.Db.SaveChangesAsync(ct);
         Assert.Equal(account, await store.Accounts.ReadAsync(ct));
-        var saved = await store.Db.OwnerAccount.AsNoTracking().SingleAsync(ct);
+        var saved = await store.Db.BlogAccount.AsNoTracking().SingleAsync(ct);
         Assert.Equal(before.PasswordHash, saved.PasswordHash);
         Assert.Equal(before.PasswordSalt, saved.PasswordSalt);
         Assert.Equal(before.TotpSecret, saved.TotpSecret);

@@ -333,7 +333,7 @@ public partial class SettingsControllerTests
                          Moonglade.Auth.BlogAuthSchemas.LocalAccountSetup, Moonglade.Auth.BlogAuthSchemas.LocalAccountTwoFactor })
                 authentication.Verify(service => service.SignOutAsync(controller.HttpContext, scheme, null), Times.Once);
             Assert.False((await mediator.Accounts.ReadAsync(ct))!.IsTotpEnabled);
-            Assert.Null((await mediator.Db.OwnerAccount.AsNoTracking().SingleAsync(ct)).TotpSecret);
+            Assert.Null((await mediator.Db.BlogAccount.AsNoTracking().SingleAsync(ct)).TotpSecret);
         }
         else
         {

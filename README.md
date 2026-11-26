@@ -31,6 +31,8 @@ For 16.10.0 to 16.11.0, run `11.owner-oidc-binding-only.sql` after the earlier u
 
 The widget-composer schema also requires `12.widget-regions.sql` after script 11. It replaces widget numeric placement bands with explicit regions and region-local order, and raises the stored title limit to 128. Follow the [widget upgrade and recovery steps](database/README.md#widget-regionorder-upgrade-12) before starting this application against an existing database.
 
+The unified account schema requires `13.unified-accounts.sql` after script 12. It preserves the owner identity, credentials, OIDC binding, Data Protection keys and activity history. Follow the [unified account upgrade steps](database/README.md#unified-account-upgrade-13) before starting the matching application.
+
 For databases older than 16.9.0, run the applicable category ID and PostgreSQL naming upgrades (`1` and `2`) first. Keep access restricted until any required owner setup is complete. [First run](#first-run)
 
 ### Widget Placement

@@ -18,17 +18,20 @@ public sealed class OwnerAccountStore(
     TimeProvider timeProvider,
     IEventMediator events) : IOwnerProfileReader
 {
+    private IQueryable<BlogAccountEntity> OwnerQuery() =>
+        db.BlogAccount.AsNoTracking().Where(account => account.Slot == BlogAccountEntity.OwnerSlot);
+
     public Task<OwnerPresentation> ReadPresentationAsync(CancellationToken ct = default) => OwnerPresentation.ReadAsync(db, ct);
 
     public Task<OwnerProfile?> ReadProfileAsync(CancellationToken ct = default) =>
-        db.OwnerAccount.AsNoTracking().Select(account => new OwnerProfile(account.Id, account.Email)
+        OwnerQuery().Select(account => new OwnerProfile(account.Id, account.Email)
         {
             UseGravatar = db.OwnerAvatar.Any(avatar => avatar.UseGravatar)
         })
             .SingleOrDefaultAsync(ct);
 
     public Task<OwnerAccountSnapshot?> ReadAsync(CancellationToken ct = default) =>
-        db.OwnerAccount.AsNoTracking().Select(account => new OwnerAccountSnapshot(
+        OwnerQuery().Select(account => new OwnerAccountSnapshot(
             account.Id, account.Email, account.Revision, account.LocalInitializedUtc.HasValue, account.TotpSecret != null))
             .SingleOrDefaultAsync(ct);
 
@@ -41,17 +44,17 @@ public sealed class OwnerAccountStore(
         return Snapshot(account);
     }
 
-    private async Task<OwnerAccountEntity> SaveNewProfileAsync(
+    private async Task<BlogAccountEntity> SaveNewProfileAsync(
         (string Email, string NormalizedEmail) address, CancellationToken ct)
     {
-        var account = new OwnerAccountEntity
+        var account = new BlogAccountEntity
         {
             Id = Guid.NewGuid(),
             Email = address.Email,
             NormalizedEmail = address.NormalizedEmail,
             Revision = Guid.NewGuid()
         };
-        db.OwnerAccount.Add(account);
+        db.BlogAccount.Add(account);
         await SaveAsync(account, ct);
         return account;
     }
@@ -103,18 +106,18 @@ public sealed class OwnerAccountStore(
         var address = NormalizeEmail(pending.Email);
         EnsureOwnCommit();
 
-        var account = await db.OwnerAccount.AsNoTracking().SingleOrDefaultAsync(ct);
+        var account = await OwnerQuery().SingleOrDefaultAsync(ct);
         if (account?.LocalInitializedUtc is not null || account?.Revision != pending.ExpectedRevision)
             throw new DbUpdateConcurrencyException("The owner account changed. Start account setup again.");
 
         if (account is null)
         {
-            account = new OwnerAccountEntity { Id = Guid.NewGuid() };
-            db.OwnerAccount.Add(account);
+            account = new BlogAccountEntity { Id = Guid.NewGuid() };
+            db.BlogAccount.Add(account);
         }
         else
         {
-            db.OwnerAccount.Attach(account);
+            db.BlogAccount.Attach(account);
             db.Entry(account).State = EntityState.Modified;
         }
 
@@ -131,7 +134,7 @@ public sealed class OwnerAccountStore(
         }
         catch (DbUpdateException) when (pending.ExpectedRevision is null)
         {
-            if (await db.OwnerAccount.AsNoTracking().AnyAsync(row => row.LocalInitializedUtc != null, CancellationToken.None))
+            if (await OwnerQuery().AnyAsync(row => row.LocalInitializedUtc != null, CancellationToken.None))
                 throw new DbUpdateConcurrencyException("The owner account is already initialized.");
             throw;
         }
@@ -145,7 +148,7 @@ public sealed class OwnerAccountStore(
         ArgumentException.ThrowIfNullOrWhiteSpace(email);
         ArgumentException.ThrowIfNullOrWhiteSpace(password);
         var normalizedEmail = email.Trim().ToUpperInvariant();
-        var account = await db.OwnerAccount.AsNoTracking()
+        var account = await OwnerQuery()
             .SingleOrDefaultAsync(account => account.NormalizedEmail == normalizedEmail, ct);
         if (account?.LocalInitializedUtc is null) return null;
         return PasswordMatches(account, password) ? Snapshot(account) : null;
@@ -165,7 +168,7 @@ public sealed class OwnerAccountStore(
         System.Security.Claims.ClaimsPrincipal principal, string? password, string? code, CancellationToken ct)
     {
         if (string.IsNullOrWhiteSpace(password)) return false;
-        var account = await db.OwnerAccount.AsNoTracking().SingleOrDefaultAsync(ct);
+        var account = await OwnerQuery().SingleOrDefaultAsync(ct);
         return account is not null && LocalAccountPrincipal.Matches(principal, Snapshot(account))
             && PasswordMatches(account, password)
             && (account.TotpSecret is not null
@@ -174,10 +177,10 @@ public sealed class OwnerAccountStore(
     }
 
     private async Task<OwnerAccountSnapshot> SaveEmailAsync(
-        OwnerAccountEntity account, (string Email, string NormalizedEmail) address, CancellationToken ct)
+        BlogAccountEntity account, (string Email, string NormalizedEmail) address, CancellationToken ct)
     {
         if (account.Email == address.Email) return Snapshot(account);
-        db.OwnerAccount.Attach(account);
+        db.BlogAccount.Attach(account);
         account.Email = address.Email;
         account.NormalizedEmail = address.NormalizedEmail;
         var saved = await SaveUpdatedAsync(account, ct);
@@ -192,7 +195,7 @@ public sealed class OwnerAccountStore(
         ValidatePassword(newPassword);
         var account = await LoadCurrentAsync(id, expectedRevision, ct);
         if (!PasswordMatches(account, currentPassword)) return null;
-        db.OwnerAccount.Attach(account);
+        db.BlogAccount.Attach(account);
         account.PasswordSalt = SecurityHelper.GenerateSalt();
         account.PasswordHash = SecurityHelper.HashPassword(newPassword, account.PasswordSalt);
         return await SaveUpdatedAsync(account, ct);
@@ -204,7 +207,7 @@ public sealed class OwnerAccountStore(
         EnsureOwnCommit();
         var account = await LoadCurrentAsync(id, expectedRevision, ct);
         if (!PasswordMatches(account, currentPassword)) return null;
-        db.OwnerAccount.Attach(account);
+        db.BlogAccount.Attach(account);
         account.TotpSecret = null;
         return await SaveUpdatedAsync(account, ct);
     }
@@ -217,7 +220,7 @@ public sealed class OwnerAccountStore(
         if (account.TotpSecret is not null)
             throw new DbUpdateConcurrencyException("The authenticator is already configured.");
         if (!totpService.VerifyCode(secret, code)) return null;
-        db.OwnerAccount.Attach(account);
+        db.BlogAccount.Attach(account);
         account.TotpSecret = secret.Trim().Replace(" ", string.Empty).ToUpperInvariant();
         return await SaveUpdatedAsync(account, ct);
     }
@@ -229,15 +232,15 @@ public sealed class OwnerAccountStore(
         return totpService.VerifyCode(account.TotpSecret, code) ? Snapshot(account) : null;
     }
 
-    private async Task<OwnerAccountEntity> LoadCurrentAsync(Guid id, Guid revision, CancellationToken ct)
+    private async Task<BlogAccountEntity> LoadCurrentAsync(Guid id, Guid revision, CancellationToken ct)
     {
-        var account = await db.OwnerAccount.AsNoTracking().SingleOrDefaultAsync(ct);
+        var account = await OwnerQuery().SingleOrDefaultAsync(ct);
         if (account?.LocalInitializedUtc is null || account.Id != id || account.Revision != revision)
             throw new DbUpdateConcurrencyException("The owner account changed. Sign in again.");
         return account;
     }
 
-    private async Task<OwnerAccountSnapshot> SaveUpdatedAsync(OwnerAccountEntity account, CancellationToken ct)
+    private async Task<OwnerAccountSnapshot> SaveUpdatedAsync(BlogAccountEntity account, CancellationToken ct)
     {
         EnsureOwnCommit();
         account.Revision = Guid.NewGuid();
@@ -245,7 +248,7 @@ public sealed class OwnerAccountStore(
         return Snapshot(account);
     }
 
-    private static bool PasswordMatches(OwnerAccountEntity account, string password)
+    private static bool PasswordMatches(BlogAccountEntity account, string password)
     {
         if (account.PasswordHash is not { } hash || account.PasswordSalt is not { } salt)
             throw new InvalidOperationException("The initialized owner account has incomplete credentials.");
@@ -263,11 +266,18 @@ public sealed class OwnerAccountStore(
         ]);
     }
 
-    private async Task SaveAsync(OwnerAccountEntity account, CancellationToken ct)
+    private async Task SaveAsync(BlogAccountEntity account, CancellationToken ct)
     {
         try
         {
             await db.SaveChangesAsync(ct);
+        }
+        catch (DbUpdateException exception) when (exception is not DbUpdateConcurrencyException)
+        {
+            if (await db.BlogAccount.AsNoTracking().AnyAsync(row => row.Slot != BlogAccountEntity.OwnerSlot
+                    && row.NormalizedEmail == account.NormalizedEmail, CancellationToken.None))
+                throw new ValidationException("This email address is already in use.", exception);
+            throw;
         }
         finally
         {
@@ -295,6 +305,6 @@ public sealed class OwnerAccountStore(
         return (address, normalized);
     }
 
-    private static OwnerAccountSnapshot Snapshot(OwnerAccountEntity account) =>
+    private static OwnerAccountSnapshot Snapshot(BlogAccountEntity account) =>
         new(account.Id, account.Email, account.Revision, account.LocalInitializedUtc.HasValue, account.TotpSecret is not null);
 }

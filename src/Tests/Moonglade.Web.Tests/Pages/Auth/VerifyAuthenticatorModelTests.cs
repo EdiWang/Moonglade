@@ -68,7 +68,7 @@ public class VerifyAuthenticatorModelTests
         var account = await fixture.InitializeAsync(withTotp: true);
         fixture.SetTicket(account, BlogAuthSchemas.LocalAccountTwoFactor);
         var model = CreateModel(fixture);
-        var row = await fixture.Db.OwnerAccount.FindAsync([account.Id], ct);
+        var row = await fixture.Db.BlogAccount.FindAsync([account.Id], ct);
         model.AuthenticatorCode = LocalAccountPageFixture.Code(row!.TotpSecret!);
 
         var result = await model.OnPostAsync();

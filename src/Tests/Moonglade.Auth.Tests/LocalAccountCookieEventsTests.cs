@@ -58,7 +58,7 @@ public class LocalAccountCookieEventsTests
         }
         if (scenario is "profile" or "missing")
         {
-            await store.Db.OwnerAccount.ExecuteDeleteAsync(ct);
+            await store.Db.BlogAccount.ExecuteDeleteAsync(ct);
             if (scenario == "profile") await store.Accounts.CreateProfileAsync(account.Email, ct);
         }
         var auth = new Mock<IAuthenticationService>();

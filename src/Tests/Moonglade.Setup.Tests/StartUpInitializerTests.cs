@@ -52,7 +52,7 @@ public class StartUpInitializerTests
         Assert.Equal(originalTime, settings.Single(row => row.CfgKey == nameof(ContentSettings)).LastModifiedTimeUtc);
         Assert.Equal(originalTime, settings.Single(row => row.CfgKey == "LocalAccountSettings").LastModifiedTimeUtc);
         Assert.Equal("inert-legacy-json", settings.Single(row => row.CfgKey == "LocalAccountSettings").CfgValue);
-        Assert.False(await db.OwnerAccount.AnyAsync(ct));
+        Assert.False(await db.BlogAccount.AnyAsync(ct));
         if (manifestVersion is not null)
         {
             Assert.Equal(manifest.ToJson(), harness.Manifest.ToJson());
@@ -173,7 +173,7 @@ public class StartUpInitializerTests
         });
         var profileId = Guid.NewGuid();
         if (profileOnly)
-            db.OwnerAccount.Add(new OwnerAccountEntity
+            db.BlogAccount.Add(new BlogAccountEntity
             {
                 Id = profileId,
                 Email = "profile@example.test",
@@ -199,7 +199,7 @@ public class StartUpInitializerTests
                 Assert.Equal(timestamp, row.LastModifiedTimeUtc);
             }
             Assert.Equal(settings.Count, await db.BlogConfiguration.CountAsync(ct));
-            var owner = await db.OwnerAccount.SingleOrDefaultAsync(ct);
+            var owner = await db.BlogAccount.SingleOrDefaultAsync(ct);
             if (profileOnly)
             {
                 Assert.Equal(profileId, owner!.Id);

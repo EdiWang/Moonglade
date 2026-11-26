@@ -358,7 +358,7 @@ public partial class PostCacheInvalidationTests
             using var scope = environment.Services.CreateScope();
             var db = scope.ServiceProvider.GetRequiredService<BlogDbContext>();
             await db.Database.EnsureCreatedAsync(TestContext.Current.CancellationToken);
-            db.OwnerAccount.Add(new Moonglade.Data.Entities.OwnerAccountEntity
+            db.BlogAccount.Add(new Moonglade.Data.Entities.BlogAccountEntity
             {
                 Id = Guid.NewGuid(),
                 Email = "owner@example.test",

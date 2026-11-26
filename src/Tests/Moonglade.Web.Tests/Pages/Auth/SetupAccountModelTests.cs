@@ -51,7 +51,7 @@ public class SetupAccountModelTests
         var pending = JsonSerializer.Deserialize<PendingOwnerSetup>(json)!;
         Assert.True(pending.RequiresTotp);
         Assert.Empty(model.Password);
-        Assert.False(await fixture.Db.OwnerAccount.AnyAsync(ct));
+        Assert.False(await fixture.Db.BlogAccount.AnyAsync(ct));
         Assert.Null(await fixture.Accounts.AuthenticateLocalAsync(model.Email, LocalAccountPageFixture.Password, ct));
         var proof = CreateModel(fixture);
         Assert.IsType<PageResult>(await proof.OnGetAsync());
@@ -60,7 +60,7 @@ public class SetupAccountModelTests
         proof.AuthenticatorCode = "invalid-code";
         Assert.IsType<PageResult>(await proof.OnPostVerifyAsync());
         Assert.Equal(400, proof.Response.StatusCode);
-        Assert.False(await fixture.Db.OwnerAccount.AnyAsync(ct));
+        Assert.False(await fixture.Db.BlogAccount.AnyAsync(ct));
         Assert.Single(fixture.SignIns);
 
         proof = CreateModel(fixture);
@@ -70,7 +70,7 @@ public class SetupAccountModelTests
         var account = await fixture.Accounts.ReadAsync(ct);
         Assert.True(account!.IsLocalInitialized);
         Assert.True(account.IsTotpEnabled);
-        Assert.Equal(pending.TotpSecret, (await fixture.Db.OwnerAccount.AsNoTracking().SingleAsync(ct)).TotpSecret);
+        Assert.Equal(pending.TotpSecret, (await fixture.Db.BlogAccount.AsNoTracking().SingleAsync(ct)).TotpSecret);
         AssertAdminTicket(fixture, account);
     }
 
@@ -119,7 +119,7 @@ public class SetupAccountModelTests
 
         Assert.Equal(400, model.Response.StatusCode);
         Assert.Empty(fixture.SignIns);
-        Assert.False(await fixture.Db.OwnerAccount.AnyAsync(ct));
+        Assert.False(await fixture.Db.BlogAccount.AnyAsync(ct));
     }
 
     [Fact]
