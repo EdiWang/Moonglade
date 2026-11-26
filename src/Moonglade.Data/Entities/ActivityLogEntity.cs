@@ -20,5 +20,6 @@ public class ActivityLogEntity
 public enum ActivityActorKind
 {
     Administrator = 1,
-    System = 2
+    System = 2,
+    Collaborator = 3
 }

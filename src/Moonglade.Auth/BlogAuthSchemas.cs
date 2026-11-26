@@ -9,5 +9,9 @@ public static class BlogAuthSchemas
     public const string LocalAccountTwoFactor = "MoongladeLocalAccountTwoFactor";
     public const string LocalAccountRememberedDevice = "MoongladeLocalAccountRememberedDevice";
     public const string InitialAccountSetup = "MoongladeInitialAccountSetup";
+    public const string AdministratorRole = "Administrator";
+    public const string CollaboratorRole = "Collaborator";
     public const string AdministratorPolicy = "MoongladeAdministrator";
+    public const string ContentManagementPolicy = "MoongladeContentManagement";
+    public const string AccountDisplayNameClaim = "moonglade:account-display-name";
 }

@@ -8,6 +8,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Moonglade.Web.Controllers;
 
+[Authorize(Policy = BlogAuthSchemas.AdministratorPolicy)]
 [ApiController]
 [Route("api/[controller]")]
 public class MentionController(
@@ -17,6 +18,7 @@ public class MentionController(
     ICommandMediator commandMediator,
     ILogger<MentionController> logger) : ControllerBase
 {
+    [AllowAnonymous]
     [HttpPost("/webmention")]
     [IgnoreAntiforgeryToken]
     public async Task<IActionResult> ReceiveWebmention(
@@ -70,7 +72,6 @@ public class MentionController(
         }
     }
 
-    [Authorize]
     [HttpGet("list")]
     public async Task<IActionResult> ListMentions(
         [FromQuery] int pageIndex = 1,
@@ -93,7 +94,6 @@ public class MentionController(
         return Ok(new PagedResult<MentionEntity>(mentions, pageIndex, pageSize, totalCount));
     }
 
-    [Authorize]
     [HttpDelete]
     public async Task<IActionResult> Delete([FromBody] List<Guid> mentionIds)
     {
@@ -106,7 +106,6 @@ public class MentionController(
         return NoContent();
     }
 
-    [Authorize]
     [HttpDelete("clear")]
     public async Task<IActionResult> Clear()
     {

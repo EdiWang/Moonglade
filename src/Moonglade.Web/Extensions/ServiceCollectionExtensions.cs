@@ -147,7 +147,7 @@ public static class ServiceCollectionExtensions
         return services;
     }
 
-    private static IServiceCollection AddMoongladeRazorPages(this IServiceCollection services)
+    public static IServiceCollection AddMoongladeRazorPages(this IServiceCollection services)
     {
         services.AddRazorPages()
             .AddDataAnnotationsLocalization(options =>
@@ -155,7 +155,17 @@ public static class ServiceCollectionExtensions
             .AddRazorPagesOptions(options =>
             {
                 options.Conventions.AddPageRoute("/Admin/Dashboard", "admin");
-                options.Conventions.AuthorizeFolder("/Admin", BlogAuthSchemas.AdministratorPolicy);
+                options.Conventions.AddFolderApplicationModelConvention("/Admin", page =>
+                {
+                    var policy = page.ViewEnginePath is
+                        "/Admin/Post" or "/Admin/Draft" or "/Admin/Scheduled" or "/Admin/EditPost" or
+                        "/Admin/PostPreview" or "/Admin/RecycleBin" or
+                        "/Admin/BlogPage" or "/Admin/EditPage" or "/Admin/PagePreview" or "/Admin/PageRecycleBin" or
+                        "/Admin/Category" or "/Admin/Tags" or "/Admin/Comments"
+                        ? BlogAuthSchemas.ContentManagementPolicy
+                        : BlogAuthSchemas.AdministratorPolicy;
+                    page.EndpointMetadata.Add(new AuthorizeAttribute(policy));
+                });
             })
             .AddViewOptions(options =>
             {

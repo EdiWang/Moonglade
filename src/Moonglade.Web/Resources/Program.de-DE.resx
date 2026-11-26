@@ -2354,4 +2354,6 @@
   <data name="Right sidebar" xml:space="preserve">
     <value>Seitenleiste rechts</value>
   </data>
+  <data name="Collaborator" xml:space="preserve"><value>Mitwirkender</value></data>
+  <data name="Account ID" xml:space="preserve"><value>Konto-ID</value></data>
 </root>

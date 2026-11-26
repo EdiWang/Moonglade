@@ -33,6 +33,9 @@
      data-logs-cleared="@SharedLocalizer["Activity logs are cleared"]"
      data-yes="@SharedLocalizer["Yes"]"
      data-no="@SharedLocalizer["No"]"
+     data-actor-system="@SharedLocalizer["System"]"
+     data-actor-administrator="@SharedLocalizer["Administrator"]"
+     data-actor-collaborator="@SharedLocalizer["Collaborator"]"
      data-draft="@SharedLocalizer["Draft"]"
      data-published="@SharedLocalizer["Published"]"
      data-scheduled="@SharedLocalizer["Scheduled"]"
@@ -94,7 +97,7 @@
                                 </td>
                                 <td class="px-3 text-body-secondary text-break">
                                     <i :class="log.actorKind === 'System' ? 'bi-gear' : 'bi-person'"
-                                       :title="log.actorKind === 'System' ? '@SharedLocalizer["System"]' : '@SharedLocalizer["Administrator"]'"></i>
+                                       :title="formatActorKind(log.actorKind)"></i>
                                     <span x-text="log.actor"></span>
                                 </td>
                                 <td class="px-3 text-break">
@@ -171,8 +174,14 @@
                     </div>
                     <div>
                         <dt class="small text-body-secondary">@SharedLocalizer["Actor type"]</dt>
-                        <dd class="mb-0" x-text="currentDetail?.actorKind === 'System' ? '@SharedLocalizer["System"]' : '@SharedLocalizer["Administrator"]'"></dd>
+                        <dd class="mb-0" x-text="formatActorKind(currentDetail?.actorKind)"></dd>
                     </div>
+                    <template x-if="currentDetail?.actorAccountId">
+                        <div>
+                            <dt class="small text-body-secondary">@SharedLocalizer["Account ID"]</dt>
+                            <dd class="mb-0 text-break" x-text="currentDetail.actorAccountId"></dd>
+                        </div>
+                    </template>
                 </dl>
                 <dl class="d-grid gap-3 border-top pt-3 mt-3 mb-0" x-show.important="hasDetailContext">
                     <template x-if="currentDetail?.targetDisplayName">

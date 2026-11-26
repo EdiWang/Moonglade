@@ -2354,4 +2354,6 @@
   <data name="Right sidebar" xml:space="preserve">
     <value>右侧侧栏</value>
   </data>
+  <data name="Collaborator" xml:space="preserve"><value>协同编辑</value></data>
+  <data name="Account ID" xml:space="preserve"><value>账号 ID</value></data>
 </root>

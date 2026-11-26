@@ -2,14 +2,14 @@
 
 ## Current Status
 
-- B1 developer verification is complete on branch `codex/collaborator-accounts`. Owner acceptance is pending.
+- B1 is accepted. B2 developer verification is complete on branch `codex/collaborator-accounts`. Owner acceptance is pending.
 - Planning baseline is `fc2050cc6`. Recheck the current branch, working tree and next migration number when implementation starts.
 - Use this file as the source of truth for the current requirements, batch status and acceptance evidence. Replace superseded decisions and obsolete blocker details. Keep conversation records and rejected alternatives out of this file.
 
 | Batch | Scope | State | Commit | Verification and acceptance |
 | --- | --- | --- | --- | --- |
-| B1 | Unified account store and two-provider upgrade | Awaiting owner acceptance | `Unify account storage and preserve owner compatibility` | Developer verification passed on both providers. See B1 evidence and acceptance steps |
-| B2 | Authorization, content access and activity attribution | Awaiting B1 acceptance | Pending | Pending |
+| B1 | Unified account store and two-provider upgrade | Accepted on 2026-11-26 | `c8ffabb7300bb0d0cedfa22f21070c9272de6004` | Passed both providers and development owner sign-in |
+| B2 | Authorization, content access and activity attribution | Awaiting owner acceptance | `Authorize collaborator content and attribute activity` | Developer verification passed. See B2 evidence and acceptance steps |
 | B3 | Shared sign-in and credential lifecycle | Awaiting B2 acceptance | Pending | Pending |
 | B4 | Owner account management and collaborator UI | Awaiting B3 acceptance | Pending | Pending |
 | B5 | Release verification and operator documentation | Awaiting B4 acceptance | Pending | Pending |
@@ -75,7 +75,8 @@ Project paths in this table are under `src/`. Read the owning code, its callers 
 - PostgreSQL 18.7 and SQL Server 2022 (16.0.4325.4) passed on separate disposable databases using the previous and updated published Web applications over loopback HTTPS. Each provider covered a fresh install, an upgrade from an initialized Local/TOTP owner with a bound synthetic OIDC configuration, and an upgrade from a profile-only owner with local setup pending.
 - Both providers passed native backup and restore before and after upgrade. Script 13 preserved the account ID, credential state and revision, OIDC binding and session revisions, Data Protection keys, settings timestamps, content and existing activity. Repeated runs after the upgrade and after an owner email change preserved current values. The restored owner cookie and TOTP sign-in worked, and the stored OIDC client secret decrypted with the restored key ring. The Web suite covers synthetic provider exchanges. Live provider sign-in is reserved for separate acceptance.
 - Both providers allowed one of two concurrent claims for the same collaborator slot, rejected a duplicate normalized email and a third collaborator slot, and retained the old actor ID when a disabled account was deleted and its slot reused.
-- Owner acceptance uses a disposable database copy. Run script 13 twice, start the B1 build, and sign in with the existing owner's credentials and applicable TOTP. Check Account Settings and the saved OIDC provider if configured. On a fresh database, open the site and complete the owner setup flow. Record acceptance before starting B2.
+- The configured development PostgreSQL database passed upgrade and a second run of script 13 on 2026-11-26 after native backup and restore rehearsal. Post-upgrade comparisons verified the owner account, OIDC binding, owner presentation, settings, Data Protection keys and activity history.
+- The owner signed in successfully after the development upgrade and accepted B1 on 2026-11-26.
 
 ## B2 — Authorization, Content Access and Activity
 
@@ -85,9 +86,17 @@ Project paths in this table are under `src/`. Read the owning code, its callers 
 - Verify with Web HTTP tests using representative authenticated owner and collaborator principals and an anonymous client, plus affected Features tests and a Web build. Use valid antiforgery proofs when testing denial so the response verifies authorization. Cover direct requests across the complete matrix, public routes, side effects, stable actor IDs and legacy events.
 - Owner acceptance reviews the route matrix and test evidence. With synthetic accounts in a disposable host, demonstrate collaborator content access and direct API denial for settings, exports, Webmention management, activity and permanent deletion.
 
+### B2 verification and acceptance
+
+- Developer verification passed on 2026-11-26. `dotnet test --solution src/Moonglade.slnx --no-restore --no-ansi` passed all 2,178 tests, including the Features and Web suites. `node --test src/Tests/Moonglade.Web.Tests/JavaScript/*.mjs` passed 91 tests. The Release Web build and publish succeeded.
+- The Web test host exercised 136 method and path combinations with synthetic owner, collaborator, authenticated reader and anonymous identities using the production Razor Pages authorization registration and valid antiforgery proofs. The tests covered both recycle bins, content previews, owner-only pages and APIs, public routes and the intentional public comment, Webmention and image entry points.
+- An HTTP integration test verified that a collaborator edited an owner-created draft, created a category and saw comment email and IP fields. Permanent post deletion and activity log clearing were denied with the existing rows preserved. Owner-visible history returned collaborator account IDs and display-name snapshots. The public byline and legacy activity remained readable.
+- Verified the published Release site against disposable PostgreSQL in Playwright Chromium at 1440 by 900 CSS pixels. A signed-in owner opened collaborator and legacy activity details in English and checked the collaborator label and account ID in Traditional Chinese. The activity pages reported no browser console errors or warnings. Playwright CLI was used because the Browser plugin and skill were unavailable.
+- For owner acceptance, run `dotnet test --project src/Tests/Moonglade.Web.Tests/Moonglade.Web.Tests.csproj --filter-class '*CollaboratorAccessHttpTests'`. The disposable HTTP host demonstrates allow and deny outcomes and real content writes. Shared collaborator sign-in is the B3 acceptance flow.
+
 ## B3 — Shared Sign-In and Credential Lifecycle
 
-- Route email sign-in to the correct account and issue application credentials using the stored role. Validate ID, role, enabled state, revision and applicable TOTP at the authentication boundaries. Keep initial site setup owner-specific. Reuse existing cookie and proof mechanics where they fit the account model. Apply existing account/IP rate limits to the corresponding sign-in and authenticator steps.
+- Route email sign-in to the correct account and issue application credentials using its stored role, stable ID and applicable display-name claim for activity attribution. Validate ID, role, enabled state, revision and applicable TOTP at the authentication boundaries. Keep initial site setup owner-specific. Reuse existing cookie and proof mechanics where they fit the account model. Apply existing account/IP rate limits to the corresponding sign-in and authenticator steps.
 - Handle temporary password authentication using a restricted ticket. Finish the applicable password-change and TOTP flow before issuing a content session. Bind pending and remembered-device credentials to one account and revision. Preserve the owner's existing OIDC sign-in, session verification, reset and password-change behavior. Derive collaborator self-service target identity from the current session.
 - Implement the Auth operations for creation, disablement, re-enablement, deletion, email change and resets. Keep web binding and owner proof orchestration in Web when the management surface is introduced in B4. Validate concurrent retries and stale revisions so failed mutations avoid partially changing account or session state.
 - Verify with Auth and Web suites and a Web build. Cover valid and invalid credentials, temporary password replacement, TOTP required and optional, remembered devices, cross-account cookie rejection, revision changes, self-service boundaries, session revocation and unchanged owner OIDC/Local behavior.

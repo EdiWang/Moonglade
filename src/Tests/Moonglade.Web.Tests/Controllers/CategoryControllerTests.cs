@@ -110,7 +110,7 @@ public class CategoryControllerTests
         builder.Services.AddSingleton<ICommandMediator>(_commandMediator);
         builder.Services.AddControllers().AddApplicationPart(typeof(CategoryController).Assembly)
             .ConfigureApplicationPartManager(manager => manager.FeatureProviders.Add(new CategoryOnlyFeatureProvider()));
-        builder.Services.AddAuthorization(options => options.AddPolicy(BlogAuthSchemas.AdministratorPolicy,
+        builder.Services.AddAuthorization(options => options.AddPolicy(BlogAuthSchemas.ContentManagementPolicy,
             policy => policy.RequireAssertion(_ => true)));
         var app = builder.Build();
         app.UseAuthorization();

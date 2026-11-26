@@ -12,7 +12,7 @@ public class PageController(
     ICacheAside cache,
     IQueryMediator queryMediator,
     ICommandMediator commandMediator,
-    ILogger<PageController> logger) : BlogControllerBase(commandMediator, logger)
+    ILogger<PageController> logger) : ContentControllerBase(commandMediator, logger)
 {
     [HttpPost]
     [TypeFilter(typeof(ClearBlogCache), Arguments = [BlogCacheType.SiteMap])]

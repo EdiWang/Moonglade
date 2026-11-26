@@ -2403,4 +2403,6 @@
   <data name="Right sidebar" xml:space="preserve">
     <value>Barre latérale à droite</value>
   </data>
+  <data name="Collaborator" xml:space="preserve"><value>Collaborateur</value></data>
+  <data name="Account ID" xml:space="preserve"><value>ID du compte</value></data>
 </root>

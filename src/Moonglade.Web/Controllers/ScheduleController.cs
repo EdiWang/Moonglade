@@ -10,7 +10,7 @@ namespace Moonglade.Web.Controllers;
 public class ScheduleController(
     IQueryMediator queryMediator,
     ICommandMediator commandMediator,
-    ILogger<ScheduleController> logger) : BlogControllerBase(commandMediator, logger)
+    ILogger<ScheduleController> logger) : ContentControllerBase(commandMediator, logger)
 {
     [HttpGet("list")]
     public async Task<IActionResult> List()

@@ -8,6 +8,7 @@ using Moonglade.Features.Category;
 using Moonglade.Features.Post;
 using Moonglade.Web.Commands;
 using Moonglade.Web.Models;
+using Moonglade.Web.Services;
 using System.ComponentModel.DataAnnotations;
 
 namespace Moonglade.Web.Controllers;
@@ -18,7 +19,7 @@ public class PostController(
     IQueryMediator queryMediator,
     IBlogConfig blogConfig,
     IStringLocalizer<Program> localizer,
-    ILogger<PostController> logger) : BlogControllerBase(commandMediator, logger)
+    ILogger<PostController> logger) : ContentControllerBase(commandMediator, logger)
 {
     [HttpGet("list")]
     public async Task<IActionResult> List(
@@ -204,12 +205,15 @@ public class PostController(
 
     private PostOperationContext CreatePostOperationContext()
     {
+        var actor = ActivityActor.FromPrincipal(User);
         return new(
-            User.Identity?.Name ?? string.Empty,
+            actor.DisplayName,
             HttpContext.Connection.RemoteIpAddress?.ToString() ?? string.Empty,
             Request.Headers.UserAgent.ToString(),
             UrlHelper.ResolveRootUrl(HttpContext, null, removeTailSlash: true))
         {
+            ActorKind = actor.Kind,
+            ActorAccountId = actor.AccountId,
             TraceIdentifier = HttpContext.TraceIdentifier
         };
     }

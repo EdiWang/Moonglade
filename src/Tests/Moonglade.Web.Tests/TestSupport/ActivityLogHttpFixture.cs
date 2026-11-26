@@ -1,4 +1,5 @@
 using Edi.CacheAside.InMemory;
+using Microsoft.AspNetCore.Antiforgery;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.DataProtection;
@@ -15,6 +16,7 @@ using Moonglade.Configuration;
 using Moonglade.Data;
 using Moonglade.Data.Entities;
 using Moonglade.Web.Controllers;
+using Moonglade.Web.Extensions;
 using Moonglade.Web.Filters;
 using System.Net;
 using System.Security.Claims;
@@ -25,12 +27,15 @@ namespace Moonglade.Web.Tests.TestSupport;
 
 public sealed class ActivityLogHttpFixture(WebApplication app, ActivityLogTestStore store) : IAsyncDisposable
 {
+    public static Guid OwnerId { get; } = new("4e99f9a2-2a1a-49b6-8cec-0613ab40e408");
+    public static Guid CollaboratorId { get; } = new("250b65de-7fdf-470b-9276-a4f8a8f3c7c1");
+
     public WebApplication App { get; } = app;
     public ActivityLogTestStore Store { get; } = store;
 
     public static async Task<ActivityLogHttpFixture> CreateAsync(int historyCount = 3, CancellationToken ct = default,
         bool includeSettings = false, Action<IServiceCollection>? configureServices = null, bool useExceptionHandler = false,
-        params Type[] additionalControllers)
+        bool enableAntiforgeryEndpoint = false, params Type[] additionalControllers)
     {
         var store = await ActivityLogTestStore.CreateAsync(historyCount, ct);
         if (includeSettings)
@@ -82,7 +87,7 @@ public sealed class ActivityLogHttpFixture(WebApplication app, ActivityLogTestSt
             })
             .AddJsonOptions(options => options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()))
             .ConfigureApplicationPartManager(manager => manager.FeatureProviders.Add(new ActivityOnlyFeatureProvider(includeSettings, additionalControllers)));
-        builder.Services.AddRazorPages(options => options.Conventions.AuthorizeFolder("/Admin", BlogAuthSchemas.AdministratorPolicy));
+        builder.Services.AddMoongladeRazorPages();
         if (useExceptionHandler) builder.Services.AddProblemDetails();
         configureServices?.Invoke(builder.Services);
         var app = builder.Build();
@@ -102,6 +107,9 @@ public sealed class ActivityLogHttpFixture(WebApplication app, ActivityLogTestSt
         app.UseAuthorization();
         app.MapControllers();
         app.MapRazorPages();
+        if (enableAntiforgeryEndpoint)
+            app.MapGet("/test/antiforgery", (Microsoft.AspNetCore.Http.HttpContext context, IAntiforgery antiforgery) =>
+                antiforgery.GetAndStoreTokens(context).RequestToken);
         await app.StartAsync(ct);
         return new ActivityLogHttpFixture(app, store);
     }
@@ -131,7 +139,17 @@ public sealed class ActivityLogHttpFixture(WebApplication app, ActivityLogTestSt
             if (!Request.Headers.TryGetValue("X-B1-User", out var name))
                 return Task.FromResult(AuthenticateResult.NoResult());
             List<Claim> claims = [new(ClaimTypes.Name, name.ToString())];
-            if (name == "admin") claims.Add(new Claim(ClaimTypes.Role, "Administrator"));
+            if (name == "admin")
+            {
+                claims.Add(new Claim(ClaimTypes.Role, BlogAuthSchemas.AdministratorRole));
+                claims.Add(new Claim(ClaimTypes.NameIdentifier, OwnerId.ToString()));
+            }
+            if (name == "collaborator")
+            {
+                claims.Add(new Claim(ClaimTypes.Role, BlogAuthSchemas.CollaboratorRole));
+                claims.Add(new Claim(ClaimTypes.NameIdentifier, CollaboratorId.ToString()));
+                claims.Add(new Claim(BlogAuthSchemas.AccountDisplayNameClaim, "Collaborator display name"));
+            }
             var identity = new ClaimsIdentity(claims, Scheme.Name);
             return Task.FromResult(AuthenticateResult.Success(new AuthenticationTicket(new ClaimsPrincipal(identity), Scheme.Name)));
         }

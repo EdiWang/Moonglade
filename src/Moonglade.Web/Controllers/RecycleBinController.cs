@@ -11,7 +11,7 @@ public class RecycleBinController(
     ICacheAside cache,
     IQueryMediator queryMediator,
     ICommandMediator commandMediator,
-    ILogger<RecycleBinController> logger) : BlogControllerBase(commandMediator, logger)
+    ILogger<RecycleBinController> logger) : ContentControllerBase(commandMediator, logger)
 {
     [HttpGet("list/recyclebin")]
     public async Task<IActionResult> List()
@@ -37,6 +37,7 @@ public class RecycleBinController(
         return NoContent();
     }
 
+    [Authorize(Policy = BlogAuthSchemas.AdministratorPolicy)]
     [HttpDelete("{postId:guid}/destroy")]
     [PostWriteConflict]
     public async Task<IActionResult> Delete([NotEmpty] Guid postId)
@@ -73,6 +74,7 @@ public class RecycleBinController(
         return NoContent();
     }
 
+    [Authorize(Policy = BlogAuthSchemas.AdministratorPolicy)]
     [HttpDelete("page/{pageId:guid}/destroy")]
     [TypeFilter(typeof(ClearBlogCache), Arguments = [BlogCacheType.SiteMap])]
     public async Task<IActionResult> DeletePage([NotEmpty] Guid pageId)
@@ -94,6 +96,7 @@ public class RecycleBinController(
         return NoContent();
     }
 
+    [Authorize(Policy = BlogAuthSchemas.AdministratorPolicy)]
     [HttpDelete("page/recyclebin")]
     [TypeFilter(typeof(ClearBlogCache), Arguments = [BlogCacheType.SiteMap])]
     public async Task<IActionResult> ClearPages()
@@ -113,6 +116,7 @@ public class RecycleBinController(
         return NoContent();
     }
 
+    [Authorize(Policy = BlogAuthSchemas.AdministratorPolicy)]
     [HttpDelete("recyclebin")]
     public async Task<IActionResult> Clear()
     {

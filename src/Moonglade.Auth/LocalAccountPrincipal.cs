@@ -17,7 +17,7 @@ public static class LocalAccountPrincipal
         identity.AddClaim(new Claim(RevisionClaim, account.Revision.ToString()));
         if (scheme == CookieAuthenticationDefaults.AuthenticationScheme)
         {
-            identity.AddClaim(new Claim(ClaimTypes.Role, "Administrator"));
+            identity.AddClaim(new Claim(ClaimTypes.Role, BlogAuthSchemas.AdministratorRole));
             identity.AddClaim(new Claim(SessionClaim, Guid.NewGuid().ToString("N")));
             if (oidcSessionRevision is { } revision)
                 identity.AddClaim(new Claim(OidcSessionClaim, revision.ToString()));

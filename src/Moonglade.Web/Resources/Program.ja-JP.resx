@@ -2354,4 +2354,6 @@
   <data name="Right sidebar" xml:space="preserve">
     <value>右サイドバー</value>
   </data>
+  <data name="Collaborator" xml:space="preserve"><value>共同編集者</value></data>
+  <data name="Account ID" xml:space="preserve"><value>アカウント ID</value></data>
 </root>

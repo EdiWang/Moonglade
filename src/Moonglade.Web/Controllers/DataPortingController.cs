@@ -3,7 +3,7 @@ using Moonglade.Data.Exporting;
 
 namespace Moonglade.Web.Controllers;
 
-[Authorize]
+[Authorize(Policy = BlogAuthSchemas.AdministratorPolicy)]
 [ApiController]
 [Route("api/[controller]")]
 public class DataPortingController(ICommandMediator commandMediator) : ControllerBase

@@ -173,6 +173,10 @@ Alpine.data('activityLogManager', () => withPagination(10, {
         return Array.isArray(this.currentDetail?.changes);
     },
 
+    formatActorKind(kind) {
+        return kind ? getLocalizedString(`actor${kind}`) : '';
+    },
+
     formatDetailValue(value, key) {
         if (value === null || value === undefined) return '\u2014';
         if (typeof value === 'boolean') return getLocalizedString(value ? 'yes' : 'no');

@@ -11,7 +11,7 @@ namespace Moonglade.Web.Controllers;
 public class TagsController(
     IQueryMediator queryMediator,
     ICommandMediator commandMediator,
-    ILogger<TagsController> logger) : BlogControllerBase(commandMediator, logger)
+    ILogger<TagsController> logger) : ContentControllerBase(commandMediator, logger)
 {
     [HttpGet("names")]
     public async Task<IActionResult> Names()

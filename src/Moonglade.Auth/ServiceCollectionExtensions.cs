@@ -38,7 +38,10 @@ public static class ServiceCollectionExtensions
         services.AddAuthorizationBuilder()
             .AddPolicy(BlogAuthSchemas.AdministratorPolicy, policy => policy
                 .RequireAuthenticatedUser()
-                .RequireRole("Administrator"));
+                .RequireRole(BlogAuthSchemas.AdministratorRole))
+            .AddPolicy(BlogAuthSchemas.ContentManagementPolicy, policy => policy
+                .RequireAuthenticatedUser()
+                .RequireRole(BlogAuthSchemas.AdministratorRole, BlogAuthSchemas.CollaboratorRole));
 
         services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
             .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme, options =>

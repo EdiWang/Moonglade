@@ -17,6 +17,8 @@ public record CreateActivityLogCommand(
     string? UserAgent = null,
     DateTime? EventTimeUtc = null) : ICommand
 {
+    public Guid? ActorAccountId { get; init; }
+
     [JsonIgnore]
     public string? TraceIdentifier { get; init; }
 }
@@ -43,12 +45,16 @@ public class CreateActivityLogCommandHandler(
                 throw new ArgumentException("Unsupported activity actor kind.");
             }
 
+            if (request.ActorKind == ActivityActorKind.Collaborator && request.ActorAccountId.GetValueOrDefault() == Guid.Empty)
+                throw new ArgumentException("Collaborator activity requires an account ID.");
+
             var isSystem = request.ActorKind == ActivityActorKind.System;
             entity = new ActivityLogEntity
             {
                 EventKey = definition.Key,
                 EventTimeUtc = request.EventTimeUtc ?? DateTime.UtcNow,
                 ActorKind = request.ActorKind,
+                ActorAccountId = isSystem || request.ActorAccountId == Guid.Empty ? null : request.ActorAccountId,
                 ActorDisplayName = isSystem ? null : TruncateString(request.ActorDisplayName, 100),
                 TargetId = TruncateString(request.TargetId, 100),
                 TargetDisplayName = TruncateString(request.TargetDisplayName, 200),
