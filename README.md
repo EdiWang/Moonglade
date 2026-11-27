@@ -128,7 +128,7 @@ Choose HTML (default) or Markdown for new posts under **Settings > Content > Def
 
 ### Authentication
 
-The owner and up to two collaborators use the same email and password sign-in. TOTP is required by default. Set `Authentication:Totp:Required` to `false` to allow accounts without an authenticator to sign in. Accounts with an enrolled authenticator still use it. Sign-in and authenticator screens use the desktop layout. `Authentication:LocalAccountRateLimit` defaults to 10 attempts per minute, per client IP during setup and per account/IP during sign-in, TOTP verification, collaborator password changes and collaborator management.
+The owner and up to two collaborators use the same email and password sign-in. TOTP is required by default. Set `Authentication:Totp:Required` to `false` to disable TOTP during local sign-in, including for accounts with an enrolled authenticator. Sign-in and authenticator screens use the desktop layout. `Authentication:LocalAccountRateLimit` defaults to 10 attempts per minute, per client IP during setup and per account/IP during sign-in, TOTP verification, collaborator password changes and collaborator management.
 
 Use **Remember this device** only on trusted devices. The browser's protected HTTPS cookie skips TOTP for 30 days and survives sign-out. Sign-in still requires the password. Changing the password or email, resetting the authenticator, or clearing the cookie ends device trust.
 
