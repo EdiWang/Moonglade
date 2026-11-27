@@ -2,7 +2,7 @@
 
 ## Current Status
 
-- B1 through B3 are accepted. B4 developer verification is complete on branch `codex/collaborator-accounts`. B4 owner acceptance is pending.
+- B1 through B4 are accepted. B5 release verification passed on branch `codex/collaborator-accounts`. B5 owner acceptance and the separate release decision are pending.
 - Planning baseline is `fc2050cc6`. Recheck the current branch, working tree and next migration number when implementation starts.
 - Use this file as the source of truth for the current requirements, batch status and acceptance evidence. Replace superseded decisions and obsolete blocker details. Keep conversation records and rejected alternatives out of this file.
 
@@ -11,8 +11,8 @@
 | B1 | Unified account store and two-provider upgrade | Accepted on 2026-11-26 | `c8ffabb7300bb0d0cedfa22f21070c9272de6004` | Passed both providers and development owner sign-in |
 | B2 | Authorization, content access and activity attribution | Accepted on 2026-11-26 | `cc5eecc8cd561a0a32ae1080c9fd0ccaa2fbdc4d` | Developer verification passed. Owner accepted B2 |
 | B3 | Shared sign-in and credential lifecycle | Accepted on 2026-11-26 | `57b09f3e1481c62e2f07cf6349aade9db492d7ab`, `79a99b448e67488c6335ac347bac519e224a9866` | Developer verification and owner acceptance passed |
-| B4 | Owner account management and collaborator UI | Awaiting owner acceptance | `7d231321ae6e6ec4943d9acde0dcaf46c721d579` | Developer verification passed. See B4 acceptance steps |
-| B5 | Release verification and operator documentation | Awaiting B4 acceptance | Pending | Pending |
+| B4 | Owner account management and collaborator UI | Accepted on 2026-11-27 | `7d231321ae6e6ec4943d9acde0dcaf46c721d579` | Developer verification and owner acceptance passed |
+| B5 | Release verification and operator documentation | Awaiting owner acceptance | `Verify collaborator release on PostgreSQL and SQL Server` | Fresh install, upgrade, rollback and collaborator runtime checks passed on both providers |
 
 ## Confirmed Behavior
 
@@ -130,6 +130,16 @@ Project paths in this table are under `src/`. Read the owning code, its callers 
 - In the browser, publish, schedule, reschedule, unpublish, recycle and restore posts across accounts. Create, edit and publish a page with existing HTML, an embed and page CSS, then verify the published result. Verify image upload, category and tag changes, comment moderation including visitor email/IP and reply notification, author-field behavior, audit attribution and a direct denial for each owner-only area. Confirm owner-only permanent deletion and emptying for both recycle bins.
 - Verify existing public URLs, content, cache invalidation, feeds, notifications, health/static routes and setup gating. Test at 1440 CSS pixels and check the existing resource cultures. Record clean reruns on both providers and remove disposable fixtures.
 - Owner acceptance checks the final behavior and operational upgrade evidence. The release decision is a separate owner authorization.
+
+### B5 verification and acceptance
+
+- On 2026-11-27 `dotnet test --solution src/Moonglade.slnx --no-restore --no-ansi` passed 2,193 tests. `node --test src/Tests/Moonglade.Web.Tests/JavaScript/*.mjs` passed 91 tests. Release Web build and local publish passed.
+- PostgreSQL 18 and SQL Server 2022 passed fresh Release startup and owner setup. The upgrade fixtures started from the published `fc2050cc6` baseline with a local/TOTP owner and a synthetic OIDC binding. Each provider passed backup and restore, script 13 and its rerun. Six data snapshots matched for the owner, OIDC, Data Protection keys, activity, configuration and posts.
+- The previous application signed in against the restored backups. The upgraded Release application preserved existing Local and OIDC cookies, accepted fresh Local/TOTP and synthetic OIDC sign-ins, and kept the public owner profile and earlier activity. A collaborator management request from an OIDC owner session still required applicable local TOTP proof. Live-provider acceptance is separate.
+- Chromium at 1440 CSS pixels and authenticated requests from the browser contexts passed on all four provider/install combinations. Coverage included pending setup, public and health endpoints, six cultures, concurrent collaborator sessions, all owner-only direct route denials, and distinct activity identities. Collaborator moderation showed visitor email and IP. The public reply omitted the visitor email and collaborator identity. The loopback SMTP capture received the expected reply at the synthetic visitor address in each fixture.
+- Cross-account checks passed for post preview, scheduling, postponement, cancellation, publishing, unpublishing, public byline and feed cache invalidation. They also passed for page HTML, embeds and CSS, category and tag writes, and article image delivery. A collaborator restored items from both recycle bins. Permanent deletion and emptying succeeded for the owner and were denied for collaborators.
+- Password changes, credential resets, disablement, device/session revocation and slot reuse passed. Deleted accounts remained identifiable in activity history. A further script 13 run on each upgraded database after collaborator provisioning preserved both collaborator rows, credential state, revisions and audit data. All disposable hosts, databases and temporary artifacts were removed.
+- For B5 owner acceptance, review the [deployment and recovery steps](../../database/README.md#unified-account-upgrade-13) and the [release acceptance checklist](../../src/Tests/README.md#owner-account-release-acceptance). Accept the release verification before authorizing any deployment separately.
 
 ## Verification Commands
 

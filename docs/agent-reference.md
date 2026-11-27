@@ -86,6 +86,7 @@ Follow the [database authoring and execution guide](../database/README.md) for s
 - The sign-in flow uses desktop forms for sign-in, temporary password change, authenticator enrollment and authenticator verification.
 - `/admin/account/collaborators` uses owner-only antiforgery-protected forms. Each write verifies the owner's current password and applicable TOTP, and changes to existing accounts use the submitted revision. `/admin/account/password` is collaborator-only and submits to the self-service password endpoint, which acts on the currently authenticated account.
 - Admin Razor Pages default to the administrator policy. The explicit content page list uses the shared content policy. API controllers inherit either `BlogControllerBase` for the owner or `ContentControllerBase` for shared content. Recycle-bin permanent deletion and emptying require the administrator policy. Preserve default controller antiforgery validation, public protocol routes and configured reverse-proxy trust.
+- Collaborators are trusted publishers of site-wide content. Keep article and page preview, HTML, embeds, per-page CSS, author fields and public rendering consistent across both roles. Built-in comment management includes visitor email and IP. Treat navigation visibility as presentation and enforce authorization in the receiving Razor Page or API.
 
 ## Images, Themes, Feeds, and Protocols
 
