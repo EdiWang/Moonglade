@@ -146,11 +146,11 @@ public partial class ActivityLogHttpTests
         var labels = filters.RootElement.EnumerateArray()
             .SelectMany(group => group.GetProperty("items").EnumerateArray())
             .ToDictionary(item => item.GetProperty("key").GetString()!, item => item.GetProperty("label").GetString()!);
-        Assert.Equal(52, labels.Count);
+        Assert.Equal(ActivityEvents.All.Count, labels.Count);
         using var list = JsonDocument.Parse(await client.GetStringAsync("/api/activitylog/list?pageSize=100", ct));
-        Assert.Equal(52, list.RootElement.GetProperty("totalItemCount").GetInt32());
+        Assert.Equal(ActivityEvents.All.Count, list.RootElement.GetProperty("totalItemCount").GetInt32());
         var items = list.RootElement.GetProperty("items").EnumerateArray().ToArray();
-        Assert.Equal(52, items.Length);
+        Assert.Equal(ActivityEvents.All.Count, items.Length);
         var originalCulture = CultureInfo.CurrentUICulture;
         try
         {

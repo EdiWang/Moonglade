@@ -13,7 +13,7 @@ namespace Moonglade.Web.Pages;
 [EnableRateLimiting(LocalAccountRateLimitPolicy.PolicyName)]
 public class SignInModel(
     IOptions<AuthenticationSettings> authSettings,
-    OwnerAccountStore accounts,
+    LocalAccountStore accounts,
     ILogger<SignInModel> logger) : PageModel
 {
     [BindProperty, Required, EmailAddress, StringLength(254)]
@@ -32,6 +32,7 @@ public class SignInModel(
         await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
         await HttpContext.SignOutAsync(BlogAuthSchemas.LocalAccountSetup);
         await HttpContext.SignOutAsync(BlogAuthSchemas.LocalAccountTwoFactor);
+        await HttpContext.SignOutAsync(BlogAuthSchemas.TemporaryPasswordChange);
         await HttpContext.SignOutAsync(BlogAuthSchemas.InitialAccountSetup);
         HttpContext.User = new ClaimsPrincipal(new ClaimsIdentity());
         return Page();
@@ -54,7 +55,7 @@ public class SignInModel(
             return Page();
         }
 
-        var account = await accounts.AuthenticateLocalAsync(Email, Password, HttpContext.RequestAborted);
+        var account = await accounts.AuthenticateAsync(Email, Password, HttpContext.RequestAborted);
         if (account is null)
         {
             logger.LogWarning("Local account password sign-in failed");
@@ -63,18 +64,27 @@ public class SignInModel(
         }
         await HttpContext.SignOutAsync(BlogAuthSchemas.LocalAccountSetup);
         await HttpContext.SignOutAsync(BlogAuthSchemas.LocalAccountTwoFactor);
-        var scheme = !authSettings.Value.Totp.Required
-            ? CookieAuthenticationDefaults.AuthenticationScheme
-            : account.IsTotpEnabled ? BlogAuthSchemas.LocalAccountTwoFactor : BlogAuthSchemas.LocalAccountSetup;
+        await HttpContext.SignOutAsync(BlogAuthSchemas.TemporaryPasswordChange);
+        var scheme = account.MustChangePassword
+            ? BlogAuthSchemas.TemporaryPasswordChange
+            : !authSettings.Value.Totp.Required
+                ? BlogAuthSchemas.Local
+                : account.IsTotpEnabled ? BlogAuthSchemas.LocalAccountTwoFactor : BlogAuthSchemas.LocalAccountSetup;
         if (scheme == BlogAuthSchemas.LocalAccountTwoFactor)
         {
             var remembered = await HttpContext.AuthenticateAsync(BlogAuthSchemas.LocalAccountRememberedDevice);
-            if (remembered.Succeeded && LocalAccountPrincipal.Matches(remembered.Principal, account))
+            if (remembered.Succeeded && LocalAccountPrincipal.MatchesAccount(remembered.Principal, account))
                 scheme = CookieAuthenticationDefaults.AuthenticationScheme;
         }
+        if (scheme != BlogAuthSchemas.Local && User.Identity?.IsAuthenticated == true)
+            await HttpContext.SignOutAsync(BlogAuthSchemas.Local);
         await HttpContext.SignInAsync(scheme, LocalAccountPrincipal.Create(account, scheme));
-        if (scheme == CookieAuthenticationDefaults.AuthenticationScheme)
-            return RedirectToPage("/Admin/Dashboard");
-        return RedirectToPage(account.IsTotpEnabled ? "/VerifyAuthenticator" : "/SetupAuthenticator");
+        return scheme switch
+        {
+            BlogAuthSchemas.Local => RedirectToPage(account.IsOwner ? "/Admin/Dashboard" : "/Admin/Post"),
+            BlogAuthSchemas.TemporaryPasswordChange => RedirectToPage("/ChangeTemporaryPassword"),
+            BlogAuthSchemas.LocalAccountTwoFactor => RedirectToPage("/VerifyAuthenticator"),
+            _ => RedirectToPage("/SetupAuthenticator")
+        };
     }
 }

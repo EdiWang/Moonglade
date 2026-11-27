@@ -29,7 +29,7 @@ public partial class OwnerAccountOperationTests
         Assert.True(saved.IsLocalInitialized);
         Assert.Equal(before.Id, saved.Id);
         Assert.NotEqual(before.Revision, saved.Revision);
-        Assert.Empty(store.Db.ChangeTracker.Entries<OwnerAccountEntity>());
+        Assert.Empty(store.Db.ChangeTracker.Entries<BlogAccountEntity>());
     }
 
     [Theory]
@@ -40,7 +40,7 @@ public partial class OwnerAccountOperationTests
         var ct = TestContext.Current.CancellationToken;
         await using var store = new OwnerAccountTestStore(withTotp);
         var before = await InitializeAsync(store, withTotp, ct);
-        var credentials = await store.Db.OwnerAccount.AsNoTracking().SingleAsync(ct);
+        var credentials = await store.Db.BlogAccount.AsNoTracking().SingleAsync(ct);
         store.Events.Invocations.Clear();
 
         var changed = await store.Accounts.ChangeLocalEmailAsync(before.Id, before.Revision,
@@ -53,7 +53,7 @@ public partial class OwnerAccountOperationTests
         Assert.True(changed.IsLocalInitialized);
         Assert.Null(await store.Accounts.AuthenticateLocalAsync(before.Email, OwnerAccountTestStore.Password, ct));
         Assert.Equal(changed, await store.Accounts.AuthenticateLocalAsync(" newowner@EXAMPLE.TEST ", OwnerAccountTestStore.Password, ct));
-        var saved = await store.Db.OwnerAccount.AsNoTracking().SingleAsync(ct);
+        var saved = await store.Db.BlogAccount.AsNoTracking().SingleAsync(ct);
         Assert.Equal("NEWOWNER@EXAMPLE.TEST", saved.NormalizedEmail);
         Assert.Equal((credentials.PasswordHash, credentials.PasswordSalt, credentials.TotpSecret, credentials.LocalInitializedUtc),
             (saved.PasswordHash, saved.PasswordSalt, saved.TotpSecret, saved.LocalInitializedUtc));
@@ -82,7 +82,7 @@ public partial class OwnerAccountOperationTests
         Assert.Equal(before, await store.Accounts.ReadAsync(ct));
         Assert.Equal(before, await store.Accounts.AuthenticateLocalAsync(before.Email, OwnerAccountTestStore.Password, ct));
         Assert.Empty(store.Events.Invocations);
-        Assert.Empty(store.Db.ChangeTracker.Entries<OwnerAccountEntity>());
+        Assert.Empty(store.Db.ChangeTracker.Entries<BlogAccountEntity>());
     }
 
     [Theory]
@@ -131,7 +131,7 @@ public partial class OwnerAccountOperationTests
         store.Events.Invocations.Clear();
         using var cancellation = new CancellationTokenSource();
         if (cancelled) await cancellation.CancelAsync();
-        else await store.Db.Database.ExecuteSqlRawAsync("CREATE TRIGGER reject_email BEFORE UPDATE ON OwnerAccount BEGIN SELECT RAISE(ABORT, 'Save rejected'); END;", ct);
+        else await store.Db.Database.ExecuteSqlRawAsync("CREATE TRIGGER reject_email BEFORE UPDATE ON BlogAccount BEGIN SELECT RAISE(ABORT, 'Save rejected'); END;", ct);
 
         var error = await Record.ExceptionAsync(() => store.Accounts.ChangeLocalEmailAsync(
             account.Id, account.Revision, OwnerAccountTestStore.Password, "new@example.test", cancelled ? cancellation.Token : ct));
@@ -139,7 +139,7 @@ public partial class OwnerAccountOperationTests
         if (cancelled) Assert.IsAssignableFrom<OperationCanceledException>(error);
         else Assert.IsType<DbUpdateException>(error);
         Assert.Empty(store.Events.Invocations);
-        Assert.Empty(store.Db.ChangeTracker.Entries<OwnerAccountEntity>());
+        Assert.Empty(store.Db.ChangeTracker.Entries<BlogAccountEntity>());
         if (!cancelled) await store.Db.Database.ExecuteSqlRawAsync("DROP TRIGGER reject_email;", ct);
         store.Db.BlogConfiguration.Add(new BlogConfigurationEntity { CfgKey = "UnrelatedEmailWrite", CfgValue = "{}" });
         await store.Db.SaveChangesAsync(ct);
@@ -162,7 +162,7 @@ public partial class OwnerAccountOperationTests
             {
                 Assert.IsType<OwnerProfileChangedEvent>(message);
                 Assert.False(token.CanBeCanceled);
-                Assert.Empty(store.Db.ChangeTracker.Entries<OwnerAccountEntity>());
+                Assert.Empty(store.Db.ChangeTracker.Entries<BlogAccountEntity>());
                 observed = await store.Accounts.ReadProfileAsync(ct);
             });
 

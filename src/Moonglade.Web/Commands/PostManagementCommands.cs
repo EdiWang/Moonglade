@@ -14,11 +14,15 @@ using System.Text.Json.Serialization;
 namespace Moonglade.Web.Commands;
 
 public record PostOperationContext(
-    string ActorId,
+    string? ActorDisplayName,
     string IpAddress,
     string UserAgent,
     string RootUrl)
 {
+    [JsonIgnore]
+    public ActivityActorKind ActorKind { get; init; } = ActivityActorKind.Administrator;
+    [JsonIgnore]
+    public Guid? ActorAccountId { get; init; }
     [JsonIgnore]
     public string? TraceIdentifier { get; init; }
 }
@@ -82,13 +86,13 @@ public class SavePostCommandHandler(
                 activityEventKey,
                 () => new CreateActivityLogCommand(
                     activityEventKey,
-                    ActivityActorKind.Administrator,
-                    request.Context.ActorId,
+                    request.Context.ActorKind,
+                    request.Context.ActorDisplayName,
                     TargetId: postEntity.Id.ToString(),
                     TargetDisplayName: postTitle,
                     Details: activityDetails,
                     IpAddress: request.Context.IpAddress,
-                    UserAgent: request.Context.UserAgent),
+                    UserAgent: request.Context.UserAgent) { ActorAccountId = request.Context.ActorAccountId },
                 ActivityLogDispatchSource.PostSave,
                 traceIdentifier: request.Context.TraceIdentifier,
                 ct: ct);

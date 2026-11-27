@@ -68,7 +68,7 @@ public partial class PostCacheInvalidationTests
         using var environment = await TestEnvironment.CreateAsync();
         using var scope = environment.Services.CreateScope();
         var db = scope.ServiceProvider.GetRequiredService<BlogDbContext>();
-        await db.OwnerAccount.ExecuteDeleteAsync(ct);
+        await db.BlogAccount.ExecuteDeleteAsync(ct);
         XNamespace atom = "http://www.w3.org/2005/Atom";
         var before = XDocument.Parse(await environment.ReadFeedAsync(true, null));
         Assert.Empty(before.Descendants(atom + "email"));

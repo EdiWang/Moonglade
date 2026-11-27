@@ -11,7 +11,7 @@ namespace Moonglade.Web.Controllers;
 public class CategoryController(
     IQueryMediator queryMediator,
     ICommandMediator commandMediator,
-    ILogger<CategoryController> logger) : BlogControllerBase(commandMediator, logger)
+    ILogger<CategoryController> logger) : ContentControllerBase(commandMediator, logger)
 {
     [HttpGet("{id:int}")]
     public async Task<IActionResult> Get([Range(1, int.MaxValue)] int id)

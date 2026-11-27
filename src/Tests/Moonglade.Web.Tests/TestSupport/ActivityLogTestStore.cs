@@ -18,6 +18,7 @@ using Moonglade.Email;
 using Moonglade.Email.Core;
 using Moonglade.Features.Comment;
 using Moonglade.Theme;
+using Moonglade.Web.Commands;
 using Moonglade.Web.Handlers;
 using Moonglade.Widgets;
 using Moq;
@@ -72,6 +73,7 @@ public sealed class ActivityLogTestStore : IAsyncDisposable
         services.AddSingleton<PostCacheInvalidator>();
         services.AddSingleton<ThemeCacheInvalidator>();
         services.AddSingleton<ScheduledPublishWakeUp>();
+        services.AddSingleton<CannonService>();
         services.AddSingleton(TimeProvider.System);
         services.Configure<AuthenticationSettings>(_ => { });
         services.AddSingleton<ILocalAccountTotpService, LocalAccountTotpService>();
@@ -97,10 +99,12 @@ public sealed class ActivityLogTestStore : IAsyncDisposable
                 module.RegisterFromAssembly(typeof(CreateCommentCommand).Assembly);
                 module.RegisterFromAssembly(typeof(UpdateConfigurationCommand).Assembly);
                 module.RegisterFromAssembly(typeof(SaveWidgetCollectionCommand).Assembly);
+                module.RegisterFromAssembly(typeof(SavePostCommand).Assembly);
             });
             bus.AddQueries(module =>
             {
                 module.RegisterFromAssembly(typeof(ListActivityLogsQuery).Assembly);
+                module.RegisterFromAssembly(typeof(ListCommentsQuery).Assembly);
                 module.RegisterFromAssembly(typeof(GetSiteThemeStyleSheetQuery).Assembly);
                 module.RegisterFromAssembly(typeof(ListWidgetsQuery).Assembly);
             });

@@ -25,7 +25,7 @@ public class LocalAccountCommandTests
         Assert.NotEqual(account.Revision, changed.Revision);
         Assert.Equal(account.Id, changed.Id);
         Assert.Equal("retained", (await store.Db.BlogConfiguration.AsNoTracking().SingleAsync(ct)).CfgValue);
-        Assert.Empty(store.Db.ChangeTracker.Entries<Moonglade.Data.Entities.OwnerAccountEntity>());
+        Assert.Empty(store.Db.ChangeTracker.Entries<Moonglade.Data.Entities.BlogAccountEntity>());
     }
 
     [Theory]
@@ -56,17 +56,17 @@ public class LocalAccountCommandTests
         await using var store = new LocalAccountPageFixture(required: false);
         var account = await store.InitializeAsync();
         if (missingRow)
-            await store.Db.OwnerAccount.ExecuteDeleteAsync(ct);
+            await store.Db.BlogAccount.ExecuteDeleteAsync(ct);
         else
             await store.Db.Database.ExecuteSqlRawAsync(
-                "CREATE TRIGGER reject_account BEFORE UPDATE ON OwnerAccount BEGIN SELECT RAISE(ABORT, 'Save rejected'); END;", ct);
+                "CREATE TRIGGER reject_account BEFORE UPDATE ON BlogAccount BEGIN SELECT RAISE(ABORT, 'Save rejected'); END;", ct);
 
         var save = () => store.Accounts.ChangePasswordAsync(account.Id, account.Revision, LocalAccountPageFixture.Password, "Replacement456!", ct);
         if (missingRow) await Assert.ThrowsAsync<DbUpdateConcurrencyException>(save);
         else await Assert.ThrowsAsync<DbUpdateException>(save);
 
         Assert.Equal(missingRow ? null : account, await store.Accounts.ReadAsync(ct));
-        Assert.Empty(store.Db.ChangeTracker.Entries<Moonglade.Data.Entities.OwnerAccountEntity>());
+        Assert.Empty(store.Db.ChangeTracker.Entries<Moonglade.Data.Entities.BlogAccountEntity>());
     }
 
     [Fact]
@@ -83,7 +83,7 @@ public class LocalAccountCommandTests
         await Assert.ThrowsAnyAsync<OperationCanceledException>(() => accounts.ChangePasswordAsync(account.Id, account.Revision,
             LocalAccountPageFixture.Password, "Replacement456!", cancellation.Token));
 
-        Assert.Empty(db.ChangeTracker.Entries<Moonglade.Data.Entities.OwnerAccountEntity>());
+        Assert.Empty(db.ChangeTracker.Entries<Moonglade.Data.Entities.BlogAccountEntity>());
         db.BlogConfiguration.Add(new Moonglade.Data.Entities.BlogConfigurationEntity { CfgKey = "unrelated", CfgValue = "durable" });
         await db.SaveChangesAsync(ct);
         Assert.Equal(account, await store.Accounts.AuthenticateLocalAsync(account.Email, LocalAccountPageFixture.Password, ct));

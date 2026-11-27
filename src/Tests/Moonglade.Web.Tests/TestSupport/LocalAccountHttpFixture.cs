@@ -51,7 +51,7 @@ internal sealed class LocalAccountHttpFixture : IAsyncDisposable
     public static async Task<LocalAccountHttpFixture> CreateAsync(
         bool required = false, string pathBase = "", string environment = "Production",
         int permits = 100, bool legacyOidcConfiguration = false, HttpMessageHandler? oidcBackchannel = null,
-        TimeProvider? timeProvider = null)
+        TimeProvider? timeProvider = null, bool useProductionPageConventions = false)
     {
         var ct = TestContext.Current.CancellationToken;
         var store = new ConfigurationCommandRecorder();
@@ -115,7 +115,8 @@ internal sealed class LocalAccountHttpFixture : IAsyncDisposable
         });
         builder.Services.AddControllers(options => options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute()))
             .ConfigureApplicationPartManager(manager => manager.FeatureProviders.Add(new AccountOnlyFeatureProvider()));
-        builder.Services.AddRazorPages(options =>
+        if (useProductionPageConventions) builder.Services.AddMoongladeRazorPages();
+        else builder.Services.AddRazorPages(options =>
             options.Conventions.AuthorizeFolder("/Admin", BlogAuthSchemas.AdministratorPolicy));
         var app = builder.Build();
         var fixture = new LocalAccountHttpFixture(app, store, pathBase);
@@ -134,7 +135,7 @@ internal sealed class LocalAccountHttpFixture : IAsyncDisposable
         app.MapStaticAssets().ShortCircuit();
         app.MapControllers();
         app.MapRazorPages();
-        foreach (var route in new[] { "/", "/post/example", "/page/example", "/admin/probe" })
+        foreach (var route in new[] { "/", "/post/example", "/page/example", "/admin/probe", "/admin/content-probe" })
         {
             var endpoint = app.MapMethods(route, ["GET", "HEAD"], () =>
             {
@@ -142,6 +143,7 @@ internal sealed class LocalAccountHttpFixture : IAsyncDisposable
                 return Results.Text("business-reached");
             }).WithMetadata(new PageActionDescriptor()).WithOrder(-100);
             if (route == "/admin/probe") endpoint.RequireAuthorization(BlogAuthSchemas.AdministratorPolicy);
+            if (route == "/admin/content-probe") endpoint.RequireAuthorization(BlogAuthSchemas.ContentManagementPolicy);
         }
         foreach (var route in new[]
                  { "/api/probe", "/feed/rss", "/feed/atom", "/category/sample/rss", "/webmention", "/foaf.xml", "/robots.txt",
@@ -156,6 +158,9 @@ internal sealed class LocalAccountHttpFixture : IAsyncDisposable
         app.MapGet("/admin/security-token", (HttpContext context, IAntiforgery antiforgery) =>
                 Results.Text(antiforgery.GetAndStoreTokens(context).RequestToken!))
             .RequireAuthorization(BlogAuthSchemas.AdministratorPolicy);
+        app.MapGet("/admin/content-token", (HttpContext context, IAntiforgery antiforgery) =>
+                Results.Text(antiforgery.GetAndStoreTokens(context).RequestToken!))
+            .RequireAuthorization(BlogAuthSchemas.ContentManagementPolicy);
         await app.StartAsync(ct);
         fixture.Client = app.GetTestClient();
         fixture.Client.BaseAddress = new Uri("https://localhost");
@@ -228,7 +233,7 @@ internal sealed class LocalAccountHttpFixture : IAsyncDisposable
         public void PopulateFeature(IEnumerable<ApplicationPart> parts, ControllerFeature feature)
         {
             foreach (var controller in feature.Controllers.Where(type => type.AsType() != typeof(AccountController) &&
-                type.AsType() != typeof(OwnerAvatarController) && type.AsType() != typeof(AuthController)).ToArray())
+                type.AsType() != typeof(OwnerAvatarController) && type.AsType() != typeof(CollaboratorAccountController) && type.AsType() != typeof(AuthController)).ToArray())
                 feature.Controllers.Remove(controller);
         }
     }

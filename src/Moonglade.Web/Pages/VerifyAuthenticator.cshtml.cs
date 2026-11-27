@@ -13,7 +13,7 @@ namespace Moonglade.Web.Pages;
 [EnableRateLimiting(LocalAccountRateLimitPolicy.PolicyName)]
 public class VerifyAuthenticatorModel(
     IOptions<AuthenticationSettings> authSettings,
-    OwnerAccountStore accounts,
+    LocalAccountStore accounts,
     ILogger<VerifyAuthenticatorModel> logger) : PageModel
 {
     [BindProperty, Required, StringLength(6, MinimumLength = 6), RegularExpression("[0-9]{6}")]
@@ -36,10 +36,10 @@ public class VerifyAuthenticatorModel(
             Response.StatusCode = StatusCodes.Status400BadRequest;
             return Page();
         }
-        OwnerAccountSnapshot verified;
+        LocalAccountSnapshot verified;
         try
         {
-            verified = await accounts.VerifyTotpAsync(account.Id, account.Revision, AuthenticatorCode, HttpContext.RequestAborted);
+            verified = await accounts.VerifyTotpAsync(account, AuthenticatorCode, HttpContext.RequestAborted);
         }
         catch (DbUpdateConcurrencyException)
         {
@@ -61,13 +61,13 @@ public class VerifyAuthenticatorModel(
                 new AuthenticationProperties { IsPersistent = true, AllowRefresh = false });
         }
         logger.LogInformation("Local account authentication completed");
-        return RedirectToPage("/Admin/Dashboard");
+        return RedirectToPage(verified.IsOwner ? "/Admin/Dashboard" : "/Admin/Post");
     }
 
-    private async Task<OwnerAccountSnapshot> CurrentAccountAsync()
+    private async Task<LocalAccountSnapshot> CurrentAccountAsync()
     {
         if (!authSettings.Value.Totp.Required) return null;
-        var account = await accounts.ReadAsync(HttpContext.RequestAborted);
-        return LocalAccountPrincipal.Matches(User, account) && account.IsTotpEnabled ? account : null;
+        var account = await accounts.ReadAsync(User, HttpContext.RequestAborted);
+        return account is { MustChangePassword: false, IsTotpEnabled: true } ? account : null;
     }
 }

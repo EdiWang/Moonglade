@@ -22,6 +22,7 @@ internal sealed class LocalAccountPageFixture : IAsyncDisposable
     public const string Password = "Synthetic123!";
     public BlogDbContext Db { get; }
     public OwnerAccountStore Accounts { get; }
+    public LocalAccountStore LocalAccounts => new(Db, Accounts, Totp, Options, Clock);
     public LocalAccountTotpService Totp { get; } = new();
     public Mock<IAuthenticationService> Authentication { get; } = new();
     public IOptions<AuthenticationSettings> Options { get; }

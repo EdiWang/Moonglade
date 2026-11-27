@@ -34,10 +34,10 @@ public class ProviderNamingModelTests
             db.Model.FindEntityType(typeof(BlogAssetEntity))!
                 .FindProperty(nameof(BlogAssetEntity.Base64Data))!.GetColumnName());
 
-        var account = db.Model.FindEntityType(typeof(OwnerAccountEntity))!;
-        Assert.Equal(provider == "PostgreSql" ? "owner_account" : "OwnerAccount", account.GetTableName());
+        var account = db.Model.FindEntityType(typeof(BlogAccountEntity))!;
+        Assert.Equal(provider == "PostgreSql" ? "blog_account" : "BlogAccount", account.GetTableName());
         Assert.Equal(provider == "PostgreSql" ? "normalized_email" : "NormalizedEmail",
-            account.FindProperty(nameof(OwnerAccountEntity.NormalizedEmail))!.GetColumnName());
+            account.FindProperty(nameof(BlogAccountEntity.NormalizedEmail))!.GetColumnName());
         var avatar = db.Model.FindEntityType(typeof(OwnerAvatarEntity))!;
         Assert.Equal(provider == "PostgreSql" ? "owner_avatar" : "OwnerAvatar", avatar.GetTableName());
         Assert.Equal(provider == "PostgreSql" ? "image_base64" : "ImageBase64",

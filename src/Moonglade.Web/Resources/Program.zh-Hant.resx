@@ -2354,4 +2354,42 @@
   <data name="Right sidebar" xml:space="preserve">
     <value>右側欄</value>
   </data>
+  <data name="Collaborator" xml:space="preserve"><value>協同編輯</value></data>
+  <data name="Account ID" xml:space="preserve"><value>帳戶 ID</value></data>
+  <data name="Change temporary password" xml:space="preserve"><value>更改臨時密碼</value></data>
+  <data name="Confirm password" xml:space="preserve"><value>確認密碼</value></data>
+  <data name="Passwords do not match." xml:space="preserve"><value>兩次輸入的密碼不相符。</value></data>
+  <data name="Choose a password different from the temporary password." xml:space="preserve"><value>請選擇與臨時密碼不同的密碼。</value></data>
+  <data name="Collaborators" xml:space="preserve"><value>協同編輯</value></data>
+  <data name="{0} of {1} collaborator slots in use" xml:space="preserve"><value>已使用 {0} 個協同編輯名額，共 {1} 個</value></data>
+  <data name="Add collaborator" xml:space="preserve"><value>新增協同編輯</value></data>
+  <data name="Change email" xml:space="preserve"><value>變更電子郵件</value></data>
+  <data name="Delete collaborator" xml:space="preserve"><value>刪除協同編輯</value></data>
+  <data name="Share the temporary password with the collaborator. They must change it when they sign in." xml:space="preserve"><value>請將臨時密碼告知協同編輯。對方必須在登入時變更密碼。</value></data>
+  <data name="This signs the collaborator out. They must change the temporary password when they sign in." xml:space="preserve"><value>此操作會將協同編輯登出。對方必須在登入時變更臨時密碼。</value></data>
+  <data name="This signs the collaborator out and clears their authenticator setup." xml:space="preserve"><value>此操作會將協同編輯登出並清除其驗證器設定。</value></data>
+  <data name="Changing the email signs the collaborator out." xml:space="preserve"><value>變更電子郵件會將協同編輯登出。</value></data>
+  <data name="This signs the collaborator out. The account continues to use a slot." xml:space="preserve"><value>此操作會將協同編輯登出。帳號仍占用一個名額。</value></data>
+  <data name="This permanently deletes the account and frees its slot. Activity history is kept." xml:space="preserve"><value>此操作會永久刪除帳號並釋出名額。活動記錄會保留。</value></data>
+  <data name="Disabled accounts still use a slot." xml:space="preserve"><value>停用的帳號仍占用名額。</value></data>
+  <data name="Temporary password" xml:space="preserve"><value>臨時密碼</value></data>
+  <data name="Owner password" xml:space="preserve"><value>站長密碼</value></data>
+  <data name="Confirm account deletion" xml:space="preserve"><value>確認刪除帳號</value></data>
+  <data name="Password change required" xml:space="preserve"><value>需要變更密碼</value></data>
+  <data name="Authenticator enrolled" xml:space="preserve"><value>已設定驗證器</value></data>
+  <data name="Manage {0}" xml:space="preserve"><value>管理 {0}</value></data>
+  <data name="Check the account details and try again." xml:space="preserve"><value>請檢查帳號資訊後再試。</value></data>
+  <data name="The collaborator account changed. Reload and try again." xml:space="preserve"><value>協同編輯帳號已有變更。請重新載入頁面後再試。</value></data>
+  <data name="Confirm deletion before deleting the account." xml:space="preserve"><value>刪除帳號前請勾選確認。</value></data>
+  <data name="Both collaborator slots are in use." xml:space="preserve"><value>兩個協同編輯名額均已占用。</value></data>
+  <data name="This email address is already in use." xml:space="preserve"><value>此電子郵件地址已被使用。</value></data>
+  <data name="Old password is incorrect." xml:space="preserve"><value>目前的密碼不正確。</value></data>
+  <data name="The account changed. Sign in again." xml:space="preserve"><value>帳號已有變更，請重新登入。</value></data>
+  <data name="Collaborator account created" xml:space="preserve"><value>已建立協同編輯帳號</value></data>
+  <data name="Collaborator email changed" xml:space="preserve"><value>已變更協同編輯的電子郵件</value></data>
+  <data name="Collaborator password reset" xml:space="preserve"><value>已重設協同編輯密碼</value></data>
+  <data name="Collaborator authenticator reset" xml:space="preserve"><value>已重設協同編輯的驗證器</value></data>
+  <data name="Collaborator account disabled" xml:space="preserve"><value>已停用協同編輯帳號</value></data>
+  <data name="Collaborator account enabled" xml:space="preserve"><value>已啟用協同編輯帳號</value></data>
+  <data name="Collaborator account deleted" xml:space="preserve"><value>已刪除協同編輯帳號</value></data>
 </root>

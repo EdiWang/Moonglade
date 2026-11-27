@@ -28,7 +28,7 @@ public class OwnerAccountStoreTests
         Assert.False(profile.IsLocalInitialized);
         Assert.Null(await store.AuthenticateLocalAsync(profile.Email, Password, ct));
         Assert.Equal(new OwnerProfile(profile.Id, "Owner@example.test"), await store.ReadProfileAsync(ct));
-        var savedProfile = await db.OwnerAccount.AsNoTracking().SingleAsync(ct);
+        var savedProfile = await db.BlogAccount.AsNoTracking().SingleAsync(ct);
         Assert.Equal("OWNER@EXAMPLE.TEST", savedProfile.NormalizedEmail);
         Assert.Null(savedProfile.PasswordHash);
         Assert.Null(savedProfile.PasswordSalt);
@@ -43,7 +43,7 @@ public class OwnerAccountStoreTests
         Assert.Equal(initialized, await store.AuthenticateLocalAsync(" newowner@EXAMPLE.test ", Password, ct));
         Assert.Null(await store.AuthenticateLocalAsync(profile.Email, Password, ct));
         Assert.Null(await store.AuthenticateLocalAsync(initialized.Email, "WrongPassword123!", ct));
-        var saved = await db.OwnerAccount.AsNoTracking().SingleAsync(ct);
+        var saved = await db.BlogAccount.AsNoTracking().SingleAsync(ct);
         Assert.NotEqual(Password, saved.PasswordHash);
         Assert.False(string.IsNullOrWhiteSpace(saved.PasswordSalt));
         Assert.Equal(DateTimeKind.Utc, saved.LocalInitializedUtc!.Value.Kind);
@@ -51,6 +51,44 @@ public class OwnerAccountStoreTests
         await Assert.ThrowsAsync<DbUpdateConcurrencyException>(() =>
             InitializeAsync(store, "attacker@example.test", "Replacement123!", ct));
         Assert.Equal(initialized, await store.ReadAsync(ct));
+    }
+
+    [Fact]
+    public async Task OwnerOperations_IgnoreCollaboratorCredentialsAndPreserveOwnerIdentity()
+    {
+        var ct = TestContext.Current.CancellationToken;
+        await using var store = new OwnerAccountTestStore();
+        var profile = await store.Accounts.CreateProfileAsync(OwnerAccountTestStore.Email, ct);
+        var credentials = await store.Accounts.PrepareLocalSetupAsync(
+            "editor@example.test", OwnerAccountTestStore.Password, ct);
+        var collaborator = new BlogAccountEntity
+        {
+            Id = Guid.NewGuid(),
+            Slot = 2,
+            Email = credentials.Email,
+            NormalizedEmail = "EDITOR@EXAMPLE.TEST",
+            Revision = Guid.NewGuid(),
+            LocalInitializedUtc = store.Clock.GetUtcNow().UtcDateTime,
+            PasswordHash = credentials.PasswordHash,
+            PasswordSalt = credentials.PasswordSalt,
+            MustChangePassword = true
+        };
+        store.Db.BlogAccount.Add(collaborator);
+        await store.Db.SaveChangesAsync(ct);
+
+        Assert.Equal(profile, await store.Accounts.ReadAsync(ct));
+        Assert.Equal(profile.Id, (await store.Accounts.ReadProfileAsync(ct))!.Id);
+        Assert.Null(await store.Accounts.AuthenticateLocalAsync(collaborator.Email, OwnerAccountTestStore.Password, ct));
+
+        var owner = await store.InitializeAsync(ct);
+        Assert.Equal(profile.Id, owner.Id);
+        Assert.Equal(owner, await store.Accounts.AuthenticateLocalAsync(owner.Email, OwnerAccountTestStore.Password, ct));
+        await Assert.ThrowsAsync<DbUpdateConcurrencyException>(() => store.Accounts.ResetTotpAsync(
+            collaborator.Id, collaborator.Revision, OwnerAccountTestStore.Password, ct));
+        await Assert.ThrowsAsync<ValidationException>(() => store.Accounts.ChangeLocalEmailAsync(
+            owner.Id, owner.Revision, OwnerAccountTestStore.Password, " Editor@Example.TEST ", ct));
+        Assert.Equal(owner, await store.Accounts.ReadAsync(ct));
+        Assert.Equal(2, await store.Db.BlogAccount.CountAsync(ct));
     }
 
     [Fact]
@@ -67,7 +105,7 @@ public class OwnerAccountStoreTests
         Assert.NotEqual(Guid.Empty, initialized.Id);
         Assert.NotEqual(Guid.Empty, initialized.Revision);
         Assert.Equal(initialized, await store.AuthenticateLocalAsync(initialized.Email, Password, ct));
-        var row = await db.OwnerAccount.SingleAsync(ct);
+        var row = await db.BlogAccount.SingleAsync(ct);
         row.TotpSecret = "JBSWY3DPEHPK3PXP";
         await db.SaveChangesAsync(ct);
         Assert.True((await store.ReadAsync(ct)).IsTotpEnabled);
@@ -98,8 +136,8 @@ public class OwnerAccountStoreTests
         var password = scenario == "short-password" ? "short" : scenario == "missing-digit" ? "no-digits-here" : Password;
 
         await Assert.ThrowsAsync<ValidationException>(() => InitializeAsync(store, email, password, ct));
-        Assert.False(await db.OwnerAccount.AnyAsync(ct));
-        Assert.Empty(db.ChangeTracker.Entries<OwnerAccountEntity>());
+        Assert.False(await db.BlogAccount.AnyAsync(ct));
+        Assert.Empty(db.ChangeTracker.Entries<BlogAccountEntity>());
     }
 
     [Fact]
@@ -117,7 +155,7 @@ public class OwnerAccountStoreTests
         await Assert.ThrowsAsync<DbUpdateConcurrencyException>(() =>
             store.CompleteLocalSetupAsync(pendingBeforeProfile, null, ct));
         var pendingProfile = await store.PrepareLocalSetupAsync("replacement@example.test", Password, ct);
-        var row = await db.OwnerAccount.SingleAsync(ct);
+        var row = await db.BlogAccount.SingleAsync(ct);
         row.Revision = Guid.NewGuid();
         await db.SaveChangesAsync(ct);
         db.ChangeTracker.Clear();
@@ -125,7 +163,7 @@ public class OwnerAccountStoreTests
         await Assert.ThrowsAsync<DbUpdateConcurrencyException>(() =>
             store.CompleteLocalSetupAsync(pendingProfile, null, ct));
         await Assert.ThrowsAsync<DbUpdateException>(() => store.CreateProfileAsync("second@example.test", ct));
-        Assert.Empty(db.ChangeTracker.Entries<OwnerAccountEntity>());
+        Assert.Empty(db.ChangeTracker.Entries<BlogAccountEntity>());
         Assert.Equal(changed, await store.ReadAsync(ct));
         Assert.Equal(profile.Id, changed!.Id);
         Assert.Equal(profile.Email, changed.Email);
@@ -154,7 +192,7 @@ public class OwnerAccountStoreTests
         if (cancelled) Assert.IsType<OperationCanceledException>(exception);
         else Assert.IsType<DbUpdateException>(exception);
         Assert.Equal(before, await store.ReadAsync(ct));
-        Assert.Empty(db.ChangeTracker.Entries<OwnerAccountEntity>());
+        Assert.Empty(db.ChangeTracker.Entries<BlogAccountEntity>());
 
         failure.Enabled = false;
         db.BlogConfiguration.Add(new BlogConfigurationEntity { CfgKey = "Unrelated", CfgValue = "{}" });
@@ -177,8 +215,8 @@ public class OwnerAccountStoreTests
         await Assert.ThrowsAsync<InvalidOperationException>(() => store.CreateProfileAsync("owner@example.test", ct));
         await Assert.ThrowsAsync<InvalidOperationException>(() =>
             InitializeAsync(store, "owner@example.test", Password, ct));
-        Assert.False(await db.OwnerAccount.AnyAsync(ct));
-        Assert.Empty(db.ChangeTracker.Entries<OwnerAccountEntity>());
+        Assert.False(await db.BlogAccount.AnyAsync(ct));
+        Assert.Empty(db.ChangeTracker.Entries<BlogAccountEntity>());
     }
 
     private static BlogDbContext CreateContext(SqliteConnection connection, params IInterceptor[] interceptors) =>

@@ -1,0 +1,168 @@
+@page "/admin/account/collaborators"
+@using Moonglade.Auth
+@using Operation = Moonglade.Web.Pages.Admin.CollaboratorsModel.Operation
+@model Moonglade.Web.Pages.Admin.CollaboratorsModel
+@{
+    ViewBag.Title = SharedLocalizer["Collaborators"];
+    ViewBag.AdminBackUrl = Url.Page("/Admin/LocalAccount");
+    var operation = Model.SelectedOperation;
+    var account = Model.SelectedAccount;
+    var isFull = Model.Accounts.Count >= Moonglade.Web.Pages.Admin.CollaboratorsModel.Capacity;
+    var action = operation switch
+    {
+        Operation.Create => "Add collaborator",
+        Operation.ChangeEmail => "Change email",
+        Operation.ResetPassword => "Reset Password",
+        Operation.ResetAuthenticator => "Reset Authenticator",
+        Operation.Disable => "Disable",
+        Operation.Enable => "Enable",
+        Operation.Delete => "Delete collaborator",
+        _ => null
+    };
+    var effect = operation switch
+    {
+        Operation.Create => "Share the temporary password with the collaborator. They must change it when they sign in.",
+        Operation.ResetPassword => "This signs the collaborator out. They must change the temporary password when they sign in.",
+        Operation.ResetAuthenticator => "This signs the collaborator out and clears their authenticator setup.",
+        Operation.ChangeEmail => "Changing the email signs the collaborator out.",
+        Operation.Disable => "This signs the collaborator out. The account continues to use a slot.",
+        Operation.Delete => "This permanently deletes the account and frees its slot. Activity history is kept.",
+        _ => null
+    };
+}
+
+<div class="admin-settings-page">
+    <section class="admin-panel p-4 mb-3" aria-labelledby="collaborators-title">
+        <div class="d-flex justify-content-between align-items-center gap-3">
+            <div>
+                <h1 class="h5 mb-1" id="collaborators-title">@SharedLocalizer["Collaborators"]</h1>
+                <p class="text-body-secondary mb-0">@SharedLocalizer["{0} of {1} collaborator slots in use", Model.Accounts.Count, Moonglade.Web.Pages.Admin.CollaboratorsModel.Capacity]</p>
+            </div>
+            @if (!isFull)
+            {
+                <a asp-page="/Admin/Collaborators" asp-route-operation="@Operation.Create" class="btn btn-sm btn-outline-accent">
+                    <i class="bi-person-plus me-1" aria-hidden="true"></i>@SharedLocalizer["Add collaborator"]
+                </a>
+            }
+        </div>
+        <div class="form-text">@SharedLocalizer["Disabled accounts still use a slot."]</div>
+    </section>
+
+    @if (Model.SuccessMessage is { } message)
+    {
+        <div class="alert alert-success" role="status">@SharedLocalizer[message]</div>
+    }
+    @if (!ViewData.ModelState.IsValid)
+    {
+        <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
+    }
+
+    @if (action is not null && (operation != Operation.Create || !isFull))
+    {
+        <form method="post" asp-page="/Admin/Collaborators" class="admin-panel p-4 mb-3" aria-labelledby="collaborator-action-title">
+            <input type="hidden" name="operation" value="@operation" />
+            @if (operation != Operation.Create)
+            {
+                <input type="hidden" name="accountId" value="@account.Id" />
+                <input type="hidden" name="revision" value="@account.Revision" />
+            }
+            <h2 id="collaborator-action-title" class="h5">@SharedLocalizer[action]</h2>
+            @if (operation != Operation.Create)
+            {
+                <p class="text-break mb-2">@account.DisplayName · @account.Email</p>
+            }
+            @if (effect is not null)
+            {
+                <p class="text-body-secondary">@SharedLocalizer[effect]</p>
+            }
+            @if (operation == Operation.Create)
+            {
+                <div class="mb-3">
+                    <label class="form-label" for="displayName">@SharedLocalizer["Display name"]</label>
+                    <input class="form-control" id="displayName" name="displayName" value="@Model.DisplayName" maxlength="100" required />
+                </div>
+            }
+            @if (operation is Operation.Create or Operation.ChangeEmail)
+            {
+                <div class="mb-3">
+                    <label class="form-label" for="email">@SharedLocalizer["Email"]</label>
+                    <input class="form-control" id="email" name="email" type="email" value="@Model.Email" maxlength="254" autocomplete="off" required />
+                </div>
+            }
+            @if (operation is Operation.Create or Operation.ResetPassword)
+            {
+                <div class="mb-3">
+                    <label class="form-label" for="temporaryPassword">@SharedLocalizer["Temporary password"]</label>
+                    <input class="form-control" id="temporaryPassword" name="temporaryPassword" type="password" autocomplete="new-password"
+                           minlength="8" pattern="@UpdateLocalAccountPasswordRequest.PasswordPattern" aria-describedby="temporary-password-requirements" required />
+                    <div class="form-text" id="temporary-password-requirements">@SharedLocalizer[UpdateLocalAccountPasswordRequest.PasswordRequirements]</div>
+                </div>
+            }
+            <div class="mb-3">
+                <label class="form-label" for="currentPassword">@SharedLocalizer["Owner password"]</label>
+                <input class="form-control" id="currentPassword" name="currentPassword" type="password" autocomplete="current-password" required />
+            </div>
+            @if (Model.RequireTotp)
+            {
+                <div class="mb-3">
+                    <label class="form-label" for="authenticatorCode">@SharedLocalizer["Authenticator code"]</label>
+                    <input class="form-control" id="authenticatorCode" name="authenticatorCode" inputmode="numeric" pattern="[0-9]{6}"
+                           maxlength="6" autocomplete="one-time-code" required />
+                </div>
+            }
+            @if (operation == Operation.Delete)
+            {
+                <div class="form-check mb-3">
+                    <input class="form-check-input" id="confirmDelete" name="confirmDelete" type="checkbox" value="true" required />
+                    <label class="form-check-label" for="confirmDelete">@SharedLocalizer["Confirm account deletion"]</label>
+                </div>
+            }
+            <button type="submit" class="btn @(operation == Operation.Delete ? "btn-outline-danger" : "btn-outline-accent")">@SharedLocalizer[action]</button>
+            <a asp-page="/Admin/Collaborators" class="btn btn-outline-secondary">@SharedLocalizer["Cancel"]</a>
+        </form>
+    }
+
+    @if (Model.Accounts.Count > 0)
+    {
+        <div class="admin-settings-group">
+            @foreach (var collaborator in Model.Accounts)
+            {
+                <div class="settings-entry row align-items-center">
+                    <div class="col-auto">
+                        <i class="bi-person settings-entry-icon" aria-hidden="true"></i>
+                    </div>
+                    <div class="col">
+                        <div class="fw-semibold text-break">@collaborator.DisplayName</div>
+                        <div class="form-text text-break">@collaborator.Email</div>
+                        <div class="form-text">
+                            @SharedLocalizer[collaborator.IsDisabled ? "Disabled" : "Enabled"]
+                            @if (collaborator.MustChangePassword)
+                            {
+                                <span> · @SharedLocalizer["Password change required"]</span>
+                            }
+                            @if (collaborator.IsTotpEnabled)
+                            {
+                                <span> · @SharedLocalizer["Authenticator enrolled"]</span>
+                            }
+                        </div>
+                    </div>
+                    <div class="col-5 text-end dropdown">
+                        <button type="button" class="btn btn-sm btn-outline-accent dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false"
+                                aria-label="@SharedLocalizer["Manage {0}", collaborator.DisplayName]">@SharedLocalizer["Manage"]</button>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><a class="dropdown-item" asp-route-accountId="@collaborator.Id" asp-route-operation="@Operation.ChangeEmail">@SharedLocalizer["Change email"]</a></li>
+                            <li><a class="dropdown-item" asp-route-accountId="@collaborator.Id" asp-route-operation="@Operation.ResetPassword">@SharedLocalizer["Reset Password"]</a></li>
+                            @if (collaborator.IsTotpEnabled)
+                            {
+                                <li><a class="dropdown-item" asp-route-accountId="@collaborator.Id" asp-route-operation="@Operation.ResetAuthenticator">@SharedLocalizer["Reset Authenticator"]</a></li>
+                            }
+                            <li><a class="dropdown-item" asp-route-accountId="@collaborator.Id" asp-route-operation="@(collaborator.IsDisabled ? Operation.Enable : Operation.Disable)">@SharedLocalizer[collaborator.IsDisabled ? "Enable" : "Disable"]</a></li>
+                            <li><hr class="dropdown-divider" /></li>
+                            <li><a class="dropdown-item text-danger" asp-route-accountId="@collaborator.Id" asp-route-operation="@Operation.Delete">@SharedLocalizer["Delete collaborator"]</a></li>
+                        </ul>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+</div>

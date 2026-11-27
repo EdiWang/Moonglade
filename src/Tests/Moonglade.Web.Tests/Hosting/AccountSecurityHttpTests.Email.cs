@@ -120,7 +120,7 @@ public partial class AccountSecurityHttpTests
         var ct = TestContext.Current.CancellationToken;
         await using var fixture = await LocalAccountHttpFixture.CreateAsync(required: bound);
         var before = await InitializeAsync(fixture, bound);
-        var credentials = await fixture.Store.Db.OwnerAccount.AsNoTracking().SingleAsync(ct);
+        var credentials = await fixture.Store.Db.BlogAccount.AsNoTracking().SingleAsync(ct);
         string[] schemes = [CookieAuthenticationDefaults.AuthenticationScheme, BlogAuthSchemas.LocalAccountSetup,
             BlogAuthSchemas.LocalAccountTwoFactor, BlogAuthSchemas.InitialAccountSetup];
         foreach (var scheme in schemes) fixture.SetTicket(LocalAccountPrincipal.Create(before, scheme), scheme);
@@ -136,7 +136,7 @@ public partial class AccountSecurityHttpTests
         Assert.Equal(before.Id, current!.Id);
         Assert.Equal("NewOwner@example.test", current.Email);
         Assert.NotEqual(before.Revision, current.Revision);
-        var saved = await fixture.Store.Db.OwnerAccount.AsNoTracking().SingleAsync(ct);
+        var saved = await fixture.Store.Db.BlogAccount.AsNoTracking().SingleAsync(ct);
         Assert.Equal((credentials.PasswordHash, credentials.PasswordSalt, credentials.TotpSecret, credentials.LocalInitializedUtc),
             (saved.PasswordHash, saved.PasswordSalt, saved.TotpSecret, saved.LocalInitializedUtc));
         Assert.Equal(bound, current.IsTotpEnabled);

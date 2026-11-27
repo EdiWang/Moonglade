@@ -186,7 +186,7 @@ public partial class AccountSecurityHttpTests
             { ["AuthenticatorCode"] = LocalAccountPageFixture.Code(pending.TotpSecret!) }), token);
         Assert.Equal(HttpStatusCode.Redirect, completed.StatusCode);
         var before = (await fixture.Store.Accounts.ReadAsync(ct))!;
-        var initialized = await fixture.Store.Db.OwnerAccount.AsNoTracking().SingleAsync(ct);
+        var initialized = await fixture.Store.Db.BlogAccount.AsNoTracking().SingleAsync(ct);
         Assert.True(before.IsLocalInitialized);
         Assert.True(before.IsTotpEnabled);
         Assert.Equal(before, await fixture.Store.Accounts.AuthenticateLocalAsync(before.Email, initialPassword, ct));
@@ -229,7 +229,7 @@ public partial class AccountSecurityHttpTests
         Assert.NotEqual(before.Revision, current.Revision);
         Assert.True(current.IsLocalInitialized);
         Assert.True(current.IsTotpEnabled);
-        var changedRow = await fixture.Store.Db.OwnerAccount.AsNoTracking().SingleAsync(ct);
+        var changedRow = await fixture.Store.Db.BlogAccount.AsNoTracking().SingleAsync(ct);
         Assert.Equal(initialized.LocalInitializedUtc, changedRow.LocalInitializedUtc);
         Assert.Equal(initialized.TotpSecret, changedRow.TotpSecret);
         Assert.Null(await fixture.Store.Accounts.AuthenticateLocalAsync(before.Email, initialPassword, ct));
@@ -258,7 +258,7 @@ public partial class AccountSecurityHttpTests
         Assert.NotEqual(current.Revision, afterReset.Revision);
         Assert.True(afterReset.IsLocalInitialized);
         Assert.False(afterReset.IsTotpEnabled);
-        var resetRow = await fixture.Store.Db.OwnerAccount.AsNoTracking().SingleAsync(ct);
+        var resetRow = await fixture.Store.Db.BlogAccount.AsNoTracking().SingleAsync(ct);
         Assert.Equal(initialized.LocalInitializedUtc, resetRow.LocalInitializedUtc);
         Assert.Equal(afterReset, await fixture.Store.Accounts.AuthenticateLocalAsync(before.Email, replacementPassword, ct));
         Assert.Null(await fixture.Store.Accounts.AuthenticateLocalAsync(before.Email, prefix, ct));

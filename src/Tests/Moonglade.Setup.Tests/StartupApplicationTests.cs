@@ -106,7 +106,7 @@ public class StartupApplicationTests
 
         hosted.Verify(service => service.StartAsync(It.IsAny<CancellationToken>()), Times.Never);
         Assert.Equal(settings[nameof(GeneralSettings)], harness.Config.Capture().GeneralSettings.ToJson());
-        Assert.False(await db.OwnerAccount.AnyAsync(ct));
+        Assert.False(await db.BlogAccount.AnyAsync(ct));
         Assert.DoesNotContain(logger.Entries, entry => entry.Level == LogLevel.Critical);
         db.ChangeTracker.Clear();
         var rows = await db.BlogConfiguration.ToDictionaryAsync(row => row.CfgKey, ct);

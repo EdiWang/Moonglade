@@ -19,7 +19,7 @@ public class CommentController(
         IBlogConfig blogConfig,
         CommentSubmissionGuard submissionGuard,
         IEventMediator eventMediator,
-        ILogger<CommentController> logger) : BlogControllerBase(commandMediator, logger)
+        ILogger<CommentController> logger) : ContentControllerBase(commandMediator, logger)
 {
     [HttpPost("{postId:guid}")]
     [AllowAnonymous]

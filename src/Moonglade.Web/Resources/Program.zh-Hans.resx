@@ -2354,4 +2354,42 @@
   <data name="Right sidebar" xml:space="preserve">
     <value>右侧侧栏</value>
   </data>
+  <data name="Collaborator" xml:space="preserve"><value>协同编辑</value></data>
+  <data name="Account ID" xml:space="preserve"><value>账号 ID</value></data>
+  <data name="Change temporary password" xml:space="preserve"><value>修改临时密码</value></data>
+  <data name="Confirm password" xml:space="preserve"><value>确认密码</value></data>
+  <data name="Passwords do not match." xml:space="preserve"><value>两次输入的密码不一致。</value></data>
+  <data name="Choose a password different from the temporary password." xml:space="preserve"><value>请选择与临时密码不同的密码。</value></data>
+  <data name="Collaborators" xml:space="preserve"><value>协同编辑</value></data>
+  <data name="{0} of {1} collaborator slots in use" xml:space="preserve"><value>已使用 {0} 个协同编辑名额，共 {1} 个</value></data>
+  <data name="Add collaborator" xml:space="preserve"><value>添加协同编辑</value></data>
+  <data name="Change email" xml:space="preserve"><value>修改邮箱</value></data>
+  <data name="Delete collaborator" xml:space="preserve"><value>删除协同编辑</value></data>
+  <data name="Share the temporary password with the collaborator. They must change it when they sign in." xml:space="preserve"><value>请将临时密码告知协同编辑。对方必须在登录时修改密码。</value></data>
+  <data name="This signs the collaborator out. They must change the temporary password when they sign in." xml:space="preserve"><value>此操作会将协同编辑登出。对方必须在登录时修改临时密码。</value></data>
+  <data name="This signs the collaborator out and clears their authenticator setup." xml:space="preserve"><value>此操作会将协同编辑登出并清除其验证器设置。</value></data>
+  <data name="Changing the email signs the collaborator out." xml:space="preserve"><value>修改邮箱会将协同编辑登出。</value></data>
+  <data name="This signs the collaborator out. The account continues to use a slot." xml:space="preserve"><value>此操作会将协同编辑登出。账号仍占用一个名额。</value></data>
+  <data name="This permanently deletes the account and frees its slot. Activity history is kept." xml:space="preserve"><value>此操作会永久删除账号并释放名额。活动记录会保留。</value></data>
+  <data name="Disabled accounts still use a slot." xml:space="preserve"><value>停用的账号仍占用名额。</value></data>
+  <data name="Temporary password" xml:space="preserve"><value>临时密码</value></data>
+  <data name="Owner password" xml:space="preserve"><value>站长密码</value></data>
+  <data name="Confirm account deletion" xml:space="preserve"><value>确认删除账号</value></data>
+  <data name="Password change required" xml:space="preserve"><value>需要修改密码</value></data>
+  <data name="Authenticator enrolled" xml:space="preserve"><value>已设置验证器</value></data>
+  <data name="Manage {0}" xml:space="preserve"><value>管理 {0}</value></data>
+  <data name="Check the account details and try again." xml:space="preserve"><value>请检查账号信息后重试。</value></data>
+  <data name="The collaborator account changed. Reload and try again." xml:space="preserve"><value>协同编辑账号已有变更。请刷新页面后重试。</value></data>
+  <data name="Confirm deletion before deleting the account." xml:space="preserve"><value>删除账号前请勾选确认。</value></data>
+  <data name="Both collaborator slots are in use." xml:space="preserve"><value>两个协同编辑名额均已占用。</value></data>
+  <data name="This email address is already in use." xml:space="preserve"><value>此邮箱已被使用。</value></data>
+  <data name="Old password is incorrect." xml:space="preserve"><value>当前密码不正确。</value></data>
+  <data name="The account changed. Sign in again." xml:space="preserve"><value>账号已有变更，请重新登录。</value></data>
+  <data name="Collaborator account created" xml:space="preserve"><value>已创建协同编辑账号</value></data>
+  <data name="Collaborator email changed" xml:space="preserve"><value>已修改协同编辑邮箱</value></data>
+  <data name="Collaborator password reset" xml:space="preserve"><value>已重置协同编辑密码</value></data>
+  <data name="Collaborator authenticator reset" xml:space="preserve"><value>已重置协同编辑验证器</value></data>
+  <data name="Collaborator account disabled" xml:space="preserve"><value>已停用协同编辑账号</value></data>
+  <data name="Collaborator account enabled" xml:space="preserve"><value>已启用协同编辑账号</value></data>
+  <data name="Collaborator account deleted" xml:space="preserve"><value>已删除协同编辑账号</value></data>
 </root>

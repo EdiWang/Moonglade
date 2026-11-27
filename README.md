@@ -31,6 +31,8 @@ For 16.10.0 to 16.11.0, run `11.owner-oidc-binding-only.sql` after the earlier u
 
 The widget-composer schema also requires `12.widget-regions.sql` after script 11. It replaces widget numeric placement bands with explicit regions and region-local order, and raises the stored title limit to 128. Follow the [widget upgrade and recovery steps](database/README.md#widget-regionorder-upgrade-12) before starting this application against an existing database.
 
+Run the provider's `13.unified-accounts.sql` after script 12 and before starting a version with collaborator accounts. The script preserves the owner identity, credentials, OIDC binding, Data Protection keys and activity history. For rollback, restore the pre-upgrade database backup and its matching application version together. [Unified account upgrade steps](database/README.md#unified-account-upgrade-13)
+
 For databases older than 16.9.0, run the applicable category ID and PostgreSQL naming upgrades (`1` and `2`) first. Keep access restricted until any required owner setup is complete. [First run](#first-run)
 
 ### Widget Placement
@@ -126,15 +128,21 @@ Choose HTML (default) or Markdown for new posts under **Settings > Content > Def
 
 ### Authentication
 
-Local sign-in uses email, password, and TOTP. Set `Authentication:Totp:Required` to `false` to make TOTP optional. `Authentication:LocalAccountRateLimit` defaults to 10 attempts per minute, per client IP during setup and per account/IP during sign-in and later TOTP verification.
+The owner and up to two collaborators use the same email and password sign-in. TOTP is required by default. Set `Authentication:Totp:Required` to `false` to disable TOTP during local sign-in, including for accounts with an enrolled authenticator. Sign-in and authenticator screens use the desktop layout. `Authentication:LocalAccountRateLimit` defaults to 10 attempts per minute, per client IP during setup and per account/IP during sign-in, TOTP verification, collaborator password changes and collaborator management.
 
 Use **Remember this device** only on trusted devices. The browser's protected HTTPS cookie skips TOTP for 30 days and survives sign-out. Sign-in still requires the password. Changing the password or email, resetting the authenticator, or clearing the cookie ends device trust.
 
-In **Account Settings**, email changes require the current password and revoke account sessions while retaining TOTP. An authenticator reset requires the current password and ends local sessions so the owner can re-enroll. A password change refreshes the current session.
+The owner manages collaborators under **Account Settings → Collaborators**. Creation and changes require fresh owner password and applicable TOTP proof. Give the collaborator their temporary password securely. It has no time-based expiry and must be changed before they can manage content. Account and credential changes revoke the affected collaborator's prior sessions and remembered devices. A disabled account still occupies a slot. Deleting it frees the slot and preserves its activity history. Collaborators can change their own password from the account menu. The owner handles lost passwords, lost authenticators and email changes.
+
+Collaborators can manage all posts, pages, categories, tags and built-in comments, including scheduling, restoring recycled content, uploading article images and viewing commenter email addresses and IPs. The owner manages settings, menus, widgets, site assets, activity history, exports and account administration. Permanent deletion and emptying of post and page recycle bins are owner-only.
+
+Treat collaborators as trusted publishers. They can use the existing HTML, embeds and per-page CSS. Content served on the blog origin can interact with a viewer's signed-in session. Give accounts only to people you trust with that publishing capability.
+
+In the owner's **Account Settings**, email changes and authenticator resets require the current password. Email changes revoke sessions and retain TOTP. An authenticator reset ends local sessions so the owner can re-enroll. A password change refreshes the current session.
 
 Data Protection stores keys in `DataProtectionKeys` (`data_protection_keys` on PostgreSQL). The stable `Moonglade` application name lets cookies, antiforgery tokens, and temporary proofs work across container replacements and replicas sharing the database. Sign in again after the first upgrade from container-local keys.
 
-Under **Account Settings > Third-party sign-in**, configure one public HTTPS OpenID Connect provider, register the site's `/signin-oidc` callback, and confirm the owner binding. Choose a provider that honors `prompt=login` for reauthentication on each sign-in. Third-party sign-in is available while an account is bound. Unbinding the account or deleting the provider revokes its Moonglade sessions. Unbinding retains the provider configuration for binding another account.
+Under **Account Settings → Third-party sign-in**, configure one public HTTPS OpenID Connect provider, register the site's `/signin-oidc` callback, and confirm the owner binding. Choose a provider that honors `prompt=login` for reauthentication on each sign-in. A bound identity can sign in as the owner. Unbinding the account or deleting the provider revokes its Moonglade sessions. Unbinding retains the provider configuration for binding another identity.
 
 Preserve the key table when backing up or restoring the database. It also holds the keys needed to decrypt the OIDC client secret under `Moonglade.OidcCredentials`. If the OIDC key is lost, save the client secret again in Account Settings. Restrict database and backup access and use encryption at rest to protect the stored keys.
 

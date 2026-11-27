@@ -174,21 +174,21 @@ public class LocalAccountSetupHttpTests
         var token = await fixture.SetupTokenAsync();
         using var staged = await fixture.SendAsync(HttpMethod.Post, "/auth/setup-account", SetupForm(), token);
         Assert.Equal(HttpStatusCode.Redirect, staged.StatusCode);
-        Assert.False(await fixture.Store.Db.OwnerAccount.AnyAsync(ct));
+        Assert.False(await fixture.Store.Db.BlogAccount.AnyAsync(ct));
         var pending = JsonSerializer.Deserialize<PendingOwnerSetup>(fixture.ReadTicket(BlogAuthSchemas.InitialAccountSetup)
             .Principal.FindFirstValue("moonglade:pending-setup")!)!;
         token = await fixture.SetupTokenAsync();
         using var rejected = await fixture.SendAsync(HttpMethod.Post, "/auth/setup-account?handler=Verify",
             ProofForm("invalid-code"), token);
         Assert.Equal(HttpStatusCode.BadRequest, rejected.StatusCode);
-        Assert.False(await fixture.Store.Db.OwnerAccount.AnyAsync(ct));
+        Assert.False(await fixture.Store.Db.BlogAccount.AnyAsync(ct));
         using var accepted = await fixture.SendAsync(HttpMethod.Post, "/auth/setup-account?handler=Verify",
             ProofForm(LocalAccountPageFixture.Code(pending.TotpSecret!)), token);
         Assert.Equal(HttpStatusCode.Redirect, accepted.StatusCode);
         Assert.Equal("/", accepted.Headers.Location!.OriginalString);
         var account = await fixture.Store.Accounts.ReadAsync(ct);
         Assert.True(account!.IsTotpEnabled);
-        Assert.Equal(pending.TotpSecret, (await fixture.Store.Db.OwnerAccount.AsNoTracking().SingleAsync(ct)).TotpSecret);
+        Assert.Equal(pending.TotpSecret, (await fixture.Store.Db.BlogAccount.AsNoTracking().SingleAsync(ct)).TotpSecret);
         using var admin = await fixture.SendAsync(HttpMethod.Get, "/admin/probe");
         Assert.Equal(HttpStatusCode.OK, admin.StatusCode);
     }
@@ -202,7 +202,7 @@ public class LocalAccountSetupHttpTests
         if (invalid) await fixture.SetupTokenAsync();
         using var response = await fixture.SendAsync(HttpMethod.Post, "/auth/setup-account", SetupForm(), invalid ? "invalid-token" : null);
         Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
-        Assert.False(await fixture.Store.Db.OwnerAccount.AnyAsync(TestContext.Current.CancellationToken));
+        Assert.False(await fixture.Store.Db.BlogAccount.AnyAsync(TestContext.Current.CancellationToken));
     }
 
     [Fact]
@@ -214,7 +214,7 @@ public class LocalAccountSetupHttpTests
         Assert.Equal(HttpStatusCode.BadRequest, first.StatusCode);
         using var rejected = await fixture.SendAsync(HttpMethod.Post, "/auth/setup-account", SetupForm(), token);
         Assert.Equal(HttpStatusCode.TooManyRequests, rejected.StatusCode);
-        Assert.False(await fixture.Store.Db.OwnerAccount.AnyAsync(TestContext.Current.CancellationToken));
+        Assert.False(await fixture.Store.Db.BlogAccount.AnyAsync(TestContext.Current.CancellationToken));
         Assert.Equal("application/problem+json", rejected.Content.Headers.ContentType!.MediaType);
     }
 
@@ -228,7 +228,7 @@ public class LocalAccountSetupHttpTests
         fixture.CorruptTicket(BlogAuthSchemas.InitialAccountSetup);
         using var proof = await fixture.SendAsync(HttpMethod.Post, "/auth/setup-account?handler=Verify", ProofForm("123456"), token);
         Assert.Equal(HttpStatusCode.BadRequest, proof.StatusCode);
-        Assert.False(await fixture.Store.Db.OwnerAccount.AnyAsync(TestContext.Current.CancellationToken));
+        Assert.False(await fixture.Store.Db.BlogAccount.AnyAsync(TestContext.Current.CancellationToken));
     }
 
     [Fact]
@@ -246,7 +246,7 @@ public class LocalAccountSetupHttpTests
             ProofForm(LocalAccountPageFixture.Code(pending.TotpSecret!)), token);
 
         Assert.Equal(HttpStatusCode.BadRequest, proof.StatusCode);
-        Assert.False(await fixture.Store.Db.OwnerAccount.AnyAsync(TestContext.Current.CancellationToken));
+        Assert.False(await fixture.Store.Db.BlogAccount.AnyAsync(TestContext.Current.CancellationToken));
     }
 
     [Fact]
@@ -266,7 +266,7 @@ public class LocalAccountSetupHttpTests
             ProofForm(LocalAccountPageFixture.Code(pending.TotpSecret!)), token);
 
         Assert.Equal(HttpStatusCode.TooManyRequests, throttled.StatusCode);
-        Assert.False(await fixture.Store.Db.OwnerAccount.AnyAsync(TestContext.Current.CancellationToken));
+        Assert.False(await fixture.Store.Db.BlogAccount.AnyAsync(TestContext.Current.CancellationToken));
     }
 
     [Theory]
@@ -280,14 +280,14 @@ public class LocalAccountSetupHttpTests
         var token = await fixture.SetupTokenAsync();
         using var staged = await fixture.SendAsync(HttpMethod.Post, "/auth/setup-account", SetupForm(), token);
         Assert.Equal(HttpStatusCode.Redirect, staged.StatusCode);
-        Assert.False(await fixture.Store.Db.OwnerAccount.AnyAsync(ct));
+        Assert.False(await fixture.Store.Db.BlogAccount.AnyAsync(ct));
         var pending = JsonSerializer.Deserialize<PendingOwnerSetup>(fixture.ReadTicket(BlogAuthSchemas.InitialAccountSetup)
             .Principal.FindFirstValue("moonglade:pending-setup")!)!;
         using var invalid = await fixture.SendAsync(HttpMethod.Post, "/auth/setup-account?handler=Verify",
             new FormUrlEncodedContent(new Dictionary<string, string>
             { ["Email"] = LocalAccountPageFixture.Email, ["AuthenticatorCode"] = "invalid-code" }), token);
         Assert.Equal(HttpStatusCode.BadRequest, invalid.StatusCode);
-        Assert.False(await fixture.Store.Db.OwnerAccount.AnyAsync(ct));
+        Assert.False(await fixture.Store.Db.BlogAccount.AnyAsync(ct));
         var fields = new Dictionary<string, string>
         {
             ["AuthenticatorCode"] = LocalAccountPageFixture.Code(pending.TotpSecret!)
@@ -299,7 +299,7 @@ public class LocalAccountSetupHttpTests
 
         Assert.Equal(HttpStatusCode.TooManyRequests, throttled.StatusCode);
         Assert.Equal("application/problem+json", throttled.Content.Headers.ContentType!.MediaType);
-        Assert.False(await fixture.Store.Db.OwnerAccount.AnyAsync(ct));
+        Assert.False(await fixture.Store.Db.BlogAccount.AnyAsync(ct));
     }
 
     [Fact]

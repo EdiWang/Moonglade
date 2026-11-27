@@ -1,15 +1,20 @@
 #nullable enable
 
 using LiteBus.Commands.Abstractions;
-using Moonglade.ActivityLog;
-using Moonglade.Data.Entities;
 using Moonglade.Web.Services;
 
 namespace Moonglade.Web.Controllers;
 
 [Authorize(Policy = BlogAuthSchemas.AdministratorPolicy)]
+public abstract class BlogControllerBase(ICommandMediator commandMediator, ILogger logger)
+    : ActivityControllerBase(commandMediator, logger);
+
+[Authorize(Policy = BlogAuthSchemas.ContentManagementPolicy)]
+public abstract class ContentControllerBase(ICommandMediator commandMediator, ILogger logger)
+    : ActivityControllerBase(commandMediator, logger);
+
 [ApiController]
-public abstract class BlogControllerBase(ICommandMediator commandMediator, ILogger logger) : ControllerBase
+public abstract class ActivityControllerBase(ICommandMediator commandMediator, ILogger logger) : ControllerBase
 {
     protected readonly ICommandMediator CommandMediator = commandMediator;
 
@@ -18,19 +23,5 @@ public abstract class BlogControllerBase(ICommandMediator commandMediator, ILogg
         string? targetDisplayName,
         IReadOnlyDictionary<string, object?>? details = null,
         string? targetId = null) =>
-        ActivityLogDispatcher.SendAsync(
-            CommandMediator,
-            logger,
-            eventKey,
-            () => new CreateActivityLogCommand(
-                eventKey,
-                ActivityActorKind.Administrator,
-                User.Identity?.Name,
-                targetId,
-                targetDisplayName,
-                details,
-                HttpContext.Connection.RemoteIpAddress?.ToString(),
-                Request.Headers.UserAgent.ToString()),
-            ActivityLogDispatchSource.Controller,
-            HttpContext.TraceIdentifier);
+        ActivityLogDispatcher.SendForRequestAsync(CommandMediator, logger, HttpContext, eventKey, targetDisplayName, details, targetId);
 }

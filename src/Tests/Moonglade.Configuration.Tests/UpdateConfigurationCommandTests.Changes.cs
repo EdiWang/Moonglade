@@ -23,14 +23,14 @@ public partial class UpdateConfigurationCommandTests
         const string legacy = """{"ownerEmail":"legacy@example.test","ownerName":"Retained owner","siteTitle":"Before","description":"Retained description"}""";
         var parsed = BlogConfig.Parse(new Dictionary<string, string> { [nameof(GeneralSettings)] = legacy });
         var config = new BlogConfig(parsed.Snapshot);
-        var account = new OwnerAccountEntity
+        var account = new BlogAccountEntity
         {
             Id = Guid.NewGuid(),
             Email = "authoritative@example.test",
             NormalizedEmail = "AUTHORITATIVE@EXAMPLE.TEST",
             Revision = Guid.NewGuid()
         };
-        db.OwnerAccount.Add(account);
+        db.BlogAccount.Add(account);
         var row = await SeedGroup(db, config.Capture().GeneralSettings, ct);
         var submitted = BlogConfig.Parse(new Dictionary<string, string>
         {
@@ -41,8 +41,8 @@ public partial class UpdateConfigurationCommandTests
 
         Assert.Equal("After", config.Capture().GeneralSettings.SiteTitle);
         Assert.Equal(new SettingValueChange("SiteTitle", "Before", "After"), Assert.Single(result.Changes));
-        Assert.Equal("authoritative@example.test", (await db.OwnerAccount.AsNoTracking().SingleAsync(ct)).Email);
-        Assert.Equal(account.Revision, (await db.OwnerAccount.AsNoTracking().SingleAsync(ct)).Revision);
+        Assert.Equal("authoritative@example.test", (await db.BlogAccount.AsNoTracking().SingleAsync(ct)).Email);
+        Assert.Equal(account.Revision, (await db.BlogAccount.AsNoTracking().SingleAsync(ct)).Revision);
         using var json = JsonDocument.Parse(row.CfgValue);
         Assert.DoesNotContain(json.RootElement.EnumerateObject(), value => value.Name.Equals("OwnerEmail", StringComparison.OrdinalIgnoreCase));
         Assert.Equal("After", json.RootElement.GetProperty("siteTitle").GetString());

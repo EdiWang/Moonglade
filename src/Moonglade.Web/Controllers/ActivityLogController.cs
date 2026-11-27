@@ -6,10 +6,10 @@ using Microsoft.Extensions.Localization;
 using Moonglade.ActivityLog;
 using Moonglade.Data.Entities;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace Moonglade.Web.Controllers;
 
-[Authorize]
 [ApiController]
 [Route("api/[controller]")]
 public class ActivityLogController(
@@ -82,7 +82,7 @@ public class ActivityLogController(
             log.Details.Where(field => field.Key != ActivityLogSettingChange.DetailsKey)
                 .Select(field => new ActivityLogDetailField(
                     field.Key, localizer[DetailLabel(field.Key)].Value, field.Value)).ToList(),
-            changes));
+            changes) { ActorAccountId = log.ActorAccountId });
     }
 
     [HttpDelete("clear")]
@@ -98,9 +98,13 @@ public class ActivityLogController(
         return NoContent();
     }
 
-    private string Actor(ActivityLogItem log) => log.ActorKind == ActivityActorKind.System
-        ? localizer["System"].Value
-        : string.IsNullOrWhiteSpace(log.ActorDisplayName) ? localizer["Administrator"].Value : log.ActorDisplayName;
+    private string Actor(ActivityLogItem log) => log.ActorKind switch
+    {
+        ActivityActorKind.System => localizer["System"].Value,
+        _ when !string.IsNullOrWhiteSpace(log.ActorDisplayName) => log.ActorDisplayName,
+        ActivityActorKind.Collaborator => localizer["Collaborator"].Value,
+        _ => localizer["Administrator"].Value
+    };
 
     private string Summary(ActivityLogItem log)
     {
@@ -200,6 +204,10 @@ public sealed record ActivityLogListItem(long Id, string EventKey, DateTime Even
 public sealed record ActivityLogDetail(
     long Id, string EventKey, string Heading, DateTime EventTimeUtc, ActivityActorKind ActorKind, string Actor,
     string? TargetId, string? TargetDisplayName, string? IpAddress, string? UserAgent, IReadOnlyList<ActivityLogDetailField> Fields,
-    IReadOnlyList<ActivityLogDetailChange>? Changes = null);
+    IReadOnlyList<ActivityLogDetailChange>? Changes = null)
+{
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public Guid? ActorAccountId { get; init; }
+}
 public sealed record ActivityLogDetailField(string Key, string Label, JsonElement Value);
 public sealed record ActivityLogDetailChange(string Key, string Label, JsonElement OldValue, JsonElement NewValue);

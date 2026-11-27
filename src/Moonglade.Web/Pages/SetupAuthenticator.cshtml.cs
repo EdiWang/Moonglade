@@ -14,7 +14,7 @@ namespace Moonglade.Web.Pages;
 [EnableRateLimiting(LocalAccountRateLimitPolicy.PolicyName)]
 public class SetupAuthenticatorModel(
     IOptions<AuthenticationSettings> authSettings,
-    OwnerAccountStore accounts,
+    LocalAccountStore accounts,
     ILocalAccountTotpService totpService,
     ILogger<SetupAuthenticatorModel> logger) : PageModel
 {
@@ -54,10 +54,10 @@ public class SetupAuthenticatorModel(
             Response.StatusCode = StatusCodes.Status400BadRequest;
             return Page();
         }
-        OwnerAccountSnapshot saved;
+        LocalAccountSnapshot saved;
         try
         {
-            saved = await accounts.EnrollTotpAsync(account.Id, account.Revision, secret, AuthenticatorCode, HttpContext.RequestAborted);
+            saved = await accounts.EnrollTotpAsync(account, secret, AuthenticatorCode, HttpContext.RequestAborted);
         }
         catch (DbUpdateConcurrencyException)
         {
@@ -74,14 +74,14 @@ public class SetupAuthenticatorModel(
         await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme,
             LocalAccountPrincipal.Create(saved, CookieAuthenticationDefaults.AuthenticationScheme));
         logger.LogInformation("Local account authenticator enrollment completed");
-        return RedirectToPage("/Admin/Dashboard");
+        return RedirectToPage(saved.IsOwner ? "/Admin/Dashboard" : "/Admin/Post");
     }
 
-    private async Task<OwnerAccountSnapshot> CurrentAccountAsync()
+    private async Task<LocalAccountSnapshot> CurrentAccountAsync()
     {
         if (!authSettings.Value.Totp.Required) return null;
-        var account = await accounts.ReadAsync(HttpContext.RequestAborted);
-        return LocalAccountPrincipal.Matches(User, account) && !account.IsTotpEnabled ? account : null;
+        var account = await accounts.ReadAsync(User, HttpContext.RequestAborted);
+        return account is { MustChangePassword: false, IsTotpEnabled: false } ? account : null;
     }
 
     private void Display(string email, string secret)

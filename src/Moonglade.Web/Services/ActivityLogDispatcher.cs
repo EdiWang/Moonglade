@@ -14,6 +14,34 @@ internal enum ActivityLogDispatchSource
 
 internal static class ActivityLogDispatcher
 {
+    public static Task SendForRequestAsync(
+        ICommandMediator commandMediator,
+        ILogger logger,
+        HttpContext context,
+        string eventKey,
+        string? targetDisplayName,
+        IReadOnlyDictionary<string, object?>? details = null,
+        string? targetId = null) =>
+        SendAsync(
+            commandMediator,
+            logger,
+            eventKey,
+            () =>
+            {
+                var actor = ActivityActor.FromPrincipal(context.User);
+                return new CreateActivityLogCommand(
+                    eventKey,
+                    actor.Kind,
+                    actor.DisplayName,
+                    targetId,
+                    targetDisplayName,
+                    details,
+                    context.Connection.RemoteIpAddress?.ToString(),
+                    context.Request.Headers.UserAgent.ToString()) { ActorAccountId = actor.AccountId };
+            },
+            ActivityLogDispatchSource.Controller,
+            context.TraceIdentifier);
+
     public static async Task SendAsync(
         ICommandMediator commandMediator,
         ILogger logger,

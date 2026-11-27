@@ -150,6 +150,9 @@ public sealed class OwnerOidcStore
         var row = await _db.OwnerOidc.AsNoTracking().SingleOrDefaultAsync(ct);
         if (row?.Revision != revision || (row is not null && row.OwnerId != ownerId))
             throw new DbUpdateConcurrencyException();
+        if (row is null && !await _db.BlogAccount.AnyAsync(
+                account => account.Id == ownerId && account.Slot == BlogAccountEntity.OwnerSlot, ct))
+            throw new DbUpdateConcurrencyException();
         if (row is not null) _db.OwnerOidc.Attach(row);
         return row;
     }

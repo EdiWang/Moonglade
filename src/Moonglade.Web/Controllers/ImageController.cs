@@ -22,7 +22,7 @@ public class ImageController(
         IOptions<ImageStorageSettings> imageStorageSettings,
         CannonService cannonService,
         ICommandMediator commandMediator)
-    : BlogControllerBase(commandMediator, logger)
+    : ContentControllerBase(commandMediator, logger)
 {
     private const long MaxUploadBytes = 5 * 1024 * 1024;
     private const string ImageCacheKeyPrefix = "image-meta:";

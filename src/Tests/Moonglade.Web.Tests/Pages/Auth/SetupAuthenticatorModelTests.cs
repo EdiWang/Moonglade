@@ -32,7 +32,7 @@ public class SetupAuthenticatorModelTests
         Assert.Equal(secret, model.SetupKey);
         Assert.True(fixture.Totp.VerifyCode(secret!, LocalAccountPageFixture.Code(secret!)));
         Assert.Equal(expires, ticket.Properties.ExpiresUtc);
-        Assert.Null((await fixture.Db.OwnerAccount.AsNoTracking().SingleAsync(TestContext.Current.CancellationToken)).TotpSecret);
+        Assert.Null((await fixture.Db.BlogAccount.AsNoTracking().SingleAsync(TestContext.Current.CancellationToken)).TotpSecret);
         Assert.Equal(account, await fixture.Accounts.ReadAsync(TestContext.Current.CancellationToken));
     }
 
@@ -51,7 +51,7 @@ public class SetupAuthenticatorModelTests
         Assert.Equal(StatusCodes.Status400BadRequest, model.Response.StatusCode);
         Assert.Equal("JBSWY3DPEHPK3PXP", model.SetupKey);
         Assert.Empty(fixture.SignIns);
-        Assert.Null((await fixture.Db.OwnerAccount.AsNoTracking().SingleAsync(TestContext.Current.CancellationToken)).TotpSecret);
+        Assert.Null((await fixture.Db.BlogAccount.AsNoTracking().SingleAsync(TestContext.Current.CancellationToken)).TotpSecret);
     }
 
     [Fact]
@@ -90,7 +90,7 @@ public class SetupAuthenticatorModelTests
         var saved = await fixture.Accounts.ReadAsync(TestContext.Current.CancellationToken);
         Assert.True(saved!.IsTotpEnabled);
         Assert.NotEqual(account.Revision, saved.Revision);
-        Assert.Equal(secret, (await fixture.Db.OwnerAccount.AsNoTracking().SingleAsync(TestContext.Current.CancellationToken)).TotpSecret);
+        Assert.Equal(secret, (await fixture.Db.BlogAccount.AsNoTracking().SingleAsync(TestContext.Current.CancellationToken)).TotpSecret);
         Assert.Contains(BlogAuthSchemas.LocalAccountSetup, fixture.SignOuts);
         var ticket = Assert.Single(fixture.SignIns);
         Assert.Equal(CookieAuthenticationDefaults.AuthenticationScheme, ticket.AuthenticationScheme);
@@ -119,18 +119,18 @@ public class SetupAuthenticatorModelTests
         else
         {
             await fixture.Db.Database.ExecuteSqlRawAsync(
-                "CREATE TRIGGER reject_account BEFORE UPDATE ON OwnerAccount BEGIN SELECT RAISE(ABORT, 'Save rejected'); END;", ct);
+                "CREATE TRIGGER reject_account BEFORE UPDATE ON BlogAccount BEGIN SELECT RAISE(ABORT, 'Save rejected'); END;", ct);
             await Assert.ThrowsAsync<DbUpdateException>(() => model.OnPostAsync());
         }
         Assert.Empty(fixture.SignIns);
-        var saved = await fixture.Db.OwnerAccount.AsNoTracking().SingleAsync(ct);
+        var saved = await fixture.Db.BlogAccount.AsNoTracking().SingleAsync(ct);
         Assert.Null(saved.TotpSecret);
         Assert.True(saved.LocalInitializedUtc.HasValue);
         Assert.Equal(account.Id, saved.Id);
     }
 
     private static SetupAuthenticatorModel CreateModel(LocalAccountPageFixture fixture) =>
-        fixture.Attach(new SetupAuthenticatorModel(fixture.Options, fixture.Accounts, fixture.Totp,
+        fixture.Attach(new SetupAuthenticatorModel(fixture.Options, fixture.LocalAccounts, fixture.Totp,
             Mock.Of<ILogger<SetupAuthenticatorModel>>()), BlogAuthSchemas.LocalAccountSetup);
 
 }

@@ -92,7 +92,7 @@ public partial class SettingsControllerTests
         var result = await controller.UpdateLocalAccountPassword(request);
 
         Assert.IsType<NoContentResult>(result);
-        var saved = await mediator.Db.OwnerAccount.AsNoTracking().SingleAsync(TestContext.Current.CancellationToken);
+        var saved = await mediator.Db.BlogAccount.AsNoTracking().SingleAsync(TestContext.Current.CancellationToken);
         Assert.Equal(original.Email, saved.Email);
         Assert.Equal(original.Id, saved.Id);
         Assert.NotEqual(original.PasswordSalt, saved.PasswordSalt);
@@ -122,13 +122,13 @@ public partial class SettingsControllerTests
         var logger = new Mock<ILogger<AccountController>>();
         var controller = CreateController(original, mediator, authentication, logger.Object);
         authentication.Setup(p => p.SignOutAsync(It.IsAny<HttpContext>(), It.IsAny<string>(), It.IsAny<AuthenticationProperties>()))
-            .Callback(() => Assert.Null(mediator.Db.OwnerAccount.AsNoTracking().Single().TotpSecret))
+            .Callback(() => Assert.Null(mediator.Db.BlogAccount.AsNoTracking().Single().TotpSecret))
             .Returns(Task.CompletedTask);
 
         var result = await controller.ResetLocalAccountTotp(new ResetLocalAccountTotpRequest { CurrentPassword = "Password1" });
 
         Assert.IsType<NoContentResult>(result);
-        var saved = await mediator.Db.OwnerAccount.AsNoTracking().SingleAsync(TestContext.Current.CancellationToken);
+        var saved = await mediator.Db.BlogAccount.AsNoTracking().SingleAsync(TestContext.Current.CancellationToken);
         Assert.Equal(original.Email, saved.Email);
         Assert.Equal(original.PasswordHash, saved.PasswordHash);
         Assert.Equal(original.PasswordSalt, saved.PasswordSalt);
@@ -155,7 +155,7 @@ public partial class SettingsControllerTests
         var logger = new Mock<ILogger<AccountController>>();
         var controller = CreateController(account, mediator, authentication, logger.Object);
         await mediator.Db.Database.ExecuteSqlRawAsync(
-            "CREATE TRIGGER reject_settings BEFORE UPDATE ON OwnerAccount BEGIN SELECT RAISE(ABORT, 'Save rejected'); END;",
+            "CREATE TRIGGER reject_settings BEFORE UPDATE ON BlogAccount BEGIN SELECT RAISE(ABORT, 'Save rejected'); END;",
             TestContext.Current.CancellationToken);
 
         await Assert.ThrowsAsync<DbUpdateException>(() => resetTotp
@@ -166,7 +166,7 @@ public partial class SettingsControllerTests
                 NewPassword = "NewPassword2"
             }));
 
-        var saved = await mediator.Db.OwnerAccount.AsNoTracking().SingleAsync(TestContext.Current.CancellationToken);
+        var saved = await mediator.Db.BlogAccount.AsNoTracking().SingleAsync(TestContext.Current.CancellationToken);
         Assert.Equal(account.PasswordHash, saved.PasswordHash);
         Assert.Equal(account.PasswordSalt, saved.PasswordSalt);
         Assert.Equal(account.TotpSecret, saved.TotpSecret);
@@ -250,7 +250,7 @@ public partial class SettingsControllerTests
             controller.ResetLocalAccountTotp(new ResetLocalAccountTotpRequest { CurrentPassword = "Password1" })));
 
         Assert.False((await mediator.Accounts.ReadAsync(TestContext.Current.CancellationToken))!.IsTotpEnabled);
-        var saved = await mediator.Db.OwnerAccount.AsNoTracking().SingleAsync(TestContext.Current.CancellationToken);
+        var saved = await mediator.Db.BlogAccount.AsNoTracking().SingleAsync(TestContext.Current.CancellationToken);
         Assert.Null(saved.TotpSecret);
         Assert.Single(mediator.Commands.OfType<CreateActivityLogCommand>());
         authentication.Verify(p => p.SignOutAsync(controller.HttpContext, CookieAuthenticationDefaults.AuthenticationScheme, null), Times.Once);

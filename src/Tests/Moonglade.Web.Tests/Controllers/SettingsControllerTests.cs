@@ -227,7 +227,7 @@ public partial class SettingsControllerTests
 
         Assert.IsType<NoContentResult>(result);
 
-        var settings = await commandMediator.Db.OwnerAccount.AsNoTracking().SingleAsync(TestContext.Current.CancellationToken);
+        var settings = await commandMediator.Db.BlogAccount.AsNoTracking().SingleAsync(TestContext.Current.CancellationToken);
         Assert.Equal(account.Email, settings.Email);
         Assert.Equal(account.PasswordHash, settings.PasswordHash);
         Assert.Equal(account.PasswordSalt, settings.PasswordSalt);
@@ -353,7 +353,7 @@ public partial class SettingsControllerTests
         using var mediator = new ConfigurationCommandRecorder();
         var authentication = new Mock<IAuthenticationService>();
         var controller = CreateController(account, mediator, authentication);
-        await mediator.Db.OwnerAccount.ExecuteDeleteAsync(TestContext.Current.CancellationToken);
+        await mediator.Db.BlogAccount.ExecuteDeleteAsync(TestContext.Current.CancellationToken);
 
         Assert.IsType<UnauthorizedResult>(await controller.ResetLocalAccountTotp(
             new ResetLocalAccountTotpRequest { CurrentPassword = "Password1" }));
@@ -363,7 +363,7 @@ public partial class SettingsControllerTests
         authentication.Verify(p => p.SignOutAsync(It.IsAny<HttpContext>(), It.IsAny<string>(), It.IsAny<AuthenticationProperties>()), Times.Never);
     }
 
-    private static OwnerAccountEntity CreateLocalAccount()
+    private static BlogAccountEntity CreateLocalAccount()
     {
         var salt = SecurityHelper.GenerateSalt();
 
@@ -424,12 +424,12 @@ public partial class SettingsControllerTests
     }
 
     private static AccountController CreateController(
-        OwnerAccountEntity account,
+        BlogAccountEntity account,
         ConfigurationCommandRecorder commandMediator,
         Mock<IAuthenticationService> authenticationService,
         ILogger<AccountController>? logger = null)
     {
-        commandMediator.Db.OwnerAccount.Add(account);
+        commandMediator.Db.BlogAccount.Add(account);
         commandMediator.Db.SaveChanges();
         commandMediator.Db.Entry(account).State = EntityState.Detached;
         var services = new ServiceCollection().AddSingleton(authenticationService.Object).BuildServiceProvider();

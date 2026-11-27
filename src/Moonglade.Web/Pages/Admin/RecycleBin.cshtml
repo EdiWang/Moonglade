@@ -1,5 +1,7 @@
 ﻿@page "/admin/post/recycle-bin"
+@using Moonglade.Auth
 @{
+    var isOwner = User.IsInRole(BlogAuthSchemas.AdministratorRole);
     ViewBag.Title = "Recycle Bin";
     ViewBag.XData = "recycleBinManager";
 }
@@ -56,10 +58,13 @@
                                 x-on:click="restorePost(post.id)">
                             <i class="bi-reply-fill"></i> @SharedLocalizer["Restore"]
                         </button>
-                        <button class="btn btn-outline-danger btn-sm btn-delete" 
-                                x-on:click="confirmDelete(post.id, post.title)">
-                            <i class="bi-trash"></i> @SharedLocalizer["Delete"]
-                        </button>
+                        @if (isOwner)
+                        {
+                            <button class="btn btn-outline-danger btn-sm btn-delete"
+                                    x-on:click="confirmDelete(post.id, post.title)">
+                                <i class="bi-trash"></i> @SharedLocalizer["Delete"]
+                            </button>
+                        }
                     </div>
                 </div>
             </div>
@@ -83,10 +88,13 @@
                                 x-on:click="restorePage(page.id)">
                             <i class="bi-reply-fill"></i> @SharedLocalizer["Restore"]
                         </button>
-                        <button class="btn btn-outline-danger btn-sm btn-delete"
-                                x-on:click="confirmDeletePage(page.id, page.title)">
-                            <i class="bi-trash"></i> @SharedLocalizer["Delete"]
-                        </button>
+                        @if (isOwner)
+                        {
+                            <button class="btn btn-outline-danger btn-sm btn-delete"
+                                    x-on:click="confirmDeletePage(page.id, page.title)">
+                                <i class="bi-trash"></i> @SharedLocalizer["Delete"]
+                            </button>
+                        }
                     </div>
                 </div>
             </div>

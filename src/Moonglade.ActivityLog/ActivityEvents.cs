@@ -53,6 +53,13 @@ public static class ActivityEvents
     public const string AccountProfileUpdated = "account.profile.updated";
     public const string SettingsPasswordUpdated = "account.password.updated";
     public const string SettingsAuthenticatorReset = "account.authenticator.reset";
+    public const string CollaboratorCreated = "account.collaborator.created";
+    public const string CollaboratorEmailChanged = "account.collaborator.email.changed";
+    public const string CollaboratorPasswordReset = "account.collaborator.password.reset";
+    public const string CollaboratorAuthenticatorReset = "account.collaborator.authenticator.reset";
+    public const string CollaboratorDisabled = "account.collaborator.disabled";
+    public const string CollaboratorEnabled = "account.collaborator.enabled";
+    public const string CollaboratorDeleted = "account.collaborator.deleted";
     public const string ImageUploaded = "image.uploaded";
     public const string AvatarUpdated = "asset.avatar.updated";
     public const string SiteIconUpdated = "asset.site-icon.updated";
@@ -110,6 +117,13 @@ public static class ActivityEvents
         Define(AccountProfileUpdated, "Account", "Account profile updated"),
         Define(SettingsPasswordUpdated, "Account", "Account password updated", "Username"),
         Define(SettingsAuthenticatorReset, "Account", "Account authenticator reset", "Username"),
+        Define(CollaboratorCreated, "Account", "Collaborator account created"),
+        Define(CollaboratorEmailChanged, "Account", "Collaborator email changed"),
+        Define(CollaboratorPasswordReset, "Account", "Collaborator password reset"),
+        Define(CollaboratorAuthenticatorReset, "Account", "Collaborator authenticator reset"),
+        Define(CollaboratorDisabled, "Account", "Collaborator account disabled"),
+        Define(CollaboratorEnabled, "Account", "Collaborator account enabled"),
+        Define(CollaboratorDeleted, "Account", "Collaborator account deleted"),
         Define(ImageUploaded, "Images", "Image uploaded", "FileName", "FileSize", "SkipWatermark"),
         Define(AvatarUpdated, "Site assets", "Avatar updated", "FileName", "FileSize", "ContentType"),
         Define(SiteIconUpdated, "Site assets", "Site icon updated", "ImageSize"),

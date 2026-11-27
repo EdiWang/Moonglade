@@ -10,6 +10,7 @@ public class ActivityLogItem
     public string EventKey { get; set; } = string.Empty;
     public DateTime EventTimeUtc { get; set; }
     public ActivityActorKind ActorKind { get; set; }
+    public Guid? ActorAccountId { get; init; }
     public string? ActorDisplayName { get; set; }
     public string? TargetId { get; set; }
     public string? TargetDisplayName { get; set; }
@@ -31,6 +32,7 @@ public class ActivityLogItem
             EventKey = definition.Key,
             EventTimeUtc = entity.EventTimeUtc,
             ActorKind = entity.ActorKind,
+            ActorAccountId = isSystem ? null : entity.ActorAccountId,
             ActorDisplayName = isSystem ? null : entity.ActorDisplayName,
             TargetId = entity.TargetId,
             TargetDisplayName = entity.TargetDisplayName,
