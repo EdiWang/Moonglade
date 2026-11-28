@@ -1,5 +1,4 @@
 using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.EntityFrameworkCore;
@@ -52,8 +51,7 @@ public class VerifyAuthenticatorModel(
             return Page();
         }
         await HttpContext.SignOutAsync(BlogAuthSchemas.LocalAccountTwoFactor);
-        await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme,
-            LocalAccountPrincipal.Create(verified, CookieAuthenticationDefaults.AuthenticationScheme));
+        var page = await HttpContext.SignInToStepAsync(verified, LocalAccountSignInStep.Complete);
         if (RememberDevice)
         {
             await HttpContext.SignInAsync(BlogAuthSchemas.LocalAccountRememberedDevice,
@@ -61,13 +59,15 @@ public class VerifyAuthenticatorModel(
                 new AuthenticationProperties { IsPersistent = true, AllowRefresh = false });
         }
         logger.LogInformation("Local account authentication completed");
-        return RedirectToPage(verified.IsOwner ? "/Admin/Dashboard" : "/Admin/Post");
+        return RedirectToPage(page);
     }
 
     private async Task<LocalAccountSnapshot> CurrentAccountAsync()
     {
-        if (!authSettings.Value.Totp.Required) return null;
+        var totpRequired = authSettings.Value.Totp.Required;
+        if (!totpRequired) return null;
         var account = await accounts.ReadAsync(User, HttpContext.RequestAborted);
-        return account is { MustChangePassword: false, IsTotpEnabled: true } ? account : null;
+        return account is not null && LocalAccountSignIn.AfterPassword(account, totpRequired) == LocalAccountSignInStep.VerifyAuthenticator
+            ? account : null;
     }
 }

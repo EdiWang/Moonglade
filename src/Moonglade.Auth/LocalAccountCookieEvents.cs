@@ -36,13 +36,13 @@ public sealed class LocalAccountCookieEvents(LocalAccountStore accounts, IOption
         var collaborator = principal.IsInRole(BlogAuthSchemas.CollaboratorRole);
         var oidcRevision = principal.FindFirstValue(LocalAccountPrincipal.OidcSessionClaim);
         if (scheme != BlogAuthSchemas.Local && (administrator || collaborator || oidcRevision is not null)) return false;
-        if (scheme == BlogAuthSchemas.TemporaryPasswordChange) return !account.IsOwner && account.MustChangePassword;
+        if (scheme == BlogAuthSchemas.TemporaryPasswordChange) return LocalAccountSignIn.CanChangeTemporaryPassword(account);
         if (account.MustChangePassword) return false;
         if (scheme == BlogAuthSchemas.LocalAccountRememberedDevice) return account.IsTotpEnabled;
         if (scheme != BlogAuthSchemas.Local) return true;
 
         if (administrator != account.IsOwner || collaborator == account.IsOwner) return false;
-        if (oidcRevision is null) return !options.Value.Totp.Required || account.IsTotpEnabled;
+        if (oidcRevision is null) return !LocalAccountSignIn.RequiresAuthenticatorEnrollment(account, options.Value.Totp.Required);
         return account.IsOwner && Guid.TryParse(oidcRevision, out var revision) &&
             await db.OwnerOidc.AnyAsync(row => row.OwnerId == account.Id &&
                 row.Issuer != null && row.Subject != null && row.SessionRevision == revision, context.HttpContext.RequestAborted);

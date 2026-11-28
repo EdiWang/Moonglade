@@ -1,5 +1,4 @@
 using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.EntityFrameworkCore;
@@ -71,17 +70,18 @@ public class SetupAuthenticatorModel(
             return Page();
         }
         await HttpContext.SignOutAsync(BlogAuthSchemas.LocalAccountSetup);
-        await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme,
-            LocalAccountPrincipal.Create(saved, CookieAuthenticationDefaults.AuthenticationScheme));
+        var page = await HttpContext.SignInToStepAsync(saved, LocalAccountSignInStep.Complete);
         logger.LogInformation("Local account authenticator enrollment completed");
-        return RedirectToPage(saved.IsOwner ? "/Admin/Dashboard" : "/Admin/Post");
+        return RedirectToPage(page);
     }
 
     private async Task<LocalAccountSnapshot> CurrentAccountAsync()
     {
-        if (!authSettings.Value.Totp.Required) return null;
+        var totpRequired = authSettings.Value.Totp.Required;
+        if (!totpRequired) return null;
         var account = await accounts.ReadAsync(User, HttpContext.RequestAborted);
-        return account is { MustChangePassword: false, IsTotpEnabled: false } ? account : null;
+        return account is not null && LocalAccountSignIn.AfterPassword(account, totpRequired) == LocalAccountSignInStep.EnrollAuthenticator
+            ? account : null;
     }
 
     private void Display(string email, string secret)

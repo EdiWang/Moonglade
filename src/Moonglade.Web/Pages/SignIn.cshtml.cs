@@ -1,5 +1,4 @@
 using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.Extensions.Options;
@@ -29,10 +28,8 @@ public class SignInModel(
     public async Task<IActionResult> OnGetAsync(bool failed = false)
     {
         OidcFailed = failed;
-        await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-        await HttpContext.SignOutAsync(BlogAuthSchemas.LocalAccountSetup);
-        await HttpContext.SignOutAsync(BlogAuthSchemas.LocalAccountTwoFactor);
-        await HttpContext.SignOutAsync(BlogAuthSchemas.TemporaryPasswordChange);
+        await HttpContext.SignOutAsync(BlogAuthSchemas.Local);
+        await ClearPendingSignInAsync();
         await HttpContext.SignOutAsync(BlogAuthSchemas.InitialAccountSetup);
         HttpContext.User = new ClaimsPrincipal(new ClaimsIdentity());
         return Page();
@@ -62,29 +59,23 @@ public class SignInModel(
             ModelState.AddModelError(string.Empty, "Invalid Login Attempt.");
             return Page();
         }
-        await HttpContext.SignOutAsync(BlogAuthSchemas.LocalAccountSetup);
-        await HttpContext.SignOutAsync(BlogAuthSchemas.LocalAccountTwoFactor);
-        await HttpContext.SignOutAsync(BlogAuthSchemas.TemporaryPasswordChange);
-        var scheme = account.MustChangePassword
-            ? BlogAuthSchemas.TemporaryPasswordChange
-            : !authSettings.Value.Totp.Required
-                ? BlogAuthSchemas.Local
-                : account.IsTotpEnabled ? BlogAuthSchemas.LocalAccountTwoFactor : BlogAuthSchemas.LocalAccountSetup;
-        if (scheme == BlogAuthSchemas.LocalAccountTwoFactor)
+        await ClearPendingSignInAsync();
+        var step = LocalAccountSignIn.AfterPassword(account, authSettings.Value.Totp.Required);
+        if (step == LocalAccountSignInStep.VerifyAuthenticator)
         {
             var remembered = await HttpContext.AuthenticateAsync(BlogAuthSchemas.LocalAccountRememberedDevice);
             if (remembered.Succeeded && LocalAccountPrincipal.MatchesAccount(remembered.Principal, account))
-                scheme = CookieAuthenticationDefaults.AuthenticationScheme;
+                step = LocalAccountSignInStep.Complete;
         }
-        if (scheme != BlogAuthSchemas.Local && User.Identity?.IsAuthenticated == true)
+        if (step != LocalAccountSignInStep.Complete && User.Identity?.IsAuthenticated == true)
             await HttpContext.SignOutAsync(BlogAuthSchemas.Local);
-        await HttpContext.SignInAsync(scheme, LocalAccountPrincipal.Create(account, scheme));
-        return scheme switch
-        {
-            BlogAuthSchemas.Local => RedirectToPage(account.IsOwner ? "/Admin/Dashboard" : "/Admin/Post"),
-            BlogAuthSchemas.TemporaryPasswordChange => RedirectToPage("/ChangeTemporaryPassword"),
-            BlogAuthSchemas.LocalAccountTwoFactor => RedirectToPage("/VerifyAuthenticator"),
-            _ => RedirectToPage("/SetupAuthenticator")
-        };
+        return RedirectToPage(await HttpContext.SignInToStepAsync(account, step));
+    }
+
+    private async Task ClearPendingSignInAsync()
+    {
+        await HttpContext.SignOutAsync(BlogAuthSchemas.LocalAccountSetup);
+        await HttpContext.SignOutAsync(BlogAuthSchemas.LocalAccountTwoFactor);
+        await HttpContext.SignOutAsync(BlogAuthSchemas.TemporaryPasswordChange);
     }
 }

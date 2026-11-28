@@ -34,7 +34,7 @@ public class ChangeTemporaryPasswordModel(LocalAccountStore accounts, IOptions<A
     public async Task<IActionResult> OnGetAsync()
     {
         var account = await accounts.ReadAsync(User, HttpContext.RequestAborted);
-        if (account is not { IsOwner: false, MustChangePassword: true }) return RedirectToPage("/SignIn");
+        if (!LocalAccountSignIn.CanChangeTemporaryPassword(account)) return RedirectToPage("/SignIn");
         RequiresAuthenticatorCode = settings.Value.Totp.Required && account.IsTotpEnabled;
         return Page();
     }
@@ -42,7 +42,7 @@ public class ChangeTemporaryPasswordModel(LocalAccountStore accounts, IOptions<A
     public async Task<IActionResult> OnPostAsync()
     {
         var account = await accounts.ReadAsync(User, HttpContext.RequestAborted);
-        if (account is not { IsOwner: false, MustChangePassword: true }) return RedirectToPage("/SignIn");
+        if (!LocalAccountSignIn.CanChangeTemporaryPassword(account)) return RedirectToPage("/SignIn");
         RequiresAuthenticatorCode = settings.Value.Totp.Required && account.IsTotpEnabled;
         if (!ModelState.IsValid)
         {
@@ -73,10 +73,7 @@ public class ChangeTemporaryPasswordModel(LocalAccountStore accounts, IOptions<A
         }
 
         await HttpContext.SignOutAsync(BlogAuthSchemas.TemporaryPasswordChange);
-        var scheme = settings.Value.Totp.Required && !saved.IsTotpEnabled
-            ? BlogAuthSchemas.LocalAccountSetup
-            : BlogAuthSchemas.Local;
-        await HttpContext.SignInAsync(scheme, LocalAccountPrincipal.Create(saved, scheme));
-        return RedirectToPage(scheme == BlogAuthSchemas.Local ? "/Admin/Post" : "/SetupAuthenticator");
+        var step = LocalAccountSignIn.AfterTemporaryPasswordChange(saved, settings.Value.Totp.Required);
+        return RedirectToPage(await HttpContext.SignInToStepAsync(saved, step));
     }
 }
