@@ -1,4 +1,5 @@
 ﻿@page "/admin/post/preview/{postId:guid}"
+@attribute [Authorize(Policy = BlogAuthSchemas.ContentManagementPolicy)]
 @inject Moonglade.Auth.IOwnerProfileReader OwnerProfiles
 @{
     var snapshot = ViewData.CaptureSettings(SettingsReader);

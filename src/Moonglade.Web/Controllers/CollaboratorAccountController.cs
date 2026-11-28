@@ -8,13 +8,13 @@ using Moonglade.Web.Services;
 
 namespace Moonglade.Web.Controllers;
 
-[Authorize(Roles = BlogAuthSchemas.CollaboratorRole)]
+[Authorize(Policy = BlogAuthSchemas.CollaboratorSelfServicePolicy)]
 [Route("api/account/collaborator")]
 public class CollaboratorAccountController(
     LocalAccountStore accounts,
     ICommandMediator commandMediator,
     IStringLocalizer<Program> localizer,
-    ILogger<CollaboratorAccountController> logger) : ContentControllerBase(commandMediator, logger)
+    ILogger<CollaboratorAccountController> logger) : ActivityControllerBase(commandMediator, logger)
 {
     [HttpPut("password")]
     [EnableRateLimiting(LocalAccountRateLimitPolicy.PolicyName)]

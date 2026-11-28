@@ -157,14 +157,11 @@ public static class ServiceCollectionExtensions
                 options.Conventions.AddPageRoute("/Admin/Dashboard", "admin");
                 options.Conventions.AddFolderApplicationModelConvention("/Admin", page =>
                 {
-                    var policy = page.ViewEnginePath is
-                        "/Admin/Post" or "/Admin/Draft" or "/Admin/Scheduled" or "/Admin/EditPost" or
-                        "/Admin/PostPreview" or "/Admin/RecycleBin" or
-                        "/Admin/BlogPage" or "/Admin/EditPage" or "/Admin/PagePreview" or "/Admin/PageRecycleBin" or
-                        "/Admin/Category" or "/Admin/Tags" or "/Admin/Comments" or "/Admin/CollaboratorPassword"
-                        ? BlogAuthSchemas.ContentManagementPolicy
-                        : BlogAuthSchemas.AdministratorPolicy;
-                    page.EndpointMetadata.Add(new AuthorizeAttribute(policy));
+                    if (!page.HandlerTypeAttributes.OfType<IAuthorizeData>().Any(authorization => authorization.Policy is
+                        BlogAuthSchemas.ContentManagementPolicy or BlogAuthSchemas.CollaboratorSelfServicePolicy))
+                    {
+                        page.EndpointMetadata.Add(new AuthorizeAttribute(BlogAuthSchemas.AdministratorPolicy));
+                    }
                 });
             })
             .AddViewOptions(options =>

@@ -1,4 +1,5 @@
 ﻿@page "/admin/tags"
+@attribute [Authorize(Policy = BlogAuthSchemas.ContentManagementPolicy)]
 @using Moonglade.Features.Tag
 @{
     ViewBag.Title = "Tags";

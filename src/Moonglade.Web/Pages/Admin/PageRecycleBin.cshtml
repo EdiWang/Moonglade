@@ -1,4 +1,5 @@
 @page "/admin/page/recycle-bin"
+@attribute [Authorize(Policy = BlogAuthSchemas.ContentManagementPolicy)]
 @using Moonglade.Auth
 @{
     var isOwner = User.IsInRole(BlogAuthSchemas.AdministratorRole);

@@ -1,4 +1,5 @@
 ﻿@page "/admin/page/preview/{pageId:guid}"
+@attribute [Authorize(Policy = BlogAuthSchemas.ContentManagementPolicy)]
 @using Microsoft.AspNetCore.Mvc.TagHelpers
 @using Moonglade.Data.Entities
 @using Moonglade.Features.Page

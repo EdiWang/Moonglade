@@ -14,5 +14,6 @@ public static class BlogAuthSchemas
     public const string CollaboratorRole = "Collaborator";
     public const string AdministratorPolicy = "MoongladeAdministrator";
     public const string ContentManagementPolicy = "MoongladeContentManagement";
+    public const string CollaboratorSelfServicePolicy = "MoongladeCollaboratorSelfService";
     public const string AccountDisplayNameClaim = "moonglade:account-display-name";
 }

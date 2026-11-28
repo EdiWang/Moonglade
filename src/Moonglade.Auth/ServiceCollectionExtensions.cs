@@ -42,7 +42,10 @@ public static class ServiceCollectionExtensions
                 .RequireRole(BlogAuthSchemas.AdministratorRole))
             .AddPolicy(BlogAuthSchemas.ContentManagementPolicy, policy => policy
                 .RequireAuthenticatedUser()
-                .RequireRole(BlogAuthSchemas.AdministratorRole, BlogAuthSchemas.CollaboratorRole));
+                .RequireRole(BlogAuthSchemas.AdministratorRole, BlogAuthSchemas.CollaboratorRole))
+            .AddPolicy(BlogAuthSchemas.CollaboratorSelfServicePolicy, policy => policy
+                .RequireAuthenticatedUser()
+                .RequireRole(BlogAuthSchemas.CollaboratorRole));
 
         services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
             .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme, options =>
