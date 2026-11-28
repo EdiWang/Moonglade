@@ -21,6 +21,25 @@ Administrators apply the required SQL scripts directly. AI agents verify migrati
 2. During migration verification, check the intended schema and data changes, then run the same script again. Both runs must succeed. The second run must preserve the resulting schema and data.
 3. Have an administrator apply the required scripts before starting the upgraded application. Use backup restoration if rollback is needed.
 
+## Upgrade Order
+
+Use your current schema to identify the required scripts and apply them in numerical order for your provider. For databases older than 16.9.0, apply the category ID upgrade (1) if categories still use GUIDs, then the PostgreSQL naming upgrade (2) if applicable. Keep access restricted until any required [owner setup](../README.md#first-run) is complete.
+
+For 16.9.0 to 16.10.0, run the following scripts in order for your provider. [PostgreSQL scripts](PostgreSql) · [SQL Server scripts](SqlServer)
+
+1. `3.activity-log-events.sql` replaces legacy activity history and discards its existing entries.
+2. `4.seo-settings.sql` copies legacy SEO settings.
+3. `5.seo-robots-txt.sql` copies the existing robots.txt content.
+4. `6.owner-account.sql` creates owner account storage.
+5. `7.owner-account-cutover.sql` transfers the public owner email and removes legacy local credentials.
+6. `8.owner-avatar.sql` transfers the owner avatar and Gravatar preference.
+7. `9.owner-presentation.sql` transfers the owner name and description.
+8. `10.owner-oidc.sql` creates OIDC storage and the Data Protection key table required for local sign-in and antiforgery tokens. Run it even if you use only local sign-in.
+
+For 16.10.0 to 16.11.0, run `11.owner-oidc-binding-only.sql` after the earlier upgrades. It removes the OIDC enable/disable switch. Existing bindings are preserved, including previously disabled bindings, which resume allowing third-party sign-in.
+
+For releases that include the widget composer or collaborator accounts, continue with the applicable upgrades below.
+
 ## Widget Region/Order Upgrade (12)
 
 The widget-composer schema requires [PostgreSQL script 12](PostgreSql/12.widget-regions.sql) or [SQL Server script 12](SqlServer/12.widget-regions.sql), after the applicable upgrades through `11.owner-oidc-binding-only.sql`. The source schema has `DisplayOrder` (`display_order`); the target has `Region`/`SortOrder` (`region`/`sort_order`) and a 128-character title column. Fresh installations create the target schema directly.
