@@ -1,6 +1,7 @@
 #nullable enable
 
 using Edi.AspNetCore.Utils;
+using Microsoft.EntityFrameworkCore;
 using Moonglade.Data.Entities;
 using System.ComponentModel.DataAnnotations;
 using System.Security.Cryptography;
@@ -42,4 +43,15 @@ internal static class LocalAccountCredentials
         var actual = Convert.FromBase64String(SecurityHelper.HashPassword(password.Trim(), salt));
         return CryptographicOperations.FixedTimeEquals(actual, Convert.FromBase64String(hash));
     }
+
+    public static bool VerifyTotpEnrollment(
+        ILocalAccountTotpService totpService, BlogAccountEntity account, string secret, string code)
+    {
+        if (account.TotpSecret is not null)
+            throw new DbUpdateConcurrencyException("The authenticator is already configured.");
+        return totpService.VerifyCode(secret, code);
+    }
+
+    public static string NormalizeTotpSecret(string secret) =>
+        secret.Trim().Replace(" ", string.Empty).ToUpperInvariant();
 }

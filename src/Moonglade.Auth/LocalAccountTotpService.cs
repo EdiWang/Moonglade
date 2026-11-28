@@ -34,7 +34,7 @@ public class LocalAccountTotpService : ILocalAccountTotpService
         try
         {
             var totp = new Totp(
-                Base32Encoding.ToBytes(NormalizeSecret(secret)),
+                Base32Encoding.ToBytes(LocalAccountCredentials.NormalizeTotpSecret(secret)),
                 step: PeriodSeconds,
                 mode: OtpHashMode.Sha1,
                 totpSize: CodeDigits);
@@ -58,7 +58,7 @@ public class LocalAccountTotpService : ILocalAccountTotpService
     {
         var normalizedIssuer = string.IsNullOrWhiteSpace(issuer) ? "Moonglade" : issuer.Trim();
         var normalizedAccountName = string.IsNullOrWhiteSpace(accountName) ? "admin" : accountName.Trim();
-        var normalizedSecret = NormalizeSecret(secret);
+        var normalizedSecret = LocalAccountCredentials.NormalizeTotpSecret(secret);
 
         return "otpauth://totp/"
             + $"{Uri.EscapeDataString(normalizedIssuer)}:{Uri.EscapeDataString(normalizedAccountName)}"
@@ -67,7 +67,4 @@ public class LocalAccountTotpService : ILocalAccountTotpService
             + $"&digits={CodeDigits}"
             + $"&period={PeriodSeconds}";
     }
-
-    private static string NormalizeSecret(string secret) =>
-        secret.Trim().Replace(" ", string.Empty).ToUpperInvariant();
 }

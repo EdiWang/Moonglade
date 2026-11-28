@@ -58,11 +58,8 @@ public sealed class LocalAccountStore(
         }
 
         var account = await LoadActiveCollaboratorAsync(proof.Id, proof.Revision, mustChangePassword: false, ct);
-        if (account.TotpSecret is not null)
-            throw new DbUpdateConcurrencyException("The authenticator is already configured.");
-        if (!totpService.VerifyCode(secret, code)) return null;
-        return await UpdateAsync(account,
-            row => row.TotpSecret = secret.Trim().Replace(" ", string.Empty).ToUpperInvariant(), ct);
+        if (!VerifyTotpEnrollment(totpService, account, secret, code)) return null;
+        return await UpdateAsync(account, row => row.TotpSecret = NormalizeTotpSecret(secret), ct);
     }
 
     public async Task<LocalAccountSnapshot?> VerifyTotpAsync(LocalAccountSnapshot proof, string code, CancellationToken ct)
@@ -146,7 +143,7 @@ public sealed class LocalAccountStore(
             db.BlogAccount.Add(account);
             try
             {
-                await SaveDetachedAsync(account, ct);
+                await LocalAccountPersistence.SaveAndDetachAsync(db, account, ct);
                 return Snapshot(account);
             }
             catch (DbUpdateException ex) when (ex is not DbUpdateConcurrencyException)
@@ -213,7 +210,7 @@ public sealed class LocalAccountStore(
         EnsureOwnCommit();
         var account = await LoadCollaboratorAsync(id, revision, ct);
         db.BlogAccount.Remove(account);
-        await SaveDetachedAsync(account, ct);
+        await LocalAccountPersistence.SaveAndDetachAsync(db, account, ct);
         return Snapshot(account);
     }
 
@@ -245,21 +242,8 @@ public sealed class LocalAccountStore(
         EnsureOwnCommit();
         db.BlogAccount.Attach(account);
         apply(account);
-        account.Revision = Guid.NewGuid();
-        await SaveDetachedAsync(account, ct);
+        await LocalAccountPersistence.SaveWithNewRevisionAsync(db, account, ct);
         return Snapshot(account);
-    }
-
-    private async Task SaveDetachedAsync(BlogAccountEntity account, CancellationToken ct)
-    {
-        try
-        {
-            await db.SaveChangesAsync(ct);
-        }
-        finally
-        {
-            db.Entry(account).State = EntityState.Detached;
-        }
     }
 
     private void EnsureOwnCommit()

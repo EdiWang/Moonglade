@@ -54,7 +54,7 @@ public sealed class OwnerAccountStore(
             Revision = Guid.NewGuid()
         };
         db.BlogAccount.Add(account);
-        await SaveAsync(account, ct);
+        await LocalAccountPersistence.SaveAndDetachAsync(db, account, ct, CheckCollaboratorEmailConflictAsync);
         return account;
     }
 
@@ -129,7 +129,7 @@ public sealed class OwnerAccountStore(
         account.Revision = Guid.NewGuid();
         try
         {
-            await SaveAsync(account, ct);
+            await LocalAccountPersistence.SaveAndDetachAsync(db, account, ct, CheckCollaboratorEmailConflictAsync);
         }
         catch (DbUpdateException) when (pending.ExpectedRevision is null)
         {
@@ -215,11 +215,9 @@ public sealed class OwnerAccountStore(
     {
         EnsureOwnCommit();
         var account = await LoadCurrentAsync(id, expectedRevision, ct);
-        if (account.TotpSecret is not null)
-            throw new DbUpdateConcurrencyException("The authenticator is already configured.");
-        if (!totpService.VerifyCode(secret, code)) return null;
+        if (!VerifyTotpEnrollment(totpService, account, secret, code)) return null;
         db.BlogAccount.Attach(account);
-        account.TotpSecret = secret.Trim().Replace(" ", string.Empty).ToUpperInvariant();
+        account.TotpSecret = NormalizeTotpSecret(secret);
         return await SaveUpdatedAsync(account, ct);
     }
 
@@ -241,29 +239,15 @@ public sealed class OwnerAccountStore(
     private async Task<OwnerAccountSnapshot> SaveUpdatedAsync(BlogAccountEntity account, CancellationToken ct)
     {
         EnsureOwnCommit();
-        account.Revision = Guid.NewGuid();
-        await SaveAsync(account, ct);
+        await LocalAccountPersistence.SaveWithNewRevisionAsync(db, account, ct, CheckCollaboratorEmailConflictAsync);
         return Snapshot(account);
     }
 
-    private async Task SaveAsync(BlogAccountEntity account, CancellationToken ct)
+    private async Task CheckCollaboratorEmailConflictAsync(BlogAccountEntity account, DbUpdateException exception)
     {
-        try
-        {
-            await db.SaveChangesAsync(ct);
-        }
-        catch (DbUpdateException exception) when (exception is not DbUpdateConcurrencyException)
-        {
-            if (await db.BlogAccount.AsNoTracking().AnyAsync(row => row.Slot != BlogAccountEntity.OwnerSlot
-                    && row.NormalizedEmail == account.NormalizedEmail, CancellationToken.None))
-                throw new ValidationException("This email address is already in use.", exception);
-            throw;
-        }
-        finally
-        {
-            // A failed credential write must not be retried by a later unrelated save.
-            db.Entry(account).State = EntityState.Detached;
-        }
+        if (await db.BlogAccount.AsNoTracking().AnyAsync(row => row.Slot != BlogAccountEntity.OwnerSlot
+                && row.NormalizedEmail == account.NormalizedEmail, CancellationToken.None))
+            throw new ValidationException("This email address is already in use.", exception);
     }
 
     private void EnsureOwnCommit()
